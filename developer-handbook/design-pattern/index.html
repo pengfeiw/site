@@ -1,0 +1,848 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="自己整理的笔记，未完。"><link rel="stylesheet" href="/assests/code_github.css"><link rel="stylesheet" href="/assests/github_markdown.css"><link rel="stylesheet" href="/assests/article.css"><link rel="stylesheet" href="/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/rss.xml"><img src="/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年8月17日</span><span class="category"><a href="/developer-handbook">标签：Developer</a></span></div><div class="markdown-body"><h1 id="设计模式">设计模式 <a href="#设计模式">#</a></h1><p>面向对象的目的、方法：</p><ul><li>业务逻辑与界面逻辑分离，减小耦合。这样业务逻辑很可能再未来被复用。</li><li>个人感觉面向对象的终极目标就是开闭原则(open for extensions, close for modifications)</li></ul><h2 id="一.简单工厂模式">一.简单工厂模式 <a href="#一.简单工厂模式">#</a></h2><p><img src="https://www.oodesign.com/images/stories/factory%20implementation.gif" alt="简单工厂模式uml图"></p><ul><li>Client: 产品使用者，有一个抽象类型Product的变量。</li><li>Factory: 创建一个具体的产品，可供client使用。</li><li>Product: 产品抽象类，定义了一些抽象方法。</li><li>Concrete Product: 具体的某个产品。</li></ul><p>Client可以使用抽象的Product的方法,而不用关心这个product的具体实现和具体类型。</p><pre><code class="hljs language-C#"><span class="hljs-keyword">class</span> <span class="hljs-title">Client</span> {
+    <span class="hljs-keyword">public</span> Product product;
+    ...
+}
+<span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Product</span>
+{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> Product <span class="hljs-title">createProduct</span>()</span>;
+    ...
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">OneProduct</span> <span class="hljs-title">extends</span> <span class="hljs-title">Product</span>
+{
+    ...
+    <span class="hljs-keyword">static</span>
+    {
+        ProductFactory.instance().registerProduct(<span class="hljs-string">"ID1"</span>, <span class="hljs-keyword">new</span> OneProduct());
+    }
+    <span class="hljs-function"><span class="hljs-keyword">public</span> OneProduct <span class="hljs-title">createProduct</span>()</span>
+    {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> OneProduct();
+    }
+    ...
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">ProductFactory</span>
+{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Product <span class="hljs-title">createProduct</span>(<span class="hljs-params">String ProductID</span>)</span> {
+        ...
+    }
+    ...
+}
+</code></pre><h3 id="%3Ccode%3EcreateProduct%3C/code%3E%E7%9A%84%E5%AE%9E%E7%8E%B0"><code>createProduct</code>的实现 <a href="#%3Ccode%3EcreateProduct%3C/code%3E%E7%9A%84%E5%AE%9E%E7%8E%B0">#</a></h3><h4 id="条件方式">条件方式 <a href="#条件方式">#</a></h4><p><code>ProductFactory</code>负责生产product，常用的方式可以通过<code>switch/case(if/else)</code>语句判断：</p><pre><code class="hljs language-C#"><span class="hljs-keyword">class</span> <span class="hljs-title">ProductFactory</span>
+{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Product <span class="hljs-title">createProduct</span>(<span class="hljs-params">String id</span>)</span> {
+        <span class="hljs-keyword">if</span> (id == ID1) {
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> OneProduct();
+        }
+        <span class="hljs-keyword">if</span> (id == ID2) {
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> AnotherProduct();
+        }
+
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+    }
+    ...
+}
+</code></pre><p>这个方式违背了<strong>开闭原则</strong>，每次有新的product类，都需要更改createProduct方法。</p><h4 id="Class注册方式">Class注册方式 <a href="#Class注册方式">#</a></h4><p>可以通过反射去实现，但是先跳过反射的方法。</p><p>在<code>ProductFactory</code>类中使用一个HashMap存储产品的type和产品Id。具体实现如下。</p><pre><code class="hljs language-C#"><span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Product</span>
+{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> Product <span class="hljs-title">createProduct</span>()</span>;
+    ...
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">OneProduct</span> <span class="hljs-title">extends</span> <span class="hljs-title">Product</span>
+{
+    ...
+    <span class="hljs-keyword">static</span>
+    {
+        ProductFactory.instance().registerProduct(<span class="hljs-string">"ID1"</span>, <span class="hljs-keyword">new</span> OneProduct()); <span class="hljs-comment">// 每次添加一个产品类，都需要在工厂进行注册。</span>
+    }
+    <span class="hljs-function"><span class="hljs-keyword">public</span> OneProduct <span class="hljs-title">createProduct</span>()</span>
+    {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> OneProduct();
+    }
+    ...
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">ProductFactory</span> {
+    <span class="hljs-keyword">private</span> HashMap m_RegisteredProducts = <span class="hljs-keyword">new</span> HashMap(); <span class="hljs-comment">// 存储产品id和对应的product</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">registerProduct</span>(<span class="hljs-params">String productID, Product p</span>)</span> {
+        <span class="hljs-keyword">this</span>.m_RegisteredProducts.put(productID, p);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Product <span class="hljs-title">createProduct</span>(<span class="hljs-params">String productID</span>)</span> {
+        ((Product)m_RegisteredProducts.<span class="hljs-keyword">get</span>(productID)).createProduct();
+    }
+}
+</code></pre><p>这种方式的确保证了<strong>开闭原则</strong>，但是每次有新的product类, 都需要主动注册，也有点不方便。</p><h2 id="二.策略模式">二.策略模式 <a href="#二.策略模式">#</a></h2><p><img src="https://www.oodesign.com/images/design_patterns/behavioral/strategy_implementation_-_uml_class_diagram.gif" alt="策略模式uml图"></p><ul><li>Strategy: 定义了策略的接口，所有具体的策略都要去实现这个接口</li><li>ConcreteStrategy: 具体的策略，实现了具体的算法</li><li>Context: 保存了一个Strategy对象的引用，可能定义了一个接口可以获取Strategy类中的数据。通过Strategy成员可以使用不同的ConcreteStrategy。Context不需要知道策略是如何实现的。</li></ul><p>Context对象接受客户端的请求，为客户端做代理，使用Strategy。</p><p>我的理解：策略模式与工厂模式有些类似，使用工厂模式的话，客户端最终获得的是Product，然后通过Product类执行Product中的方法。而使用策略模式，客户端通过使用Context使用具体的算法行为。</p><h3 id="何时使用">何时使用 <a href="#何时使用">#</a></h3><p>当你遇到某些类，仅他们的行为（算法）不同时，将不同的算法分离在不同的类中，在使用的时候根据需要去选择不同的类来使用对应的算法。</p><h3 id="目的">目的 <a href="#目的">#</a></h3><p>定义一些列算法，独立封装这些算法中的每一个，并且可以自由切换算法。策略模式使算法独立于使用这些算法的用户（client），用户端可以自由切换算法，保证了业务逻辑和界面分离，减少代码耦合性。</p><h3 id="代码实现">代码实现 <a href="#代码实现">#</a></h3><pre><code class="hljs language-C#"><span class="hljs-comment">/* 以机器人的行为为例 */</span>
+
+<span class="hljs-comment">// Strategy——抽象行为接口</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">IBehaviour</span> {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> <span class="hljs-title">moveCommand</span>()</span>;
+}
+
+<span class="hljs-comment">// ConcreteStrategy——具体的行为：agressive behaviour</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">AgressiveBehaviour</span> <span class="hljs-title">implements</span> <span class="hljs-title">IBehaviour</span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> <span class="hljs-title">moveCommand</span>()</span>
+    {
+        System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">"\tAgressive Behaviour: if find another robot attack it"</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+    }
+}
+
+<span class="hljs-comment">// ConcreteStrategy——具体的行为：defensive behaviour</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">DefensiveBehaviour</span> <span class="hljs-title">implements</span> <span class="hljs-title">IBehaviour</span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> <span class="hljs-title">moveCommand</span>()</span>
+    {
+        System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">"\tDefensive Behaviour: if find another robot run from it"</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    }
+}
+
+<span class="hljs-comment">// ConcreteStrategy——具体的行为：normal behaviour</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">NormalBehaviour</span> <span class="hljs-title">implements</span> <span class="hljs-title">IBehaviour</span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> <span class="hljs-title">moveCommand</span>()</span>
+    {
+        System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">"\tNormal Behaviour: if find another robot ignore it"</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    }
+}
+
+<span class="hljs-comment">// Context-机器人</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Robot</span> {
+    IBehaviour behaviour; <span class="hljs-comment">// Strategy的引用</span>
+    String name;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Robot</span>(<span class="hljs-params">String name</span>)</span>
+    {
+        <span class="hljs-keyword">this</span>.name = name;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setBehaviour</span>(<span class="hljs-params">IBehaviour behaviour</span>)</span>
+    {
+        <span class="hljs-keyword">this</span>.behaviour = behaviour;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> IBehaviour <span class="hljs-title">getBehaviour</span>()</span>
+    {
+        <span class="hljs-keyword">return</span> behaviour;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">move</span>()</span>
+    {
+        System.<span class="hljs-keyword">out</span>.println(<span class="hljs-keyword">this</span>.name + <span class="hljs-string">": Based on current position"</span> +
+                     <span class="hljs-string">"the behaviour object decide the next move:"</span>);
+        <span class="hljs-built_in">int</span> command = behaviour.moveCommand();
+        <span class="hljs-comment">// ... send the command to mechanisms</span>
+        System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">"\tThe result returned by behaviour object "</span> +
+                    <span class="hljs-string">"is sent to the movement mechanisms "</span> + 
+                    <span class="hljs-string">" for the robot '"</span>  + <span class="hljs-keyword">this</span>.name + <span class="hljs-string">"'"</span>);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getName</span>()</span> {
+        <span class="hljs-keyword">return</span> name;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setName</span>(<span class="hljs-params">String name</span>)</span> {
+        <span class="hljs-keyword">this</span>.name = name;
+    }
+}
+
+<span class="hljs-comment">// client</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Main</span> {
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span>(<span class="hljs-params">String[] args</span>)</span> {
+
+        Robot r1 = <span class="hljs-keyword">new</span> Robot(<span class="hljs-string">"Big Robot"</span>);
+        Robot r2 = <span class="hljs-keyword">new</span> Robot(<span class="hljs-string">"George v.2.1"</span>);
+        Robot r3 = <span class="hljs-keyword">new</span> Robot(<span class="hljs-string">"R2"</span>);
+
+        r1.setBehaviour(<span class="hljs-keyword">new</span> AgressiveBehaviour());
+        r2.setBehaviour(<span class="hljs-keyword">new</span> DefensiveBehaviour());
+        r3.setBehaviour(<span class="hljs-keyword">new</span> NormalBehaviour());
+
+        r1.move();
+        r2.move();
+        r3.move();
+
+        System.<span class="hljs-keyword">out</span>.println(<span class="hljs-string">"\r\nNew behaviours: "</span> +
+                <span class="hljs-string">"\r\n\t'Big Robot' gets really scared"</span> +
+                <span class="hljs-string">"\r\n\t, 'George v.2.1' becomes really mad because"</span> +
+                <span class="hljs-string">"it's always attacked by other robots"</span> +
+                <span class="hljs-string">"\r\n\t and R2 keeps its calm\r\n"</span>);
+
+        r1.setBehaviour(<span class="hljs-keyword">new</span> DefensiveBehaviour());
+        r2.setBehaviour(<span class="hljs-keyword">new</span> AgressiveBehaviour());
+
+        r1.move();
+        r2.move();
+        r3.move();
+    }
+}
+</code></pre><h2 id="三.单一职责">三.单一职责 <a href="#三.单一职责">#</a></h2><p>这里的职责可以认为是为改变一个类的因子的。单一职责表示，如果我们有两个因子可能会改变一个类，那么我们需要将这个类分离成两个类。每个类分别对这两个因子负责。当其中一个因子发生变化，需要去修改类时，只需要修改其中一个类，而不会影响另一个类，这个过程叫做职责分离。</p><h3 id="目的">目的 <a href="#目的">#</a></h3><p>一个类仅有一个需要改变的因子。</p><h3 id="案例">案例 <a href="#案例">#</a></h3><p>假设有如下发送邮件的程序：</p><pre><code class="hljs language-C#"><span class="hljs-comment">// single responsibility principle - bad example</span>
+<span class="hljs-keyword">interface</span> <span class="hljs-title">IEmail</span> {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setSender</span>(<span class="hljs-params">String sender</span>)</span>;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setReceiver</span>(<span class="hljs-params">String receiver</span>)</span>;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setContent</span>(<span class="hljs-params">String content</span>)</span>;
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">Email</span> <span class="hljs-title">implements</span> <span class="hljs-title">IEmail</span> {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setSender</span>(<span class="hljs-params">String sender</span>)</span> {<span class="hljs-comment">// set sender; }</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setReceiver</span>(<span class="hljs-params">String receiver</span>)</span> {<span class="hljs-comment">// set receiver; }</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setContent</span>(<span class="hljs-params">String content</span>)</span> {<span class="hljs-comment">// set content; }</span>
+}
+</code></pre><p><code>Email</code>类其实包含了两个职责，一个是处理邮件协议（sender和receiver），另一个是需要处理内容（content）。现在这个内容是字符串形式，假如以后要支持html格式或者markdown格式，那么修改setContent可能会影响到其他部分。所以最好的方式是将职责单一化，再创建一个类用于处理content。</p><pre><code class="hljs language-C#"><span class="hljs-comment">// single responsibility principle - good example</span>
+<span class="hljs-keyword">interface</span> <span class="hljs-title">IEmail</span> {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setSender</span>(<span class="hljs-params">String sender</span>)</span>;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setReceiver</span>(<span class="hljs-params">String receiver</span>)</span>;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setContent</span>(<span class="hljs-params">IContent content</span>)</span>;
+}
+
+<span class="hljs-keyword">interface</span> <span class="hljs-title">Content</span> {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getAsString</span>()</span>; <span class="hljs-comment">// used for serialization</span>
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">Email</span> <span class="hljs-title">implements</span> <span class="hljs-title">IEmail</span> {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setSender</span>(<span class="hljs-params">String sender</span>)</span> {<span class="hljs-comment">// set sender; }</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setReceiver</span>(<span class="hljs-params">String receiver</span>)</span> {<span class="hljs-comment">// set receiver; }</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setContent</span>(<span class="hljs-params">IContent content</span>)</span> {<span class="hljs-comment">// set content; }</span>
+}
+</code></pre><p>一般我们写软件时，习惯将界面操作部分和逻辑部分的代码分离，这也是遵守职责单一原则的例子。将职责分离，更有利于代码的维护，增加代码的复用性。</p><p>如果一个类承担的职责过多，就等于把这些职责耦合在一起，一个职责的变化可能会削弱或抑制这个类完成其他职责的能力。这种耦合会导致脆弱的设计，当变化发生时，设计会遭受意想不到的破坏。</p><h2 id="四.开闭原则">四.开闭原则 <a href="#四.开闭原则">#</a></h2><p>开闭原则（Open Close Principle）：<strong>对扩展是开放的，对修改是封闭的</strong>。软件设计或者写代码必须遵循这一原则，新功能的添加必须最小化的影响旧代码，允许我们使用添加类的方式添加新功能，保持旧代码不变。因为旧代码都是已经测试过的代码，如果修改可能会产生新的错误。</p><h3 id="目的">目的 <a href="#目的">#</a></h3><p>类、模块和函数都应该遵守对扩展是开放的，对修改是封闭的这一原则。</p><h3 id="案例">案例 <a href="#案例">#</a></h3><p>首先看一个错误的例子：</p><pre><code class="hljs language-C#"><span class="hljs-comment">// Open-Close Principle - Bad example</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title">GraphicEditor</span> {
+ 
+     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">drawShape</span>(<span class="hljs-params">Shape s</span>)</span> {
+         <span class="hljs-keyword">if</span> (s.m_type==<span class="hljs-number">1</span>)
+             drawRectangle(s);
+         <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (s.m_type==<span class="hljs-number">2</span>)
+             drawCircle(s);
+     }
+     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">drawCircle</span>(<span class="hljs-params">Circle r</span>)</span> {....}
+     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">drawRectangle</span>(<span class="hljs-params">Rectangle r</span>)</span> {....}
+}
+ 
+<span class="hljs-keyword">class</span> <span class="hljs-title">Shape</span> {
+     <span class="hljs-built_in">int</span> m_type;
+}
+ 
+<span class="hljs-keyword">class</span> <span class="hljs-title">Rectangle</span> <span class="hljs-title">extends</span> <span class="hljs-title">Shape</span> {
+     Rectangle() {
+         super.m_type=<span class="hljs-number">1</span>;
+     }
+}
+ 
+<span class="hljs-keyword">class</span> <span class="hljs-title">Circle</span> <span class="hljs-title">extends</span> <span class="hljs-title">Shape</span> {
+     Circle() {
+         super.m_type=<span class="hljs-number">2</span>;
+     }
+} 
+</code></pre><p>上例中由如下几个缺点：</p><ul><li>每次添加一个新的<code>Shape</code>，<code>GraphicEditor</code>的单元测试必须重新执行</li><li>当一个新的<code>Shape</code>添加，写代码的人必须要理解GraphicEditor的代码逻辑，因为他需要修改<code>drawShape</code>函数。</li><li>添加一个新的<code>Shape</code>可能会影响已经存在的功能。</li></ul><p>将上面的例子修改如下，遵守开闭原则：</p><pre><code class="hljs language-C#"><span class="hljs-comment">// Open-Close Principle - Good example</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title">GraphicEditor</span> {
+     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">drawShape</span>(<span class="hljs-params">Shape s</span>)</span> {
+         s.draw();
+     }
+}
+ 
+<span class="hljs-keyword">class</span> <span class="hljs-title">Shape</span> {
+     <span class="hljs-function"><span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title">draw</span>()</span>;
+}
+ 
+<span class="hljs-keyword">class</span> <span class="hljs-title">Rectangle</span> <span class="hljs-title">extends</span> <span class="hljs-title">Shape</span>  {
+     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">draw</span>()</span> {
+         <span class="hljs-comment">// draw the rectangle</span>
+     }
+}
+</code></pre><p>每次添加新的<code>Shape</code>，只需要增加一个类，继承Shape类，完成draw函数即可。</p><h2 id="五.依赖倒转原则">五.依赖倒转原则 <a href="#五.依赖倒转原则">#</a></h2><p>抽象不应该依赖细节，细节应该依赖于抽象。即，针对接口编程，不要对实现编程。</p><ul><li>高层模块不应该依赖底层模块。两个都应该依赖抽象。</li><li>抽象不应该依赖细节，细节应该依赖抽象。</li></ul><h3 id="目的">目的 <a href="#目的">#</a></h3><p>大部分程序员在写代码时，为了使代码得以复用，一般都会把这些代码写成许许多多函数的程序，这样在做新项目时，去调用这些底层的函数就可以了。比如很多项目需要访问数据库，所以就把访问数据库的代码写成了函数，每次做新项目时就去调用这些函数，这就叫高层模块依赖低层模块。但是当要做新项目时，法线业务逻辑的高层模块都是一样的，但是客户希望使用不同的数据库或存储信息方式，这时麻烦来了，我们希望复用这些高层模块，但高层模块都是与低层的访问数据库绑定在一起的，没办法复用这些高层模块，这就非常糟糕了。所以<strong>应该针对接口编程，不要对实现编程, 高层模块和低层模块都应该依赖抽象。</strong></p><p>所以，我们需要在高层模块和低层模块之间添加一个抽象层。</p><pre><code>High Level Classes --&gt; Abstraction Layer --&gt; Low Level Classes
+</code></pre><h3 id="案例">案例 <a href="#案例">#</a></h3><p>首先，分析下面的错误代码示范。它违背了依赖倒转原则。有一个<code>Manager</code>类（高层类）和一个<code>Worker</code>类（低层类），可以看到<code>Manager</code>此时是依赖于<code>Worker</code>类的。假设我们需要添加一个新模块，叫SuperWorker。这时我们不得不去更改<code>Manager</code>的代码，如果<code>Manager</code>代码特别复杂，那这个工作量就很大了，而且很容易出错。</p><p>所以这段代码，有如下几个缺点：</p><ul><li>我们必须去更改Manager类（假设Manager类的逻辑很复杂，这是一个很花时间的工作）。</li><li>Manager已有的功能可能会受到影响。</li><li>更改完成后，Manager类的单元测试需要重新来一遍。</li></ul><pre><code class="hljs language-c#"><span class="hljs-comment">// Dependency Inversion Principle - Bad example</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title">Worker</span> {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">work</span>()</span> {
+        <span class="hljs-comment">// ....working</span>
+    }
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">Manager</span> {
+    Worker worker;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setWorker</span>(<span class="hljs-params">Worker w</span>)</span> {
+        worker = w;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">manage</span>()</span> {
+        worker.work();
+    }
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">SuperWorker</span> {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">work</span>()</span> {
+        <span class="hljs-comment">//.... working much more</span>
+    }
+}
+</code></pre><p>下面是优化后的代码。我们添加了一个IWorker接口，解决了上面存在的问题。</p><ul><li>添加SuperWorkers时，Manager类无需做出更改。</li><li>因为Manager类没有更改，已有的功能不会受到影响。</li><li>Manager类的测试工作，不必重新去做。</li></ul><pre><code class="hljs language-c#"><span class="hljs-comment">// Dependency Inversion Principle - Good example</span>
+<span class="hljs-keyword">interface</span> <span class="hljs-title">IWorker</span> {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">work</span>()</span>;
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">Worker</span> <span class="hljs-title">implements</span> <span class="hljs-title">IWorker</span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">work</span>()</span> {
+        <span class="hljs-comment">// ....working</span>
+    }
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">SuperWorker</span>  <span class="hljs-title">implements</span> <span class="hljs-title">IWorker</span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">work</span>()</span> {
+        <span class="hljs-comment">//.... working much more</span>
+    }
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">Manager</span> {
+    IWorker worker;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setWorker</span>(<span class="hljs-params">IWorker w</span>)</span> {
+        worker = w;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">manage</span>()</span> {
+        worker.work();
+    }
+}
+</code></pre><h2 id="六.装饰模式（Decorator Pattern）">六.装饰模式（Decorator Pattern） <a href="#六.装饰模式（Decorator Pattern）">#</a></h2><h3 id="动机">动机 <a href="#动机">#</a></h3><p>通常我们可以通过继承的方式，扩展一个类的功能。但是有时候我们需要动态的扩展一个类的功能形成一个新的object。</p><p>想像一个比较经典的图形窗口的例子。为了向图形窗口添加一个特定的边框，需要继承<code>Window</code>类，创建一个<code>FrameWindow</code>类，为了创建一个有边框的窗口，我们需要使用<code>FrameWindow</code>创建一个新的object。然而通过这种方式，我们无法扩展一个普通的图形窗口，从而得到一个有特定边框的窗口。</p><h3 id="目的">目的 <a href="#目的">#</a></h3><p>此模式的目的是动态地向对象添加额外的职责。</p><h3 id="实现">实现 <a href="#实现">#</a></h3><p><img src="https://www.oodesign.com/images/design_patterns/structural/decorator-design-pattern-implementation-uml-class-diagram.png" alt="装饰模式（decorator pattern）"></p><ul><li>Component： 一个接口，可以向实现该接口的类对象，动态的添加职责（功能）。</li><li>ConcreteComponent：定义可以向其添加额外职责的对象。</li><li>Decorator：保留一个Component对象的引用，并定义Component的接口。</li><li>Concrete Decorators: 具体的装饰类，通过添加状态和行为扩展Component Object的功能（职责）。</li></ul><h3 id="描述">描述 <a href="#描述">#</a></h3><p>当需要动态地向类添加和删除责任，以及由于可能产生大量子类而无法进行子类化时，可以使用装饰器模式。</p><h3 id="案例">案例 <a href="#案例">#</a></h3><p>用Java语言，利用装饰模式实现一个图形窗口程序，给窗口动态的添加scroll。 <img src="https://www.oodesign.com/images/design_patterns/structural/decorator-design-pattern-example-uml-class-diagram.png" alt="装饰模式（Decorator Pattern）"> 下面的代码实现了一个简单的Window接口：</p><pre><code class="hljs language-java"><span class="hljs-keyword">package</span> decorator;
+
+<span class="hljs-comment">/**
+ * Window Interface 
+ * 
+ * Component window
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Window</span> {
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">renderWindow</span><span class="hljs-params">()</span>;
+    
+}
+</code></pre><p>创建 一个具体的window实现类：</p><pre><code class="hljs language-java"><span class="hljs-keyword">package</span> decorator;
+
+<span class="hljs-comment">/**
+ * Window implementation 
+ * 
+ * Concrete implementation
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SimpleWindow</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Window</span> {
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">renderWindow</span><span class="hljs-params">()</span> {
+        <span class="hljs-comment">// implementation of rendering details</span>
+
+    }
+}
+</code></pre><p>接下来创建<code>DecorateWindow</code>类，表示一个window的装饰类。值得注意的是类里面有一个<code>privateWindowReference</code>成员，表示需要装饰（增加功能）的窗口。</p><pre><code class="hljs language-java"><span class="hljs-keyword">package</span> decorator;
+
+<span class="hljs-comment">/**
+ *
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DecoratedWindow</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Window</span>{
+
+    <span class="hljs-comment">/**
+     * private reference to the window being decorated 
+     */</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-type">Window</span> <span class="hljs-variable">privateWindowRefernce</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;
+    
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">DecoratedWindow</span><span class="hljs-params">( Window windowRefernce)</span> {
+    
+        <span class="hljs-built_in">this</span>.privateWindowRefernce = windowRefernce;
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">renderWindow</span><span class="hljs-params">()</span> {
+
+        privateWindowRefernce.renderWindow();
+        
+    }
+}
+</code></pre><p>继承<code>DecoratedWindow</code>，实现一个为窗口添加滚动功能的装饰窗口子类：</p><pre><code class="hljs language-java"><span class="hljs-keyword">package</span> decorator;
+
+<span class="hljs-comment">/**
+ * Concrete Decorator with extended state 
+ * 
+ * Scrollable window creates a window that is scrollable
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ScrollableWindow</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">DecoratedWindow</span>{
+    <span class="hljs-comment">/**
+     * Additional State 
+     */</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-type">Object</span> <span class="hljs-variable">scrollBarObjectRepresentation</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;
+    
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">ScrollableWindow</span><span class="hljs-params">(Window windowRefernce)</span> {
+        <span class="hljs-built_in">super</span>(windowRefernce);
+    }
+    
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">renderWindow</span><span class="hljs-params">()</span> {
+    
+        <span class="hljs-comment">// render scroll bar </span>
+        renderScrollBarObject();
+        
+        <span class="hljs-comment">// render decorated window</span>
+        <span class="hljs-built_in">super</span>.renderWindow();
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">renderScrollBarObject</span><span class="hljs-params">()</span> {
+
+        <span class="hljs-comment">// prepare scroll bar </span>
+        scrollBarObjectRepresentation = <span class="hljs-keyword">new</span>  <span class="hljs-title class_">Object</span>();
+        
+        <span class="hljs-comment">// render scrollbar </span>
+        
+    }	
+}
+</code></pre><p>最后，客户端程序创建一个可滚动的窗口：</p><pre><code class="hljs language-java"><span class="hljs-keyword">package</span> decorator;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">GUIDriver</span> {
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> {
+        <span class="hljs-comment">// create a new window </span>
+        <span class="hljs-type">Window</span> <span class="hljs-variable">window</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConcreteWindow</span>();
+        window.renderWindow();
+        
+        <span class="hljs-comment">// at some point later </span>
+        <span class="hljs-comment">// maybe text size becomes larger than the window </span>
+        <span class="hljs-comment">// thus the scrolling behavior must be added </span>
+        <span class="hljs-comment">// decorate old window </span>
+        window = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ScrollableWindow</span>(window);
+        
+        <span class="hljs-comment">//  now window object </span>
+        <span class="hljs-comment">// has additional behavior / state </span>
+        window.renderWindow();
+    }
+}
+</code></pre><h3 id="总结">总结 <a href="#总结">#</a></h3><p>问：装饰功能有什么用？</p><p>答：装饰模式可以在程序运行时，动态的给被装饰的类对象添加其他功能（通常为装饰性功能，非核心功能）。</p><p>问：什么时候应该用装饰模式？</p><p>答：当一个类需要新的功能的时候，你可以向旧类添加新的代码，或者继承旧类创建一个新的类。第一种方式需要更改旧代码，很可能影响原有的核心功能，显然这不符合我们的预期。第二种方式是一种静态的，无法达到动态增加原有类对象功能的效果，就像上面的例子，我们需要动态的增加<code>ConcreteWindow</code>对象的功能，显然第二种方式也无法满足我们的需求。这时就需要使用装饰者模式了。</p><p>问：装饰者模式有什么有点？</p><p>答：装饰模式可以将类中的装饰性功能从类中移除，从而在运行时动态的添加，这样做有效的把核心职责和装饰功能区分开了，而且可以去除相关类中的重复逻辑。装饰模式还有一个重要的优点，就是当有很多个装饰类时，你可以自由的组合这些装饰类的顺序，还是以上面的图形窗口为例，我们有一个<code>ScrollableWindow</code>装饰类，可以使window具有滚动功能，还可以增加<code>ToolbarWindow</code>装饰类，使window具有工具栏，<code>ScrollableWindow</code>和<code>ToolbarWindow</code>的装饰顺序是任意的，你可以自由安排。</p><pre><code class="hljs language-java"><span class="hljs-type">Window</span> <span class="hljs-variable">window</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConcreteWindow</span>();
+window.renderWindow();
+window = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ScrollableWindow</span>(window);
+window.renderWindow();
+
+window = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ToolbarWindow</span>(window);
+window.renderWindow();
+</code></pre><h2 id="七.代理模式">七.代理模式 <a href="#七.代理模式">#</a></h2><h3 id="动机">动机 <a href="#动机">#</a></h3><p>某些时候我们需要可以控制对象访问的能力。例如，如果我们只需要使用一个复杂对象（该对象内部比较复杂，方法很多，成员很多）的几个方法，我们不需要直接实例化这个对象，可以使用一些轻量级的对象作为代理，代替复杂对象，通过这些轻量级对象访问我们需要的方法。这些轻量级的对象就是<strong>代理（proxy）</strong>。</p><p>需要使用代理的场景有很多：控制何时需要实例化和初始化开销较大的对象。可以使用多个代理访问复杂对象的不同成员，来控制复杂对象的访问权限。代理还提供了一种访问运行在其他程序或进程中甚至是其他机器上的对象的方法。</p><p>以图像查看程序，思考下。 一个图像查看程序必须能够列出和显示文件夹中的高分辨率照片对象，但人们多久打开文件夹并查看里面的所有图像。 有时您将寻找一个特定的照片，有时您只希望看到一个图像名称。图像查看器必须能够列出所有的照片对象，但是照片对象只有在需要渲染时才能加载到内存中。</p><h3 id="目的">目的 <a href="#目的">#</a></h3><p>此模式的目的是为对象提供一个占位符（代理），以控制对该对象的引用。</p><h3 id="实现">实现 <a href="#实现">#</a></h3><p><img src="https://www.oodesign.com/images/design_patterns/structural/proxy-design-pattern-implementation-uml-class-diagram.png" alt="uml of proxy pattern"></p><ul><li><code>Subject</code>：<code>RealSubject</code>和它的代理需要实现的接口。</li><li><code>Proxy</code>：<code>RealSubject</code>的代理，内部保留了<code>RealSubject</code>的引用。可以在任何可以使用<code>RealSubject</code>的地方，作为<code>RealSubject</code>的替代对象。控制<code>RealSubject</code>的访问，并且可以控制<code>RealSubject</code>的创建和删除。</li><li><code>RealSubject</code>：<code>Proxy</code>代理的真实Object。</li></ul><h3 id="类型">类型 <a href="#类型">#</a></h3><p>代理可以分为如下几种类型：</p><ul><li>虚拟代理（Virtual Proxies）：用于延迟复杂对象（实例化耗费比较大的对象）的创建和初始化，直到真的需要使用该对象的方法时才去创建该对象。例如当打开一个很大的HTML网页时，里面可能有很多文字和图片，但是还是可以很快打开它，此时你能看到的所有的文字，但是图片却是一张一张的下载后才能看到，那些未打开的图片框，就是通过虚拟代理来替代了真实的图片，此时代理存储了真实图片的路径和尺寸。</li><li>远程代理（Remote Proxies）：为远程对象（运行在其他进程、机器上的对象）提供一个本地代理，可以通过本地代理访问远程对象。典型的例子有.Net中的WebService应用。</li><li>安全代理（Protection Proxies）：为安全对象提供不同的代理控制安全对象的访问权限。</li><li>智能引用（Smart References）：当调用真实对象时，代理处理另外一些事。例如计算真实对象的引用次数，可以在代理对象中设置一个引用计数，当引用计数达到某个值时，禁制访问真实对象。</li></ul><h3 id="案例">案例 <a href="#案例">#</a></h3><p>一个虚拟代理的例子。</p><p>需要构建一个图片查看器程序，该程序需要列出所有图片并且展示高分辨率图片。再打开该程序时，需要立刻看到所有图片列表，但是并不需要立刻展示高分辨率图片，仅在需要绘制高分辨率图片时才会加载高分辨率图片，例如当用户点击某个图片查看，此时需要真正的渲染高分辨率图片。</p><p><img src="https://www.oodesign.com/images/design_patterns/structural/proxy-design-pattern-image-example-uml-class-diagram.png" alt="proxy pattern例子"></p><p><code>Image</code>接口，表示Subject，接口有一个<code>ShowImage</code>方法。</p><pre><code class="hljs language-java"><span class="hljs-keyword">package</span> proxy;
+
+<span class="hljs-comment">/**
+ * Subject Interface
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Image</span> {
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">showImage</span><span class="hljs-params">()</span>;
+}
+</code></pre><p>虚拟代理类，该类只有在<code>showImage</code>方法被调用时，才会实例化高分辨率图片，这样节省了加载图片的消耗。</p><pre><code class="hljs language-java"><span class="hljs-keyword">package</span> proxy;
+
+<span class="hljs-comment">/**
+ * Proxy
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ImageProxy</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Image</span> {
+
+    <span class="hljs-comment">/**
+     * Private Proxy data 
+     */</span>
+    <span class="hljs-keyword">private</span> String imageFilePath;
+    
+    <span class="hljs-comment">/**
+     * Reference to RealSubject
+     */</span>
+    <span class="hljs-keyword">private</span> Image proxifiedImage;
+    
+    
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">ImageProxy</span><span class="hljs-params">(String imageFilePath)</span> {
+        <span class="hljs-built_in">this</span>.imageFilePath= imageFilePath;	
+    }
+    
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">showImage</span><span class="hljs-params">()</span> {
+
+        <span class="hljs-comment">// create the Image Object only when the image is required to be shown</span>
+        proxifiedImage = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HighResolutionImage</span>(imageFilePath);
+        
+        <span class="hljs-comment">// now call showImage on realSubject</span>
+        proxifiedImage.showImage();
+    }
+}
+</code></pre><p>高分辨率图片RealSubject的实现：</p><pre><code class="hljs language-java"><span class="hljs-keyword">package</span> proxy;
+
+<span class="hljs-comment">/**
+ * RealSubject
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HighResolutionImage</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Image</span> {
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">HighResolutionImage</span><span class="hljs-params">(String imageFilePath)</span> {
+        
+        loadImage(imageFilePath);
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">loadImage</span><span class="hljs-params">(String imageFilePath)</span> {
+        <span class="hljs-comment">// load Image from disk into memory</span>
+        <span class="hljs-comment">// this is heavy and costly operation</span>
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">showImage</span><span class="hljs-params">()</span> {
+
+        <span class="hljs-comment">// Actual Image rendering logic</span>
+    }
+
+}
+</code></pre><p>客户端代码，<code>ImageViewer</code>。</p><pre><code class="hljs language-java"><span class="hljs-keyword">package</span> proxy;
+
+<span class="hljs-comment">/**
+ * Image Viewer program
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ImageViewer</span> {
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> {
+        <span class="hljs-comment">// assuming that the user selects a folder that has 3 images	</span>
+        <span class="hljs-comment">//create the 3 images 	</span>
+        <span class="hljs-type">Image</span> <span class="hljs-variable">highResolutionImage1</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImageProxy</span>(<span class="hljs-string">"sample/veryHighResPhoto1.jpeg"</span>);
+        <span class="hljs-type">Image</span> <span class="hljs-variable">highResolutionImage2</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImageProxy</span>(<span class="hljs-string">"sample/veryHighResPhoto2.jpeg"</span>);
+        <span class="hljs-type">Image</span> <span class="hljs-variable">highResolutionImage3</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImageProxy</span>(<span class="hljs-string">"sample/veryHighResPhoto3.jpeg"</span>);
+        
+        <span class="hljs-comment">// assume that the user clicks on Image one item in a list</span>
+        <span class="hljs-comment">// this would cause the program to call showImage() for that image only</span>
+        <span class="hljs-comment">// note that in this case only image one was loaded into memory</span>
+        highResolutionImage1.showImage();
+        
+        <span class="hljs-comment">// consider using the high resolution image object directly</span>
+        <span class="hljs-type">Image</span> <span class="hljs-variable">highResolutionImageNoProxy1</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">HighResolutionImage</span>(<span class="hljs-string">"sample/veryHighResPhoto1.jpeg"</span>);
+        <span class="hljs-type">Image</span> <span class="hljs-variable">highResolutionImageNoProxy2</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">HighResolutionImage</span>(<span class="hljs-string">"sample/veryHighResPhoto2.jpeg"</span>);
+        <span class="hljs-type">Image</span> <span class="hljs-variable">highResolutionImageBoProxy3</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">HighResolutionImage</span>(<span class="hljs-string">"sample/veryHighResPhoto3.jpeg"</span>);
+        
+        
+        <span class="hljs-comment">// assume that the user selects image two item from images list</span>
+        highResolutionImageNoProxy2.showImage();
+        
+        <span class="hljs-comment">// note that in this case all images have been loaded into memory </span>
+        <span class="hljs-comment">// and not all have been actually displayed</span>
+        <span class="hljs-comment">// this is a waste of memory resources</span>
+    }
+}
+</code></pre><h2 id="八.工厂方法模式">八.工厂方法模式 <a href="#八.工厂方法模式">#</a></h2><h3 id="动机">动机 <a href="#动机">#</a></h3><p><strong>工厂方法模式（Factory Method）</strong>，定义了一个创建object的接口，但是将创建什么样的object的权利丢给了子类。举个形象的例子，以旅馆为例，当你进入旅馆，前台会给你一把钥匙，这个钥匙就类似一个工厂接口，可以用来创建一个房间（object），但是你不知道房间是什么样的，你或许需要让某个服务员（具体的工厂子类）带你去具体的房间，这大概就是工厂方法的具体过程。</p><h3 id="目的">目的 <a href="#目的">#</a></h3><ul><li>定义了一个创建（生产）objects的接口，将具体实现、具体创建什么样的object的过程给予子类实现。</li><li>通过一个通用的类型接口，获得新创建的object。</li></ul><h3 id="实现">实现 <a href="#实现">#</a></h3><p>uml图如下：</p><p><img src="https://www.oodesign.com/images/stories/factory%20method%20implementation%20-%20uml%20class%20diagram.gif" alt="工厂方法模式（Factory Method）"></p><p>说明：</p><ul><li><code>Product</code>: 定义了工厂将要创建的产品（objects）的类的接口。</li><li><code>ConcreteProduct</code>: 实现<code>Product</code>接口，具体的产品。</li><li><code>Creator</code>: 工厂接口，定义了生产产品的FactoryMethod，所有子工厂类必须实现该方法。</li><li><code>ConcreteCreator</code>: 实现了<code>Creator</code>接口，用于生产具体的产品。</li></ul><p>工厂方法模式的模板实现如下：</p><pre><code class="hljs language-C#"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">Product</span> {  }
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Creator</span> 
+{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">anOperation</span>()</span> 
+    {
+        Product product = factoryMethod();
+    }
+    
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> Product <span class="hljs-title">factoryMethod</span>()</span>;
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteProduct</span> <span class="hljs-title">implements</span> <span class="hljs-title">Product</span> {  }
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteCreator</span> <span class="hljs-title">extends</span> <span class="hljs-title">Creator</span> 
+{
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> Product <span class="hljs-title">factoryMethod</span>()</span> 
+    {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ConcreteProduct();
+    }
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Client</span> 
+{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span>(<span class="hljs-params"> String arg[] </span>)</span> 
+    {
+        Creator creator = <span class="hljs-keyword">new</span> ConcreteCreator();
+        creator.anOperation();
+    }
+}
+</code></pre><h3 id="案例">案例 <a href="#案例">#</a></h3><p>以一个文件应用为例。假设你需要设计一个应用，需要生成不同格式的文档，例如普通文本格式的文档、图形格式文档等。此时可以设计两个基础类（或者接口）：<code>DocCreator</code>和<code>Document</code>。<code>DocCreator</code>定义了一系列的操作，例如<code>createDocument</code>，如果要添加一个图形格式文档，需要继承<code>Document</code>创建一个<code>PaintDocument</code>类，还需要创建一个具体的document creator类：<code>PaintDocCreator</code>，<code>PaintDocCreator</code>继承自<code>DocCreator</code>。</p><p>上例中，各种类在工厂方法模式里的角色如下：</p><ul><li><code>DocCreator</code>：工厂方法模式里的Creator（Factory）。</li><li><code>PaintDocCreator</code>：工厂方法模式里的ConcreteCreator，负责实例化具体的产品。</li><li><code>Document</code>：工厂方法模式里的Product。</li><li><code>PaintDocument</code>：工厂方法模式里的ConcreteProduct。</li></ul><h3 id="思考">思考 <a href="#思考">#</a></h3><p>工厂方法模式使简单工厂模式的进一步抽象和推广。由于使用了多态性，工厂方法模式保持了简单工厂模式的优点，而克服了它的缺点。但缺点是每添加一个产品，就需要加一个产品工厂的类，增加了额外的开发量。</p><h2 id="九.适配器模式">九.适配器模式 <a href="#九.适配器模式">#</a></h2><h3 id="动机">动机 <a href="#动机">#</a></h3><p>举个例子来说明适配器模式（adapter design pattern），大概10年左右我买了个电子阅读器，电子阅读器存储比较小，所以它支持外插存储卡扩充空间，它支持的存储卡比一般手机的存储卡尺寸要大那么一点，所以我有一张手机存储卡，但是没法使用，所以我花了2块钱在商店买了一个卡套，将卡套套在手机存储卡上，然后插入电子阅读器中，完美解决了存储空间不够的问题。这里的卡套其实就是适配器。</p><p>联想到编程，当你遇到这么一个场景，你希望有一个特定类型的Object，但是你只能获取到一个object，它提供了同样的功能，完全满足你现在需要的功能，仅仅因为它实现的接口不同，导致你无法直接使用这个object。此时你就想使用这个object，不愿意去新写一个类，所以此时应该用适配器模式。</p><h3 id="实现">实现 <a href="#实现">#</a></h3><p>uml图如下：</p><p><img src="https://www.oodesign.com/images/structural/adapter-pattern.png" alt="适配器模式（adapter design pattern）"></p><ul><li><code>Target</code>：定义了<code>Client</code>需要使用的主要接口。</li><li><code>Adapter</code>：将<code>Adaptee</code>适配成<code>Target</code>接口。</li><li><code>Adaptee</code>：定义了将要被适配的对象接口。</li><li><code>Client</code>：使用<code>Target</code>的客户类。</li></ul><p><code>Adapter</code>的作用本质上就是<code>Client</code>与<code>Adaptee</code>之间的一座桥梁。</p><h2 id="十.模板方法">十.模板方法 <a href="#十.模板方法">#</a></h2><h3 id="动机">动机 <a href="#动机">#</a></h3><p>假设有一个动作，需要分成几个步骤完成，但是这些步骤之间的顺序又是固定的。例如解析一个Excel文件，分为read、parse、print三个步骤，可以定义一个<code>ParseExcel</code>类如下。</p><pre><code class="hljs language-C#"><span class="hljs-keyword">class</span> <span class="hljs-title">ParseExcel</span> {
+
+    ...
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">progress</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> path</span>)</span> {
+        read(path);
+        parse();
+        print();
+    }
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">read</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> path</span>)</span> {
+        <span class="hljs-comment">//</span>
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">parse</span>()</span> {
+        <span class="hljs-comment">// </span>
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">print</span>()</span> {
+        <span class="hljs-comment">//</span>
+    }
+}
+</code></pre><p>处理excel文件，你需要调用<code>ParseExcel.progress</code>方法。但是如果你有一个读取txt文件，你需要再创建一个<code>ParseTxt</code>类，如下。</p><pre><code class="hljs language-C#"><span class="hljs-keyword">class</span> <span class="hljs-title">ParseTxt</span> {
+
+    ...
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">progress</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> path</span>)</span> {
+        read(path);
+        parse();
+        print();
+    }
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">read</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> path</span>)</span> {
+        <span class="hljs-comment">//</span>
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">parse</span>()</span> {
+        <span class="hljs-comment">// </span>
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">print</span>()</span> {
+        <span class="hljs-comment">//</span>
+    }
+}
+</code></pre><p>然后调用<code>ParseTxt.progress</code>方法。按照模板方法模式（template method design pattern），我们需要创建一个基类实现算法步骤（<code>progress</code>方法），但是具体的实现步骤需要再子类中定义。模板方法模式让子类实现算法的每一个步骤，把算法的步骤结构交给父类控制。</p><h3 id="实现">实现 <a href="#实现">#</a></h3><p>uml图如下：</p><p><img src="https://www.oodesign.com/images/design_patterns/behavioral/template_method_implementation_-_uml_class_diagram.gif" alt="模板方法模式（template method pattern）"></p><p>还是以处理文件为例。</p><pre><code class="hljs language-C#"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ProgressFile</span>()</span> {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">progress</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> path</span>)</span> {
+        read(path);
+        parse();
+        print();
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title">read</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> path</span>)</span> {
+        <span class="hljs-comment">//</span>
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title">parse</span>()</span> {
+        <span class="hljs-comment">// </span>
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title">print</span>()</span> {
+        <span class="hljs-comment">//</span>
+    }
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">ParseExcel</span>: <span class="hljs-title">ProgressFile</span> {
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">read</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> path</span>)</span> {
+        <span class="hljs-comment">//</span>
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">parse</span>()</span> {
+        <span class="hljs-comment">// </span>
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">print</span>()</span> {
+        <span class="hljs-comment">//</span>
+    }
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">ParseTxt</span>: <span class="hljs-title">ProgressFile</span> {
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">read</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> path</span>)</span> {
+        <span class="hljs-comment">//</span>
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">parse</span>()</span> {
+        <span class="hljs-comment">// </span>
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">print</span>()</span> {
+        <span class="hljs-comment">//</span>
+    }
+}
+</code></pre><h2 id="十一.外观模式">十一.外观模式 <a href="#十一.外观模式">#</a></h2><h3 id="动机">动机 <a href="#动机">#</a></h3><p>外观模式（Facade Pattern）隐藏系统的复杂性，并向客户端提供了一个客户端可以访问系统的接口。这种类型的设计模式属于结构型模式，它向现有的系统添加一个接口，来隐藏系统的复杂性。</p><p>当遇到非常复杂的系统时（系统由很多类共同实现），客户端使用该系统非常困难，为了简化客户端的使用，可以增加一个外观类，外观类只提供客户端需要使用的接口，向客户端隐藏系统的复杂性。</p><h3 id="实现">实现 <a href="#实现">#</a></h3><p>实现一个绘图程序，可绘制圆形、方形和矩形。</p><pre><code class="hljs language-java"><span class="hljs-comment">// 子系统</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Shape</span> {
+   <span class="hljs-keyword">void</span> <span class="hljs-title function_">draw</span><span class="hljs-params">()</span>;
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Rectangle</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Shape</span> {
+ 
+   <span class="hljs-meta">@Override</span>
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">draw</span><span class="hljs-params">()</span> {
+      System.out.println(<span class="hljs-string">"Rectangle::draw()"</span>);
+   }
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Square</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Shape</span> {
+ 
+   <span class="hljs-meta">@Override</span>
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">draw</span><span class="hljs-params">()</span> {
+      System.out.println(<span class="hljs-string">"Square::draw()"</span>);
+   }
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Circle</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Shape</span> {
+ 
+   <span class="hljs-meta">@Override</span>
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">draw</span><span class="hljs-params">()</span> {
+      System.out.println(<span class="hljs-string">"Circle::draw()"</span>);
+   }
+}
+
+<span class="hljs-comment">// 高层次的外观类</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ShapeMaker</span> {
+   <span class="hljs-keyword">private</span> Shape circle;
+   <span class="hljs-keyword">private</span> Shape rectangle;
+   <span class="hljs-keyword">private</span> Shape square;
+ 
+   <span class="hljs-keyword">public</span> <span class="hljs-title function_">ShapeMaker</span><span class="hljs-params">()</span> {
+      circle = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Circle</span>();
+      rectangle = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Rectangle</span>();
+      square = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Square</span>();
+   }
+ 
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">drawCircle</span><span class="hljs-params">()</span>{
+      circle.draw();
+   }
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">drawRectangle</span><span class="hljs-params">()</span>{
+      rectangle.draw();
+   }
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">drawSquare</span><span class="hljs-params">()</span>{
+      square.draw();
+   }
+}
+
+<span class="hljs-comment">// 客户端只需要使用外观类，无需关心子系统</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FacadePatternDemo</span> {
+   <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> {
+      <span class="hljs-type">ShapeMaker</span> <span class="hljs-variable">shapeMaker</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ShapeMaker</span>();
+ 
+      shapeMaker.drawCircle();
+      shapeMaker.drawRectangle();
+      shapeMaker.drawSquare();      
+   }
+}
+</code></pre><h2 id="十二.状态模式">十二.状态模式 <a href="#十二.状态模式">#</a></h2><p>状态模式（state design pattern），当Object的状态不同时，它的行为也不同，即行为由状态决定。例如当一个人很累时，你和他对话，他也许会简单的说“对不起，我很累”，当一个人喝醉了，他会说不清话“嗯。。啊。哈哈”，而当一个人状态正常时，既不困也没有喝酒，和他对话，他也许会跟你唠上一唠。</p><h3 id="实现">实现 <a href="#实现">#</a></h3><p>例如，要实现一个绘图程序，当笔（鼠标）的状态不同时，移动鼠标，点击鼠标，它的行为时不一样的。</p><pre><code class="hljs language-C#"><span class="hljs-keyword">public</span> <span class="hljs-keyword">partial</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Pen</span> {
+    <span class="hljs-keyword">private</span> State _state = <span class="hljs-keyword">new</span> Idle();
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">SetState</span>(<span class="hljs-params">State state</span>)</span> =&gt; _state = state;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span>  <span class="hljs-keyword">void</span> <span class="hljs-title">OnClick</span>(<span class="hljs-params">Pen pen</span>)</span> =&gt; _state.OnClick(<span class="hljs-keyword">this</span>);
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnClickFinish</span>(<span class="hljs-params">Pen pen</span>)</span> =&gt; _state.OnClickFinish(<span class="hljs-keyword">this</span>);
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnMove</span>(<span class="hljs-params">Pen pen</span>)</span> =&gt; _state.OnMove(<span class="hljs-keyword">this</span>);
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">partial</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Pen</span> {
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">State</span> {
+        <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">OnMove</span>(<span class="hljs-params">Pen pen</span>)</span>;
+        <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">OnClick</span>(<span class="hljs-params">Pen pen</span>)</span>;
+        <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">OnClickFinish</span>(<span class="hljs-params">Pen pen</span>)</span>;
+    }
+
+    <span class="hljs-comment">// 空闲状态</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Idle</span>: <span class="hljs-title">State</span>
+    {
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnClick</span>(<span class="hljs-params">Pen pen</span>)</span> {
+            pen.setState(<span class="hljs-keyword">new</span> Writing());
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnClickFinish</span>(<span class="hljs-params">Pen pen</span>)</span> {
+            <span class="hljs-comment">// do nothing</span>
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnMove</span>(<span class="hljs-params">Pen pen</span>)</span> {
+            <span class="hljs-comment">// do nothing</span>
+        }
+    }
+
+    <span class="hljs-comment">// 书写状态</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Writing</span>: <span class="hljs-title">State</span>
+    {
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnClick</span>(<span class="hljs-params">Pen pen</span>)</span> {
+            <span class="hljs-comment">// DRAW HARDER</span>
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnClickFinish</span>(<span class="hljs-params">Pen pen</span>)</span> {
+            pen.SetState(<span class="hljs-keyword">new</span> Idle());
+        }
+        
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnMove</span>(<span class="hljs-params">Pen pen</span>)</span> {
+            <span class="hljs-comment">// draw on canvas</span>
+        }
+    }
+}
+</code></pre><h2 id="十三.责任链模式">十三.责任链模式 <a href="#十三.责任链模式">#</a></h2><p>责任链模式（Chain of Responsibility Patttern）为请求创建了一个接收者对象的链。这种模式给予请求的类型，对请求的发送者和接收者进行解耦。这种类型的设计模式属于行为型模式。</p><p>这种模式中，通常每个接收者都包含对另一个接收者的引用。如果一个对象不能处理该请求，那么它会把相同的请求传给下一个接收者，以此类推。</p><h3 id="实现">实现 <a href="#实现">#</a></h3><p>以数据验证为例。我们需要验证一个人的信息，包括姓名、年龄、性别。</p><pre><code class="hljs language-C#"><span class="hljs-comment">// ---需要验证的数据类型：Person</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title">Person</span> {
+    <span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> Name {<span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>;}
+    <span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> Age {<span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>;}
+    <span class="hljs-keyword">public</span> <span class="hljs-built_in">float</span> Income {<span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>;}
+}
+
+<span class="hljs-comment">// ---责任链中的每个验证步骤</span>
+<span class="hljs-keyword">interface</span> <span class="hljs-title">IHandler</span> {
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">SetNextHandler</span>(<span class="hljs-params">IHandler handler</span>)</span>;
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Progress</span>(<span class="hljs-params">Request request</span>)</span>;
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">BaseHandler</span>: <span class="hljs-title">IHandler</span> {
+    <span class="hljs-keyword">protected</span> IHandler _nextHandler;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">BaseHandler</span>()</span> {
+        _nextHandler = <span class="hljs-literal">null</span>;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">SetNextHandler</span>(<span class="hljs-params">IHandler handler</span>)</span> {
+        _nextHandler = handler;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Process</span>(<span class="hljs-params">Request request</span>)</span> {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> NotImplementedException();
+    }
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">MaxAgeHandler</span>: <span class="hljs-title">BaseHandler</span> {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">override</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Process</span>(<span class="hljs-params">Request request</span>)</span> {
+        <span class="hljs-keyword">if</span> (request.Data <span class="hljs-keyword">is</span> Person person) {
+            <span class="hljs-keyword">if</span> (person.Age &gt; <span class="hljs-number">55</span>) request.ValidationMessages.Add(<span class="hljs-string">"Invalid Age"</span>);
+            <span class="hljs-keyword">if</span> (_nextHandler != <span class="hljs-literal">null</span>) _nextHandler.Process(request);
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">"Invalid message data."</span>);
+        }
+    }
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">MaxNameLengthHandler</span>: <span class="hljs-title">BaseHandler</span> {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">override</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Process</span> (<span class="hljs-params">Request request</span>)</span> {
+        <span class="hljs-keyword">if</span> (request.Data <span class="hljs-keyword">is</span> Person person) {
+            <span class="hljs-keyword">if</span> (person.Name.length &gt; <span class="hljs-number">10</span>) request.ValidationMessages.Add(<span class="hljs-string">"Invalid Name length"</span>);
+            <span class="hljs-keyword">if</span> (_nextHandler != <span class="hljs-literal">null</span>) _nextHandler.Process(request);
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">"Invalid message data."</span>);
+        }
+    }
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title">MaxIncomeHandler</span>: <span class="hljs-title">BaseHandler</span> {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">override</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Process</span> (<span class="hljs-params">Request request</span>)</span> {
+        <span class="hljs-keyword">if</span> (request.Data <span class="hljs-keyword">is</span> Person person) {
+            <span class="hljs-keyword">if</span> (person.Income &gt; <span class="hljs-number">1000</span>) request.ValidationMessages.Add(<span class="hljs-string">"Invalid Income"</span>);
+            <span class="hljs-keyword">if</span> (_nextHandler != <span class="hljs-literal">null</span>) _nextHandler.Process(request);
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">"Invalid message data."</span>);
+        }
+    }
+}
+
+<span class="hljs-comment">// ---请求</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title">Request</span> {
+    <span class="hljs-keyword">public</span> <span class="hljs-built_in">object</span> Data {<span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>;}
+    <span class="hljs-keyword">public</span> List&lt;<span class="hljs-built_in">string</span>&gt; ValidationMessages;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Request</span>()</span> {
+        ValidationMessages = <span class="hljs-keyword">new</span> List&lt;<span class="hljs-built_in">string</span>&gt;();
+    }
+}
+
+<span class="hljs-comment">// ---客户端代码</span>
+Person person = <span class="hljs-keyword">new</span> Person(){
+    Name = <span class="hljs-string">"John Doe"</span>;
+    Age = <span class="hljs-number">60</span>;
+    Income = <span class="hljs-number">1500f</span>;
+}
+
+<span class="hljs-comment">// 验证的请求，包含验证的数据</span>
+Request request = <span class="hljs-keyword">new</span> Request() {Data = person};
+
+<span class="hljs-comment">// 创建验证责任链的类</span>
+MaxAgeHandler maxAgeHandler = <span class="hljs-keyword">new</span> MaxAgeHandler();
+MaxNameLengthHandler maxNameLengthHandler = <span class="hljs-keyword">new</span> MaxNameLengthHandler();
+MaxIncomeHandler maxIncomeHandler = <span class="hljs-keyword">new</span> MaxIncomeHandler();
+
+<span class="hljs-comment">// 设置责任顺序，成链</span>
+maxAgeHandler.SetNextHandler(maxNameLengthHandler);
+maxNameLengthHandler.SetNextHandler(maxIncomeHandler);
+
+<span class="hljs-comment">// 开始验证</span>
+maxAgeHandler.process(request);
+
+<span class="hljs-comment">// 打印验证信息</span>
+<span class="hljs-keyword">foreach</span> (<span class="hljs-built_in">string</span> msg <span class="hljs-keyword">in</span> request.ValidataionMessages) {
+    Console.WriteLine(msg);
+}
+</code></pre><p>（未完待续）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/javascript/babel-tutorial">上一篇：Babel入门教程</a></span><span class="next-article"><a href="/site/auto-generate-catalog">下一篇：自动生成文章目录</a></span></div></div></body></html>

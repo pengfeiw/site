@@ -1,0 +1,45 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="利用栈的后进先出思想，从尾到头打印链表。"><link rel="stylesheet" href="/assests/code_github.css"><link rel="stylesheet" href="/assests/github_markdown.css"><link rel="stylesheet" href="/assests/article.css"><link rel="stylesheet" href="/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/rss.xml"><img src="/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年4月12日</span><span class="category"><a href="/algorithm-math">标签：algorithm</a></span></div><div class="markdown-body"><h1 id="从尾到头打印链表">从尾到头打印链表 <a href="#从尾到头打印链表">#</a></h1><p>单链表的方向是单向的，如果要获得某个结点，必须从头结点开始向尾部查询，直到找到该结点。所以如果题目是从头到尾打印链表，那么就很简单，只需要从头结点依次循环打印即可。</p><h3 id="一. 思路">一. 思路 <a href="#一. 思路">#</a></h3><p>我们可以利用栈的后进先出的特性，来解决这个题目。还是从头结点遍历，每到一个结点，将该结点的值存储到数组中，直至遍历完整个链表。最后我们得到了一个按顺序存储结点值得数组。我们只需要从尾部开始向头部遍历数组，即可打印出正确的结果，这就是典型的后进先出的应用。</p><h3 id="二. 解题">二. 解题 <a href="#二. 解题">#</a></h3><p>根据上面的思路，很容易的写出如下代码：</p><pre><code class="hljs language-typescript"><span class="hljs-comment">// 链表的结点类</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">ListNode</span> {
+    <span class="hljs-keyword">public</span> <span class="hljs-attr">value</span>: <span class="hljs-built_in">number</span> | <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">public</span> <span class="hljs-attr">next</span>: <span class="hljs-title class_">ListNode</span> | <span class="hljs-literal">null</span>;
+    <span class="hljs-title function_">constructor</span>(<span class="hljs-params">value, next</span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">value</span> = value;
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">next</span> = next;
+    }
+}
+<span class="hljs-comment">// 创建一个链表</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">createLinkList</span> = (<span class="hljs-params">values: <span class="hljs-built_in">number</span>[]</span>) =&gt; {
+    <span class="hljs-keyword">const</span> head = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ListNode</span>(<span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>);
+    <span class="hljs-keyword">let</span> preNode = head;
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; values.<span class="hljs-property">length</span>; i++) {
+        <span class="hljs-keyword">const</span> currentNode = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ListNode</span>(values[i], <span class="hljs-literal">null</span>);
+        preNode.<span class="hljs-property">next</span> = currentNode;
+        preNode = currentNode;
+    }
+    <span class="hljs-keyword">return</span> head;
+};
+<span class="hljs-comment">/**
+ * 利用栈的后进先出的特点，从尾到头打印链表
+ */</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">printLinkReverse</span> = (<span class="hljs-params">head: ListNode</span>) =&gt; {
+    <span class="hljs-keyword">const</span> <span class="hljs-attr">values</span>: <span class="hljs-built_in">number</span>[] = [];
+    <span class="hljs-keyword">let</span> curNode = head.<span class="hljs-property">next</span>;
+    <span class="hljs-keyword">while</span>(curNode) {
+        values.<span class="hljs-title function_">push</span>(curNode.<span class="hljs-property">value</span>);
+        curNode = curNode.<span class="hljs-property">next</span>;
+    }
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = values.<span class="hljs-property">length</span> - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) {
+        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(values[i]);
+    }
+};
+<span class="hljs-comment">// 测试</span>
+<span class="hljs-keyword">const</span> arr1 = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>];
+<span class="hljs-keyword">const</span> arr2 = [-<span class="hljs-number">1</span>, -<span class="hljs-number">3</span>, -<span class="hljs-number">10</span>, <span class="hljs-number">10</span>, -<span class="hljs-number">1</span>, <span class="hljs-number">3</span>];
+<span class="hljs-keyword">const</span> arr3 = [];
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(arr1);
+<span class="hljs-title function_">printLinkReverse</span>(<span class="hljs-title function_">createLinkList</span>(arr1));
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(arr2);
+<span class="hljs-title function_">printLinkReverse</span>(<span class="hljs-title function_">createLinkList</span>(arr2));
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(arr3);
+<span class="hljs-title function_">printLinkReverse</span>(<span class="hljs-title function_">createLinkList</span>(arr3));
+</code></pre><p>首先，我手动构建了链表结构，实际解决代码是<code>printLinkReverse</code>，最后我添加了测试代码。</p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/javascript/miracle-canvas">上一篇：（miracle-canvas）增强Html canvas的功能</a></span><span class="next-article"><a href="/csharp/custom-winform-treeview">下一篇：winform treeview树节点添加自定义按钮</a></span></div></div></body></html>

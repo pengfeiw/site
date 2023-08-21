@@ -1,0 +1,219 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="研究颜色与基础光照，介绍冯氏光照理论。在计算机中，如何利用冯氏光照理论模拟现实世界的颜色。"><link rel="stylesheet" href="/assests/code_github.css"><link rel="stylesheet" href="/assests/github_markdown.css"><link rel="stylesheet" href="/assests/article.css"><link rel="stylesheet" href="/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/rss.xml"><img src="/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年7月12日</span><span class="category"><a href="/computer-graphics">标签：ComputerGraphics</a></span></div><div class="markdown-body"><h1 id="颜色与冯氏光照模型">颜色与冯氏光照模型 <a href="#颜色与冯氏光照模型">#</a></h1><h2 id="一. 颜色">一. 颜色 <a href="#一. 颜色">#</a></h2><p><img src="https://pengfeiw.github.io/images/blog/81.png" alt="中国色"></p><p><i><a href="http://zhongguose.com/#cuilan">中国色</a></i></p><p>在<strong>WebGL</strong>中，颜色用RGBA表示，每个值的取值范围从0到1，对应我们常用的取值范围0到255。例如在着色器中，想输出一个黑色：</p><pre><code class="hljs language-C"><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {
+    FragColor = vec4(<span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>); <span class="hljs-comment">// rgba(0, 0, 0, 1)</span>
+}
+</code></pre><p>在真实世界中，我们肉眼看到的颜色，往往不是物体真正的颜色。真实世界中物体的反射的颜色一般会与环境有关，经过光线照射（太阳光，灯光），物体会反射与其本身颜色有一定差异的颜色，在白天和夜晚由于光线的强度不同，物体反射的颜色一般也不同。所以，了不起的前辈们用以下公式模拟计算出物体最终反射的颜色：</p><pre><code class="hljs language-c">FragColor = ObjectColor * LightColor; <span class="hljs-comment">// 将对应的rgba分量相乘，得到FragColor的rgba值</span>
+</code></pre><p><code>FragColor</code>表示最终颜色，<code>ObjectColor</code>表示物体本身的颜色，<code>LightColor</code>表示光线的颜色。这个公式用于计算一个物体在某种颜色的灯光下反射的颜色，不同的灯光颜色会产生不同的结果颜色。例如如果物体是黑色的，那么它会吸收所有颜色的光，最终反射出黑色：</p><pre><code class="hljs language-c">FragColor = vec4(<span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>) * LightColor; <span class="hljs-comment">// 因为rgb为0，所以FragColor的rgb为0，显示为黑色。</span>
+</code></pre><p>再比如一个红色的物体（rgba(1, 0, 0, 1)），在太阳光下（太阳光我们认为其rgba为(1, 1, 1, 1)）,显示为红色：</p><pre><code class="hljs language-c">FragColor = vec4(<span class="hljs-number">1.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>) * vec4(<span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>); <span class="hljs-comment">// FragColor = vec4(1.0, 0.0, 0.0, 1.0)</span>
+</code></pre><p><code>FragColor = ObjectColor * LightColor</code>在图形领域中，被称作<strong>颜色的反射定律</strong>。这种方式可能不能完全模拟真实世界的所有颜色，但是已经足够我们用来模拟一个非常真实的世界了。</p><h2 id="二.冯氏光照模型">二.冯氏光照模型 <a href="#二.冯氏光照模型">#</a></h2><p><img src="https://pengfeiw.github.io/images/blog/82.png" alt="冯氏光照模型"></p><p><i>图片来源于LearnOpenGL_CN</i></p><p><strong>冯氏光照模型</strong>是处理现实世界复杂光照的一种模型，冯氏光照模型的主要结构由3个分量组成：环境(Ambient)、漫反射(Diffuse)和镜面(Specular)光照。</p><ul><li>环境光照（Ambient Lighting）：现实世界一般都不是完全黑暗的，即使在夜晚，也会有一点光亮（月光，远处的光），所以物体总会显示一点颜色，所以冯氏光照会使用一个比较小的环境光照常量，永远为物体提供一些颜色。</li><li>漫反射光照（Diffuse Lighting）：模拟光线照射到物体表面的角度不同显示不同的颜色的现象，一般直射物体表面时，颜色越亮。</li><li>镜面光照（Specular Lighting）：模拟表面光滑的物体在反射光线时，偶尔会出现镜面高光的现象。</li></ul><p>利用<strong>冯氏光照模型</strong>，我们可以创建出非常有意思的场景了，接下来跟着我，来绘制一个光照下的立方体吧。</p><h3 id="环境光照（Ambient Lighting）">环境光照（Ambient Lighting） <a href="#环境光照（Ambient Lighting）">#</a></h3><p>为了实现环境光照，只需要设置一个环境光因子，用环境光因子乘以光照，然后再将结果乘以物体颜色得到最终的片段着色器输出颜色。片段着色器glsl如下：</p><pre><code class="hljs language-c">    <span class="hljs-meta">#version 300 es</span>
+    precision highp <span class="hljs-type">float</span>;
+
+    out vec4 FragColor;
+
+    uniform vec3 u_objColor; <span class="hljs-comment">// 物体颜色</span>
+    uniform vec3 u_lightColor; <span class="hljs-comment">// 光照颜色</span>
+    <span class="hljs-type">float</span> ambientStrength = <span class="hljs-number">0.1</span>; <span class="hljs-comment">// 环境光因子</span>
+
+    <span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {
+        vec3 ambient = ambientStrength * u_lightColor;
+        vec3 result = u_objColor * ambient;
+        FragColor = vec4(result, <span class="hljs-number">1.0</span>);
+    }
+</code></pre><p>我后续的代码都是使用的WebGL2，与WebGL有一点差异，但是差异不是很大，不会WebGL2的朋友不必担心。作为冯氏光照的第一阶段，环境光照是是很弱的，所以这里环境因子我设置为0.1，只给物体提供一丢丢颜色。</p><p>接下来绘制一个立方体。立方体顶点数据可以在<a href="https://github.com/pengfeiw/webgl2-demos/blob/master/src/data/cube.ts">这里</a>获得。接下来就是创建VAO（Vertext Array Data）、VBO（Vertex Array Buffer），给着色器传递数据了，这一过程比较简单我就不详细写下来了，可以参考源码：<a href="https://github.com/pengfeiw/webgl2-demos/blob/master/src/demos/theroyOfLight/phongLighting.ts">https://github.com/pengfeiw/webgl2-demos/blob/master/src/demos/theroyOfLight/phongLighting.ts</a>。</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">const</span> vertex_source =
+    <span class="hljs-string">`#version 300 es
+
+    in vec3  a_pos;
+
+    uniform mat4 projection;
+    uniform mat4 view;
+    uniform mat4 model;
+
+    void main() {
+        gl_Position = projection * view * model * vec4(a_pos, 1.0);
+    }
+`</span>;
+
+<span class="hljs-keyword">const</span> fragment_source =
+    <span class="hljs-string">`#version 300 es
+    precision highp float;
+
+    out vec4 FragColor;
+
+    uniform vec3 u_objColor; // 物体颜色
+    uniform vec3 u_lightColor; // 光照颜色
+    float ambientStrength = 0.1; // 环境光因子
+
+    void main() {
+        vec3 ambient = ambientStrength * u_lightColor;
+        vec3 result = u_objColor * ambient;
+        FragColor = vec4(result, 1.0);
+    }
+`</span>;
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">draw</span> = (<span class="hljs-params">gl: WebGL2RenderingContext</span>) =&gt; {
+    <span class="hljs-keyword">const</span> shader = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Shader</span>(gl, vertex_source, fragment_source);
+
+    <span class="hljs-comment">// vao</span>
+    <span class="hljs-keyword">const</span> vao = gl.<span class="hljs-title function_">createVertexArray</span>();
+    gl.<span class="hljs-title function_">bindVertexArray</span>(vao);
+
+    <span class="hljs-comment">// vbo</span>
+    <span class="hljs-keyword">const</span> vbo = gl.<span class="hljs-title function_">createBuffer</span>();
+    <span class="hljs-keyword">const</span> posAttLocation = gl.<span class="hljs-title function_">getAttribLocation</span>(shader.<span class="hljs-property">program</span>, <span class="hljs-string">"a_pos"</span>);
+    gl.<span class="hljs-title function_">bindBuffer</span>(gl.<span class="hljs-property">ARRAY_BUFFER</span>, vbo);
+    gl.<span class="hljs-title function_">bufferData</span>(gl.<span class="hljs-property">ARRAY_BUFFER</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Float32Array</span>(verticesData), gl.<span class="hljs-property">STATIC_DRAW</span>);
+    gl.<span class="hljs-title function_">enableVertexAttribArray</span>(posAttLocation);
+    gl.<span class="hljs-title function_">vertexAttribPointer</span>(posAttLocation, <span class="hljs-number">3</span>, gl.<span class="hljs-property">FLOAT</span>, <span class="hljs-literal">false</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
+
+    <span class="hljs-comment">// uniform</span>
+    shader.<span class="hljs-title function_">useProgram</span>();
+    <span class="hljs-keyword">const</span> model = mat4.<span class="hljs-title function_">create</span>();
+    shader.<span class="hljs-title function_">setMat4</span>(<span class="hljs-string">"model"</span>, model);
+
+    shader.<span class="hljs-title function_">setFloat3</span>(<span class="hljs-string">"u_objColor"</span>, <span class="hljs-number">0.36</span>, <span class="hljs-number">0.42</span>, <span class="hljs-number">0.60</span>);
+    shader.<span class="hljs-title function_">setFloat3</span>(<span class="hljs-string">"u_lightColor"</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>);
+
+    <span class="hljs-keyword">const</span> camera = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Camera</span>([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">4</span>]);
+    camera.<span class="hljs-property">mouseSensitivity</span> = <span class="hljs-number">0.04</span>;
+    <span class="hljs-keyword">var</span> deltaTime = <span class="hljs-number">0.01</span>;
+    <span class="hljs-keyword">var</span> lastFrame = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">drawScene</span> = (<span class="hljs-params">time: <span class="hljs-built_in">number</span></span>) =&gt; {
+        <span class="hljs-title function_">resizeCanvas</span>(gl);
+
+        <span class="hljs-keyword">const</span> currentFrame = time;
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        gl.<span class="hljs-title function_">enable</span>(gl.<span class="hljs-property">DEPTH_TEST</span>);
+        gl.<span class="hljs-title function_">clearColor</span>(<span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>);
+        gl.<span class="hljs-title function_">clear</span>(gl.<span class="hljs-property">COLOR_BUFFER_BIT</span> | gl.<span class="hljs-property">DEPTH_BUFFER_BIT</span>);
+
+        gl.<span class="hljs-title function_">bindVertexArray</span>(vao);
+        shader.<span class="hljs-title function_">useProgram</span>();
+        <span class="hljs-keyword">const</span> view = camera.<span class="hljs-title function_">getViewMatrix</span>();
+        shader.<span class="hljs-title function_">setMat4</span>(<span class="hljs-string">"view"</span>, view);
+
+        <span class="hljs-keyword">const</span> projection = mat4.<span class="hljs-title function_">perspective</span>(mat4.<span class="hljs-title function_">create</span>(), glMatrix.<span class="hljs-title function_">toRadian</span>(camera.<span class="hljs-property">zoom</span>), gl.<span class="hljs-property">canvas</span>.<span class="hljs-property">width</span> / gl.<span class="hljs-property">canvas</span>.<span class="hljs-property">height</span>, <span class="hljs-number">0.1</span>, <span class="hljs-number">100</span>);
+        shader.<span class="hljs-title function_">setMat4</span>(<span class="hljs-string">"projection"</span>, projection);
+
+        gl.<span class="hljs-title function_">drawArrays</span>(gl.<span class="hljs-property">TRIANGLES</span>, <span class="hljs-number">0</span>, <span class="hljs-number">36</span>);
+
+        <span class="hljs-title function_">requestAnimationFrame</span>(drawScene);
+    };
+
+    <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">"keydown"</span>, <span class="hljs-function">(<span class="hljs-params">event: KeyboardEvent</span>) =&gt;</span> {
+        <span class="hljs-keyword">switch</span> (event.<span class="hljs-property">key</span>) {
+            <span class="hljs-keyword">case</span> <span class="hljs-string">"w"</span>:
+                camera.<span class="hljs-title function_">processKeyboard</span>(<span class="hljs-title class_">Camera</span>_Movement.<span class="hljs-property">FORWARD</span>, deltaTime * <span class="hljs-number">0.001</span>);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">"s"</span>:
+                camera.<span class="hljs-title function_">processKeyboard</span>(<span class="hljs-title class_">Camera</span>_Movement.<span class="hljs-property">BACKWARD</span>, deltaTime * <span class="hljs-number">0.001</span>);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">"a"</span>:
+                camera.<span class="hljs-title function_">processKeyboard</span>(<span class="hljs-title class_">Camera</span>_Movement.<span class="hljs-property">LEFT</span>, deltaTime * <span class="hljs-number">0.001</span>);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">"d"</span>:
+                camera.<span class="hljs-title function_">processKeyboard</span>(<span class="hljs-title class_">Camera</span>_Movement.<span class="hljs-property">RIGHT</span>, deltaTime * <span class="hljs-number">0.001</span>);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-attr">default</span>:
+                <span class="hljs-keyword">break</span>;
+        }
+    });
+
+    <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">"wheel"</span>, <span class="hljs-function">(<span class="hljs-params">event: WheelEvent</span>) =&gt;</span> {
+        camera.<span class="hljs-title function_">processMouseScroll</span>(event.<span class="hljs-property">deltaY</span> * <span class="hljs-number">0.01</span>);
+    });
+
+    <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">"mousemove"</span>, <span class="hljs-function">(<span class="hljs-params">event: MouseEvent</span>) =&gt;</span> {
+        camera.<span class="hljs-title function_">processMouseMovement</span>(event.<span class="hljs-property">movementX</span>, event.<span class="hljs-property">movementY</span>);
+    });
+
+    <span class="hljs-title function_">requestAnimationFrame</span>(drawScene);
+};
+</code></pre><p>代码里，我使用了我自己封装的Camera和Shader,这两部分我都详细讲述过，请参考：<a href="http://pengfeixc.com/blog/60e83a51e97367196dce3f08">模拟一个摄像机</a>、<a href="http://pengfeixc.com/blog/60c335e2e97367196dce3ef7">绘制一个三角形（shader程序创建）</a>。</p><p>设置物体颜色与光照颜色：</p><pre><code class="hljs language-typescript">shader.<span class="hljs-title function_">setFloat3</span>(<span class="hljs-string">"u_objColor"</span>, <span class="hljs-number">0.36</span>, <span class="hljs-number">0.42</span>, <span class="hljs-number">0.60</span>); <span class="hljs-comment">// 淡蓝紫色</span>
+shader.<span class="hljs-title function_">setFloat3</span>(<span class="hljs-string">"u_lightColor"</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>);  <span class="hljs-comment">// 白色光</span>
+</code></pre><p>绘制结果如下，立方体仅仅有一点点颜色，表现很暗： <img src="https://pengfeiw.github.io/images/blog/83.png" alt="环境光照"></p><p><i>冯氏光照第一阶段：环境光照对物体颜色的影响</i></p><h3 id="漫反射光照（Diffuse Lighting）">漫反射光照（Diffuse Lighting） <a href="#漫反射光照（Diffuse Lighting）">#</a></h3><p>作为冯氏光照的第二阶段，漫反射光照对人的视觉产生的效果是最为显著的，也是最有意思的。请看下图：</p><p><img src="https://pengfeiw.github.io/images/blog/84.png" alt="漫反射光照"></p><p><i>图片来源于Learn_OpenGL_CN官网：漫反射光照示意图</i></p><p>光线逆方向与物体表面<strong>法向量</strong>有一个夹角，当夹角为0时，此时光照直射物体表面，光照强度最大，物体越亮，当夹角大于90度时，光照最小，物体表面颜色最暗。我们知道点积公式如下：</p><pre><code>a·b = |a|*|b|*cos(angle)
+</code></pre><p>由点积公式得到，当向量夹角为0时，点积最大，当夹角为90度时，点积为0。所以我们可以利用点积公式计算物体最终显示的颜色。要实现漫反射光照效果，首先我们需要知道每个顶点的法向量，由于立方体比较简单，我直接给出立方体的法向量数据，可以在<a href="https://github.com/pengfeiw/webgl2-demos/blob/master/src/data/cube.ts">这里</a>获得顶点法向量的数据。在顶点着色器中增加法向量属性<code>a_normal</code>, 并利用<code>v_normal</code>传递给片段着色器</p><pre><code class="hljs language-c">...
+in vec3 a_normal;
+
+out vec3 v_normal;
+
+<span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {
+    ...
+    v_normal = a_normal;
+}
+</code></pre><p>在片段着色器中需要增加光照方向的全局变量：</p><pre><code class="hljs language-c">uniform vec3 u_lightDirection; <span class="hljs-comment">// 光照方向</span>
+in vec3 v_normal;
+</code></pre><p>因为计算夹角，使用的是光照方向的相反方向，所以需要先计算光照的逆方向向量，并标准化向量：</p><pre><code class="hljs language-c">vec3 lightDirectionReverse = normalize(vec3(-u_lightDirection.x, -u_lightDirection.y, -u_lightDirection.z));
+vec3 normal = normalize(v_normal);
+</code></pre><p>计算点积, 点积如果为负，取0值：</p><pre><code class="hljs language-c"><span class="hljs-type">float</span> diffuseStrength = max(dot(normal, lightDirectionReverse), <span class="hljs-number">0.0</span>);
+</code></pre><p>计算漫反射分量，并更新输出颜色：</p><pre><code class="hljs language-c">vec3 diffuse = diffuseStrength * u_lightColor;
+vec3 result = u_objColor * (ambient + diffuse);
+FragColor = vec4(result, <span class="hljs-number">1.0</span>);
+</code></pre><p>完整的glsl如下：</p><pre><code class="hljs language-c"><span class="hljs-comment">// 顶点着色器</span>
+<span class="hljs-meta">#version 300 es</span>
+
+in vec3  a_pos;
+in vec3 a_normal;
+
+out vec3 v_normal;
+
+uniform mat4 projection;
+uniform mat4 view;
+uniform mat4 model;
+
+<span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {
+    gl_Position = projection * view * model * vec4(a_pos, <span class="hljs-number">1.0</span>);
+    v_normal = a_normal;
+}
+
+<span class="hljs-comment">// 片段着色器</span>
+<span class="hljs-meta">#version 300 es</span>
+precision highp <span class="hljs-type">float</span>;
+
+in vec3 v_normal;
+
+out vec4 FragColor;
+
+uniform vec3 u_objColor; <span class="hljs-comment">// 物体颜色</span>
+uniform vec3 u_lightColor; <span class="hljs-comment">// 光照颜色</span>
+uniform vec3 u_lightDirection; <span class="hljs-comment">// 光照方向</span>
+<span class="hljs-type">float</span> ambientStrength = <span class="hljs-number">0.1</span>; <span class="hljs-comment">// 环境光因子</span>
+
+<span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {
+    <span class="hljs-comment">// 环境光照</span>
+    vec3 ambient = ambientStrength * u_lightColor;
+    
+    <span class="hljs-comment">// 漫反射</span>
+    vec3 lightDirectionReverse = normalize(vec3(-u_lightDirection.x, -u_lightDirection.y, -u_lightDirection.z));
+    vec3 normal = normalize(v_normal);
+    <span class="hljs-type">float</span> diffuseStrength = max(dot(normal, lightDirectionReverse), <span class="hljs-number">0.0</span>);
+    vec3 diffuse = diffuseStrength * u_lightColor;
+
+    vec3 result = u_objColor * (ambient + diffuse);
+    FragColor = vec4(result, <span class="hljs-number">1.0</span>);
+}
+</code></pre><p>在绘制代码，我们需要增加传递法向量数据，创建缓冲传递数：</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">const</span> normalVbo = gl.<span class="hljs-title function_">createBuffer</span>();
+<span class="hljs-keyword">const</span> normalAttLocation = gl.<span class="hljs-title function_">getAttribLocation</span>(shader.<span class="hljs-property">program</span>, <span class="hljs-string">"a_normal"</span>);
+gl.<span class="hljs-title function_">bindBuffer</span>(gl.<span class="hljs-property">ARRAY_BUFFER</span>, normalVbo);
+gl.<span class="hljs-title function_">bufferData</span>(gl.<span class="hljs-property">ARRAY_BUFFER</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Float32Array</span>(normals), gl.<span class="hljs-property">STATIC_DRAW</span>);
+gl.<span class="hljs-title function_">enableVertexAttribArray</span>(normalAttLocation);
+gl.<span class="hljs-title function_">vertexAttribPointer</span>(normalAttLocation, <span class="hljs-number">3</span>, gl.<span class="hljs-property">FLOAT</span>, <span class="hljs-literal">false</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
+</code></pre><p>设置光照方向：</p><pre><code class="hljs language-typescript">shader.<span class="hljs-title function_">setFloat3</span>(<span class="hljs-string">"u_lightDirection"</span>, <span class="hljs-number">1.0</span>, -<span class="hljs-number">0.5</span>, -<span class="hljs-number">1.0</span>);
+</code></pre><p>然后，你应该能绘制出如下的情景，不同的面颜色亮度不一样： <img src="https://pengfeiw.github.io/images/blog/85.png" alt="漫反射"></p><h3 id="镜面光照（Specular Lighting）">镜面光照（Specular Lighting） <a href="#镜面光照（Specular Lighting）">#</a></h3><p>冯氏光照的最后一个阶段，只有把镜面高光加入到我们的绘制场景中，才算一个完整的冯氏光照。</p><p>在现实世界中，在一个阳光明媚的下午，你看向一个表面光滑的物体，比如镜子，站在某个位置，你会被物体表面反射的强光闪到眼睛，因为某一块特别的亮，这种现象叫做<strong>镜面光照</strong>，这就是冯氏光照第三阶段需要处理的情况，与<strong>漫反射</strong>一样，这一阶段也是利用了点积的思想。</p><p><img src="https://pengfeiw.github.io/images/blog/86.png" alt="镜面光照"></p><p><i>图片来源于LearnOpenGL_CN</i></p><p>从图中可以看到，光线照射到物体表面，会反射出一个光线，我们称这个为<strong>反射光</strong>，反射光与我们视线形成一个夹角，当这个夹角为0时，我们就会产生刺眼的效果，所以<strong>夹角越小，镜面光照的影响越大</strong>。</p><p>为了计算镜面光照，我们需要以下两个方向向量：</p><ul><li>视线方向</li><li>反射光的方向</li></ul><p>视线的方向可以通过片段位置和摄像机的位置计算得出，反射光的方向可以通过法向量和光照方向计算得出。在片段着色器中增加摄像机位置全局变量：</p><pre><code class="hljs language-c">uniform vec3 viewPos; <span class="hljs-comment">// 摄像机位置</span>
+</code></pre><pre><code class="hljs language-typescript">shader.<span class="hljs-title function_">setFloat3</span>(<span class="hljs-string">"viewPos"</span>, camera.<span class="hljs-property">position</span>[<span class="hljs-number">0</span>], camera.<span class="hljs-property">position</span>[<span class="hljs-number">1</span>], camera.<span class="hljs-property">position</span>[<span class="hljs-number">2</span>]);
+</code></pre><p>将片段位置从顶点着色器中传递到片段着色器中：</p><pre><code class="hljs language-c"><span class="hljs-comment">// 顶点着色器</span>
+out vec3 v_pos;
+<span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {
+    v_pos = (model * vec4(a_pos, <span class="hljs-number">1.0</span>)).xyz;
+}
+
+<span class="hljs-comment">// 片段着色器</span>
+in vec3 v_pos;
+</code></pre><p>计算镜面光照,利用glsl中的<code>reflect</code>函数可以直接计算反射向量：</p><pre><code class="hljs language-c"><span class="hljs-comment">// 镜面光照</span>
+vec3 viewDir = normalize(viewPos - v_pos); <span class="hljs-comment">// 观察方向向量</span>
+vec3 reflectDir = reflect(u_lightDirection, normal); <span class="hljs-comment">// 光的反射向量，利用reflect函数计算</span>
+<span class="hljs-type">float</span> spec = <span class="hljs-built_in">pow</span>(max(dot(viewDir, reflectDir), <span class="hljs-number">0.0</span>), <span class="hljs-number">30.0</span>); <span class="hljs-comment">// 30.0是高光的反光度</span>
+vec3 specular = specularStrength * spec * u_lightColor;
+</code></pre><p>上面有一个物体<strong>反光度</strong>的概念，这里设置为30.0，一个物体的反光度越高，反射光的能力越强，散射得越少，高光点就会越小。我后面介绍物体材质时，会详细讲解<strong>反光度</strong>。</p><p>更新FragColor:</p><pre><code class="hljs language-c">vec3 result = u_objColor * (ambient + diffuse + specular);
+FragColor = vec4(result, <span class="hljs-number">1.0</span>);
+</code></pre><p>如果你的代码, 没有错误，应该能看到如下的反光效果：</p><p><img src="https://pengfeiw.github.io/images/blog/87.png" alt="镜面光照"></p><p>完整代码请参阅：<a href="https://github.com/pengfeiw/webgl2-demos/blob/master/src/demos/theroyOfLight/phongLighting.ts">theroyOfLight/phongLighting.ts</a>。</p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/minicode/webgl-solar-system">上一篇：webgl模拟太阳系动画</a></span><span class="next-article"><a href="/computer-graphics/webgl-camera">下一篇：【WebGL】模拟摄像机</a></span></div></div></body></html>

@@ -1,0 +1,53 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="讲述OBJ(.obj)文件中一些比较基础的字段的含义。"><link rel="stylesheet" href="/assests/code_github.css"><link rel="stylesheet" href="/assests/github_markdown.css"><link rel="stylesheet" href="/assests/article.css"><link rel="stylesheet" href="/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/rss.xml"><img src="/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年7月8日</span><span class="category"><a href="/computer-graphics">标签：ComputerGraphics</a></span></div><div class="markdown-body"><h1 id="Wavefront OBJ文件格式">Wavefront OBJ文件格式 <a href="#Wavefront OBJ文件格式">#</a></h1><h2 id="一.一个四边形">一.一个四边形 <a href="#一.一个四边形">#</a></h2><p>下面是一个简单的四边形的.obj文件内容。</p><pre><code>v -0.5 -0.5 0.0
+v +0.5 -0.5 0.0
+v +0.5 +0.5 0.0
+v -0.5 +0.5 0.0
+f 1 2 3 4
+</code></pre><h3 id="v标记">v标记 <a href="#v标记">#</a></h3><p>文件中每一行都由一个标记和一串数字组成。<code>v</code>表示顶点，前面以v开头的四行表示有四个顶点（vertex）, 标记v后面包括三个数字，表示x、y、z三个分量。所以文件中描述了四个顶点，分别是<code>(-0.5, -0.5, 0.0)</code>、<code>(0.5, -0.5, 0.0)</code>、<code>(0.5, 0.5, 0.0)</code>、<code>(-0.5, 0.5, 0.0)</code>。</p><h3 id="f标记">f标记 <a href="#f标记">#</a></h3><p>以<code>f</code>开头的行，描述的是一个面（face），后面紧接着至少三个整数，数字表示的是前面定义的顶点的索引值。在示例文件中定义了四个顶点，f后面的1 2 3 4表示的正是前面的四个顶点，按照顶点的索引顺序并按照右手法则构成了一个面（face）。</p><p>所以，这个文件就是代表了一个简单的xy平面上长宽分别为1，中心在<code>(0, 0, 0)</code>的正方形。</p><h2 id="二.复杂的几何结构">二.复杂的几何结构 <a href="#二.复杂的几何结构">#</a></h2><p>处理真实世界中一些复杂的物体时，往往会在OBJ文件中创建一些group简化文件结构，并添加material模拟更真实的效果。</p><h3 id="g标记">g标记 <a href="#g标记">#</a></h3><p>当使用OBJ文件描述一个复杂的几何结构体时，创建group（组）会大大减少文件的复杂度。例如，一个小汽车有四个轮子、两扇门、排气管等等。在OBJ文件中,可以创建一些逻辑group代表一些组件。一个group定义也是以某一行开始，以<code>g</code>关键字开头，后接group名称。后面所有出现的几何定义都属于这个group，直到出现新的group定义。</p><pre><code>v -0.5 -0.5 0.0
+v +0.5 -0.5 0.0
+v +0.5 +0.5 0.0
+v -0.5 +0.5 0.0
+...
+g hood
+f 1 2 3 4
+...
+f 96 97 98 99
+g exhaust
+f 100 102 103 104
+</code></pre><p>上面定义了两个group，<strong>hood</strong>和<strong>exhaust</strong>。</p><h3 id="添加材质（Materials)">添加材质（Materials) <a href="#添加材质（Materials)">#</a></h3><p>通常使用三维图形软件（例如blender）生成OBJ文件时，会一起生成一个MTL格式的文件。MTL文件是用来描述几何物体的材质属性的。在OBJ文件中有两个关键字行表示几何体使用的材质，这两个关键字是<code>mtllib</code>和<code>usemtl</code>。</p><p>下面是一个包含材质的obj文件内容：</p><pre><code>mtllib example.mtl
+v -0.5 -0.5 0.0
+v +0.5 -0.5 0.0
+v +0.5 +0.5 0.0
+v -0.5 +0.5 0.0
+...
+usemtl mat1
+f 1 2 3 4
+...
+f 96 97 98 99
+usemtl mat2
+f 100 102 103 104
+</code></pre><h4 id="mtllib">mtllib <a href="#mtllib">#</a></h4><p><code>mtllib</code>表示的是材质库，会指向一个MTL格式文件, 表示这个obj文件中的几何体使用的材质来自于指定的MTL文件。 上面的例子中<code>mtllib example.mtl</code>表示这个几何体材质文件是example.mtl。</p><h4 id="usemtl">usemtl <a href="#usemtl">#</a></h4><p><code>usemtl</code>表示后续的几何模块使用的材质是usemtl指定的材质，直到指定新的material（新的usemtl出现）。 上面的例子有两行是以usemtl开头的。分别指定了材质<code>mat1</code>和<code>mat2</code>, 对应example.mtl中的<code>mat1</code>和<code>mat2</code>描述。</p><h3 id="纹理坐标——vt">纹理坐标——vt <a href="#纹理坐标——vt">#</a></h3><p>有纹理的描述，当然会存在纹理坐标。OBJ文件中，以<code>vt</code>开头行的表示纹理坐标，后接x、y、z分量。</p><pre><code>v -0.5 -0.5 0.0
+v +0.5 -0.5 0.0
+v +0.5 +0.5 0.0
+v -0.5 +0.5 0.0
+vt 0.0 0.0 0.0
+vt 1.0 0.0 0.0
+vt 1.0 1.0 0.0
+vt 0.0 1.0 0.0
+f 1/1 2/2 3/3 4/4
+</code></pre><p>类似v，示例中四个<code>vt</code>行表示<code>(0, 0, 0)</code>、<code>(1, 0, 0)</code>、<code>(1, 1, 0)</code>、<code>(0, 1, 0)</code>四个纹理坐标。</p><p>有了纹理坐标，f标记的内容发生了一些变化。f后接着的索引值变成了<code>1/1 2/2 3/3 4/4</code>，每对值由两个索引值和一个斜杠描述。每对值表示的是<code>v/vt</code>(<code>顶点坐标索引/纹理坐标索引</code>)，所以这里第二个分量，定义的是前面定义的纹理坐标的索引。</p><h3 id="法向量-vn">法向量-vn <a href="#法向量-vn">#</a></h3><p>OBJ文件也支持每个顶点法向量的描述，以<code>vn</code>开头的行表示一个顶点的法向量，也是有x、y、z三个分量组成。</p><pre><code>v -0.5 -0.5 0.0
+v +0.5 -0.5 0.0
+v +0.5 +0.5 0.0
+v -0.5 +0.5 0.0
+vt 0.0 0.0 0.0
+vt 1.0 0.0 0.0
+vt 1.0 1.0 0.0
+vt 0.0 1.0 0.0
+vn 0.0 0.0 1.0
+vn 0.0 0.0 1.0
+vn 0.0 0.0 1.0
+vn 0.0 0.0 1.0
+f 1/1/1 2/2/2 3/3/3 4/4/4
+</code></pre><p>上面的示例有四个vn定义的法向量，此时f的每个值变成了三个分量，分别对应<code>v/vt/vn</code>(<code>顶点坐标索引/纹理坐标索引/法向量索引</code>)。示例中的面的四个顶点的法向量索引值为<code>1 2 3 4</code>。</p><p>face的定义比较灵活，vertex索引是必须包括的，但是vt和vn是可选的。</p><pre><code>1/1/1 # 顶点索引为1，纹理坐标索引为1，法向量索引为1
+1//1  # 顶点索引为1，法向量索引为1，不包括纹理坐标索引
+</code></pre><p>继续阅读：<a href="http://pengfeixc.com/blog/60e6cca4e97367196dce3f06">MTL文件格式解析</a>。</p><h2 id="附：参考资料">附：参考资料 <a href="#附：参考资料">#</a></h2><p><a href="http://paulbourke.net/dataformats/obj/">obj文档字段描述：http://paulbourke.net/dataformats/obj/</a></p><p><a href="https://www.loc.gov/preservation/digital/formats/fdd/fdd000507.shtml?__cf_chl_jschl_tk__=b9bc26d820e19c32e33e1e731b6ae2a77076d653-1625712566-0-AbMzqvI67LbjZjgcGdNPVH07lY_WxXPuS2bMJ1AB1sVHek4vxlk4grFCm6kEXfPmF6yqq9SLgPmqbi8wBx41Dlqe8ChHMGqRfT6UK84wzNIkoobCHMU_mafztpHu5farKPxYJQY1ydTf3o6oDI9LpqjpNrVWeDhYFcnkH_P4qfTrs3QrDvJCLLveBxxirzZejEDaAWTteZpBhkbkx79Gb2ONwmGZFNO-6niw4xySNg_BUXN1nq4DGqnROeqo1-MFQmdtsJIfDn7-iFO2lTE2TdiBGXxMLkW7LiLFmHwQlCvX70tuiIJKXf0kK6WsLR-YgYk19BlebOW_6Wy0EyEZKZT9mjZ_BlHdKXb9_Q0pmjlPoEgTACYVR1FTEs3lZVLPWIFYcGchwMYQ8zZgSRF3N2XG5U0T6JXLhm6QRmmnS1wudeHzWwZci4F0JyqU4tarZrL_xCScp1rmn2gPVw5cuVg">Wavefront OBJ File Format</a></p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/computer-graphics/mtl-graphic-file-parse">上一篇：MTL图形文件格式解析</a></span><span class="next-article"><a href="/react/when-does-react-render">下一篇：React组件何时重渲染</a></span></div></div></body></html>

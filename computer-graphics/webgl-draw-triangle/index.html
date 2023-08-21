@@ -1,0 +1,72 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="本篇文章讲解如何用webgl绘制一个三角形，描述了webgl绘制的完整过程和一些相关的基础概念。"><link rel="stylesheet" href="/assests/code_github.css"><link rel="stylesheet" href="/assests/github_markdown.css"><link rel="stylesheet" href="/assests/article.css"><link rel="stylesheet" href="/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/rss.xml"><img src="/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年6月11日</span><span class="category"><a href="/computer-graphics">标签：ComputerGraphics</a></span></div><div class="markdown-body"><h1 id="【webgl】绘制一个三角形">【webgl】绘制一个三角形 <a href="#【webgl】绘制一个三角形">#</a></h1><p>作为webgl的第一篇文章，首先我推荐几个学习webgl（opengl）的资源：</p><p>learnopengl中文官网：<a href="https://learnopengl-cn.github.io/">https://learnopengl-cn.github.io/</a>, 这个教程是学习opengl最好的地方，因为webgl是基于opengl的，所以我认为这也是学习webgl最好的地方，如果你熟悉C++的话，建议根据这个教程学习。</p><p>webgl理论基础：<a href="https://webglfundamentals.org/webgl/lessons/zh_cn/">https://webglfundamentals.org/webgl/lessons/zh_cn/</a>, 这个教程是讲解webgl的，从原理上讲解webgl，但是我认为这个教程没有learnopengl中文官网的教程详细，很多地方直接帖代码，并没有讲解清楚。但是它的确是我所看到的讲解webgl中不错的教程。</p><p>learnwebgl: <a href="http://learnwebgl.brown37.net/index.html">http://learnwebgl.brown37.net/index.html</a>, 一套完整的webgl教程，但是只有英文版本，我也只是看了其中的几篇文章，内容讲解的很详细。</p><p>这篇文章主要讲解webgl的完整的绘制过程。</p><h3 id="一. 绘制过程">一. 绘制过程 <a href="#一. 绘制过程">#</a></h3><p>gl的绘制过程可以分为以下四个步骤：</p><ul><li>准备工作：这个阶段主要工作是一些开始工作，例如创建WebGLRenderingContext、清屏、设置z缓冲、告诉webgl绘制的窗口尺寸大小等。</li><li>创建着色器程序：使用GLSL语言编写着色器代码，编译着色器，链接着色器程序。</li><li>传递数据：给之前创建的着色器程序，传递数据（attributes，uniform）。</li><li>绘制：调用drawArrays或者drawElements方法绘制。</li></ul><h3 id="二. 准备阶段">二. 准备阶段 <a href="#二. 准备阶段">#</a></h3><p>这个阶段首先是创建WebGLRenderingContext，你可以将其看作是一根画笔，我们可以利用它完成三维图形的绘制。</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">const</span> gl = canvas.<span class="hljs-title function_">getContext</span>(<span class="hljs-string">"webgl"</span>);
+<span class="hljs-keyword">if</span> (!gl) {
+    <span class="hljs-title function_">alert</span>(<span class="hljs-string">"你不能使用webgl"</span>);
+}
+</code></pre><p>告诉webgl绘制的目标窗口大小。</p><pre><code class="hljs language-typescript">gl.<span class="hljs-title function_">viewport</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, gl.<span class="hljs-property">canvas</span>.<span class="hljs-property">width</span>, gl.<span class="hljs-property">canvas</span>.<span class="hljs-property">height</span>);
+</code></pre><p>使用指定颜色清空屏幕，防止之前的绘制污染画布。</p><pre><code class="hljs language-typescript">gl.<span class="hljs-title function_">clearColor</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>); <span class="hljs-comment">// 设定clearColor的颜色缓冲</span>
+gl.<span class="hljs-title function_">clear</span>(gl.<span class="hljs-property">COLOR_BUFFER_BIT</span> | gl.<span class="hljs-property">DEPTH_BUFFER_BIT</span>); <span class="hljs-comment">// 用clearColor的颜色，清屏</span>
+</code></pre><h3 id="三.创建着色器程序">三.创建着色器程序 <a href="#三.创建着色器程序">#</a></h3><p>着色器是使用一种叫GLSL的类C语言写成的。GLSL是为图形计算量身定制的，它包含一些针对向量和矩阵操作的有用特性。着色器入口点是main函数。与Javascript不同的是GLSL是强类型语言，如果你习惯了javascript这种弱类型语言，开始写GLSL可能会有些不习惯，例如将int类型传递给float类型会导致编译错误，不过多写总会适应。</p><p>在webGL(openGL)中所有的东西都是3D的，但是显示器的屏幕却是2D的，所以webGL的主要工作就是将3D的点转化成屏幕上的2D的点。这个过程由<strong>图形渲染管线</strong>（简称管线）管理，管线的主要工作分为两部分：</p><ol><li><strong>将3D的点坐标转化为2D的点坐标</strong> 。</li><li><strong>把2D的坐标转化成有颜色的像素</strong>。</li></ol><p>以下是learnoopengl中文官网给出的着色器的定义。</p><blockquote><p>图形渲染管线接受一组3D坐标，然后把它们转变为你屏幕上的有色2D像素输出。图形渲染管线可以被划分为几个阶段，每个阶段将会把前一个阶段的输出作为输入。所有这些阶段都是高度专门化的（它们都有一个特定的函数），并且很容易并行执行。正是由于它们具有并行执行的特性，当今大多数显卡都有成千上万的小处理核心，它们在GPU上为每一个（渲染管线）阶段运行各自的小程序，从而在图形渲染管线中快速处理你的数据。这些小程序叫做着色器(Shader)。</p></blockquote><p>管线的主要工作过程可用下图表示：</p><p><img src="https://pengfeiw.github.io/images/blog/53.png" alt="image-20210611171642853"></p><p>我们一般只关心顶点着色器和片段着色器，非必要一般不会去写几何着色器。</p><p>接下来，通过绘制一个三角形，来讲解。</p><h4 id="顶点着色器">顶点着色器 <a href="#顶点着色器">#</a></h4><p>顶点着色器主要负责，接收用户输入的点坐标数据和每个点的颜色数据。因为我们要绘制一个三角形，所以需要传入三角形的顶点坐标，在webgl中顶点坐标通过attribute传递。下面是顶点着色器的代码。</p><pre><code class="hljs language-c++"><span class="hljs-comment">// 顶点着色器代码</span>
+<span class="hljs-type">const</span> vertex_source = `
+    attribute vec3 aPos;
+    
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{
+        gl_Position = <span class="hljs-built_in">vec4</span>(aPos, <span class="hljs-number">1</span>);
+    }
+`;
+</code></pre><p>gl_Position是webgl内置的变量，用于接收要绘制的顶点坐标。</p><p>接下来创建并编译顶点着色器，使用<strong>getShaderParameter</strong>获取编译信息，抛出编译失败错误。</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">var</span> vertexShader = gl.<span class="hljs-title function_">createShader</span>(gl.<span class="hljs-property">VERTEX_SHADER</span>);
+
+gl.<span class="hljs-title function_">shaderSource</span>(vertexShader, vertex_source); <span class="hljs-comment">// 绑定着色器代码</span>
+gl.<span class="hljs-title function_">compileShader</span>(vertexShader); <span class="hljs-comment">// 编译着色器</span>
+<span class="hljs-keyword">var</span> success = gl.<span class="hljs-title function_">getShaderParameter</span>(vertexShader, gl.<span class="hljs-property">COMPILE_STATUS</span>);
+<span class="hljs-keyword">if</span> (!success) {
+    <span class="hljs-keyword">throw</span> <span class="hljs-string">"colud not compile vertex shader:"</span> + gl.<span class="hljs-title function_">getShaderInfoLog</span>(vertexShader);
+}
+</code></pre><h4 id="片段着色器">片段着色器 <a href="#片段着色器">#</a></h4><p>片段着色器主要负责处理当前顶点的颜色，也是利用webgl内置的变量gl_FragColor接受颜色值，传递给下一个阶段。下面是片段着色器代码。</p><pre><code class="hljs language-c++"><span class="hljs-comment">// 片段着色器代码</span>
+<span class="hljs-type">const</span> fragment_source = `
+    precision mediump <span class="hljs-type">float</span>;
+    uniform vec3 uColor;
+
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{
+        gl_FragColor = <span class="hljs-built_in">vec4</span>(uColor, <span class="hljs-number">1.0</span>);
+    }
+`;
+</code></pre><p>这里引入了一个uniform全局变量，与attribute不同的是，uniform在每个顶点处理中都保持一致，所以称为全局变量。</p><p>同样，也需要创建和编译片段着色器。</p><pre><code class="hljs language-typescript"><span class="hljs-comment">// 创建片段着色器</span>
+<span class="hljs-keyword">var</span> fragmentShader = gl.<span class="hljs-title function_">createShader</span>(gl.<span class="hljs-property">FRAGMENT_SHADER</span>);
+gl.<span class="hljs-title function_">shaderSource</span>(fragmentShader, fragment_source); <span class="hljs-comment">// 绑定着色器代码</span>
+gl.<span class="hljs-title function_">compileShader</span>(fragmentShader); <span class="hljs-comment">// 编译着色器</span>
+success = gl.<span class="hljs-title function_">getShaderParameter</span>(fragmentShader, gl.<span class="hljs-property">COMPILE_STATUS</span>);
+<span class="hljs-keyword">if</span> (!success) {
+    <span class="hljs-keyword">throw</span> <span class="hljs-string">"colud not compile vertex shader:"</span> + gl.<span class="hljs-title function_">getShaderInfoLog</span>(fragmentShader);
+}
+</code></pre><h4 id="链接着色器程序">链接着色器程序 <a href="#链接着色器程序">#</a></h4><p>将顶点着色器和片段着色器链接成一个程序。和编译着色器类似，也可以通过<strong>getProgramParameter</strong>方法获得链接信息，如果失败抛出链接错误。最后链接成功了，删除着色器。最后程序运行必须要调用<strong>useProgram</strong>方法使用创建的着色器程序，useProgram必须在设置变量数据前调用。</p><pre><code class="hljs language-typescript"><span class="hljs-comment">// 链接着色器程序</span>
+<span class="hljs-keyword">var</span> program = gl.<span class="hljs-title function_">createProgram</span>();
+gl.<span class="hljs-title function_">attachShader</span>(program, vertexShader); <span class="hljs-comment">// 添加着色器</span>
+gl.<span class="hljs-title function_">attachShader</span>(program, fragmentShader); 
+gl.<span class="hljs-title function_">linkProgram</span>(program);
+success = gl.<span class="hljs-title function_">getProgramParameter</span>(program, gl.<span class="hljs-property">LINK_STATUS</span>);
+<span class="hljs-keyword">if</span> (!success) {
+    <span class="hljs-keyword">throw</span> <span class="hljs-string">"colud not link shader: "</span> + gl.<span class="hljs-title function_">getProgramInfoLog</span>(program);
+}
+<span class="hljs-comment">// 已经链接成程序，可以删除着色器</span>
+gl.<span class="hljs-title function_">deleteShader</span>(vertexShader);
+gl.<span class="hljs-title function_">deleteShader</span>(fragmentShader);
+
+gl.<span class="hljs-title function_">useProgram</span>(program);
+</code></pre><h3 id="四. 传递数据">四. 传递数据 <a href="#四. 传递数据">#</a></h3><p>在glsl中，我们设定了一个attribute变量和一个uniform变量，需要我们手动为这两个变量赋值。</p><h4 id="attribute">attribute <a href="#attribute">#</a></h4><p>attribute接受的是一组数据，通常是顶点坐标值或者顶点的颜色值。过程如下：</p><ul><li>获得变量位置</li><li>创建缓冲</li><li>绑定缓冲到指定类型的缓冲</li><li>向缓冲输入数据</li><li>指示程序如何解析传递的数据</li><li>启用缓冲位置</li></ul><pre><code class="hljs language-typescript"><span class="hljs-comment">// 三角形的顶点数据</span>
+<span class="hljs-keyword">const</span> <span class="hljs-attr">vertexs</span>: <span class="hljs-built_in">number</span>[] = [
+    <span class="hljs-number">0</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0</span>,
+    -<span class="hljs-number">0.5</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>,
+    <span class="hljs-number">0.5</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>
+];
+
+<span class="hljs-keyword">const</span> aPosAttLocation = gl.<span class="hljs-title function_">getAttribLocation</span>(program, <span class="hljs-string">"aPos"</span>); <span class="hljs-comment">// 获得变量位置</span>
+<span class="hljs-keyword">const</span> aPosAttBuffer = gl.<span class="hljs-title function_">createBuffer</span>(); <span class="hljs-comment">// 创建缓冲</span>
+gl.<span class="hljs-title function_">bindBuffer</span>(gl.<span class="hljs-property">ARRAY_BUFFER</span>, aPosAttBuffer); <span class="hljs-comment">// 绑定缓冲到指定类型</span>
+gl.<span class="hljs-title function_">bufferData</span>(gl.<span class="hljs-property">ARRAY_BUFFER</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Float32Array</span>(vertexs), gl.<span class="hljs-property">STATIC_DRAW</span>); <span class="hljs-comment">// 传入数据</span>
+
+gl.<span class="hljs-title function_">vertexAttribPointer</span>(aPosAttLocation, <span class="hljs-number">3</span>, gl.<span class="hljs-property">FLOAT</span>, <span class="hljs-literal">false</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>); <span class="hljs-comment">// 告诉gl如何解析数据</span>
+gl.<span class="hljs-title function_">enableVertexAttribArray</span>(aPosAttLocation); <span class="hljs-comment">// 启用数据</span>
+</code></pre><p>因为，webgl的标准屏幕空间范围为-1~+1，所以这里坐标中的0.5表示在画布的四分之一位置，关于屏幕空间和现代openGl中的坐标系统，我将在下一篇文章中讲解。</p><h4 id="uniform">uniform <a href="#uniform">#</a></h4><p>uniform全局变量，在所有顶点渲染过程中保持一致，传递数据过程相对比较简单。</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">const</span> uColorLocation = gl.<span class="hljs-title function_">getUniformLocation</span>(program, <span class="hljs-string">"uColor"</span>);
+gl.<span class="hljs-title function_">uniform3f</span>(uColorLocation, <span class="hljs-number">0.36</span>, <span class="hljs-number">0.42</span>, <span class="hljs-number">0.60</span>);
+</code></pre><p>将三角形的颜色设置为rgb(0.36, 0.42, 0.60)。</p><h3 id="五.绘制">五.绘制 <a href="#五.绘制">#</a></h3><p>直接调用如下代码绘制：</p><pre><code class="hljs language-typescript">gl.<span class="hljs-title function_">drawArrays</span>(gl.<span class="hljs-property">TRIANGLES</span>, <span class="hljs-number">0</span>, <span class="hljs-number">3</span>);
+</code></pre><p><strong>gl.TRIANGLES</strong>指定了绘制的模式，表示绘制一个三角形，第二个参数表示需要运行的起始顶点索引，第三个表示着色器运行的总的顶点个数。</p><p>按照上面的步骤，打开浏览器，应该能看到下图所示的三角形：</p><p><img src="https://pengfeiw.github.io/images/blog/54.png" alt="image-20210611174903110"></p><p>如果你存在疑惑，没有得到想要的结果，可以在这里找到源码：<a href="https://github.com/pengfeiw/webgl-demos/blob/master/src/demos/webglStart/index.ts">https://github.com/pengfeiw/webgl-demos/blob/master/src/demos/webglStart/index.ts</a>。</p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/minicode/minicode-introduction">上一篇：MINICODE</a></span><span class="next-article"><a href="/computer-graphics/3D-matrix-transformation-part-three">下一篇：3D图形学中的矩阵变换（三）</a></span></div></div></body></html>

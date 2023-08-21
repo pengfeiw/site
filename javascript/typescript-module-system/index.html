@@ -1,0 +1,64 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="深入理解TypeScript的导入模块的方式和两种模块定位策略。"><link rel="stylesheet" href="/assests/code_github.css"><link rel="stylesheet" href="/assests/github_markdown.css"><link rel="stylesheet" href="/assests/article.css"><link rel="stylesheet" href="/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/rss.xml"><img src="/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年9月23日</span><span class="category"><a href="/javascript">标签：JavaScript</a></span></div><div class="markdown-body"><h1 id="深入理解TypeScript的模块系统">深入理解TypeScript的模块系统 <a href="#深入理解TypeScript的模块系统">#</a></h1><p>在ES2015出现之前，JavaScript还没有原生的模块系统（ES Module），只能借助第三方的<a href="https://requirejs.org/">RequireJS</a>和<a href="https://github.com/systemjs/systemjs">SystemJS</a>来使用模块功能。</p><p>模块本质上就是一个JS/TS文件，类似一个<strong>沙盒环境</strong>，使用import语句引入其他模块的API和值，export语句暴露自己的API和值。</p><p>TypeScript原生支持ES Module的语法，可以在<code>.ts</code>文件中使用<strong>import</strong>和<strong>export</strong>语句。默认情况下，TypeScript仅支持引入<code>.ts</code>和<code>.d.ts</code>文件模块，可以通过修改<code>allowJS</code>配置选项，使TypeScirpt支持<code>.js</code>文件（这个在<a href="http://pengfeixc.com/blogs/javascript/tsconfig#JavaScript%E7%BC%96%E8%AF%91">详解tsconfig.json文件</a>文章中介绍过）。</p><h2 id="一.导入模块的方式">一.导入模块的方式 <a href="#一.导入模块的方式">#</a></h2><pre><code class="hljs language-javascript"><span class="hljs-comment">// example.ts</span>
+<span class="hljs-keyword">import</span> <span class="hljs-string">"../program"</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">"package"</span>;
+</code></pre><p>上面的代码，就是要介绍的两种导入模块的方式。</p><ul><li><strong>路径</strong>：通过模块（文件）路径导入模块，可以是相对路径，也可以是绝对路径</li><li><strong>模块名称（包名）</strong>：通过模块名称（包名称）导入模块。</li></ul><p>第一种方式比较简单，typescript将会根据我们指定的文件路径寻找文件（program.ts或者program.d.ts），上面的例子中，typescript会在当前文件的父级目录中优先寻找<code>program.ts</code>，如果<code>program.ts</code>没有找到，再寻找<code>program.d.ts</code>，如果找到则导入找到的模块。</p><p>第二种方式，通过包名引入，情况比较复杂，接下来将重点介绍。</p><h2 id="二.模块定位策略">二.模块定位策略 <a href="#二.模块定位策略">#</a></h2><p>上面的第二个例子<code>import "package";</code>，通过模块名导入模块。当typescirpt处理这种导入语句时，它会使用以下两个模块定位策略中的一个。</p><ul><li><strong>Classic模块定位策略</strong>：为了与旧版本兼容才发明的一种策略。</li><li><strong>Node模块定位策略</strong>: 默认策略。</li></ul><p>TypeScript的模块定位策略是可配置的，可以通过<code>tsc</code>的<code>--moduleResolution</code>选项配置，也可以通过<code>moduleResolution</code>编译选项进行配置（<code>tsc</code>与<strong>编译选项</strong>在<a href="http://pengfeixc.com/blogs/javascript/tsconfig#JavaScript%E7%BC%96%E8%AF%91">详解tsconfig.json文件</a>详细讨论过)。</p><h3 id="Classic模块定位策略">Classic模块定位策略 <a href="#Classic模块定位策略">#</a></h3><p>使用Classic模块定位策略，TypeScirpt首先在当前文件的同级目录查找与模块名相同的<code>.ts</code>文件或者<code>.d.ts</code>文件，如果没有找到，则向上一级目录查找，直到找到或者抵达磁盘根目录也未找到，如果找到则引入找到的模块。</p><p>以上面的例子<code>import "package";</code>为例。假设<code>example.ts</code>文件路径为<code>D:\program\src\example.ts</code>。首先在<code>example.ts</code>文件的同级目录<code>D:\program\src\</code>寻找<code>package.ts</code>和<code>package.ds</code>文件，如果没找到继续在父级目录<code>D:\program\</code>中寻找<code>package.ts</code>和<code>package.ds</code>文件，如果没找到继续向上在D盘根目录<code>D:\</code>中寻找，如果找到则引入模块。</p><h3 id="Node模块定位策略">Node模块定位策略 <a href="#Node模块定位策略">#</a></h3><p>Node模块定位策略（Node Module Resolution）是TypeScript的默认定位策略，也是最常用的模块定位策略。</p><p>只要是JS程序员，肯定知道项目都有一个<code>node_modules</code>文件夹，里面存放了一些公共包，供项目使用。了解typeScript是如何利用Node模块定位策略的，先看一下Nodejs是如何定位模块的。</p><p>Node模块定位策略对于非Node.js程序员来说，可能有点复杂。与Classic模块定位策略相同，首先会向上遍历文件夹，寻找模块，但是也有一些不一样。</p><p>以下面的例子为例：</p><pre><code class="hljs language-javascript"><span class="hljs-comment">// D:\code\src\example.ts</span>
+<span class="hljs-keyword">import</span> <span class="hljs-string">'../program'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'package'</span>;
+</code></pre><p>第一个<code>import</code>语句，<strong>使用相对路径导入模块</strong>，这种情况下，首先在父级目录寻找<code>program.ts</code>和<code>program.d.ts</code>文件，如果没有找到，则检查父级目录下有没有一个<code>program</code>文件夹，如果<code>D:\code\src\program\</code>存在，如果这个<code>D:\code\src\program\</code>目录下有<code>package.json</code>文件存在，然后它会导入<code>package.json</code>中<code>types</code>和<code>typings</code>字段指定的路径的文件。</p><p>如果<code>D:\code\src\program\</code>目录下不存在<code>package.json</code>文件，或者它缺少<code>types</code>字段，然后它会检查该目录下是否有<code>index.ts</code>和<code>index.d.ts</code>文件，如果找到则导入模块，否则报错。</p><p>整个过程如下。</p><pre><code>1. ../program.ts
+2. ../program.d.ts
+3. ../program/package.json -&gt; [[types]] -&gt; file path
+4. ../program/index.ts
+5. ../program/index.d.ts
+
+6. Error: Cannot find module
+</code></pre><p>对于第二个<code>import</code>语句，<strong>使用包名导入模块</strong>，情况变得更复杂了。首先，首先寻找当前目录下<code>D:\code\src</code>的<code>node_modules</code>文件夹，然后按照与路径导入模块方式相同的方式查找模块。</p><p>如果它没有找到合适的文件，它会向上（父级目录，向外遍历）使用相同的逻辑寻找。整个过程如下。</p><pre><code>Import statement: import 'package';
+Import Location: D:\code\src\example.ts
+
+1. D:/code/src/node_modules/package.ts
+2. D:/code/src/node_modules/package.d.ts
+3. D:/code/src/node_modules/package/package.json -&gt; [[types]] -&gt;
+4. D:/code/src/node_modules/package/index.ts
+5. D:/code/src/node_modules/package/index.d.ts
+
+6. D:/code/node_modules/package.ts
+7. D:/code/node_modules/package.d.ts
+8. D:/code/node_modules/package/package.json -&gt; [[types]] -&gt;
+9. D:/code/node_modules/package/index.ts
+10. D:/code/node_modules/package/index.d.ts
+
+11. D:/node_modules/package.ts
+12. D:/node_modules/package.d.ts
+13. D:/node_modules/package/package.json -&gt; [[types]] -&gt;
+14. D:/node_modules/package/index.ts
+15. D:/node_modules/package/index.d.ts
+
+16. Error: Cannot find module
+</code></pre><h3 id="TypeScript利用Node模块定位策略">TypeScript利用Node模块定位策略 <a href="#TypeScript利用Node模块定位策略">#</a></h3><p>TypeScirpt利用Node模块定位策略导入模块时，当引用相对路径的模块时，是完全一样的，区别在于使用包名引入模块时，有一点区别，它会检查<code>node_modules/@types</code>文件夹，整个过程如下。</p><pre><code>Import statement: import 'package';
+Import Location: D:\code\src\example.ts
+
+1. D:/code/src/node_modules/package.ts
+2. D:/code/src/node_modules/package.d.ts
+3. D:/code/src/node_modules/package/package.json -&gt; [[types]] -&gt;
+4. D:/code/src/node_modules/@types/moduleB.d.ts
+5. D:/code/src/node_modules/@types/moduleB/index.d.ts (或者package.json文件指定的入口文件)
+6. D:/code/src/node_modules/package/index.ts
+7. D:/code/src/node_modules/package/index.d.ts
+
+8. D:/code/node_modules/package.ts
+9. D:/code/node_modules/package.d.ts
+10. D:/code/node_modules/package/package.json -&gt; [[types]] -&gt;
+11. D:/code/node_modules/@types/moduleB.d.ts
+12. D:/code/node_modules/@types/moduleB/index.d.ts (或者package.json文件指定的入口文件)
+13. D:/code/node_modules/package/index.ts
+14. D:/code/node_modules/package/index.d.ts
+
+15. D:/node_modules/package.ts
+16. D:/node_modules/package.d.ts
+17. D:/node_modules/package/package.json -&gt; [[types]] -&gt;
+18. D:/node_modules/@types/moduleB.d.ts
+19. D:/node_modules/@types/moduleB/index.d.ts (或者package.json文件指定的入口文件)
+20. D:/node_modules/package/index.ts
+21. D:/node_modules/package/index.d.ts
+
+22. Error: Cannot find module
+</code></pre><h2 id="附：参考资料">附：参考资料 <a href="#附：参考资料">#</a></h2><ul><li><a href="https://medium.com/jspoint/typescript-module-system-5022cac310f6">A comprehensive guide to “Module System” in TypeScript</a></li></ul><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/javascript/typescript-namespace">上一篇：【TypeScript】使用namespace封装数据</a></span><span class="next-article"><a href="/algorithm-math/regular-expression-matching">下一篇：正则表达式匹配</a></span></div></div></body></html>

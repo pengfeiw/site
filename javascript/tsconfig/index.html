@@ -1,0 +1,323 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="工欲善其事必先利其器，本篇文章详细介绍tsconfig的内容和tsc编译器的原理，如何自己去配置一个typescirpt项目。"><link rel="stylesheet" href="/assests/code_github.css"><link rel="stylesheet" href="/assests/github_markdown.css"><link rel="stylesheet" href="/assests/article.css"><link rel="stylesheet" href="/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/rss.xml"><img src="/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年9月18日</span><span class="category"><a href="/javascript">标签：JavaScript</a></span></div><div class="markdown-body"><h1 id="详解tsconfig.json文件">详解tsconfig.json文件 <a href="#详解tsconfig.json文件">#</a></h1><p>个人很喜欢TypeScirpt，用Ts写代码要比Js舒服太多，可以大大提高写代码的效率，减少代码维护的工作量。因为有C++、C#的基础，我上手Ts的速度也很快。虽然使用起来并没有什么困难，但是很长一段时间，没有去了解typescirpt的编译过程及配置，所以自己也不能算是真正的了解它。</p><p>工欲善其事必先利其器，如果你对ts的配置及编译过程不是很了解的话，那么这篇文章应该会对你有所帮助。</p><p>接下来的内容需要你的环境安装TypeScript，请确保安装了TypeScript，否则<code>tsc</code>命令无法识别。</p><h2 id="一.tsc">一.tsc <a href="#一.tsc">#</a></h2><p>Ts提供了一个命令行功能<code>tsc</code>，使用它可以将Ts文件编译成Js文件。</p><p>首先创建一个文件夹和<code>index.ts</code>文件，进入<code>learnTsConfig</code>文件夹。</p><pre><code>mkdir learnTsConfig
+mkdir learnTsConfig/src
+touch learnTsConfig/src/index.ts
+
+cd learnTsConfig
+</code></pre><p>可以在<code>index.ts</code>文件中输入一些Ts代码，例如：</p><pre><code class="hljs language-typescript"><span class="hljs-comment">// src/index.ts</span>
+<span class="hljs-keyword">type</span> <span class="hljs-title class_">FuncType</span> = <span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">void</span>;
+
+<span class="hljs-keyword">const</span> <span class="hljs-attr">sayHello</span>: <span class="hljs-title class_">FuncType</span> = <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"Hello Ts"</span>);
+};
+</code></pre><p>然后使用<code>tsc [ts file]</code>命令编译文件:</p><pre><code>tsc src/index.ts
+</code></pre><p>可以看到，在<code>src/index.ts</code>同目录下，有个<code>index.js</code>文件生成，该文件就是编译后生成的文件，<code>src/index.js</code>文件内容如下：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">var</span> sayHello = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"Hello Ts"</span>);
+};
+</code></pre><p>为tsc命令指定ts文件，不适用于项目中，我们不可能将所有要编译的文件路径都添加在tsc命令后面，所以通常用<strong>JSON配置文件（tsconfig.json）<strong>配置tsc编译器。当执行<code>tsc</code>命令时，ts编译器会首先在当前目录寻找<code>tsconfig.json</code>文件，如果当前目录没有<code>tsconfig.json</code>文件，它会一直向上级目录寻找，直到找到一个<code>tsconfig.json</code>文件，<code>tsconfig.json</code>文件所在的目录为项目的</strong>根目录</strong>。</p><p>如果最终没有找到一个<code>tsconfig.json</code>文件，执行<code>tsc</code>命令将不会编译任何文件，只会输出版本号及help信息。</p><p>下面详细介绍<strong>tsconfig.json</strong>文件。</p><h2 id="%E4%BA%8C.%3Ccode%3Etsconfig.json%3C/code%3E%E6%96%87%E4%BB%B6">二.<code>tsconfig.json</code>文件 <a href="#%E4%BA%8C.%3Ccode%3Etsconfig.json%3C/code%3E%E6%96%87%E4%BB%B6">#</a></h2><p><code>tsconfig.json</code>文件支持<a href="https://json5.org/">JSON5</a>的内容，所以可以在<code>tsconfig.json</code>文件中添加注释，使用单引号代。</p><p><code>tsconfig.json</code>文件结构如下：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"files"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// ...</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"target"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ES6"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"module"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"CommonJS"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"./dist/development"</span>
+    <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>下面我将配置选项分为编译选项（compilerOptions字段下的配置项）和非编译选项（compilerOptions字段外的根级选项）进行介绍。</p><p>首先在<code>learnTsConfig</code>目录下，新建<code>tsconfig.json</code>文件。</p><pre><code>touch tsconfig.json
+</code></pre><h3 id="非编译选项">非编译选项 <a href="#非编译选项">#</a></h3><p>非编译选项通常控制的是typescript编译器要编译的项目（文件）信息，例如要编译的ts文件。</p><ol><li><code>files</code></li></ol><p><code>files</code>选项用于指示哪些文件需要编译，可以添加一组文件路径，支持相对路径和绝对路径，相对路径是相对于项目根目录的，即tsconfig.json文件所在的目录，建议大家使用相对路径，避免使用绝对路径，这样即使项目换了环境也不用更改配置。</p><p>在根目录下新建文件<code>outerIndex.ts</code>文件，此时目录结构如下</p><pre><code>learnTsConfig/
+    src/
+        index.ts
+    outerIndex.ts
+    tsconfig.json
+</code></pre><p>在tsconfig.json文件中输入以下内容：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-comment">// files选项用于设置需要编译的文件</span>
+    <span class="hljs-attr">"files"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"outerIndex.ts"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">"src/index.ts"</span>
+    <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>执行<code>tsc</code>命令进行编译，编译后的文件结构如下：</p><pre><code>learnTsConfig/
+    src/
+        index.ts
+        index.js
+    outerIndex.ts
+    outerIndex.js
+    tsconfig.json
+</code></pre><ol start="2"><li><code>include</code> &amp; <code>exclude</code></li></ol><p>如果项目中文件较少的情况下，使用<code>files</code>选项设置要编译的目标文件是一个不错的选择，但是当文件特别多或者项目文件更新频繁的时候，将所有要编译的文件都写在<code>files</code>数组中就比较麻烦，每次添加一个ts文件，都要更新<code>files</code>选项。</p><p>所以ts还提供了<code>include</code>选项，这个选项与<code>files</code>类似，但是你可以使用<strong>模式匹配</strong>，删掉之前编译的js文件，更改<code>tsconfig.ts</code>文件内容如下：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"src/*.ts"</span>
+    <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>执行<code>tsc</code>编译，文件结构如下，仅<code>src/</code>目录下的<code>index.ts</code>被编译。</p><pre><code>learnTsConfig/
+    src/
+        index.ts
+        index.js
+    outerIndex.ts
+    tsconfig.json
+</code></pre><p><code>exclude</code>作用于<code>include</code>正好相反，用于排除某些文件，也支持<strong>模式匹配</strong>，清理js文件，更新<code>tsconfig.ts</code>文件内容如下：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"*.ts"</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"exclude"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"src/*.ts"</span>
+    <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p><code>include</code>选项表示，编译根目录下的所有ts文件，<code>exclude</code>表示排除<code>src/</code>目录下所有ts文件，所以<code>tsc</code>编译后的文件结构如下:</p><pre><code>learnTsConfig/
+    src/
+        index.ts
+    outerIndex.ts
+    outerIndex.js
+    tsconfig.json
+</code></pre><p>在用模式匹配时，可以不用显示添加<code>.ts</code>后缀，默认情况下typescript会自动寻找<code>.ts</code>文件和<code>.d.ts</code>文件，如果你设置了<code>allowJS</code>编译选项（后面介绍编译选项内容）为true，typescript还会寻找<code>.js</code>文件。<code>src/**/*</code>等价为<code>src/**/*.ts</code>和<code>src/**/*.d.ts</code>（如果<code>allowJs</code>为true，还包括<code>src/**/*.js</code>）。</p><p>有些文件夹，typescript会自动排除，例如<code>node_modules</code>、<code>bower_components</code>、<code>jspm_packages</code>和<code>&lt;outDir&gt;</code>。如果你要强制ts编译这些文件夹中的ts文件，需要指定<code>files</code>文件选项。</p><h3 id="编译选项">编译选项 <a href="#编译选项">#</a></h3><p>编译选项即<code>compilerOptions</code>字段下的相关配置。</p><h4 id="输出文件">输出文件 <a href="#输出文件">#</a></h4><ol><li><code>outDir</code></li></ol><p>默认情况下，ts编译后的js文件，与源文件都在同一个目录下。使用<code>outDir</code>选项可以指定编译后的文件所在的目录。清理之前编译生成的js文件。</p><pre><code>learnTsConfig/
+    src/
+        index.ts
+    outerIndex.ts
+    tsconfig.json
+</code></pre><p>更新<code>tsconfig.json</code>文件：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"**/*.ts"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist"</span>
+    <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>然后执行<code>tsc</code>命令进行编译，编译后会生成<code>dist/</code>文件夹，<code>dist/</code>目录下即编译生成的js文件，目录下的结构与项目目录结构相同。</p><pre><code>learnTsConfig/
+    dist/
+        src/
+            index.js
+        outerIndex.js
+    src/
+        index.ts
+    outerIndex.ts
+    tsconfig.json
+</code></pre><ol start="2"><li><code>rootDir</code></li></ol><p>typescirpt项目的默认的根目录为<code>tsconfig.json</code>文件所在的目录，所有的相对路径都是相对于这个根目录的。我们可以通过<code>rootDir</code>选项，更改项目的根目录位置。删除dist文件夹，更新<code>tsconfig.json</code>文件：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"**/*.ts"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"rootDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">".."</span>
+    <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>执行tsc命令，编译后的目录如下：</p><pre><code>learnTsConfig/
+    dist/
+        learnTsConfig/
+            src/
+                index.js
+            outerIndex.js
+    src/
+        index.ts
+    outerIndex.ts
+    tsconfig.json
+</code></pre><p>大多数情况下，我们保持TypeScript默认行为即可，使用<code>tsconfig.json</code>文件所在位置为项目的根目录。</p><ol start="3"><li><code>removeComments</code></li></ol><p><code>removeComments</code>选项用于删除编译后的js文件中的注释代码。</p><p>首先清理项目，更新<code>tsconfig.json</code>文件如下：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"**/*.ts"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>更新<code>src/index.ts</code>文件内容：</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">type</span> <span class="hljs-title class_">FuncType</span> = <span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">void</span>;
+
+<span class="hljs-comment">// print info: Hello Ts</span>
+<span class="hljs-keyword">const</span> <span class="hljs-attr">sayHello</span>: <span class="hljs-title class_">FuncType</span> = <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"Hello Ts"</span>);
+};
+</code></pre><p><code>tsc</code>编译，编译后的<code>dist/src/index.js</code>文件内容如下：</p><pre><code class="hljs language-javascript"><span class="hljs-comment">// print info: Hello Ts</span>
+<span class="hljs-keyword">var</span> sayHello = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"Hello Ts"</span>);
+};
+</code></pre><p>可以看到注释内容并未去掉。更新<code>tsconfig.json</code>文件：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"**/*.ts"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"removeComments"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span>
+    <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>再次编译，编译后的<code>dist/src/index.js</code>文件如下：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">var</span> sayHello = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"Hello Ts"</span>);
+};
+</code></pre><p>可以看到，注释内容被删掉了。</p><ol start="4"><li><code>module</code></li></ol><p>假设你正在开发的项目，需要在nodejs环境中运行，在项目中你使用了<code>import</code>引入模块，但是<code>nodejs</code>并不支持，nodejs使用的是<a href="http://javascript.ruanyifeng.com/nodejs/module.html">CommonJS</a>模块系统。为了使编译后的js文件<code>import</code>语句转换为<code>require</code>语句，你可以配置<code>"module": "CommonJS"</code>。</p><p>下面，我们手动试一下。更新<code>tsconfig.js</code>文件：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"**/*.ts"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"removeComments"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"module"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"CommonJS"</span>
+    <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>在src目录下添加add.ts文件，内容如下：</p><pre><code class="hljs language-typescript"><span class="hljs-comment">/**
+ * Add two numbers
+ * <span class="hljs-doctag">@param</span> a a number
+ * <span class="hljs-doctag">@param</span> b a number
+ * <span class="hljs-doctag">@returns</span> {<span class="hljs-type">number</span>} <span class="hljs-variable">sum</span>
+ */</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> add = (<span class="hljs-attr">a</span>: <span class="hljs-built_in">number</span>, <span class="hljs-attr">b</span>: <span class="hljs-built_in">number</span>):<span class="hljs-function"><span class="hljs-params">number</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> a + b;
+};
+</code></pre><p>更新<code>src/index.ts</code>文件：</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">import</span> {add} <span class="hljs-keyword">from</span> <span class="hljs-string">"./add"</span>
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">add</span>(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>));
+</code></pre><p>编译文件，查看<code>dist/src/index.js</code>内容如下，可以看到<code>import</code>语句已经转换为<code>require</code>语句。</p><pre><code class="hljs language-javascript"><span class="hljs-meta">"use strict"</span>;
+<span class="hljs-built_in">exports</span>.<span class="hljs-property">__esModule</span> = <span class="hljs-literal">true</span>;
+<span class="hljs-keyword">var</span> add_1 = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./add"</span>);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(add_1.<span class="hljs-title function_">add</span>(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>));
+</code></pre><ol start="5"><li><code>outFile</code></li></ol><p><code>outFile</code>可以指定编译后的结果文件被打包成一个<strong>bundle</strong>，即一个js文件，前提是<code>module</code>选项被设置成<code>System</code>或者<code>AMD</code>。如果想要支持其他的module选项，可以借助<a href="https://www.webpackjs.com/">webpack</a>、<a href="https://www.parceljs.cn/">parcel</a>等工具。</p><p>简单的尝试一下，更新<code>tsconfig.json</code>文件如下：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"**/*.ts"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"outFile"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist/bundle.js"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"removeComments"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"module"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"AMD"</span>
+    <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>编译后仅有<code>dist/bundle.js</code>文件生成。</p><h4 id="source map">source map <a href="#source map">#</a></h4><ol><li><code>sourceMap</code></li></ol><p>首先，简单介绍下<strong>source-map</strong>文件。source-map文件表示编译的源文件与输出的结果文件的一种映射关系，在项目调试时起到非常重要的作用，可以让我们在浏览器开发者工具中显示源文件代码进行调试，要知道浏览器运行的是编译后的代码，如果调试看着编译后的代码，那么调试是一件多么痛苦的事啊。</p><p>source-map文件由编译工具自动生成，以<code>.map</code>后缀结尾，它是一个JSON文件，结构如下。</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"version"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"file"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"bundle.js"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"sourceRoot"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">""</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"sources"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"../outerIndex.ts"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">"../src/add.ts"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-string">"../src/index.ts"</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"names"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"mappings"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"AAAA,IAAM,SAAS..."</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p><code>file</code>字段表示与该source-map文件对应的输出文件名称，<code>sources</code>字段表示的是编译源文件。<code>mapping</code>属性是<strong>base64编码值</strong>，表示源文件与输出文件之间的关系。</p><p>而编译后输出的文件末尾会有<code>sourceMappingURL</code>字段的注释，表示map文件位置，这个注释会被浏览器读取，用于定位map文件。</p><pre><code class="hljs language-javascript"><span class="hljs-comment">// b.js</span>
+<span class="hljs-keyword">var</span> b = <span class="hljs-string">'B'</span>;
+
+<span class="hljs-comment">//# sourceMappingURL=b.js.map </span>
+</code></pre><p>为了生成source-map文件，可以设置<code>sourceMap</code>字段为true。</p><p>更新<code>tsconfig.json</code>文件：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"**/*.ts"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"outFile"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist/bundle.js"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"removeComments"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"module"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"AMD"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"sourceMap"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span>
+    <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>执行<code>tsc</code>命令，编译后会生成<code>dist/bundle.js</code>和<code>dist/bundle.js.map</code>。</p><ol start="2"><li><code>inlineSourceMap</code></li></ol><p><code>sourceMap</code>选项，会为编译后的js文件生成一个分离的<code>.map</code>文件。设置<code>inlineSourceMap</code>为true的话，可以避免生成<code>.map</code>文件，将map直接内嵌在编译后的js文件中。</p><p>更新<code>tsconfig.json</code>文件：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"**/*.ts"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"outFile"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist/bundle.js"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"removeComments"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"module"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"AMD"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"inlineSourceMap"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span>
+    <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>进行编译后，查看编译后的<code>dist/bundle.js</code>文件:</p><pre><code class="hljs language-javascript">
+...
+
+<span class="hljs-comment">//# sourceMappingURL=data:application/json;base64,...</span>
+</code></pre><p>可以看到<code>sourceMappingURL</code>后面直接紧跟着base64数据（map文件内容）。</p><h4 id="类型声明">类型声明 <a href="#类型声明">#</a></h4><p>typescript最重要的作用是使js支持类型，变成一种强类型语言。</p><ol><li><code>declaration</code></li></ol><p>设置<code>declaration</code>字段为true，可以自动生成声明文件。</p><p>更新<code>tsconfig.json</code>文件：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"**/*.ts"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"removeComments"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"declaration"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span>
+    <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>执行tsc命令编译，可以看到<code>dist/**/*.d.ts</code>文件生成，该文件是对应的<code>*.js</code>文件的的声明文件。通过这些声明文件，ts编译器可以知道package的API结构，即使编译后的JavaScript文件不包含任何类型信息。</p><p>生成的dist文件目录如下：</p><pre><code>dist/
+    src/
+        add.d.ts
+        add.js
+        index.d.ts
+        index.js
+    outerIndex.d.ts
+    outInder.js
+</code></pre><ol start="2"><li><code>declarationDir</code></li></ol><p>当<code>declaration</code>设置为<code>ture</code>时，ts编译器将对应的.d.ts文件放入到编译后的js文件同级目录下。可以通过设置<code>declarationDir</code>将所有声明文件放到同一个目录下。</p><p>更新<code>tsconfig.json</code>文件如下：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"**/*.ts"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"removeComments"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"declaration"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"declarationDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist/types"</span><span class="hljs-punctuation">,</span> 
+    <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>执行tsc命令，可以看到<code>dist/types/</code>目录生成，目录下结构与源文件目录相同，只不过都是<code>.d.ts</code>声明文件。</p><ol start="3"><li><code>lib</code></li></ol><p>typescirpt内置了一些TypeScirpt声明文件，例如<code>Promise</code>、<code>Object.freeze</code>和浏览器的API的声明。这些声明文件可以提供代码提示和警告功能。通常存放在<code>lib</code>文件夹下，我们称之为标准库。通过设置<code>lib</code>字段，手动选择导入哪些库。</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"**/*.ts"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"removeComments"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"declaration"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"declarationDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist/types"</span><span class="hljs-punctuation">,</span> 
+        <span class="hljs-attr">"lib"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span> <span class="hljs-string">"ES5"</span><span class="hljs-punctuation">,</span> <span class="hljs-string">"ES2015.Promise"</span><span class="hljs-punctuation">,</span> <span class="hljs-string">"DOM"</span> <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><ol start="4"><li><code>typeRoots</code></li></ol><p>当你将你的typescript程序，发布为npm包时，你可能发布的是编译后的JavaScript包，这样非typescript程序可以引入该npm包，为了提供声明信息，你也可以提供对应的声明文件，这样typescirpt编译器和IDE（例如vscode）可以根据声明文件，提供类型提示、错误提示。为了生成声明文件，你只需要将<code>declaration</code>设置为<code>true</code>即可。</p><p>但是并不是所有的程序都是typescript写的，例如<a href="https://www.lodashjs.com/">lodash</a>，它本身就是javascript编写的，所以无法使用ts提供的功能，自动生成声明文件。所以需要手动为没有声明文件的npm包提供声明文件。</p><p><a href="https://github.com/DefinitelyTyped/DefinitelyTyped">DefinitelyTyped</a>社区的工作就是为那些比较流行的没有声明文件的npm包，提供声明文件。你可以通过安装以<code>@types</code>开头的声明文件包为某个npm包提供声明文件。</p><p>例如<code>npm install @types/lodash</code>，<code>@types/lodash</code>就是<code>lodash</code>包的声明文件。</p><p>默认情况下，typescript会从<code>node_modules/@types</code>文件夹下导入所有类型声明至全局空间，需要注意只会导入script文件中的声明至全局空间，module文件对全局空间是隐藏的。</p><p><strong>type-root</strong>就是包的声明文件存储的目录，可以通过<code>typeRoots</code>选项设置一系列为文件路径，指示typescript从哪些地方导入类型信息，默认值为<code>node_modules/@types</code>。</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"**/*.ts"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"removeComments"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"declaration"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"declarationDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist/types"</span><span class="hljs-punctuation">,</span> 
+        <span class="hljs-attr">"typeRoots"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">"./my-types"</span><span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>通过设置<code>"typeRoots": ["./my-types"]</code>，typescript将会只从<code>my-types</code>文件夹下导入声明信息，而不是从<code>node_modules</code>文件夹下。</p><ol start="5"><li><code>types</code></li></ol><p><code>typeRoots</code>用于导入目录下所有的声明至全局空间，但是如果设置了<code>types</code>，则只会导入<code>types</code>指定的包声明至全局空间。</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"types"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span> <span class="hljs-string">"node"</span><span class="hljs-punctuation">,</span> <span class="hljs-string">"moment"</span> <span class="hljs-punctuation">]</span> <span class="hljs-comment">// 导入node_modules文件夹下的@types/node和@types/moment，其他包将会被忽略</span>
+    <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><h4 id="JavaScript编译">JavaScript编译 <a href="#JavaScript编译">#</a></h4><p>默认情况下，typescript编译是不包括js文件的。可以通过<code>allowJS</code>和<code>checkJS</code>更改这一默认行为。</p><ol><li><code>allowJS</code></li></ol><p>当你在typescript文件中使用<code>import</code>语句引入模块时，例如<code>import {add} from "./add</code>，默认情况下ts编译器会自动寻找<code>src/add.ts</code>和<code>src/add.d.ts</code>，它不会去考虑<code>src/add.js</code>，我们可以通过将<code>allowJS</code>设置为<code>true</code>来更改这一默认行为。</p><p>首先，更新<code>tsconfig.json</code>文件如下：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"**/*.ts"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"removeComments"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"declaration"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>新建<code>src/add.js</code>，输入以下代码：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">add</span> = (<span class="hljs-params">a, b</span>) =&gt; {
+    <span class="hljs-keyword">return</span> a + b;
+};
+</code></pre><p>在<code>src/index.js</code>中引入<code>add</code>函数：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">import</span> {add} <span class="hljs-keyword">from</span> <span class="hljs-string">"./add"</span>;
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">add</span>(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>));
+</code></pre><p>默认情况下，<code>allowJS</code>是<code>false</code>，所以此时进行tsc编译后，编译后的<code>dist/src/</code>目录下是不会包含<code>add.js</code>文件的。</p><p>更新<code>tsconfig.json</code>文件，将<code>allowJS</code>设置为true。</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"**/*.ts"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"removeComments"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"declaration"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"allowJs"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span>
+    <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>重新编译，编译后<code>dist/src/</code>目录下会新增<code>add.d.ts</code>文件和<code>add.js</code>文件。</p><p>所以如果，你想要的你的项目支持js文件，只需要设置<code>"allowJs": true</code>即可。</p><ol start="2"><li><code>checkJs</code></li></ol><p>使用<code>allowJS</code>可以让编译器在编译阶段包含js文件，但是编译器并不会对js文件进行<strong>类型检查</strong>。类型检查是ts的一个重要的特性，有了类型检查，大大提高了我们的开发效率，所以为了能工让ts编译器对js文件进行类型检查，需要设置<code>"checkJS": true</code>。</p><p>为了进一步解释，首先在<code>add.js</code>的顶部添加<code>const num = parseInt(1.5);</code>。</p><p>然后使用tsc编译，编译成功。</p><p>然后更新<code>tsconfig.json</code>文件：</p><pre><code class="hljs language-javascript">{
+    <span class="hljs-string">"include"</span>: [
+        <span class="hljs-string">"**/*.ts"</span>,
+    ],
+    <span class="hljs-string">"compilerOptions"</span>: {
+        <span class="hljs-string">"outDir"</span>: <span class="hljs-string">"dist"</span>,
+        <span class="hljs-string">"removeComments"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">"declaration"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">"allowJs"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-string">"checkJs"</span>: <span class="hljs-literal">true</span>
+    }
+}
+</code></pre><p>再使用tsc编译，编译应该会报错。</p><pre><code class="hljs language-bash">src/add.js:1:22 - error TS2345: Argument of <span class="hljs-built_in">type</span> <span class="hljs-string">'1.5'</span> is not assignable to parameter of <span class="hljs-built_in">type</span> <span class="hljs-string">'string'</span>.
+
+1 const num = parseInt(1.5);
+                       ~~~
+
+Found 1 error.
+</code></pre><p>因为此时<code>checkJS</code>为true，ts编译器会对js文件进行类型检查，<code>parseInt</code>函数接受的参数为字符串，但是<code>1.5</code>是<code>number</code>类型，类型不兼容，所以编译失败。如果你是用的是vscode编辑器，开启了<code>checkJS</code>后，在你敲<code>const num = parseInt(1.5);</code>这句代码时，编辑器应该会给出智能错误提示。</p><h2 id="三.总结">三.总结 <a href="#三.总结">#</a></h2><p>tsconfig的配置字段有很多，本篇内容旨在介绍它的基本用法和基本结构，并不包含所有的内容。希望通过这篇文章，你能了解tsc编译器，知道如何去配置tsc编译器，理解它的原理。</p><p>更多的tsconfig配置，请查阅<a href="https://www.typescriptlang.org/tsconfig">TSConfig Reference</a>。</p><h2 id="附：参考资料">附：参考资料 <a href="#附：参考资料">#</a></h2><ul><li><p><a href="https://www.typescriptlang.org/tsconfig">TSConfig Reference</a></p></li><li><p><a href="https://www.typescriptlang.org/docs/handbook/tsconfig-json.html">TypeScript Handbook</a></p></li></ul><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/algorithm-math/regular-expression-matching">上一篇：正则表达式匹配</a></span><span class="next-article"><a href="/algorithm-math/reverse-interger">下一篇：整数反转</a></span></div></div></body></html>

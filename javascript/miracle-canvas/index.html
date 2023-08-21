@@ -1,0 +1,46 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="miracle-canvas, 可以在html canvas上添加可移动、旋转、缩放的图元。"><link rel="stylesheet" href="/assests/code_github.css"><link rel="stylesheet" href="/assests/github_markdown.css"><link rel="stylesheet" href="/assests/article.css"><link rel="stylesheet" href="/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/rss.xml"><img src="/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年4月18日</span><span class="category"><a href="/javascript">标签：JavaScript</a></span></div><div class="markdown-body"><h1 id="miracle-canvas">miracle-canvas <a href="#miracle-canvas">#</a></h1><p>最近写了一个增强html canvas功能的库miracle-canvas，使用miracle-canvas可以在html canvas上添加可移动、缩放和旋转的图元，目前图元支持自定义形状和图片。</p><p>功能如下图所示：</p><p><img src="https://cdn.jsdelivr.net/gh/pengfeiw/personal-image-cdn@1.0.0/image/miracle-canvas.gif" alt=""></p><h3 id="一. 安装">一. 安装 <a href="#一. 安装">#</a></h3><p>可以通过npm或者yarn安装:</p><pre><code class="hljs language-bash">npm install miracle-canvas
+</code></pre><p>也可以通过cdn引入：</p><pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://cdn.jsdelivr.net/gh/pengfeiw/miracle-canvas@1.0.6/src/bundle.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre><h3 id="二.使用方式">二.使用方式 <a href="#二.使用方式">#</a></h3><p>1.引入miracle-canvas</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">import</span> <span class="hljs-title class_">Miracle</span> <span class="hljs-keyword">from</span> <span class="hljs-string">"miracle-canvas"</span>;
+
+<span class="hljs-keyword">const</span> miracle = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Miracle</span>(canvas);
+</code></pre><p>2.添加图元</p><pre><code class="hljs language-javascript"><span class="hljs-comment">// create a rectangle</span>
+<span class="hljs-keyword">const</span> rect = <span class="hljs-keyword">new</span> <span class="hljs-title class_">PolyShape</span>([
+    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Point</span>(<span class="hljs-number">150</span>, <span class="hljs-number">30</span>),
+    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Point</span>(<span class="hljs-number">200</span>, <span class="hljs-number">30</span>),
+    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Point</span>(<span class="hljs-number">200</span>, <span class="hljs-number">120</span>),
+    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Point</span>(<span class="hljs-number">150</span>, <span class="hljs-number">120</span>)
+], <span class="hljs-literal">false</span>);
+rect.<span class="hljs-property">filled</span> = <span class="hljs-literal">false</span>;  <span class="hljs-comment">// set filled false</span>
+rect.<span class="hljs-property">closed</span> = <span class="hljs-literal">true</span>;
+
+<span class="hljs-comment">// create a circle</span>
+<span class="hljs-keyword">const</span> circle = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Circle</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Point</span>(<span class="hljs-number">400</span>, <span class="hljs-number">400</span>), <span class="hljs-number">50</span>);
+circle.<span class="hljs-property">strokeStyle</span> = <span class="hljs-string">"green"</span>;
+
+<span class="hljs-comment">// create a triangle</span>
+<span class="hljs-keyword">const</span> triangle = <span class="hljs-keyword">new</span> <span class="hljs-title class_">PolyShape</span>([
+    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Point</span>(<span class="hljs-number">100</span>, <span class="hljs-number">100</span>),
+    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Point</span>(<span class="hljs-number">150</span>, <span class="hljs-number">150</span>),
+    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Point</span>(<span class="hljs-number">100</span>, <span class="hljs-number">200</span>)
+]);
+triangle.<span class="hljs-property">filled</span> = <span class="hljs-literal">true</span>; <span class="hljs-comment">// set filled true</span>
+triangle.<span class="hljs-property">closed</span> = <span class="hljs-literal">true</span>;
+triangle.<span class="hljs-property">fillStyle</span> = <span class="hljs-string">"gray"</span>;
+
+<span class="hljs-comment">// create image with specific size</span>
+<span class="hljs-keyword">const</span> img = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Image</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Point</span>(<span class="hljs-number">200</span>, <span class="hljs-number">300</span>), <span class="hljs-string">"/image.png"</span>, {
+    <span class="hljs-attr">height</span>: <span class="hljs-number">150</span>,
+    <span class="hljs-attr">width</span>: <span class="hljs-number">180</span>
+});
+
+<span class="hljs-comment">// add the above entities</span>
+miracle.<span class="hljs-title function_">addEntity</span>(circle, rect, triangle, img);
+</code></pre><p>3.可以设置图元是否可见，控制点（平移、旋转、缩放）是否可见</p><pre><code class="hljs language-javascript"><span class="hljs-comment">// set the visible of entity</span>
+triangle.<span class="hljs-property">visible</span> = <span class="hljs-literal">false</span>;
+
+<span class="hljs-comment">// set visible of operate control </span>
+miracle.<span class="hljs-property">xLocked</span> = <span class="hljs-literal">false</span>;
+miracle.<span class="hljs-property">yLocked</span> = <span class="hljs-literal">false</span>;
+miracle.<span class="hljs-property">diagLocked</span> = <span class="hljs-literal">false</span>;
+miracle.<span class="hljs-property">rotateLocked</span> = <span class="hljs-literal">false</span>;
+</code></pre><h3 id="三. codepen">三. codepen <a href="#三. codepen">#</a></h3><iframe height="400" style="width:100%" scrolling="no" title="miracle-canvas" src="https://codepen.io/AhCola/embed/qBRgEQb?height=160&amp;theme-id=light&amp;default-tab=js" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">See the Pen <a href="https://codepen.io/AhCola/pen/qBRgEQb">miracle-canvas</a> by Pengfei Wang (<a href="https://codepen.io/AhCola">@AhCola</a>) on <a href="https://codepen.io">CodePen</a>.</iframe><h3 id="四.更新">四.更新 <a href="#四.更新">#</a></h3><p>这个库的基本功能才写完，后面我也会一直更新功能的，会增加更多类型的图元，每次更新我会第一时间发布到npm，并同步到github上。这个库可能会有一些bug，如果有问题欢迎在下方留言，我会加快改进修正，在这里也提前说一声谢谢。</p><ul><li>v1.0.6支持了自定义按钮，增加<code>Miracle.limitInCanvas</code>属性可以限制图元在canvas内，修复了一些bug，也增加cdn引入库使用，具体内容查看github。</li><li>v1.0.7支持触屏操作图元，支持手机等触屏设备，在实例化Miracle时，设置其支持触屏，修复框选bug。</li><li>v1.0.8修复canvas.toDataUrl错误，修复activeCollection undefined错误。</li><li>v1.0.9优化触屏操作，禁用触屏模式下的boxSelect操作。</li></ul><h3 id="五.源码">五.源码 <a href="#五.源码">#</a></h3><p>github源码：<a href="https://github.com/pengfeiw/miracle-canvas">https://github.com/pengfeiw/miracle-canvas</a></p><p>github demo：<a href="https://github.com/pengfeiw/miracle-canvas-demo">https://github.com/pengfeiw/miracle-canvas-demo</a></p><p>npm包：<a href="https://www.npmjs.com/package/miracle-canvas?activeTab=dependents">https://www.npmjs.com/package/miracle-canvas?activeTab=dependents</a></p></div><div class="markdown-footer"><span class="pre-article"><a href="/javascript/webpack-tutorial">上一篇：最简洁的webpack入门教程2021</a></span><span class="next-article"><a href="/algorithm-math/print-singleLinkList-backward">下一篇：单链表—从尾到头打印链表</a></span></div></div></body></html>

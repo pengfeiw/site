@@ -1,0 +1,220 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="TypeScript提供了一些比较实用的泛型类型，但是我们常常会忽略它们。本节我们将一起看看这些泛型的用法。"><link rel="stylesheet" href="/assests/code_github.css"><link rel="stylesheet" href="/assests/github_markdown.css"><link rel="stylesheet" href="/assests/article.css"><link rel="stylesheet" href="/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/rss.xml"><img src="/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年8月4日</span><span class="category"><a href="/javascript">标签：JavaScript</a></span></div><div class="markdown-body"><h1 id="TypeScript中内置的泛型">TypeScript中内置的泛型 <a href="#TypeScript中内置的泛型">#</a></h1><p><em>TypeScript提供了一些比较实用的泛型类型，但是我们常常会忽略它们。本节我们将一起看看这些泛型。</em></p><h2 id="泛型">泛型 <a href="#泛型">#</a></h2><h3 id="%3Ccode%3EPartial<Type>%3C/code%3E"><code>Partial&lt;Type&gt;</code> <a href="#%3Ccode%3EPartial<Type>%3C/code%3E">#</a></h3><p>从一个类型，构建一个新的类型，新的类型所有的属性都来自原类型，并且新类型所有属性都是可选的。</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Todo</span> {
+    <span class="hljs-attr">title</span>: <span class="hljs-built_in">string</span>;
+    <span class="hljs-attr">description</span>: <span class="hljs-built_in">string</span>;
+}
+
+<span class="hljs-keyword">type</span> <span class="hljs-title class_">PartialTodo</span> = <span class="hljs-title class_">Partial</span>&lt;<span class="hljs-title class_">Todo</span>&gt;;
+</code></pre><p>PartialTodo类型等价于：</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">PartialTodo</span> {
+    title?: <span class="hljs-built_in">string</span> | <span class="hljs-literal">undefined</span>;
+    description?: <span class="hljs-built_in">string</span> | <span class="hljs-literal">undefined</span>;
+}
+</code></pre><h3 id="%3Ccode%3ERequired<Type>%3C/code%3E"><code>Required&lt;Type&gt;</code> <a href="#%3Ccode%3ERequired<Type>%3C/code%3E">#</a></h3><p><code>Required&lt;Type&gt;</code>与<code>Partial&lt;Type&gt;</code>作用相反，构建一个新的类型，新的类型所有的属性都来自原类型，但是新类型所有属性都是必须的（非可选属性）。</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Props</span> {
+    a?: <span class="hljs-built_in">number</span>;
+    b?: <span class="hljs-built_in">string</span>;
+}
+<span class="hljs-keyword">type</span> T = <span class="hljs-title class_">Required</span>&lt;<span class="hljs-title class_">Props</span>&gt;;
+</code></pre><p><code>T</code>等价于：</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">interface</span> T {
+    <span class="hljs-attr">a</span>: <span class="hljs-built_in">number</span>;
+    <span class="hljs-attr">b</span>: <span class="hljs-built_in">string</span>;
+}
+</code></pre><h3 id="%3Ccode%3EReadonly<Type>%3C/code%3E"><code>Readonly&lt;Type&gt;</code> <a href="#%3Ccode%3EReadonly<Type>%3C/code%3E">#</a></h3><p>构建一个新的类型，新的类型所有的属性都来自原类型，新类型所有属性都是<strong>只读属性</strong>。</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Todo</span> {
+    <span class="hljs-attr">title</span>: <span class="hljs-built_in">string</span>;
+}
+
+<span class="hljs-keyword">const</span> <span class="hljs-attr">todo</span>: <span class="hljs-title class_">Readonly</span>&lt;<span class="hljs-title class_">Todo</span>&gt; = {
+    <span class="hljs-attr">title</span>: <span class="hljs-string">"Delete inactive users"</span>,
+};
+
+<span class="hljs-comment">// 再次给title属性赋值，会报错</span>
+todo.<span class="hljs-property">title</span> = <span class="hljs-string">"Hello"</span>;
+</code></pre><h3 id="%3Ccode%3ERecord<Keys,%20Type>%3C/code%3E"><code>Record&lt;Keys, Type&gt;</code> <a href="#%3Ccode%3ERecord<Keys,%20Type>%3C/code%3E">#</a></h3><p>构建一个新的类型，该类型的属性名称来自<code>Keys</code>，属性值的类型是<code>Type</code>类型。</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">CatInfo</span> {
+    <span class="hljs-attr">age</span>: <span class="hljs-built_in">number</span>;
+    <span class="hljs-attr">breed</span>: <span class="hljs-built_in">string</span>;
+}
+
+<span class="hljs-keyword">type</span> <span class="hljs-title class_">CatName</span> = <span class="hljs-string">"miffy"</span> | <span class="hljs-string">"boris"</span> | <span class="hljs-string">"mordred"</span>;
+
+<span class="hljs-keyword">const</span> <span class="hljs-attr">cats</span>: <span class="hljs-title class_">Record</span>&lt;<span class="hljs-title class_">CatName</span>, <span class="hljs-title class_">CatInfo</span>&gt; = {
+    <span class="hljs-attr">miffy</span>: { <span class="hljs-attr">age</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">breed</span>: <span class="hljs-string">"Persian"</span> },
+    <span class="hljs-attr">boris</span>: { <span class="hljs-attr">age</span>: <span class="hljs-number">5</span>, <span class="hljs-attr">breed</span>: <span class="hljs-string">"Maine Coon"</span> },
+    <span class="hljs-attr">mordred</span>: { <span class="hljs-attr">age</span>: <span class="hljs-number">16</span>, <span class="hljs-attr">breed</span>: <span class="hljs-string">"British Shorthair"</span> },
+};
+</code></pre><h3 id="%3Ccode%3EPick<Type,%20Keys>%3C/code%3E"><code>Pick&lt;Type, Keys&gt;</code> <a href="#%3Ccode%3EPick<Type,%20Keys>%3C/code%3E">#</a></h3><p>构建一个新的类型，新类型为<code>Type</code>类型的子集（新类型的属性集合为<code>Type</code>类型属性集合的子集）。</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Todo</span> {
+    <span class="hljs-attr">title</span>: <span class="hljs-built_in">string</span>;
+    <span class="hljs-attr">description</span>: <span class="hljs-built_in">string</span>;
+    <span class="hljs-attr">completed</span>: <span class="hljs-built_in">boolean</span>;
+}
+
+<span class="hljs-keyword">type</span> <span class="hljs-title class_">TodoPreview</span> = <span class="hljs-title class_">Pick</span>&lt;<span class="hljs-title class_">Todo</span>, <span class="hljs-string">"title"</span> | <span class="hljs-string">"completed"</span>&gt;;
+
+<span class="hljs-keyword">const</span> <span class="hljs-attr">todo</span>: <span class="hljs-title class_">TodoPreview</span> = {
+    <span class="hljs-attr">title</span>: <span class="hljs-string">"Clean room"</span>,
+    <span class="hljs-attr">completed</span>: <span class="hljs-literal">false</span>,
+};
+</code></pre><h3 id="%3Ccode%3EOmit<Type,%20Keys>%3C/code%3E"><code>Omit&lt;Type, Keys&gt;</code> <a href="#%3Ccode%3EOmit<Type,%20Keys>%3C/code%3E">#</a></h3><p>与<code>Pick&lt;Type, Keys&gt;</code>类似，但是正如它的名称一样，<code>Omit</code>表示忽略的意思。<code>Omit&lt;Type, Keys&gt;</code>构建一个新的类型，新的类型的所有属性来自于<code>Type</code>，从属性中排除<code>Keys</code>指定的属性。</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Todo</span> {
+    <span class="hljs-attr">title</span>: <span class="hljs-built_in">string</span>;
+    <span class="hljs-attr">description</span>: <span class="hljs-built_in">string</span>;
+    <span class="hljs-attr">completed</span>: <span class="hljs-built_in">boolean</span>;
+    <span class="hljs-attr">createdAt</span>: <span class="hljs-built_in">number</span>;
+}
+
+<span class="hljs-comment">// TodoPreview包含title、completed、createdAt三个属性</span>
+<span class="hljs-keyword">type</span> <span class="hljs-title class_">TodoPreview</span> = <span class="hljs-title class_">Omit</span>&lt;<span class="hljs-title class_">Todo</span>, <span class="hljs-string">"description"</span>&gt;;
+
+<span class="hljs-keyword">const</span> <span class="hljs-attr">todo</span>: <span class="hljs-title class_">TodoPreview</span> = {
+    <span class="hljs-attr">title</span>: <span class="hljs-string">"Clean room"</span>,
+    <span class="hljs-attr">completed</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-attr">createdAt</span>: <span class="hljs-number">1615544252770</span>,
+};
+
+<span class="hljs-comment">// TodoInfo包含title、description两个属性</span>
+<span class="hljs-keyword">type</span> <span class="hljs-title class_">TodoInfo</span> = <span class="hljs-title class_">Omit</span>&lt;<span class="hljs-title class_">Todo</span>, <span class="hljs-string">"completed"</span> | <span class="hljs-string">"createdAt"</span>&gt;;
+
+<span class="hljs-keyword">const</span> <span class="hljs-attr">todoInfo</span>: <span class="hljs-title class_">TodoInfo</span> = {
+    <span class="hljs-attr">title</span>: <span class="hljs-string">"Pick up kids"</span>,
+    <span class="hljs-attr">description</span>: <span class="hljs-string">"Kindergarten closes at 5pm"</span>,
+};
+</code></pre><h3 id="%3Ccode%3EExclude<Type,%20ExcludedUnion>%3C/code%3E"><code>Exclude&lt;Type, ExcludedUnion&gt;</code> <a href="#%3Ccode%3EExclude<Type,%20ExcludedUnion>%3C/code%3E">#</a></h3><p>构建一个新的联合类型（union），联合类型的每一项存在于<code>Type</code>类型中，但是不存在于<code>ExcludedUnion</code>类型中。<code>Type</code>和<code>ExcludedUnion</code>是联合类型（union）。</p><pre><code class="hljs language-typescript"><span class="hljs-comment">// type T0 = "b" | "c"</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T0</span> = <span class="hljs-title class_">Exclude</span>&lt;<span class="hljs-string">"a"</span> | <span class="hljs-string">"b"</span> | <span class="hljs-string">"c"</span>, <span class="hljs-string">"a"</span>&gt;;
+     
+<span class="hljs-comment">// type T1 = "c"</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T1</span> = <span class="hljs-title class_">Exclude</span>&lt;<span class="hljs-string">"a"</span> | <span class="hljs-string">"b"</span> | <span class="hljs-string">"c"</span>, <span class="hljs-string">"a"</span> | <span class="hljs-string">"b"</span>&gt;;
+     
+<span class="hljs-comment">// type T2 = string | number</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T2</span> = <span class="hljs-title class_">Exclude</span>&lt;<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | (<span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">void</span>), <span class="hljs-title class_">Function</span>&gt;;
+</code></pre><h3 id="%3Ccode%3EExtract<Type,%20Union>%3C/code%3E"><code>Extract&lt;Type, Union&gt;</code> <a href="#%3Ccode%3EExtract<Type,%20Union>%3C/code%3E">#</a></h3><p>构建一个新的联合类型（union），该类型的每一项既存在于<code>Type</code>中，也存在<code>Union</code>中。<code>Type</code>和<code>Union</code>是联合类型（union）。</p><pre><code class="hljs language-typescript"><span class="hljs-comment">// type T0 = "a" </span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T0</span> = <span class="hljs-title class_">Extract</span>&lt;<span class="hljs-string">"a"</span> | <span class="hljs-string">"b"</span> | <span class="hljs-string">"c"</span>, <span class="hljs-string">"a"</span> | <span class="hljs-string">"f"</span>&gt;;
+     
+<span class="hljs-comment">// type T1 = () =&gt; void</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T1</span> = <span class="hljs-title class_">Extract</span>&lt;<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | (<span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">void</span>), <span class="hljs-title class_">Function</span>&gt;;
+</code></pre><h3 id="%3Ccode%3ENonNullable<Type>%3C/code%3E"><code>NonNullable&lt;Type&gt;</code> <a href="#%3Ccode%3ENonNullable<Type>%3C/code%3E">#</a></h3><p>通过从Type中排除<code>null</code>和<code>undefined</code>，构建一个新的类型。</p><pre><code class="hljs language-typescript"><span class="hljs-comment">// type T0 = string | number</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T0</span> = <span class="hljs-title class_">NonNullable</span>&lt;<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | <span class="hljs-literal">undefined</span>&gt;;
+     
+<span class="hljs-comment">// type T1 = string[]</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T1</span> = <span class="hljs-title class_">NonNullable</span>&lt;<span class="hljs-built_in">string</span>[] | <span class="hljs-literal">null</span> | <span class="hljs-literal">undefined</span>&gt;;
+</code></pre><h3 id="%3Ccode%3EParameters<Type>%3C/code%3E"><code>Parameters&lt;Type&gt;</code> <a href="#%3Ccode%3EParameters<Type>%3C/code%3E">#</a></h3><p>从一个函数类型<code>Type</code>，构建一个由函数参数组成的元祖类型。</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">declare</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f1</span>(<span class="hljs-params">arg: { a: <span class="hljs-built_in">number</span>; b: <span class="hljs-built_in">string</span> }</span>): <span class="hljs-built_in">void</span>;
+<span class="hljs-keyword">declare</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f2</span>(<span class="hljs-params"> a: <span class="hljs-built_in">number</span>, b: <span class="hljs-built_in">string</span></span>): <span class="hljs-built_in">void</span>;
+<span class="hljs-comment">// type T0 = []</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T0</span> = <span class="hljs-title class_">Parameters</span>&lt;<span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">string</span>&gt;;
+     
+<span class="hljs-comment">// type T1 = [s: string]</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T1</span> = <span class="hljs-title class_">Parameters</span>&lt;<span class="hljs-function">(<span class="hljs-params">s: <span class="hljs-built_in">string</span></span>) =&gt;</span> <span class="hljs-built_in">void</span>&gt;;
+     
+<span class="hljs-comment">// type T2 = [arg: unknown]</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T2</span> = <span class="hljs-title class_">Parameters</span>&lt;&lt;T&gt;<span class="hljs-function">(<span class="hljs-params">arg: T</span>) =&gt;</span> T&gt;;
+
+<span class="hljs-comment">// type T3 = [arg: {</span>
+<span class="hljs-comment">//     a: number;</span>
+<span class="hljs-comment">//     b: string;</span>
+<span class="hljs-comment">// }]     </span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T3</span> = <span class="hljs-title class_">Parameters</span>&lt;<span class="hljs-keyword">typeof</span> f1&gt;;
+     
+<span class="hljs-comment">// type T4 = unknown[]</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T4</span> = <span class="hljs-title class_">Parameters</span>&lt;<span class="hljs-built_in">any</span>&gt;;
+     
+<span class="hljs-comment">// type T5 = never</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T5</span> = <span class="hljs-title class_">Parameters</span>&lt;<span class="hljs-built_in">never</span>&gt;;
+
+<span class="hljs-comment">// type T6 = [a: number, b: string]</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T6</span> = <span class="hljs-title class_">Parameters</span>&lt;<span class="hljs-keyword">typeof</span> f2&gt;;
+</code></pre><h3 id="%3Ccode%3EConstructorParameters<Type>%3C/code%3E"><code>ConstructorParameters&lt;Type&gt;</code> <a href="#%3Ccode%3EConstructorParameters<Type>%3C/code%3E">#</a></h3><p>与<code>Parameters&lt;Type&gt;</code>类似，但是<code>ConstructorParameters&lt;Type&gt;</code>的<code>Type</code>是构造函数类型。它构建一个由构造函数参数组成的元祖类型。</p><pre><code class="hljs language-typescript"><span class="hljs-comment">// type T0 = [message?: string]</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T0</span> = <span class="hljs-title class_">ConstructorParameters</span>&lt;<span class="hljs-title class_">ErrorConstructor</span>&gt;;
+
+<span class="hljs-comment">// type T1 = string[]</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T1</span> = <span class="hljs-title class_">ConstructorParameters</span>&lt;<span class="hljs-title class_">FunctionConstructor</span>&gt;;
+     
+<span class="hljs-comment">// type T2 = [pattern: string | RegExp, flags?: string]</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T2</span> = <span class="hljs-title class_">ConstructorParameters</span>&lt;<span class="hljs-title class_">RegExpConstructor</span>&gt;;
+     
+<span class="hljs-comment">// type T3 = unknown[]</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T3</span> = <span class="hljs-title class_">ConstructorParameters</span>&lt;<span class="hljs-built_in">any</span>&gt;;
+</code></pre><h3 id="%3Ccode%3EReturnType<Type>%3C/code%3E"><code>ReturnType&lt;Type&gt;</code> <a href="#%3Ccode%3EReturnType<Type>%3C/code%3E">#</a></h3><p>从函数返回值类型，构建一个新的类型。</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">declare</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f1</span>(<span class="hljs-params"></span>): { <span class="hljs-attr">a</span>: <span class="hljs-built_in">number</span>; <span class="hljs-attr">b</span>: <span class="hljs-built_in">string</span> };
+
+<span class="hljs-comment">// type T0 = string</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T0</span> = <span class="hljs-title class_">ReturnType</span>&lt;<span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">string</span>&gt;;
+     
+<span class="hljs-comment">// type T1 = void</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T1</span> = <span class="hljs-title class_">ReturnType</span>&lt;<span class="hljs-function">(<span class="hljs-params">s: <span class="hljs-built_in">string</span></span>) =&gt;</span> <span class="hljs-built_in">void</span>&gt;;
+     
+<span class="hljs-comment">// type T2 = unknown</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T2</span> = <span class="hljs-title class_">ReturnType</span>&lt;&lt;T&gt;<span class="hljs-function">() =&gt;</span> T&gt;;
+     
+<span class="hljs-comment">// type T3 = number[]</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T3</span> = <span class="hljs-title class_">ReturnType</span>&lt;&lt;T <span class="hljs-keyword">extends</span> U, U <span class="hljs-keyword">extends</span> <span class="hljs-built_in">number</span>[]&gt;<span class="hljs-function">() =&gt;</span> T&gt;;
+
+<span class="hljs-comment">// type T4 = {</span>
+<span class="hljs-comment">//     a: number;</span>
+<span class="hljs-comment">//     b: string;</span>
+<span class="hljs-comment">// } </span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T4</span> = <span class="hljs-title class_">ReturnType</span>&lt;<span class="hljs-keyword">typeof</span> f1&gt;;
+
+<span class="hljs-comment">// type T5 = any</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T5</span> = <span class="hljs-title class_">ReturnType</span>&lt;<span class="hljs-built_in">any</span>&gt;;
+     
+<span class="hljs-comment">// type T6 = never</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T6</span> = <span class="hljs-title class_">ReturnType</span>&lt;<span class="hljs-built_in">never</span>&gt;; 
+</code></pre><h3 id="%3Ccode%3EInstanceType<Type>%3C/code%3E"><code>InstanceType&lt;Type&gt;</code> <a href="#%3Ccode%3EInstanceType<Type>%3C/code%3E">#</a></h3><p>从实例类型构建一个新的类型。</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">C</span> {
+  x = <span class="hljs-number">0</span>;
+  y = <span class="hljs-number">0</span>;
+}
+
+<span class="hljs-comment">// type T0 = C</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T0</span> = <span class="hljs-title class_">InstanceType</span>&lt;<span class="hljs-keyword">typeof</span> C&gt;;
+
+<span class="hljs-comment">// type T1 = any</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T1</span> = <span class="hljs-title class_">InstanceType</span>&lt;<span class="hljs-built_in">any</span>&gt;;
+
+<span class="hljs-comment">// type T2 = never</span>
+<span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T2</span> = <span class="hljs-title class_">InstanceType</span>&lt;<span class="hljs-built_in">never</span>&gt;;
+</code></pre><h3 id="%3Ccode%3EThisParameterType<Type>%3C/code%3E"><code>ThisParameterType&lt;Type&gt;</code> <a href="#%3Ccode%3EThisParameterType<Type>%3C/code%3E">#</a></h3><p>从一个函数类型中的<code>this</code>指针，提取类型。如果函数没有<code>this</code>，返回<code>unknow</code>。</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">toHex</span>(<span class="hljs-params"><span class="hljs-variable language_">this</span>: <span class="hljs-built_in">Number</span></span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>);
+}
+
+<span class="hljs-comment">// n: Number</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">numberToString</span>(<span class="hljs-params">n: ThisParameterType&lt;<span class="hljs-keyword">typeof</span> toHex&gt;</span>) {
+    <span class="hljs-keyword">return</span> toHex.<span class="hljs-title function_">apply</span>(n);
+}
+</code></pre><h3 id="%3Ccode%3EOmitThisParameter<Type>%3C/code%3E"><code>OmitThisParameter&lt;Type&gt;</code> <a href="#%3Ccode%3EOmitThisParameter<Type>%3C/code%3E">#</a></h3><p>从函数类型中移除this参数，构建新的函数类型。如果<code>Type</code>没有显示的声明<code>this</code>参数，结果就等于<code>Type</code>。</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">toHex</span>(<span class="hljs-params"><span class="hljs-variable language_">this</span>: <span class="hljs-built_in">Number</span></span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>);
+}
+
+<span class="hljs-comment">// const fiveToHex: () =&gt; string</span>
+<span class="hljs-keyword">const</span> <span class="hljs-attr">fiveToHex</span>: <span class="hljs-title class_">OmitThisParameter</span>&lt;<span class="hljs-keyword">typeof</span> toHex&gt; = toHex.<span class="hljs-title function_">bind</span>(<span class="hljs-number">5</span>);
+</code></pre><h3 id="%3Ccode%3EThisType<Type>%3C/code%3E"><code>ThisType&lt;Type&gt;</code> <a href="#%3Ccode%3EThisType<Type>%3C/code%3E">#</a></h3><p>使用<code>ThisType&lt;Type&gt;</code>泛型类型之前，必须开启<code>--noImplicitThis</code>。 官方文档的说明，对我来说有些复杂，文档是这样描述的：</p><blockquote><p>This utility does not return a transformed type. Instead, it serves as a marker for a contextual this type. Note that the --noImplicitThis flag must be enabled to use this utility.</p></blockquote><p>官方给出的例子如下：</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">type</span> <span class="hljs-title class_">ObjectDescriptor</span>&lt;D, M&gt; = {
+    data?: D;
+    methods?: M &amp; <span class="hljs-title class_">ThisType</span>&lt;D &amp; M&gt;; <span class="hljs-comment">// Type of 'this' in methods is D &amp; M</span>
+};
+
+<span class="hljs-keyword">function</span> makeObject&lt;D, M&gt;(<span class="hljs-attr">desc</span>: <span class="hljs-title class_">ObjectDescriptor</span>&lt;D, M&gt;): D &amp; M {
+    <span class="hljs-keyword">let</span> <span class="hljs-attr">data</span>: <span class="hljs-built_in">object</span> = desc.<span class="hljs-property">data</span> || {};
+    <span class="hljs-keyword">let</span> <span class="hljs-attr">methods</span>: <span class="hljs-built_in">object</span> = desc.<span class="hljs-property">methods</span> || {};
+    <span class="hljs-keyword">return</span> { ...data, ...methods } <span class="hljs-keyword">as</span> D &amp; M;
+}
+
+<span class="hljs-keyword">let</span> obj = <span class="hljs-title function_">makeObject</span>({
+    <span class="hljs-attr">data</span>: { <span class="hljs-attr">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">0</span> },
+    <span class="hljs-attr">methods</span>: {
+        <span class="hljs-title function_">moveBy</span>(<span class="hljs-params">dx: <span class="hljs-built_in">number</span>, dy: <span class="hljs-built_in">number</span></span>) {
+            <span class="hljs-variable language_">this</span>.<span class="hljs-property">x</span> += dx; <span class="hljs-comment">// Strongly typed this</span>
+            <span class="hljs-variable language_">this</span>.<span class="hljs-property">y</span> += dy; <span class="hljs-comment">// Strongly typed this</span>
+        },
+    },
+});
+
+obj.<span class="hljs-property">x</span> = <span class="hljs-number">10</span>;
+obj.<span class="hljs-property">y</span> = <span class="hljs-number">20</span>;
+obj.<span class="hljs-title function_">moveBy</span>(<span class="hljs-number">5</span>, <span class="hljs-number">5</span>);
+</code></pre><p>如果你也没有看懂上面的例子，可以按照我的方式去理解。当你给一个object的类型添加<code>&amp; ThisType&lt;WhateverYouWantThisToBe&gt;</code>，那么这个object中所有方法的this参数类型都会是<code>WhateverYouWantThisToBe</code>。所以上面的例子中的<code>moveBy</code>方法的<code>this</code>类型为<code>D &amp; M</code>。</p><p>在看一个例子：</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">HelperThisValue</span> {
+    <span class="hljs-attr">logError</span>: <span class="hljs-function">(<span class="hljs-params">error: <span class="hljs-built_in">string</span></span>) =&gt;</span> <span class="hljs-built_in">void</span>;
+}
+
+<span class="hljs-comment">// helperFunctions中所有方法的this类型都为HelperThisValue</span>
+<span class="hljs-keyword">let</span> <span class="hljs-attr">helperFunctions</span>: { [<span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>]: <span class="hljs-title class_">Function</span> } &amp; <span class="hljs-title class_">ThisType</span>&lt;<span class="hljs-title class_">HelperThisValue</span>&gt; = {
+    <span class="hljs-attr">hello</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">logError</span>(<span class="hljs-string">"Error: Something went wrong!"</span>); <span class="hljs-comment">// TypeScript successfully recognizes that "logError" is a part of "this".</span>
+        <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">update</span>(); <span class="hljs-comment">// TS2339: Property 'update' does not exist on HelperThisValue.</span>
+    }
+}
+
+<span class="hljs-title function_">registerHelpers</span>(helperFunctions);
+</code></pre><h2 id="附：参考资料">附：参考资料 <a href="#附：参考资料">#</a></h2><p>typescript handbook: <a href="https://www.typescriptlang.org/docs/handbook/utility-types.html">Utility Types</a></p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/site/website-update-2021">上一篇：网站更新（2021年）</a></span><span class="next-article"><a href="/developer-handbook/regular-expression">下一篇：正则表达式</a></span></div></div></body></html>

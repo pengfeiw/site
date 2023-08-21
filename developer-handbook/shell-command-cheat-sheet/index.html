@@ -1,0 +1,203 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="shell,linux,command,bash,cheat sheet"><meta name="description" content="linux shell 常用命令速查表"><link rel="stylesheet" href="/assests/code_github.css"><link rel="stylesheet" href="/assests/github_markdown.css"><link rel="stylesheet" href="/assests/article.css"><link rel="stylesheet" href="/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/rss.xml"><img src="/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2023年2月26日</span><span class="category"><a href="/developer-handbook">标签：Developer</a></span></div><div class="markdown-body"><h1 id="CheatSheet For Linux Command">CheatSheet For Linux Command <a href="#CheatSheet For Linux Command">#</a></h1><p>github: <a href="https://github.com/pengfeiw/cheat-sheet/blob/main/Shell%20command.md">https://github.com/pengfeiw/cheat-sheet/blob/main/Shell%20command.md</a></p><h2 id="working with commands">working with commands <a href="#working with commands">#</a></h2><pre><code class="hljs language-bash"><span class="hljs-comment"># *********************************************************************************</span>
+<span class="hljs-comment"># There are four type commands:</span>
+<span class="hljs-comment">#   1. Executable program: like all those files in /usr/bin. Programs can be compiled binaries such as programs written in C and C++.</span>
+<span class="hljs-comment">#   2. Command built into shell itself. Such as cd.</span>
+<span class="hljs-comment">#   3. shell function.</span>
+<span class="hljs-comment">#   4. alias.</span>
+<span class="hljs-comment"># *********************************************************************************</span>
+
+<span class="hljs-comment"># display type of command</span>
+$ <span class="hljs-built_in">type</span> &lt;<span class="hljs-built_in">command</span>&gt;
+<span class="hljs-comment"># display na executable's location</span>
+$ <span class="hljs-built_in">which</span> &lt;executable&gt;
+<span class="hljs-comment"># get help for shell builtin commands</span>
+$ <span class="hljs-built_in">help</span> &lt;<span class="hljs-built_in">command</span>&gt;
+<span class="hljs-comment"># display useful infos: command syntax and options</span>
+$ &lt;<span class="hljs-built_in">command</span>&gt; --<span class="hljs-built_in">help</span>
+<span class="hljs-comment"># display program's manual page</span>
+$ man &lt;<span class="hljs-built_in">command</span>&gt;
+<span class="hljs-comment"># display the name and on-line description of man page</span>
+$ whatis &lt;<span class="hljs-built_in">command</span>&gt;
+<span class="hljs-comment"># give a alias to command</span>
+$ <span class="hljs-built_in">alias</span> &lt;<span class="hljs-built_in">alias</span>&gt;=&lt;<span class="hljs-built_in">command</span>&gt;
+<span class="hljs-comment"># unalias</span>
+$ <span class="hljs-built_in">unalias</span> &lt;<span class="hljs-built_in">alias</span>&gt;
+</code></pre><h2 id="navigation">navigation <a href="#navigation">#</a></h2><pre><code class="hljs language-bash"><span class="hljs-comment"># print working directory</span>
+$ <span class="hljs-built_in">pwd</span> 
+<span class="hljs-comment"># jump to /usr/bin</span>
+$ <span class="hljs-built_in">cd</span> /usr/bin 
+<span class="hljs-comment"># jump to parent directory</span>
+$ <span class="hljs-built_in">cd</span> .. 
+<span class="hljs-comment"># jump to home directory</span>
+$ <span class="hljs-built_in">cd</span> ~ 
+<span class="hljs-comment"># jump to previous directory</span>
+$ <span class="hljs-built_in">cd</span> - 
+<span class="hljs-comment"># jump to specific user home directory</span>
+$ <span class="hljs-built_in">cd</span> ~&lt;user_name&gt;
+</code></pre><h2 id="Looking Around">Looking Around <a href="#Looking Around">#</a></h2><pre><code class="hljs language-bash"><span class="hljs-comment"># list contents of working directory</span>
+$ <span class="hljs-built_in">ls</span>
+<span class="hljs-comment"># list contents of /bin directory</span>
+$ <span class="hljs-built_in">ls</span> /bin 
+<span class="hljs-comment"># list files in working directory in long format</span>
+$ <span class="hljs-built_in">ls</span> -l
+<span class="hljs-comment"># list files in /etc and /bin directory</span>
+$ <span class="hljs-built_in">ls</span> -l /etc /bin
+<span class="hljs-comment"># view text_file content</span>
+$ less &lt;text_file&gt;
+<span class="hljs-comment"># detect what kind of data a file contains</span>
+$ file &lt;name_of_file&gt;
+</code></pre><h2 id="Manipulating Files">Manipulating Files <a href="#Manipulating Files">#</a></h2><pre><code class="hljs language-bash"><span class="hljs-comment"># copy file1 to file2 </span>
+$ <span class="hljs-built_in">cp</span> &lt;file1&gt; &lt;file2&gt;
+<span class="hljs-comment"># copy multiple files to a different directory</span>
+$ <span class="hljs-built_in">cp</span> &lt;file&gt;... &lt;directory&gt;
+<span class="hljs-comment"># copy file1 to file2, if file2 already exist, the user is prompted before overwritten</span>
+$ <span class="hljs-built_in">cp</span> -i &lt;file1&gt; &lt;file2&gt;
+<span class="hljs-comment"># copy the contents include subdirectory of the directory dir1 to directory dir2</span>
+$ <span class="hljs-built_in">cp</span> -R &lt;dir1&gt; &lt;dir2&gt;
+<span class="hljs-comment"># move file1 to file2, like a rename operate, rename file file1 to file2</span>
+$ <span class="hljs-built_in">mv</span> &lt;file1&gt; &lt;file2&gt;
+<span class="hljs-comment"># move files (and/or directories) to a different directory</span>
+$ move &lt;file...&gt; &lt;directory&gt;
+<span class="hljs-comment"># rename file file1 to file2, if file2 already exist, the user is prompted before overwritten</span>
+$ move -i &lt;file1&gt; &lt;file2&gt;
+<span class="hljs-comment"># remove files</span>
+$ <span class="hljs-built_in">rm</span> &lt;file...&gt;
+<span class="hljs-comment"># remove directories</span>
+$ <span class="hljs-built_in">rm</span> -r &lt;directory...&gt;
+<span class="hljs-comment"># the user is prompted before delete file1 and file2</span>
+$ <span class="hljs-built_in">rm</span> -i &lt;file1&gt; &lt;file2&gt;
+<span class="hljs-comment"># create directories</span>
+$ <span class="hljs-built_in">mkdir</span> &lt;directory...&gt;
+<span class="hljs-comment"># create hard link for file</span>
+$ <span class="hljs-built_in">ln</span> &lt;file&gt; &lt;<span class="hljs-built_in">link</span>&gt;
+<span class="hljs-comment"># create a symbolic link where item is either a file or a directory</span>
+$ <span class="hljs-built_in">ln</span> -s &lt;item&gt; &lt;<span class="hljs-built_in">link</span>&gt;
+<span class="hljs-comment"># concatenate files, and print the result to standard output</span>
+$ <span class="hljs-built_in">cat</span> &lt;file...&gt;
+</code></pre><h2 id="redirection">redirection <a href="#redirection">#</a></h2><pre><code class="hljs language-bash"><span class="hljs-comment"># More information with redirection: https://www.pengfeixc.com/blogs/developer-handbook/pipelines-in-shell</span>
+<span class="hljs-comment"># redirect standard output to test.txt</span>
+$ <span class="hljs-built_in">echo</span> Hello World &gt; test.txt
+<span class="hljs-comment"># redirect standard output to test.txt with append mode</span>
+$ <span class="hljs-built_in">echo</span> Hello World &gt;&gt; test.txt
+<span class="hljs-comment"># redirect standard error with</span>
+$ <span class="hljs-built_in">ls</span> -l /bin/usr 2&gt; ls-error.txt
+<span class="hljs-comment"># redirect standard output and standard error to one file</span>
+$ <span class="hljs-built_in">ls</span> -l /bin/usr &gt; ls-output.txt 2&gt;&amp;1
+<span class="hljs-comment"># /dev/null is a special file, called bit bucket, which accepts input and does nothing with it</span>
+$ <span class="hljs-built_in">ls</span> -l /bin/usr 2&gt; /dev/null
+<span class="hljs-comment"># join file1 and file2 to new_file</span>
+$ <span class="hljs-built_in">cat</span> file1 file2 &gt; new_file
+<span class="hljs-comment"># pipelines: redirect a standard output of a command to standard input</span>
+$ command1 | command2
+</code></pre><h2 id="filters">filters <a href="#filters">#</a></h2><pre><code class="hljs language-bash"><span class="hljs-comment"># sort: sort lines</span>
+$ <span class="hljs-built_in">ls</span> /bin /usr/bin | <span class="hljs-built_in">sort</span>
+<span class="hljs-comment"># uniq: report or omit repeated lines</span>
+$ <span class="hljs-built_in">ls</span> /bin /usr/bin | <span class="hljs-built_in">uniq</span>
+<span class="hljs-comment"># wc: print Line, word and byte counts</span>
+$ <span class="hljs-built_in">wc</span> ls-output.txt
+<span class="hljs-comment"># only print the line count of ls-output.txt</span>
+$ <span class="hljs-built_in">wc</span> -l ls-output.txt
+<span class="hljs-comment"># print lines matching a pattern</span>
+$ grep &lt;pattern&gt; &lt;file...&gt;
+<span class="hljs-comment"># list all files whose name contains 'zip'</span>
+$ <span class="hljs-built_in">ls</span> /bin /usr/bin | grep zip
+<span class="hljs-comment"># print first part of files</span>
+$ <span class="hljs-built_in">head</span> -n 5 ls-output.txt
+<span class="hljs-comment"># print last part of files</span>
+$ <span class="hljs-built_in">tail</span> -n 5 ls-output.txt
+$ <span class="hljs-built_in">ls</span> /usr/bin | <span class="hljs-built_in">tail</span> -n 5
+<span class="hljs-comment"># tee: read from stdin and output to stdout and files</span>
+$ <span class="hljs-built_in">ls</span> /usr/bin | <span class="hljs-built_in">tee</span> ls.txt | grep zip
+</code></pre><h2 id="expansion">expansion <a href="#expansion">#</a></h2><pre><code class="hljs language-bash"><span class="hljs-comment"># the * character means match any characters in a filename</span>
+$ <span class="hljs-built_in">echo</span> *
+$ <span class="hljs-built_in">echo</span> D*
+<span class="hljs-comment"># [[:upper:]] means uppercase</span>
+$ <span class="hljs-built_in">echo</span> [[:upper:]]*
+<span class="hljs-comment"># [!a]* means all file whose name not start with 'a'</span>
+$ <span class="hljs-built_in">echo</span> [!a]*
+<span class="hljs-comment"># ~ means home path for current user</span>
+$ <span class="hljs-built_in">echo</span> ~
+<span class="hljs-comment"># ~foo means home path for user 'foo'</span>
+$ <span class="hljs-built_in">echo</span> ~foo
+<span class="hljs-comment"># arithmetic expansion</span>
+$ <span class="hljs-built_in">echo</span> $((<span class="hljs-number">2</span>+<span class="hljs-number">2</span>))
+<span class="hljs-comment"># brace expansion</span>
+$ <span class="hljs-built_in">echo</span> Front-{A,B,C}-Back
+$ <span class="hljs-built_in">echo</span> Number_{1..5}
+$ <span class="hljs-built_in">echo</span> {01..15}
+$ <span class="hljs-built_in">echo</span> {Z..A}
+$ <span class="hljs-built_in">echo</span> a{A{1,2},B{3,4}}b
+<span class="hljs-comment"># variable expansion</span>
+$ <span class="hljs-built_in">echo</span> <span class="hljs-variable">$USER</span>
+<span class="hljs-comment"># see a list of available variables</span>
+$ <span class="hljs-built_in">printenv</span> | less
+<span class="hljs-comment"># command substitution: use the output of a command as an expansion</span>
+$ <span class="hljs-built_in">echo</span> $(<span class="hljs-built_in">ls</span>)
+$ <span class="hljs-built_in">ls</span> -l $(<span class="hljs-built_in">which</span> <span class="hljs-built_in">cp</span>)
+</code></pre><h2 id="quotes">quotes <a href="#quotes">#</a></h2><pre><code class="hljs language-bash"><span class="hljs-comment"># double quotes: all the special characters used by the shell lose their special meaning and are treated as ordinary characters. The exceptions are $, \ (backslash), and ` (back-quote).</span>
+$ <span class="hljs-built_in">ls</span> -l two words.txt
+<span class="hljs-built_in">ls</span>: cannot access two: No such file or directory
+<span class="hljs-built_in">ls</span>: cannot access words.txt: No such file or directory
+$ <span class="hljs-built_in">ls</span> -l <span class="hljs-string">"two words.txt"</span>
+-rw-rw-r-- 1 me me 18 2016-02-20 13:03 two words.txt
+$ <span class="hljs-built_in">mv</span> <span class="hljs-string">"two words.txt"</span> two_words.txt
+<span class="hljs-comment"># parameter expansion, arithmetic expansion, and command substitution still take place within double quotes.</span>
+$ <span class="hljs-built_in">echo</span> <span class="hljs-string">"<span class="hljs-variable">$USER</span> <span class="hljs-subst">$((2+2)</span>) <span class="hljs-subst">$(cal)</span>"</span>
+<span class="hljs-comment"># not remove extra spaces in our text</span>
+$ <span class="hljs-built_in">echo</span> this is a   <span class="hljs-built_in">test</span>
+this is a <span class="hljs-built_in">test</span>
+$ <span class="hljs-built_in">echo</span> <span class="hljs-string">"this is a   test"</span>
+this is a   <span class="hljs-built_in">test</span>
+<span class="hljs-comment"># single quotes: suppress all expansions</span>
+$ <span class="hljs-built_in">echo</span> <span class="hljs-string">'text ~/*.txt {a,b} $(echo foo) $((2+2)) $USER'</span>
+text ~/*.txt {a,b} $(<span class="hljs-built_in">echo</span> foo) $((<span class="hljs-number">2</span>+<span class="hljs-number">2</span>)) <span class="hljs-variable">$USER</span>
+<span class="hljs-comment"># escaping characters: \</span>
+$ <span class="hljs-built_in">echo</span> <span class="hljs-string">"The balance for user <span class="hljs-variable">$USER</span> is: \$5.00"</span>
+</code></pre><h2 id="tricks">tricks <a href="#tricks">#</a></h2><pre><code class="hljs language-bash"><span class="hljs-comment"># *********************************************************************************</span>
+<span class="hljs-comment"># cursor movement:</span>
+<span class="hljs-comment">#   'Ctrl-a' Move cursor to the beginning of the line.</span>
+<span class="hljs-comment">#   'Ctrl-e' Move cursor to the end of the line.</span>
+<span class="hljs-comment">#   'Ctrl-f' Move cursor forward one character; same as the right arrow key.</span>
+<span class="hljs-comment">#   'Ctrl-b' Move cursor backward one character; same as the left arrow key.</span>
+<span class="hljs-comment">#   'Alt-f' Move cursor forward one word.</span>
+<span class="hljs-comment">#   'Alt-b' Move cursor backward one word.</span>
+<span class="hljs-comment">#   'Ctrl-l' Clear the screen and move the cursor to the top-left corner. The clear command does the same thing.</span>
+<span class="hljs-comment"># modify text:</span>
+<span class="hljs-comment">#   'Ctrl-d' Delete the character at the cursor location.</span>
+<span class="hljs-comment">#   'Ctrl-t' Transpose (exchange) the character at the cursor location with the one preceding it.</span>
+<span class="hljs-comment">#   'Alt-t' Transpose the word at the cursor location with the one preceding it.</span>
+<span class="hljs-comment">#   'Alt-l' Convert the characters from the cursor location to the end of the word to lowercase.</span>
+<span class="hljs-comment">#   'Alt-u' Convert the characters from the cursor location to the end of the word to uppercase.</span>
+<span class="hljs-comment"># cutting and pasting (killing and yanking) text:</span>
+<span class="hljs-comment">#   `Ctrl-k` Kill text from the cursor location to the end of line.</span>
+<span class="hljs-comment">#   `Ctrl-u` Kill text from the cursor location to the beginning of the line.</span>
+<span class="hljs-comment">#   `Alt-d` Kill text from the cursor location to the end of the current word.</span>
+<span class="hljs-comment">#   `Alt-Backspace Kill text from the cursor location to the beginning of the current word. If the cursor is at the beginning of a word, kill the previous word.</span>
+<span class="hljs-comment">#   `Ctrl-y` Yank text from the kill-ring and insert it at the cursor location.</span>
+<span class="hljs-comment"># *********************************************************************************</span>
+<span class="hljs-comment"># clear the screen</span>
+$ clear
+<span class="hljs-comment"># display the contents of history list</span>
+$ <span class="hljs-built_in">history</span>
+</code></pre><h2 id="permissions">permissions <a href="#permissions">#</a></h2><pre><code class="hljs language-bash"><span class="hljs-comment"># *********************************************************************************</span>
+<span class="hljs-comment"># id – Display user identity</span>
+<span class="hljs-comment"># chmod – Change a file's mode</span>
+<span class="hljs-comment"># umask – Set the default file permissions</span>
+<span class="hljs-comment"># su – Run a shell as another user</span>
+<span class="hljs-comment"># sudo – Execute a command as another user</span>
+<span class="hljs-comment"># chown – Change a file's owner</span>
+<span class="hljs-comment"># chgrp – Change a file's group ownership</span>
+<span class="hljs-comment"># passwd – Change a user's password</span>
+<span class="hljs-comment"># *********************************************************************************</span>
+</code></pre><h2 id="processes">processes <a href="#processes">#</a></h2><pre><code class="hljs language-bash"><span class="hljs-comment"># *********************************************************************************</span>
+<span class="hljs-comment"># job control reference: https://www.pengfeixc.com/blogs/developer-handbook/shell-job-control</span>
+<span class="hljs-comment"># ps – Report a snapshot of current processes</span>
+<span class="hljs-comment"># top – Display tasks</span>
+<span class="hljs-comment"># jobs – List active jobs</span>
+<span class="hljs-comment"># bg – Place a job in the background</span>
+<span class="hljs-comment"># fg – Place a job in the foreground</span>
+<span class="hljs-comment"># kill – Send a signal to a process</span>
+<span class="hljs-comment"># killall – Kill processes by name</span>
+<span class="hljs-comment"># shutdown – Shutdown or reboot the system</span>
+<span class="hljs-comment"># *********************************************************************************</span>
+</code></pre><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/computer-graphics/matrix-stand-for-vectors-points">上一篇：坐标系、点和向量的矩阵表示</a></span><span class="next-article"><a href="/clang/gdb-cheat-sheet">下一篇：GDB Cheat Sheet</a></span></div></div></body></html>

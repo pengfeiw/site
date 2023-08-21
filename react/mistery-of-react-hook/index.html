@@ -1,0 +1,169 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="通过自己实现react及hook，了解react是如何运行的。"><link rel="stylesheet" href="/assests/code_github.css"><link rel="stylesheet" href="/assests/github_markdown.css"><link rel="stylesheet" href="/assests/article.css"><link rel="stylesheet" href="/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/rss.xml"><img src="/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年5月18日</span><span class="category"><a href="/react">标签：React</a></span></div><div class="markdown-body"><h1 id="React hook的神秘面纱">React hook的神秘面纱 <a href="#React hook的神秘面纱">#</a></h1><p><img src="https://pengfeiw.github.io/images/blog/12.jpg" alt=""></p><p>众所周知，React有类组件和函数组件两种形式的组件，开发者可以使用类组件和函数组件达到相同的目的，构建完全一样的页面。自从去年八月份接触React以来，我一直使用的就是函数组件，因为公司推荐使用函数组件。不得不说函数组件比类组件好用很多。使用函数组件，不用去考虑复杂的组件生命周期，因为组件的生命周期都被hook替代了，你可以使用useEffect实现类组件的<code>componentDidUpdate</code>、<code>componentDidMount</code>和<code>componentWillUnmount</code>。在感叹hook强大的同时，我也经常在想<strong>React到底是怎么实现useEffect和useState hook的呢</strong>？函数组件每次渲染，都仅仅是将组件函数执行一遍，函数不是instance（无this指针），那么组件的状态是如何记录和更新的呢？可能你也和我一样，都会猜到函数组件的状态是通过**闭包（closure）**实现的，那么恭喜你，你猜的是对的，hook就是利用了闭包的思想。对闭包不了解的伙伴，请先移步<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Closures">MDN</a>，学习下闭包的概念，在来到这里继续阅读。</p><p>本篇文章时长大约15分钟，相信你看完后必定有所收获。 文章内容主要是通过自己手动实现一个模拟的React加深了解hook的工作原理。包括最常用的useEffect和useState的实现。我参考了一些博客和资料，然后自己手动整理实践。</p><p><a href="https://github.com/pengfeiw/smallJsCodeDemo/blob/master/realizeReactHook.js">本篇文章代码github: https://github.com/pengfeiw/smallJsCodeDemo/blob/master/realizeReactHook.js</a></p><h3 id="一.基础">一.基础 <a href="#一.基础">#</a></h3><p>在模拟实现React之前，我们必须了解一些概念。</p><h4 id="1. JSX">1. JSX <a href="#1. JSX">#</a></h4><p>JSX就是一个普通的javascript对象，Babel 会把 JSX 转译成一个名为 React.createElement() 函数调用。 例如下面两段代码，是等价的。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> element = (
+  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"greeting"</span>&gt;</span>
+    Hello, world!
+  <span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>
+);
+
+<span class="hljs-comment">// 经过babel转译后</span>
+<span class="hljs-keyword">const</span> element = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">createElement</span>(
+  <span class="hljs-string">'h1'</span>,
+  {<span class="hljs-attr">className</span>: <span class="hljs-string">'greeting'</span>},
+  <span class="hljs-string">'Hello, world!'</span>
+);
+</code></pre><p>React.createElement返回的就是一个普通的javascript Object.</p><h4 id="2. 渲染实际就是执行函数">2. 渲染实际就是执行函数 <a href="#2. 渲染实际就是执行函数">#</a></h4><p>函数组件每次重新渲染，其实就是组件的函数执行一次。</p><p>例如下面的App组件每次重新渲染，其实就是执行App(props)。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-title function_">App</span> = (<span class="hljs-params">props</span>) =&gt; {
+    ...
+};
+</code></pre><h3 id="二. 模拟React">二. 模拟React <a href="#二. 模拟React">#</a></h3><h4 id="1. 一个简单的React">1. 一个简单的React <a href="#1. 一个简单的React">#</a></h4><p>首先我们自己实现一个最简单的，只有render函数的React。render函数接受一个Component（组件）作为参数，exampleProps表示传递给组件的Props。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-title class_">React</span> = {
+    <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-params">Component</span> =&gt;</span> {
+        <span class="hljs-keyword">const</span> exampleProps = {
+            <span class="hljs-attr">unit</span>: <span class="hljs-string">"likes"</span>
+        };
+        <span class="hljs-keyword">const</span> compo = <span class="hljs-title class_">Component</span>(exampleProps);
+        compo.<span class="hljs-title function_">render</span>();
+        <span class="hljs-keyword">return</span> compo;
+    }
+}
+</code></pre><p>为了测试这个简易版的React，我们需要一个组件，组件的render函数输出了一些信息。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-title function_">Component</span> = (<span class="hljs-params">props</span>) =&gt; {
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">render</span>: <span class="hljs-function">() =&gt;</span> {
+            <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"render"</span>, {
+                <span class="hljs-attr">type</span>: <span class="hljs-string">"div"</span>,
+                <span class="hljs-attr">inner</span>: <span class="hljs-string">`<span class="hljs-subst">${props.unit}</span>`</span>
+            })
+        }
+    };
+}
+</code></pre><p>接着实际应用看下效果。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">let</span> <span class="hljs-title class_">App</span> = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">render</span>(<span class="hljs-title class_">Component</span>); <span class="hljs-comment">// log: render {type: "div", inner: "likes"}</span>
+<span class="hljs-title class_">App</span> = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">render</span>(<span class="hljs-title class_">Component</span>); <span class="hljs-comment">// log: render {type: "div", inner: "likes"}</span>
+</code></pre><p>我们Component渲染了两次，两次渲染都打印了log信息。</p><h4 id="2. useState">2. useState <a href="#2. useState">#</a></h4><p>接下来，我们扩展React，实现useState。useState可以返回一个值和一个可以更新该值的dispatcher，useState接受一个初始值参数，可以设定state的初始值。</p><blockquote><p>Returns a stateful value, and a function to update it.</p></blockquote><p>函数组件通过useState，来创建和更新组件的状态，是react中最常用hook之一。下面我们自己实现useState。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-title class_">React</span> = {
+    <span class="hljs-attr">index</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">state</span>: [],
+    <span class="hljs-attr">useState</span>: <span class="hljs-function"><span class="hljs-params">defaultProp</span> =&gt;</span> {
+        <span class="hljs-keyword">const</span> cachedIndex = <span class="hljs-title class_">React</span>.<span class="hljs-property">index</span>;
+        <span class="hljs-keyword">if</span> (!<span class="hljs-title class_">React</span>.<span class="hljs-property">state</span>[cachedIndex]) {
+            <span class="hljs-title class_">React</span>.<span class="hljs-property">state</span>[cachedIndex] = defaultProp;
+        }
+        <span class="hljs-keyword">const</span> currentState = <span class="hljs-title class_">React</span>.<span class="hljs-property">state</span>[cachedIndex];
+        <span class="hljs-keyword">const</span> <span class="hljs-title function_">currentSetter</span> = newValue =&gt; {
+            <span class="hljs-title class_">React</span>.<span class="hljs-property">state</span>[cachedIndex] = newValue;
+        };
+        <span class="hljs-title class_">React</span>.<span class="hljs-property">index</span>++;
+
+        <span class="hljs-keyword">return</span> [currentState, currentSetter];
+    },
+    <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-params">Component</span> =&gt;</span> {
+        <span class="hljs-keyword">const</span> exampleProps = {
+            <span class="hljs-attr">unit</span>: <span class="hljs-string">"likes"</span>
+        };
+
+        <span class="hljs-keyword">const</span> compo = <span class="hljs-title class_">Component</span>(exampleProps);
+        compo.<span class="hljs-title function_">render</span>();
+
+        <span class="hljs-title class_">React</span>.<span class="hljs-property">index</span> = <span class="hljs-number">0</span>; <span class="hljs-comment">// reset index</span>
+
+        <span class="hljs-keyword">return</span> compo;
+    }
+}
+</code></pre><p>这里用到了闭包的功能。我们把state值存储到React.state数组中，然后创建了一个currentSetter，用来更新state值。最后增加index，用于存储新的state值。由于闭包的特性，在组件函数内有多个useState值时，每个cachedIndex都是独立的，所以每次currentSetter对应的state也是独立的。还有一点需要注意的是在render函数中必须重置<code>React.index = 0</code>，因为组件函数每次执行，index都必须为0，因为hook也是每次都执行的。</p><p>更新Component，为其添加状态。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-title function_">Component</span> = (<span class="hljs-params">props</span>) =&gt; {
+    <span class="hljs-keyword">const</span> [count, setCount] = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>);
+    <span class="hljs-keyword">const</span> [name, setName] = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">useState</span>(<span class="hljs-string">"Steve"</span>);
+
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">click</span>: <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">setCount</span>(count + <span class="hljs-number">1</span>),
+        <span class="hljs-attr">personArrived</span>: <span class="hljs-function"><span class="hljs-params">person</span> =&gt;</span> <span class="hljs-title function_">setName</span>(person),
+        <span class="hljs-attr">render</span>: <span class="hljs-function">() =&gt;</span> {
+            <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"render"</span>, {
+                <span class="hljs-attr">type</span>: <span class="hljs-string">"div"</span>,
+                <span class="hljs-attr">inner</span>: <span class="hljs-string">`<span class="hljs-subst">${count}</span> <span class="hljs-subst">${props.unit}</span> for <span class="hljs-subst">${name}</span>`</span>
+            })
+        }
+    };
+}
+</code></pre><p>测试组件渲染。</p><pre><code class="hljs language-javascript">
+<span class="hljs-keyword">let</span> <span class="hljs-title class_">App</span> = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">render</span>(<span class="hljs-title class_">Component</span>); <span class="hljs-comment">// log: render {type: "div", inner: "0 likes for Steve"}</span>
+<span class="hljs-title class_">App</span> = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">render</span>(<span class="hljs-title class_">Component</span>); <span class="hljs-comment">// log: render {type: "div", inner: "0 likes for Steve"}</span>
+
+<span class="hljs-title class_">App</span>.<span class="hljs-title function_">click</span>();
+<span class="hljs-title class_">App</span> = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">render</span>(<span class="hljs-title class_">Component</span>);  <span class="hljs-comment">// log: render {type: "div", inner: "1 likes for Steve"}</span>
+
+<span class="hljs-title class_">App</span>.<span class="hljs-title function_">click</span>();
+<span class="hljs-title class_">App</span>.<span class="hljs-title function_">personArrived</span>(<span class="hljs-string">"Peter"</span>);
+<span class="hljs-title class_">App</span> = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">render</span>(<span class="hljs-title class_">Component</span>); <span class="hljs-comment">// log: render {type: "div", inner: "2 likes for Peter"}</span>
+</code></pre><p>我们模拟的useState功能符合预期。虽然与实际的React中的useState相差很大，但是足够帮助我们理解了。</p><h4 id="3. useEffect">3. useEffect <a href="#3. useEffect">#</a></h4><p>在之前的文章我有讲解过<a href="https://pengfeixc.com/blog/605af93600f1525af762a725">useEffect和useLayoutEffect的区别</a>。useEffect是异步执行的，它在组件函数执行后再执行。文档是这样描述useEffect的，我摘抄了几点最重要的特性。</p><blockquote><ol><li>The function passed to <code>useEffect</code> will run after the render is committed to the screen.</li><li>By default, effects run after every completed render, but you can choose to fire them <a href="https://reactjs.org/docs/hooks-reference.html#conditionally-firing-an-effect">only when certain values have changed</a>.</li><li>the function passed to <code>useEffect</code> may return a clean-up function.</li></ol></blockquote><p>第一点就是表示useEffect是异步的，第二点表示我们可以给useEffect传递第二个参数（依赖）控制useEffect中的第一个函数参数是否执行，第三点就是我们传递的函数可以返回一个函数，作为cleanup或者unsubscribe函数。</p><p>我们就按照上面三个特性，实现自己的useEffect。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-title class_">React</span> = {
+    <span class="hljs-attr">index</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">state</span>: [],
+    <span class="hljs-attr">useState</span>: <span class="hljs-function"><span class="hljs-params">defaultProp</span> =&gt;</span> {
+        <span class="hljs-keyword">const</span> cachedIndex = <span class="hljs-title class_">React</span>.<span class="hljs-property">index</span>;
+        <span class="hljs-keyword">if</span> (!<span class="hljs-title class_">React</span>.<span class="hljs-property">state</span>[cachedIndex]) {
+            <span class="hljs-title class_">React</span>.<span class="hljs-property">state</span>[cachedIndex] = defaultProp;
+        }
+
+        <span class="hljs-keyword">const</span> currentState = <span class="hljs-title class_">React</span>.<span class="hljs-property">state</span>[cachedIndex];
+        <span class="hljs-keyword">const</span> <span class="hljs-title function_">currentSetter</span> = newValue =&gt; {
+            <span class="hljs-title class_">React</span>.<span class="hljs-property">state</span>[cachedIndex] = newValue;
+        };
+        <span class="hljs-title class_">React</span>.<span class="hljs-property">index</span>++;
+
+        <span class="hljs-keyword">return</span> [currentState, currentSetter];
+    },
+    <span class="hljs-attr">useEffect</span>: <span class="hljs-function">(<span class="hljs-params">callback, dependencies</span>) =&gt;</span> {
+        <span class="hljs-keyword">const</span> cachedIndex = <span class="hljs-title class_">React</span>.<span class="hljs-property">index</span>;
+        <span class="hljs-keyword">const</span> hasChanged = dependencies !== <span class="hljs-title class_">React</span>.<span class="hljs-property">state</span>[cachedIndex];
+        <span class="hljs-keyword">if</span> (dependencies === <span class="hljs-literal">undefined</span> || hasChanged) {
+            <span class="hljs-title function_">callback</span>();
+            <span class="hljs-title class_">React</span>.<span class="hljs-property">state</span>[cachedIndex] = dependencies;
+        }
+
+        <span class="hljs-title class_">React</span>.<span class="hljs-property">index</span>++;
+        <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"unsubscribed effect"</span>);
+    },
+    <span class="hljs-attr">render</span>: <span class="hljs-function"><span class="hljs-params">Component</span> =&gt;</span> {
+        <span class="hljs-keyword">const</span> exampleProps = {
+            <span class="hljs-attr">unit</span>: <span class="hljs-string">"likes"</span>
+        };
+
+        <span class="hljs-keyword">const</span> compo = <span class="hljs-title class_">Component</span>(exampleProps);
+        compo.<span class="hljs-title function_">render</span>();
+
+        <span class="hljs-title class_">React</span>.<span class="hljs-property">index</span> = <span class="hljs-number">0</span>; <span class="hljs-comment">// reset index</span>
+
+        <span class="hljs-keyword">return</span> compo;
+    }
+}
+</code></pre><p>将dependencies存储在React.state中，通过比较dependencies与React.state[cachedIndex]（之前存储的dependencies）来判断依赖是否改变。如果改变了就执行callback，并更新React.state中存储的dependencies，用于下次执行判断。</p><p>同样我们更新下Component，加入useEffect hook。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-title function_">Component</span> = (<span class="hljs-params">props</span>) =&gt; {
+    <span class="hljs-keyword">const</span> [count, setCount] = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>);
+    <span class="hljs-keyword">const</span> [name, setName] = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">useState</span>(<span class="hljs-string">"Steve"</span>);
+
+    <span class="hljs-keyword">const</span> exitThis = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {
+        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"Effect ran"</span>);
+    }, name);
+
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">click</span>: <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">setCount</span>(count + <span class="hljs-number">1</span>),
+        <span class="hljs-attr">personArrived</span>: <span class="hljs-function"><span class="hljs-params">person</span> =&gt;</span> <span class="hljs-title function_">setName</span>(person),
+        <span class="hljs-attr">unsubscribe</span>: <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">exitThis</span>(),
+        <span class="hljs-attr">render</span>: <span class="hljs-function">() =&gt;</span> {
+            <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"render"</span>, {
+                <span class="hljs-attr">type</span>: <span class="hljs-string">"div"</span>,
+                <span class="hljs-attr">inner</span>: <span class="hljs-string">`<span class="hljs-subst">${count}</span> <span class="hljs-subst">${props.unit}</span> for <span class="hljs-subst">${name}</span>`</span>
+            })
+        }
+    };
+}
+</code></pre><p>最后返回对象包含了一个unsubscribe,用于模拟useEffect的cleanup工作。</p><p>测试useEffect功能。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">let</span> <span class="hljs-title class_">App</span> = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">render</span>(<span class="hljs-title class_">Component</span>);
+<span class="hljs-comment">// log: Effect ran</span>
+<span class="hljs-comment">//  	render {type: "div", inner: "0 likes for Steve"}</span>
+
+<span class="hljs-title class_">App</span> = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">render</span>(<span class="hljs-title class_">Component</span>); <span class="hljs-comment">// log: render {type: "div", inner: "0 likes for Steve"}</span>
+
+<span class="hljs-title class_">App</span>.<span class="hljs-title function_">click</span>();
+<span class="hljs-title class_">App</span> = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">render</span>(<span class="hljs-title class_">Component</span>); <span class="hljs-comment">// log: render {type: "div", inner: "1 likes for Steve"}</span>
+
+<span class="hljs-title class_">App</span>.<span class="hljs-title function_">click</span>();
+<span class="hljs-title class_">App</span>.<span class="hljs-title function_">personArrived</span>(<span class="hljs-string">"Peter"</span>);
+<span class="hljs-title class_">App</span> = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">render</span>(<span class="hljs-title class_">Component</span>);
+<span class="hljs-comment">// log: Effect ran</span>
+<span class="hljs-comment">//  	render {type: "div", inner: "2 likes for Steve"}</span>
+
+<span class="hljs-title class_">App</span>.<span class="hljs-title function_">unsubscribe</span>(); <span class="hljs-comment">// log: unsubscribed effect</span>
+</code></pre><p>可以看到，useEffect的函数在组件首次加载时执行了，在name更改时，也执行了，最后调用unsubscribe执行清理工作。</p><p>到这里，内容差不多结束了，你们一定对hook有了更深入的了解。还有更多类似的hook，你们也可以尝试自己去模拟实现，例如useCallback。</p><p>附参考资料：</p><p><a href="https://react.docschina.org/docs/getting-started.html">react官方文档：https://react.docschina.org/docs/getting-started.html</a></p><p><a href="https://itnext.io/under-the-hood-of-react-hooks-805dc68581c3">under-the-hood of react：https://itnext.io/under-the-hood-of-react-hooks-805dc68581c3</a></p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/computer-graphics/3D-matrix-transformation-part-one">上一篇：3D图形学中的矩阵变换（一）</a></span><span class="next-article"><a href="/javascript/cors-problem">下一篇：跨域导致tainted canvas</a></span></div></div></body></html>

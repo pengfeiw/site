@@ -1,0 +1,61 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="画图,画板,react 画图,react 画板,canvas,网页画图,react paint,canvas example"><meta name="description" content="使用react实现一个简单的画板程序。"><link rel="stylesheet" href="/assests/code_github.css"><link rel="stylesheet" href="/assests/github_markdown.css"><link rel="stylesheet" href="/assests/article.css"><link rel="stylesheet" href="/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/rss.xml"><img src="/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年6月21日</span><span class="category"><a href="/minicode">标签：MiniCode</a></span></div><div class="markdown-body"><h1 id="react实现简易画板程序">react实现简易画板程序 <a href="#react实现简易画板程序">#</a></h1><p>在这之前，我写过一个vue版本的画板程序。最近因为 <a href="http://pengfeiw.github.io/minicode">minicode</a>的上线，就把画板用 react 重写了，其实思路什么的都是一样的，只是使用的前端框架不一样罢了。</p><p><a href="https://pengfeiw.github.io/minicode/react-paint">react-paint地址</a></p><p>github源码地址: <a href="https://github.com/pengfeiw/react-paint">https://github.com/pengfeiw/react-paint</a>。</p><h3 id="一. react-paint">一. react-paint <a href="#一. react-paint">#</a></h3><p>程序界面如图，上方是工具栏，下面是画布绘制区域。</p><p><img src="https://pengfeiw.github.io/images/blog/69.png" alt="react画图程序"></p><p>主要功能使用html canvas实现，可以在 <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API/Tutorial">MDN canvas教程</a>上学习 canvas 的二维图形绘制。</p><p>下面我说下部分的主要功能实现，你们可以在github上找我的源码进行参考。</p><h3 id="二. 功能实现">二. 功能实现 <a href="#二. 功能实现">#</a></h3><h4 id="笔、橡皮擦和形状功能">笔、橡皮擦和形状功能 <a href="#笔、橡皮擦和形状功能">#</a></h4><p>主要是监听画板的鼠标事件实现的，这里我运用了面向对象的思想，写了一个Tool类，Pen、Shape、Eraser都是通过继承实现的。</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Tool</span> {
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">onMouseDown</span>(<span class="hljs-attr">event</span>: <span class="hljs-title class_">MouseEvent</span>): <span class="hljs-built_in">void</span> {
+        <span class="hljs-comment">//</span>
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">onMouseMove</span>(<span class="hljs-attr">event</span>: <span class="hljs-title class_">MouseEvent</span>): <span class="hljs-built_in">void</span> {
+        <span class="hljs-comment">//</span>
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">onMouseUp</span>(<span class="hljs-attr">event</span>: <span class="hljs-title class_">MouseEvent</span>): <span class="hljs-built_in">void</span> {
+        <span class="hljs-comment">//</span>
+    }
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Pen</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Tool</span> {
+    <span class="hljs-comment">// 覆盖基类的三个鼠标事件方法</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">onMouseDown</span>(<span class="hljs-attr">event</span>: <span class="hljs-title class_">MouseEvent</span>): <span class="hljs-built_in">void</span> {
+        <span class="hljs-comment">//</span>
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">onMouseMove</span>(<span class="hljs-attr">event</span>: <span class="hljs-title class_">MouseEvent</span>): <span class="hljs-built_in">void</span> {
+        <span class="hljs-comment">//</span>
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">onMouseUp</span>(<span class="hljs-attr">event</span>: <span class="hljs-title class_">MouseEvent</span>): <span class="hljs-built_in">void</span> {
+        <span class="hljs-comment">//</span>
+    }
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Shape</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Tool</span> {
+    ...
+}
+
+<span class="hljs-comment">// 由于橡皮擦和笔的实现基本一样，仅颜色和线宽不一样，所以我直接将Eraser继承Pen</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Eraser</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Pen</span> {
+    ...
+}
+</code></pre><p>从mousedown至mouseup这一个完整的过程，表示一段线段或者一个形状的绘制。具体实现可以看我的源码。</p><h4 id="填充功能">填充功能 <a href="#填充功能">#</a></h4><p>填充功能使用了图形学的flood fill算法，具体思路可以参考我的这篇文章<a href="http://pengfeixc.com/blog/60d06420e97367196dce3efb">高效率的种子填充算法</a>。这个功能我花的时间是最多的，在算法上我花了很多时间去查阅资料和实践。</p><h4 id="回退和前进功能">回退和前进功能 <a href="#回退和前进功能">#</a></h4><p>这个主要利用了双栈的思想，将每一步canvas的剪影（ImageData）存储在栈中。每次在canvas上绘制一个形状或者线段，又或者是擦除一条线段，都将此时的canvas图片（ImageData）存储在imageData1栈顶。back时将imageData1的栈顶元素弹栈，并将该元素push到imageData2中。forward的时候，如果imageData2非空，将imageData2执行弹栈操作，将该元素push到imageData1中。每次操作后，都将imageData1的栈顶ImageData加载到canvas上，即实现了撤销和回退功能。</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Snapshot</span> {
+    <span class="hljs-keyword">private</span> <span class="hljs-attr">imageData1</span>: <span class="hljs-title class_">ImageData</span>[] = [];
+    <span class="hljs-keyword">private</span> <span class="hljs-attr">imageData2</span>: <span class="hljs-title class_">ImageData</span>[] = [];
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">add</span>(<span class="hljs-params">imageData: ImageData</span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">imageData1</span>.<span class="hljs-title function_">push</span>(imageData);
+    }
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">back</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">imageData1</span>.<span class="hljs-property">length</span> &gt; <span class="hljs-number">1</span>) {
+            <span class="hljs-keyword">const</span> imageData = <span class="hljs-variable language_">this</span>.<span class="hljs-property">imageData1</span>.<span class="hljs-title function_">pop</span>() <span class="hljs-keyword">as</span> <span class="hljs-title class_">ImageData</span>;
+            <span class="hljs-variable language_">this</span>.<span class="hljs-property">imageData2</span>.<span class="hljs-title function_">push</span>(imageData);
+        }
+        
+        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">imageData1</span>.<span class="hljs-property">length</span> &gt; <span class="hljs-number">0</span> ? <span class="hljs-variable language_">this</span>.<span class="hljs-property">imageData1</span>[<span class="hljs-variable language_">this</span>.<span class="hljs-property">imageData1</span>.<span class="hljs-property">length</span> - <span class="hljs-number">1</span>] : <span class="hljs-literal">null</span>;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">imageData2</span>.<span class="hljs-property">length</span> &gt; <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">const</span> imageData = <span class="hljs-variable language_">this</span>.<span class="hljs-property">imageData2</span>.<span class="hljs-title function_">pop</span>() <span class="hljs-keyword">as</span> <span class="hljs-title class_">ImageData</span>;
+            <span class="hljs-variable language_">this</span>.<span class="hljs-property">imageData1</span>.<span class="hljs-title function_">push</span>(imageData);
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">imageData1</span>.<span class="hljs-property">length</span> &gt; <span class="hljs-number">0</span> ? <span class="hljs-variable language_">this</span>.<span class="hljs-property">imageData1</span>[<span class="hljs-variable language_">this</span>.<span class="hljs-property">imageData1</span>.<span class="hljs-property">length</span> - <span class="hljs-number">1</span>] : <span class="hljs-literal">null</span>;
+    }
+}
+</code></pre><h4 id="其他功能">其他功能 <a href="#其他功能">#</a></h4><p>其他功能相对比较简单，就是更改一些线的样式，这里就不再详述了，更多细节请参考我的github。</p><p>如果你对该程序有疑问，可以在我的个人网站文章下方留言，也可以留下您的联系方式☺。</p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/minicode/3d-tetris">上一篇：webgl实现3D俄罗斯方块</a></span><span class="next-article"><a href="/computer-graphics/efficent-SeedFilling-algorithm">下一篇：高效率种子填充算法</a></span></div></div></body></html>

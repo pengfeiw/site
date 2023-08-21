@@ -1,0 +1,116 @@
+* {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+body {
+    margin: 0;
+    padding: 45px;
+    padding-top: 10px 20px;
+
+    --tag-bg: #c6f6d5;
+    --tag-radius: 8px;
+    --tag-padding: 5px 15px;
+    --border-color-default: rgb(208, 215, 222);
+    --border-color-focus: rgb(9, 105, 218);
+}
+
+.body {
+    max-width: 980px;
+    min-width: 200px;
+    margin: 0 auto;
+    margin-bottom: 60px;
+}
+
+@media (max-width: 767px) {
+    body {
+        padding: 0 15px;
+    }
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.header img {
+    width: 100px;
+}
+
+.header h2 {
+    font-size: 16px;
+}
+
+
+.category-list {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 15px;
+    row-gap: 10px;
+    margin-bottom: 30px;
+}
+
+.category-list .category-item,
+.category-list .active-category-item {
+    color: black;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid;
+    border-color: black;
+    border-bottom-width: 2px;
+    border-top-left-radius: 0.2rem;
+    border-bottom-left-radius: 0.3rem;
+    border-top-right-radius: 0.2rem;
+    border-bottom-right-radius: 0.3rem;
+    text-decoration: none;
+    position: relative;
+}
+
+.category-list .active-category-item {
+    background-color: var(--tag-bg);
+}
+
+.category-list .category-item::after,
+.category-list .active-category-item::after {
+    content: " ";
+    width: 100%;
+    height: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    transition: 0.5s;
+}
+
+.category-list .category-item:hover::after,
+.category-list .active-category-item::after {
+    height: 100%;
+    background-color: var(--tag-bg);
+}
+
+.article-list {
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+}
+
+.article-list>.article-item>a {
+    text-decoration: none;
+    color: black;
+    padding: 3px 12px;
+    font-size: 14px;
+    line-height: 20px;
+    color: black;
+    transition: 0.1s;
+    display: flex;
+    justify-content: space-between;
+}
+
+.article-list>.article-item>a>.article-item-date {
+    color: #555353;
+}
+
+.article-list>.article-item>a:hover {
+    background-color: #f3f4f6;
+}
