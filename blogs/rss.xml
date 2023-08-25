@@ -9,9 +9,9 @@
             <link>https://blog.pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Fri, 25 Aug 2023 14:32:06 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 25 Aug 2023 23:35:15 GMT</lastBuildDate>
         <atom:link href="https://blog.pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Fri, 25 Aug 2023 14:31:59 GMT</pubDate>
+        <pubDate>Fri, 25 Aug 2023 23:35:10 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2023, Ibas]]></copyright>
         <item>
             <title><![CDATA[tmux 极简使用]]></title>
