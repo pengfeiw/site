@@ -1,0 +1,82 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="本教程是针对新人的入门级教程，教程参考了Babel官方文档，通过本教程你将学习如何使用Babel。"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/blogs/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年8月21日</span><span class="category"><a href="/blogs/javascript">标签：JavaScript</a></span></div><div class="markdown-body"><h1 id="Babel入门教程">Babel入门教程 <a href="#Babel入门教程">#</a></h1><p>本教程是针对新人的入门级教程。教程参考了<a href="https://babeljs.io/docs/en/">官方文档</a>。</p><p>源码github：<a href="https://github.com/pengfeiw/babel-tutorial">https://github.com/pengfeiw/babel-tutorial</a></p><p>假设你已经安装了node、npm（或yarn）等必要的开发环境。</p><h2 id="一.JavaScript的编译器">一.JavaScript的编译器 <a href="#一.JavaScript的编译器">#</a></h2><p>Babel是JavaScript的编译器，我认为编译器这个词用于描述Babel不是很准确，因为JavaScript并不像C++、C#那样需要预先编译才能运行，JavaScript是一门解释型语言，Babel的作用是将ECMAScript 2015+的代码转换为旧的浏览器可兼容的代码，所以它是一个代码转换器，将新语法转换成旧的语法，这样以使新的项目可以在老版本的浏览器环境上执行。</p><p>Babel的主要作用如下：</p><ul><li>转换语法。</li><li>预填充功能，借助第三方库（例如<a href="https://github.com/zloirock/core-js">core-js</a>）可以在不支持某些新函数的环境使用新函数运行程序。</li><li>源码转换。</li><li>其他功能。</li></ul><p>例如使用Babel，可以将箭头函数转换成普通函数。</p><pre><code class="hljs language-javascript"><span class="hljs-comment">// Babel输入: ES2015的箭头函数</span>
+[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>].<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">n</span> =&gt;</span> n + <span class="hljs-number">1</span>);
+
+<span class="hljs-comment">// Babel输出: ES5等价的语法</span>
+[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>].<span class="hljs-title function_">map</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">n</span>) {
+  <span class="hljs-keyword">return</span> n + <span class="hljs-number">1</span>;
+});
+</code></pre><h2 id="二.使用命令行进行编译">二.使用命令行进行编译 <a href="#二.使用命令行进行编译">#</a></h2><p>所有Babel的包都发布在<a href="https://www.npmjs.com/">npm</a>上，并且名称以<code>@babel</code>为前缀（自从版本7.0之后）。接下来，我们一起看下<code>@babel/core</code>和<code>@babel/cli</code>这两个包。</p><h3 id="%E6%A0%B8%E5%BF%83%E5%BA%93%E2%80%94%E2%80%94%3Ccode%3E@babel/core%3C/code%3E">核心库——<code>@babel/core</code> <a href="#%E6%A0%B8%E5%BF%83%E5%BA%93%E2%80%94%E2%80%94%3Ccode%3E@babel/core%3C/code%3E">#</a></h3><p>core，中文意思即核心。封装了Babel的核心功能。可已通过npm或yarn进行安装。</p><pre><code class="hljs language-bash">npm install --save-dev @babel/core
+
+yarn add @babel/core --dev
+</code></pre><p>通过以上命令将<code>@babel/core</code>安装到开发依赖中，因为生产环境不需要<code>@babel/core</code>，<code>@babel/core</code>的主要功能是转换代码（编译代码）。</p><p>安装后，我们可以在js代码中，直接引入babel模块用于转换代码。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> babel = <span class="hljs-built_in">require</span>(<span class="hljs-string">"@babel/core"</span>);
+
+babel.<span class="hljs-title function_">transformSync</span>(<span class="hljs-string">"code"</span>, optionsObject);
+</code></pre><p><code>transformSync</code>函数的第一个参数是需要转换的代码，第二个参数为可选参数，用于设定babel的配置（configuration）。</p><h3 id="%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94%3Ccode%3E@babel/cli%3C/code%3E">命令行工具——<code>@babel/cli</code> <a href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94%3Ccode%3E@babel/cli%3C/code%3E">#</a></h3><p>CLI全称为Command Line Interface，即命令行接口、命令行界面。借助<code>@babel/cli</code>，我们可以在命令行使用babel。</p><p>通过yarn或者npm安装<code>@babel/cli</code>：</p><pre><code class="hljs language-bash">npm install --save-dev @babel/cli
+
+or
+
+yarn add @babel/cli --dev
+</code></pre><p>安装后，可以通过命令行编译代码：</p><pre><code class="hljs language-bash">./node_modules/.bin/babel src --out-dir lib
+</code></pre><p>该命令调用的是<code>./node_modules/.bin</code>文件加下的<code>babel</code>脚本，通过脚本运行babel，编译代码，<code>src</code>为源码路径，<code>--out-dir</code>选项设置输出目录为<code>lib</code>。编译成功输出如下信息。</p><p><img src="https://pengfeiw.github.io/images/blog/131.jpg" alt="Babel入门教程"></p><p>我们使用了<code>--out-dir</code>配置选项设置了输出目录，<code>@babel/cli</code>还支持其他的配置选项，可以通过<code>--help</code>查看其他可配置的选项。</p><pre><code class="hljs language-bash">./node_modules/.bin/babel --<span class="hljs-built_in">help</span>
+</code></pre><p><img src="https://pengfeiw.github.io/images/blog/133.jpg" alt="Babel入门教程"></p><p>执行命令后，会输出一个options列表，列表中是CLI所有可配置选项，但是目前我们只关心两个最重要的配置选项<code>--plugins</code>和<code>--presets</code>（插件和预定义配置）。</p><h2 id="三.插件和预定义配置">三.插件和预定义配置 <a href="#三.插件和预定义配置">#</a></h2><h3 id="插件">插件 <a href="#插件">#</a></h3><p>插件（plugins）是一段javascript程序，用于指示babel如何转换代码，你可以自己编写插件，也可以使用别人写好的插件。例如官方插件<code>@babel/plugin-transform-arrow-functions</code>，用于将ES2015+的箭头函数转换为<code>function</code>关键字形式的函数。</p><p>安装<code>@babel/plugin-transform-arrow-functions</code>：</p><pre><code class="hljs language-bash">npm install --save-dev @babel/plugin-transform-arrow-functions
+
+or
+
+yarn add @babel/plugin-transform-arrow-functions --dev
+</code></pre><p>使用<code>--plugins</code>配置选项，设置使用<code>@babel/plugin-transform-arrow-functions</code>进行编译：</p><pre><code class="hljs language-bash">./node_modules/.bin/babel src --out-dir lib --plugins=@babel/plugin-transform-arrow-functions
+</code></pre><p>执行命令后，你的源码中所有的箭头函数都会被转换为<code>function</code>关键字定义的函数：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-title function_">fn</span> = (<span class="hljs-params"></span>) =&gt; <span class="hljs-number">1</span>;
+
+<span class="hljs-comment">// converted to</span>
+
+<span class="hljs-keyword">var</span> fn = <span class="hljs-keyword">function</span> <span class="hljs-title function_">fn</span>(<span class="hljs-params"></span>) {
+  <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+};
+</code></pre><p>很好，我们已经知道插件是什么了，并且知道如何配置使用插件了，很不错。但是如果有很多插件呢，每个都添加在命令行中岂不是很麻烦。幸运的是CLI提供了<code>--presets</code>选项，可以将多个插件组合起来。</p><h3 id="预定义配置">预定义配置 <a href="#预定义配置">#</a></h3><p>与插件相同，你可以自己创建一个预定义配置用于分享插件组合的配置。</p><p>官方早已为我们提供了<code>@babel/preset-env</code>这个预定义配置。</p><p>通过以下命令安装：</p><pre><code class="hljs language-bash">npm install --save-dev @babel/preset-env
+
+or
+
+yar add @babel/preset-env --dev
+</code></pre><p>通过<code>--presets</code>选项指定使用预定义配置。</p><pre><code class="hljs language-bash">./node_modules/.bin/babel src --out-dir lib --presets=@babel/env
+</code></pre><p>不需要我们设置其他的配置了，<code>@babel/env</code>包含了支持所有现代JavaScript（ES2015、ES2016等）的插件。预定义配置也支持选项配置，通过配置文件设置预定义配置的选项。</p><h2 id="四.配置文件">四.配置文件 <a href="#四.配置文件">#</a></h2><p>首先，在项目目录下创建一个<code>babel.config.json</code>文件（需要<code>v7.8.0</code>和更高版本），并且添加如下内容：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"presets"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">"@babel/env"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"targets"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"edge"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"17"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-attr">"firefox"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"60"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-attr">"chrome"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"67"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-attr">"safari"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"11.1"</span>
+                <span class="hljs-punctuation">}</span>
+            <span class="hljs-punctuation">}</span>
+        <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>通过该配置文件，<code>@babel/env</code>将会只针对json文件中配置的<code>targets</code>的浏览器加载插件，如果某个现代JavaScript（ES2015、ES2016等）的语法在目标浏览器中不支持，执行babel转换时，将会加载对应的插件用于转换。</p><h2 id="五.Polyfill">五.Polyfill <a href="#五.Polyfill">#</a></h2><p>我一直不知道如何翻译<code>Polyfill</code>这个单词，fill是填充的意思。poly在有道词典上的意思如下：</p><blockquote><p><strong>poly</strong></p><p>n. （非正式）理工院校，工艺专科学校（polytechnic 的简称）；聚乙烯（polythene 的简称）；涤纶，聚酯纤维（polyester 的简称）</p></blockquote><p><a href="https://developer.mozilla.org/zh-CN/docs/Glossary/Polyfill">MDN</a>术语表上的解释是：</p><blockquote><p>Polyfill 是一块代码（通常是 Web 上的 JavaScript），用来为旧浏览器提供它没有原生支持的较新的功能。</p></blockquote><p>我就将其翻译为<strong>预填充</strong>吧，主要作用是某些比较新的语法，浏览器还未来的及支持，使用预填充，可以让开发者不必考虑浏览器是否已经支持而直接使用新的语法。这里的语法与箭头函数和function关键字函数这种语法不一样，它指的是“功能”，例如<code>Promise</code>、<code>WeakMap</code>、<code>Array.from</code>或者<code>Object.assign</code>等等。</p><p>我记得有一次项目，QQ浏览器不支持<code>String.prototype.replaceAll</code>方法，导致项目在QQ浏览器上运行出错，如果使用预填充功能，应该就可以解决问题。（感兴趣的朋友可以试试，目前QQ浏览器是否支持<code>String.prototype.replaceAll</code>方法）。</p><p>安装：</p><pre><code class="hljs language-bash">npm install --save @babel/polyfill
+
+or
+
+yarn add @babel/polyfill
+</code></pre><blockquote><p>注意: <code>--save</code>选项 这里是安装到生产依赖中的，不是开发依赖（细心一点）。</p></blockquote><p>安装完成后，打开<code>node_modules/@babel/polyfill/package.json</code>文件，可以看到<code>dependencies</code>中有一个<code>core-js</code>包。</p><p><img src="https://pengfeiw.github.io/images/blog/132.jpg" alt="Babel入门教程"></p><p><a href="https://github.com/zloirock/core-js#commonjs">core-js</a>是一个现代javascript语法库，@babel/polyfill就是利用<code>core-js</code>进行预填充的，你也可以直接从<code>core-js</code>中引入你需要的功能。</p><p><code>env</code>预定义配置有一个<code>"useBuiltIns"</code>选项，如果设置为<code>"usage"</code>将会使用最新的功能进行预填充，在需要某个功能的模块文件里，会引入相应的功能。</p><pre><code class="hljs language-javascript">{
+    <span class="hljs-string">"presets"</span>: [
+        [
+        <span class="hljs-string">"@babel/env"</span>,
+        {
+            <span class="hljs-string">"targets"</span>: {
+            <span class="hljs-string">"edge"</span>: <span class="hljs-string">"17"</span>,
+            <span class="hljs-string">"firefox"</span>: <span class="hljs-string">"60"</span>,
+            <span class="hljs-string">"chrome"</span>: <span class="hljs-string">"67"</span>,
+            <span class="hljs-string">"safari"</span>: <span class="hljs-string">"11.1"</span>
+            },
+            <span class="hljs-string">"useBuiltIns"</span>: <span class="hljs-string">"usage"</span>
+        }
+        ]
+    ]
+}
+</code></pre><p>假设你有如下代码：</p><pre><code class="hljs language-javascript"><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>().<span class="hljs-title function_">finally</span>();
+</code></pre><p>使用babel转换后的代码如下：</p><pre><code class="hljs language-javascript"><span class="hljs-meta">"use strict"</span>;
+
+<span class="hljs-built_in">require</span>(<span class="hljs-string">"core-js/modules/es7.promise.finally.js"</span>);
+
+<span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>().<span class="hljs-title function_">finally</span>();
+</code></pre><p>如果你没有设置<code>"useBuiltIns": "usage"</code>，你需要设置<code>"useBuiltIns": "entry"</code>，这样编译后的文件会在入口文件引入功能模块，如果不设置<code>"useBuiltIns"</code>选项，编译后的文件将不会引入任何新功能模块。</p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/algorithm-math/reverse-interger">上一篇：整数反转</a></span><span class="next-article"><a href="/blogs/developer-handbook/design-pattern">下一篇：设计模式</a></span></div></div></body></html>

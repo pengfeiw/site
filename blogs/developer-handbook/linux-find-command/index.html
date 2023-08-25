@@ -1,0 +1,51 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="linux,find,command,运维,搜索文件"><meta name="description" content="介绍 linux 下 find 命令的基本用法，如何使用 find 查找文件/目录，并处理"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/blogs/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2022年12月2日</span><span class="category"><a href="/blogs/developer-handbook">标签：Developer</a></span></div><div class="markdown-body"><h1 id="linux 中的 find 命令">linux 中的 find 命令 <a href="#linux 中的 find 命令">#</a></h1><p><code>find</code> 用法：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">find --<span class="hljs-built_in">help</span></span>
+Usage: find [-H] [-L] [-P] [-Olevel] [-D debugopts] [path...] [expression]
+...
+</code></pre><p>表示在某个路径（path）下查找文件（文件夹）。</p><p>1、单独输入一个 <code>find</code> 会显示当前目录中所有文件及文件夹：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">find</span>
+.
+./app
+./app/file1.txt
+./app/file2.txt
+./file1.txt
+./file2.txt
+./file3.txt
+</code></pre><p>2、指定目录下查找</p><p>指定在 <code>./app/</code> 目录下查找文件：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">find app/</span>
+app/
+app/file1.txt
+app/file2.txt
+</code></pre><p>3、指定查找文件的类型为目录或者文件</p><p>使用 <code>-type d</code> 表示只查找目录，<code>d</code> 是 directory 的缩写，在当前目录查找所有目录：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">find . -<span class="hljs-built_in">type</span> d</span>
+.
+./app
+</code></pre><p>使用 <code>-type f</code> 表示只查找文件，<code>f</code> 是 file 的缩写。在当前目录查找所有文件：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">find . -<span class="hljs-built_in">type</span> f</span>
+./app/file1.txt
+./app/file2.txt
+./file1.txt
+./file2.txt
+./file3.txt
+</code></pre><p>4、指定文件（夹）名称查找</p><p>使用 <code>-name &lt;name&gt;</code> 表示查找名称为 <code>&lt;name&gt;</code> 的文件（夹）。在当前目录以及子目录下查找名称为 <code>file1.txt</code> 的文件：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">find . -<span class="hljs-built_in">type</span> f -name file1.txt</span>
+./app/file1.txt
+./file1.txt
+</code></pre><p>名称支持通配符，但是必须用双引号包括：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">find . -name <span class="hljs-string">"file*"</span></span>
+./app/file1.txt
+./app/file2.txt
+./file1.txt
+./file2.txt
+./file3.txt
+</code></pre><p>5、按路劲查找</p><p><code>-path</code> 表示按路径查找：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">find . -path <span class="hljs-string">"*app/*"</span></span>
+./app/file1.txt
+./app/file2.txt
+</code></pre><p>6、组合查找: AND 和 OR 操作符</p><p><code>-or</code> 表示或者的意思，下面的命令查找名称为 <code>file1.txt</code> 或者名称为 <code>file2.txt</code> 的文件（夹）：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">find . -name file1.txt -or -name file2.txt</span>
+./app/file1.txt
+./app/file2.txt
+./file1.txt
+./file2.txt
+</code></pre><p><code>-and</code> 表示与（并且）的意思，下面的命令查找名称满足 <code>file1*</code> 并且是文件夹：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">find . -name <span class="hljs-string">"file1*"</span> -and -<span class="hljs-built_in">type</span> d</span>
+./file1
+</code></pre><p>7、忽略大小写</p><p>假设你要查找类型为 <code>js</code> 的文件，并且忽略后缀大小写，你可以这样做：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">find . -name <span class="hljs-string">"*.js"</span> -or -name <span class="hljs-string">"*.JS"</span> -or -name <span class="hljs-string">"*.Js"</span> -or -name <span class="hljs-string">"*.jS"</span></span>
+</code></pre><p>同样你也可以简单的在 <code>name</code> 前添加一个 <code>i</code> —— <code>-iname</code>，表示忽略大小写：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">find .-iname <span class="hljs-string">"*.js"</span></span>
+</code></pre><p>前面提到的所有选项都支持在前面添加 <code>i</code> 来表示忽略大小写（case-insensitive）。</p><p>8、NOT 操作符</p><p>还可以增加更复杂的操作，使用 <code>NOT</code> 表示不是（否）的意思。查找名称为 <code>*.js</code> 和 <code>*.html</code> 但是路径不是 <code>*programs*</code> 的文件（夹）：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">find . \( -name <span class="hljs-string">"*.js"</span> -or -name <span class="hljs-string">"*.html"</span> \) -and -not -path <span class="hljs-string">"*programs*"</span></span>
+./websites/simple/index.html
+./websites/simple/code.js
+</code></pre><p>9、删除查找的结果</p><p>可以使用 <code>-delete</code> 用来删除查找的结果，例如删除当前仓库中所有的 html 文件：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">find . -name <span class="hljs-string">"*.html"</span> -<span class="hljs-built_in">type</span> f -delete</span>
+</code></pre><p>注意使用这个选项来删除文件夹，无法删除非空的文件夹，如果想要删除文件夹，例如我想删除目录下所有的 <code>node_modules</code>（在大型前端项目下，我经常有这个需求），可以这样做：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">find . -name node_modules -<span class="hljs-built_in">type</span> d | xargs <span class="hljs-built_in">rm</span> -rf</span>
+</code></pre><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/developer-handbook/linux-xrgs-command">上一篇：Linux xargs 命令</a></span><span class="next-article"><a href="/blogs/developer-handbook/communication-between-iframe-and-parent">下一篇：iframe 和 父窗口之间的通信</a></span></div></div></body></html>

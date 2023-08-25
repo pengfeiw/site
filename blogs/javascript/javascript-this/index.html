@@ -1,0 +1,124 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="讲述如何确定javascript中this关键字的绑定对象。"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/blogs/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年11月26日</span><span class="category"><a href="/blogs/javascript">标签：JavaScript</a></span></div><div class="markdown-body"><h1 id="全面解析JS的this关键字">全面解析JS的this关键字 <a href="#全面解析JS的this关键字">#</a></h1><p><code>this</code>问题是JavaScript中最复杂的问题之一，即使是有经验的程序员也会在不经意间掉进<code>this</code>关键字的坑里。每当定义一个函数时，<code>this</code>会被自动定义在这个函数里面（即使在函数内部没有去使用<code>this</code>关键字）。</p><h2 id="函数调用位置">函数调用位置 <a href="#函数调用位置">#</a></h2><p>理解<code>this</code>之前，先了解一下<strong>函数的调用位置</strong>。<strong>函数的调用位置是函数被调用时所处的位置，不是函数声明的位置</strong>。为了理解调用位置，重要的是分析一个函数的<strong>调用栈</strong>，调用栈是函数执行的一个链表，可以通过以下几个例子，理解调用栈和调用位置。</p><pre><code class="hljs language-javascript">    <span class="hljs-keyword">function</span> <span class="hljs-title function_">f1</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-comment">// 当前调用栈：f1</span>
+        
+        <span class="hljs-title function_">f2</span>(); <span class="hljs-comment">// f2的调用位置</span>
+
+        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"f1"</span>);
+    }
+
+    <span class="hljs-keyword">function</span> <span class="hljs-title function_">f2</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-comment">// 当前调用栈为 f1 -- &gt;f2</span>
+
+        <span class="hljs-title function_">f3</span>(); <span class="hljs-comment">// f3的调用位置</span>
+
+        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"f2"</span>);
+    }
+
+    <span class="hljs-keyword">function</span> <span class="hljs-title function_">f3</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-comment">// 当前调用栈为 f1 --&gt; f2 --&gt; f3</span>
+
+        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"f3"</span>);
+    }
+
+    <span class="hljs-title function_">f1</span>();
+</code></pre><p>我们定义了三个函数<code>f1</code>、<code>f2</code>和<code>f3</code>，执行<code>f1()</code>，因为在<code>f1</code>内部调用了<code>f2</code>，<code>f2</code>内部又调用了<code>f3</code>，所以程序会相继执行<code>f2()</code>和<code>f3()</code>，在执行<code>f1</code>时调用栈为<code>f1</code>，在<code>f2</code>执行时，调用栈为<code>f1 --&gt; f2</code>，在<code>f3</code>执行时，调用栈为<code>f1 --&gt; f2 --&gt; f3</code>，所以调用栈类似一个单链表，从表头依次执行到表尾。</p><p>一些调试工具，会有专门的调用栈面板，显示当前程序执行的调用栈。在谷歌浏览器中，你可以按<code>F12</code>打开开发者工具，切换到<code>Sources</code>页面，你可以看到<code>call stack</code>面板，这里会显示程序执行时的调用栈。</p><h2 id="绑定规则">绑定规则 <a href="#绑定规则">#</a></h2><p>下面，我总结了四条关于<code>this</code>的绑定规则，在应用以下规则之前，需要先分析调用栈，找到函数的调用位置，然后判断应用下面的四条规则之一。</p><h3 id="默认绑定">默认绑定 <a href="#默认绑定">#</a></h3><p>这是<code>this</code>绑定的默认规则，在无法应用其他规则时，使用该规则。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">a</span>);
+}
+
+<span class="hljs-keyword">var</span> a = <span class="hljs-number">2</span>;
+
+<span class="hljs-title function_">f</span>(); <span class="hljs-comment">// 输出：2</span>
+</code></pre><p>在JavaScript中声明在全局作用域中的变量就是全局对象的一个同名属性。在浏览器环境中，这个全局对象就是<code>window</code>，所以<code>var a = 2</code>等价于<code>window.a = 2</code>。</p><p>当使用默认绑定时，<code>this</code>会被绑定到全局对象，上面的例子中函数<code>f()</code>执行时，<code>this</code>会被<strong>默认绑定</strong>到全局对象，即此时<code>this</code>指向全局对象，所以输出结果为2。</p><p>注意，当程序声明为<code>"use strict"</code>时，则不能将全局对象用于默认绑定。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-string">"use strict"</span>;
+
+    <span class="hljs-comment">// 此时this绑定到undefined</span>
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">a</span>);
+}
+
+<span class="hljs-keyword">var</span> a = <span class="hljs-number">2</span>;
+
+<span class="hljs-title function_">f</span>();
+</code></pre><blockquote><p>注意：尽量在代码中使用严格模式，非严格模式容易写出难以维护的代码。更不要混合使用严格和非严格模式。</p></blockquote><h3 id="隐式绑定">隐式绑定 <a href="#隐式绑定">#</a></h3><p>当函数执行时，它属于某个对象Object，那么此时<code>this</code>被绑定到该对象。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">a</span>);
+}
+
+<span class="hljs-keyword">var</span> obj = {
+    <span class="hljs-attr">a</span>: <span class="hljs-number">3</span>,
+    <span class="hljs-attr">f</span>: f
+};
+
+<span class="hljs-keyword">var</span> a = <span class="hljs-number">2</span>;
+
+obj.<span class="hljs-title function_">f</span>(); <span class="hljs-comment">// 输出：3</span>
+</code></pre><p>虽然函数<code>f</code>定义在全局作用域中，但是它被当做引用（reference）添加到obj中，当执行<code>obj.f()</code>时，此时<code>f</code>'属于'<code>obj</code>，所以输出3。</p><p>将上述例子更改一下。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">var</span> obj = {
+    <span class="hljs-attr">a</span>: <span class="hljs-number">3</span>,
+    <span class="hljs-attr">f</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">a</span>);
+    }
+};
+
+<span class="hljs-keyword">var</span> f = obj.<span class="hljs-property">f</span>;
+
+<span class="hljs-keyword">var</span> a = <span class="hljs-number">2</span>;
+
+<span class="hljs-title function_">f</span>(); <span class="hljs-comment">// 输出：2</span>
+</code></pre><p>此时，输出结果为2，为什么呢？因为严格来说函数并不属于任意一个对象，上例中的<code>obj.f</code>和<code>f</code>仅仅是函数的一个引用，所以<code>f</code>和<code>obj.f</code>没有直接关系，仅仅是所引用的函数相同，所以执行<code>f()</code>，此时执行环境在全局作用域，会自动应用默认绑定规则，将<code>this</code>绑定到全局对象中。第二个例子，是一个比较常见的this绑定问题，叫做<strong>this的隐式丢失</strong>。</p><p>在回调函数中经常会遇到隐式丢失的问题。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">f1</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">a</span>);
+}
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">f2</span>(<span class="hljs-params">f</span>) {
+    <span class="hljs-comment">// f引用的是f1</span>
+    <span class="hljs-title function_">f</span>();
+}
+
+<span class="hljs-keyword">var</span> obj = {
+    <span class="hljs-attr">a</span>: <span class="hljs-string">"obj"</span>,
+    <span class="hljs-attr">f</span>: f1
+};
+
+<span class="hljs-keyword">var</span> a = <span class="hljs-string">"global"</span>
+
+<span class="hljs-title function_">f2</span>(obj.<span class="hljs-property">f</span>); <span class="hljs-comment">// 输出："global"</span>
+</code></pre><p>在执行<code>f2(obj.f)</code>时，实际上试将<code>f1</code>赋值给<code>f2</code>的参数<code>f</code>，它实际上也只是函数的引用，所以结果是<code>"global"</code>。</p><h3 id="显示绑定">显示绑定 <a href="#显示绑定">#</a></h3><p>可以通过<code>call</code>、<code>apply</code>和<code>bind</code>函数显示绑定this值。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">a</span>);
+}
+
+<span class="hljs-keyword">var</span> obj = {
+    <span class="hljs-attr">a</span>: <span class="hljs-number">2</span>
+};
+f.<span class="hljs-title function_">call</span>(obj); <span class="hljs-comment">// 输出：2</span>
+</code></pre><p>通过<code>call</code>方法，显示指定this绑定到<code>obj</code>对象，此时输出结果为2。可以给<code>call</code>传递多个参数，第一个参数指定<code>this</code>绑定对象，后续参数指定函数执行所需要的的参数。</p><p><code>apply</code>方法与<code>call</code>类似，只不过<code>call</code>方法接受的是参数列表，而<code>apply</code>方法接受多个参数的数组。</p><p><code>bind</code>方法创建一个新的函数，在<code>bind</code>被调用时，这个新函数的<code>this</code>被指定为<code>bind</code>的第一个参数，而其余参数将作为新函数的参数，供调用时使用。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-variable language_">module</span> = {
+    <span class="hljs-attr">x</span>: <span class="hljs-number">42</span>,
+    <span class="hljs-attr">getX</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">x</span>;
+    }
+};
+
+<span class="hljs-keyword">const</span> unboundGetX = <span class="hljs-variable language_">module</span>.<span class="hljs-property">getX</span>;
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">unboundGetX</span>()); <span class="hljs-comment">// The function gets invoked at the global scope</span>
+<span class="hljs-comment">// expected output: undefined</span>
+
+<span class="hljs-keyword">const</span> boundGetX = unboundGetX.<span class="hljs-title function_">bind</span>(<span class="hljs-variable language_">module</span>);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">boundGetX</span>());
+<span class="hljs-comment">// expected output: 42</span>
+</code></pre><h3 id="new绑定">new绑定 <a href="#new绑定">#</a></h3><p>如果你没有接触过JavaScript之外的语言，那么你可能很少会用到<code>new</code>关键字，因为JavaScript中实际并不存在<code>类</code>（Es6中的类底层其实也是函数）。JavaScript中的“构造函数”，只是使用<code>new</code>操作符时被调用的函数，它们并不属于某个类，也不会实例化一个类，就是被<code>new</code>操作符调用的普通函数。</p><p>使用<code>new</code>调用函数（构造函数），会自动执行下面的步骤。</p><ol><li>创建一个全新的空对象，作为将要返回的对象实例。</li><li>将这个空对象的原型，指向函数的的<code>prototype</code>属性。</li><li>将这个空对象绑定到函数内部的<code>this</code>关键字。</li><li>执行函数内部的代码（一般通过给this属性赋值，初始化对象）。</li></ol><p>上述第三步，就是new绑定。</p><h2 id="完整步骤">完整步骤 <a href="#完整步骤">#</a></h2><p>讲述了四种绑定规则，接下来讲述下完整的步骤，确定几种方式的优先级。</p><ol><li><p>new绑定，如果函数在<code>new</code>中调用，那么<code>this</code>绑定的是新创建的对象。</p></li><li><p>显示绑定，如果函数通过<code>call</code>、<code>apply</code>或者<code>bind</code>调用，那么<code>this</code>绑定的是指定对象。</p></li><li><p>隐式绑定，函数是否在某个上下文对象中调用，如果是的，那么<code>this</code>绑定的是该上下文对象。</p></li><li><p>以上都不符合的话，使用默认绑定，严格模式下绑定到<code>undefined</code>，非严格模式下绑定到全局对象。</p></li></ol><h2 id="例外">例外 <a href="#例外">#</a></h2><p>凡事总有例外，这里介绍一个比较常见的例外——箭头函数<code>=&gt;</code>。</p><p>箭头函数不使用<code>this</code>的四种绑定规则，而是根据外层（函数或者全局）作用域来确定<code>this</code>的绑定对象。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> myObject = {
+    <span class="hljs-attr">myMethod</span>: <span class="hljs-function">() =&gt;</span> {
+        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-variable language_">this</span>);
+    }
+}
+
+myObject.<span class="hljs-title function_">myMethod</span>(); <span class="hljs-comment">// this === global object</span>
+</code></pre><p>为什么上述<code>myMethod()</code>执行的this是全局对象呢？因为箭头函数的this继承自它的外层（函数或者全局）作用域。</p><p>继续看一个例子。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> myObject = {
+    <span class="hljs-attr">myArrowFunction</span>: <span class="hljs-literal">null</span>,
+    <span class="hljs-attr">myMethod</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">myArrowFunction</span> = <span class="hljs-function">() =&gt;</span> {<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-variable language_">this</span>)};
+    }
+};
+
+myObject.<span class="hljs-title function_">myMethod</span>(); <span class="hljs-comment">// this === myObject</span>
+
+myObject.<span class="hljs-title function_">myArrowFunctoin</span>(); <span class="hljs-comment">// this === myObject</span>
+
+<span class="hljs-keyword">const</span> myArrowFunction = myObject.<span class="hljs-property">myArrowFunction</span>;
+<span class="hljs-title function_">myArrowFunction</span>(); <span class="hljs-comment">// this === myObject</span>
+</code></pre><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/developer-handbook/IEEE754">上一篇：计算机是如何存储浮点数的—IEEE 754</a></span><span class="next-article"><a href="/blogs/computer-graphics/3dpoint-to-2dpoint-part-two">下一篇：3D空间中的点坐标转化为屏幕二维点坐标（二）</a></span></div></div></body></html>

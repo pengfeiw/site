@@ -1,0 +1,471 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="decorator,装饰器,javascript"><meta name="description" content="详解 JavaScript 装饰器的语法"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/blogs/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2022年4月30日</span><span class="category"><a href="/blogs/javascript">标签：JavaScript</a></span></div><div class="markdown-body"><h1 id="JavaScript（ECMAScript） Decorator">JavaScript（ECMAScript） Decorator <a href="#JavaScript（ECMAScript） Decorator">#</a></h1><p>Decorator，中文译作<strong>装饰器、修饰器</strong>，Decorator 只是 ECMAScript 中的一个标准，JavaScript 并未实现这个标准语法，所以我们无法直接使用 Decorator 的语法。</p><p>但是由于 Decorator 十分 nice，所以 <a href="https://www.pengfeixc.com/blogs/javascript/babel-tutorial">Babel</a> 提供了插件，可以让我们在 javascript 中使用 Decorator 语法。</p><h2 id="Decorator 是什么？">Decorator 是什么？ <a href="#Decorator 是什么？">#</a></h2><p><strong>Decorator</strong> 就是一个用来改变类的成员（属性、方法）和类本身的普通的 JavaScript 函数（建议使用纯函数）。当你在类成员和类的头部使用 <code>@decoratorFunction</code> 语法时，<code>decoratorFunction</code> 会被传递一些参数调用，可以用来修改类和类成员。</p><blockquote><p>理解 Decorator 之前需要看一下 <a href="http://pengfeixc.com/blogs/javascript/property-descriptor">property descriptor</a> 的语法。</p></blockquote><h2 id="Get Start">Get Start <a href="#Get Start">#</a></h2><p>因为 JavaScript 还不支持 Decorator 语法，所以我们需要做一些准备工作。</p><p>安装 <a href="https://www.pengfeixc.com/blogs/javascript/babel-tutorial">Babel</a> 或者 TypeScript，将包含 Decorator 语法的代码转换成 JavaScript 引擎能够理解的代码。</p><p>为了简单起见，使用 Babel。</p><p>1、安装 <code>@baebl/core</code> 和 <code>@babel/cli</code></p><pre><code class="hljs language-bash">$ npm install --save-dev @babel/core @babel/cli
+
+$ npx babel --version
+7.10.4 (@babel/core 7.10.4)
+</code></pre><p>2、安装 <code>@babel/preset-env</code> 和 <code>@babel/plugin-proposal-decorators</code></p><pre><code class="hljs language-babel">$ npm install --save-dev @babel/preset-env
+$ npm install --save-dev @babel/plugin-proposal-decorators
+</code></pre><p><code>@babel/preset-env</code> 包含了一些预设的标准的 babel 插件和配置，<code>@babel/plugin-proposal-decorators</code> 用于 decorator 语法转换。</p><p>3、添加 <code>babel.config.json</code> 文件</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"presets"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"@babel/preset-env"</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"plugins"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">"@babel/plugin-proposal-decorators"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"decoratorsBeforeExport"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span>
+            <span class="hljs-punctuation">}</span>
+        <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>4、编译文件</p><p>至此，你已经完成了编译 decorator 语法的基本环境配置了，你可以创建一个包含 decorator 语法的文件 <code>decoratorTest.js</code>，然后使用 <code>npx babel decoratorTest.js -o decoratorTest.out.js</code> 命令编译文件。</p><h2 id="类方法 Decorator">类方法 Decorator <a href="#类方法 Decorator">#</a></h2><p>创建 user.js 文件：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
+    <span class="hljs-title function_">constructor</span>(<span class="hljs-params">firstname, lastName</span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstname</span> = firstname;
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span> = lastName;
+    }
+
+    <span class="hljs-title function_">getFullName</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstname</span> + <span class="hljs-string">" "</span> + <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span>;
+    }
+}
+
+<span class="hljs-keyword">let</span> user = <span class="hljs-keyword">new</span> <span class="hljs-title class_">User</span>(<span class="hljs-string">"John"</span>, <span class="hljs-string">"Doe"</span>);
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getOwnPropertyDescriptor</span>(
+    <span class="hljs-title class_">User</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>, <span class="hljs-string">"getFullName"</span>
+));
+
+<span class="hljs-title class_">User</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">getFullName</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"HACKED!"</span>;
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(user.<span class="hljs-title function_">getFullName</span>());
+</code></pre><p>编译，输出结果：</p><pre><code class="hljs language-bash">$ npx babel user.js -o user.out.js &amp;&amp; node user.out.js
+{
+  value: [Function: getFullName],
+  writable: <span class="hljs-literal">true</span>,
+  enumerable: <span class="hljs-literal">false</span>,
+  configurable: <span class="hljs-literal">true</span>
+}
+HACKED!
+</code></pre><p>可以发现 <code>getFullName</code> 的 descriptor 的 <code>writable</code> 属性时 <code>true</code>，所以我们可以随意更改这个方法的值，因此最后输出了 <code>HACKED!</code>。</p><p><strong>为了避免方法被修改，需要更改 <code>getFullName</code> 的 descriptor</strong>。</p><blockquote><p>注意：<code>getFullName</code> 位于 <code>User.prototype</code> 上，类方法与类属性一样，只不过它的值是函数。</p></blockquote><p>使用 <code>Object.defineProperty</code> 修改 descriptor。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
+    <span class="hljs-title function_">constructor</span>(<span class="hljs-params">firstname, lastName</span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstname</span> = firstname;
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span> = lastName;
+    }
+
+    <span class="hljs-title function_">getFullName</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstname</span> + <span class="hljs-string">" "</span> + <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span>;
+    }
+}
+
+<span class="hljs-comment">// 修改 writable 为 false</span>
+<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(<span class="hljs-title class_">User</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>, <span class="hljs-string">"getFullName"</span>, {
+    <span class="hljs-attr">writable</span>: <span class="hljs-literal">false</span>
+});
+
+<span class="hljs-keyword">let</span> user = <span class="hljs-keyword">new</span> <span class="hljs-title class_">User</span>(<span class="hljs-string">"John"</span>, <span class="hljs-string">"Doe"</span>);
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getOwnPropertyDescriptor</span>(
+    <span class="hljs-title class_">User</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>, <span class="hljs-string">"getFullName"</span>
+));
+</code></pre><p>编译输出结果：</p><pre><code class="hljs language-bash">$ npx babel user.js -o user.out.js &amp;&amp; node user.out.js
+{
+  value: [Function: getFullName],
+  writable: <span class="hljs-literal">false</span>,
+  enumerable: <span class="hljs-literal">false</span>,
+  configurable: <span class="hljs-literal">true</span>
+}
+</code></pre><p>如果此时，修改 <code>getFullName</code> 函数的值，将不会有任何作用，并且严格模式下，会直接报错。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
+    <span class="hljs-title function_">constructor</span>(<span class="hljs-params">firstname, lastName</span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstname</span> = firstname;
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span> = lastName;
+    }
+
+    <span class="hljs-title function_">getFullName</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstname</span> + <span class="hljs-string">" "</span> + <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span>;
+    }
+}
+
+<span class="hljs-comment">// 修改 writable 属性</span>
+<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(<span class="hljs-title class_">User</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>, <span class="hljs-string">"getFullName"</span>, {
+    <span class="hljs-attr">writable</span>: <span class="hljs-literal">false</span>
+});
+
+<span class="hljs-keyword">let</span> user = <span class="hljs-keyword">new</span> <span class="hljs-title class_">User</span>(<span class="hljs-string">"John"</span>, <span class="hljs-string">"Doe"</span>);
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getOwnPropertyDescriptor</span>(
+    <span class="hljs-title class_">User</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>, <span class="hljs-string">"getFullName"</span>
+));
+
+<span class="hljs-comment">// 修改 getFullName 函数值，报错！</span>
+<span class="hljs-title class_">User</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">getFullName</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"HACKED!"</span>;
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(user.<span class="hljs-title function_">getFullName</span>());
+</code></pre><p>编译输出结果：</p><pre><code class="hljs language-bash">$ npx babel user.js -o user.out.js &amp;&amp; node user.out.js
+{
+  value: [Function: getFullName],
+  writable: <span class="hljs-literal">false</span>,
+  enumerable: <span class="hljs-literal">false</span>,
+  configurable: <span class="hljs-literal">true</span>
+}
+D:\study\decorator\user.out.js:34
+User.prototype.getFullName = <span class="hljs-function"><span class="hljs-title">function</span></span> () {
+                           ^
+
+TypeError: Cannot assign to <span class="hljs-built_in">read</span> only property <span class="hljs-string">'getFullName'</span> of object <span class="hljs-string">'#&lt;User&gt;'</span>
+    at Object.&lt;anonymous&gt; (D:\study\decorator\user.out.js:34:28)
+    at Module._compile (internal/modules/cjs/loader.js:1256:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1277:10)
+    at Module.load (internal/modules/cjs/loader.js:1105:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:967:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:60:12)
+    at internal/main/run_main_module.js:17:47
+</code></pre><p>如果有很多方法与 <code>getFullName</code> 一样，都需要做同样的处理来避免被 Hacker 修改，那么工作量会越来越大，这也正是 decorator 的作用。下面我们用 decorator 来实现同样的作用。</p><pre><code class="hljs language-javascript"><span class="hljs-comment">// 定义 decorator 函数</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">readonly</span>(<span class="hljs-params">target</span>) {
+    target.<span class="hljs-property">descriptor</span>.<span class="hljs-property">writable</span> = <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">return</span> target;
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
+    <span class="hljs-title function_">constructor</span>(<span class="hljs-params">firstname, lastName</span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstname</span> = firstname;
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span> = lastName;
+    }
+
+    <span class="hljs-comment">// 在需要添加装饰器的方法前，添加 decorator</span>
+    @readonly
+    <span class="hljs-title function_">getFullName</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstname</span> + <span class="hljs-string">" "</span> + <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span>;
+    }
+}
+
+<span class="hljs-keyword">let</span> user = <span class="hljs-keyword">new</span> <span class="hljs-title class_">User</span>(<span class="hljs-string">"John"</span>, <span class="hljs-string">"Doe"</span>);
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getOwnPropertyDescriptor</span>(
+    <span class="hljs-title class_">User</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>, <span class="hljs-string">"getFullName"</span>
+));
+</code></pre><p>首先定义了一个 decorator 函数，并在需要添加装饰的顶部添加 <code>@decoratorFunction</code>。</p><p>编译输出上面的代码。</p><pre><code class="hljs language-javascript">$ npx babel user.<span class="hljs-property">js</span> -o user.<span class="hljs-property">out</span>.<span class="hljs-property">js</span> &amp;&amp; node user.<span class="hljs-property">out</span>.<span class="hljs-property">js</span>
+{
+  <span class="hljs-attr">value</span>: [<span class="hljs-title class_">Function</span>: getFullName],
+  <span class="hljs-attr">writable</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">enumerable</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">configurable</span>: <span class="hljs-literal">true</span>
+}
+</code></pre><p>可以看到 <code>getFullName</code> 的 <code>writable</code> 为 <code>false</code>，定义了 decorator 函数后，我们可以使用 <code>@decoratorFunction</code> 语法重复使用。</p><p>decorator 函数的参数 <code>target</code> 对象，包含了要修改的 element（类方法、类属性和类本身）的描述信息。<code>target</code> 对象的结构如下：</p><pre><code class="hljs language-javscript">{
+  kind: 'method' | 'accessor' | 'field' | 'class',
+  key: '&lt;property-name&gt;',
+  descriptor: &lt;property-descriptor&gt;,
+  placement: 'prototype' | 'static' | 'own',
+  initializer: &lt;function&gt;,
+  ...
+}
+</code></pre><p><code>kind</code> 属性标识 element（要修改的目标）的类型，它是类的方法、成员或者是类本身。<code>key</code> 是 element 的名称。你可以在 <a href="https://tc39.es/proposal-decorators/">decorators proposal</a> 获得更多的信息。另外还有一个比较重要的属性是 <code>descriptor</code>，它包含了 element 的属性描述。</p><p>我们更改之前的代码，打印 <code>target</code> 对象。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">readonly</span>(<span class="hljs-params">target</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(target);
+    target.<span class="hljs-property">descriptor</span>.<span class="hljs-property">writable</span> = <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">return</span> target;
+}
+
+...
+</code></pre><p>编译输出结果：</p><pre><code class="hljs language-bash">Object [Descriptor] {
+  kind: <span class="hljs-string">'method'</span>,
+  key: <span class="hljs-string">'getFullName'</span>,
+  placement: <span class="hljs-string">'prototype'</span>,
+  descriptor: {
+    value: [Function: getFullName],
+    writable: <span class="hljs-literal">true</span>,
+    configurable: <span class="hljs-literal">true</span>,
+    enumerable: <span class="hljs-literal">false</span>
+  }
+}
+</code></pre><p>可以看到 <code>kind</code>、<code>key</code> 和 <code>placement</code> 的详细信息，<code>placement</code> 表示 <code>getFullName</code> 这个方法在类的 prototype 上。</p><p>你还可以给 decorator 函数传递参数 <code>@decoratorFunc(...args)</code>。因为这是一个 decorator 函数调用，所以定义的 decorator 函数必须返回一个函数用来装饰 element，你可以认为此时定义的 decorator 函数是一个高阶函数。</p><p>我们使用这种形式，来定义一个 <code>change</code> 装饰器，来达到 <code>@readonly</code> 同样的效果。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">change</span>(<span class="hljs-params">key, value</span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span>(<span class="hljs-params">target</span>) {
+        target.<span class="hljs-property">descriptor</span>[key] = value;
+        <span class="hljs-keyword">return</span> target;
+    };
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
+    <span class="hljs-title function_">constructor</span>(<span class="hljs-params">firstname, lastName</span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstname</span> = firstname;
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span> = lastName;
+    }
+
+    @<span class="hljs-title function_">change</span>(<span class="hljs-string">"writable"</span>, <span class="hljs-literal">false</span>)
+    <span class="hljs-title function_">getFullName</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstname</span> + <span class="hljs-string">" "</span> + <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span>;
+    }
+}
+
+<span class="hljs-keyword">let</span> user = <span class="hljs-keyword">new</span> <span class="hljs-title class_">User</span>(<span class="hljs-string">"John"</span>, <span class="hljs-string">"Doe"</span>);
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getOwnPropertyDescriptor</span>(
+    <span class="hljs-title class_">User</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>, <span class="hljs-string">"getFullName"</span>
+));
+</code></pre><p>当类方法是 static 时，这个方法是在 class 本身，而不是它的 <code>prototype</code> 上，看下面的例子。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">change</span>(<span class="hljs-params">key, value</span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span>(<span class="hljs-params">target</span>) {
+        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"target"</span>, target);
+        target.<span class="hljs-property">descriptor</span>[key] = value;
+        <span class="hljs-keyword">return</span> target;
+    };
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
+    @<span class="hljs-title function_">change</span>(<span class="hljs-string">"writable"</span>, <span class="hljs-literal">false</span>)
+    <span class="hljs-keyword">static</span> <span class="hljs-title function_">getVersion</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"1.0.0"</span>;
+    }
+}
+
+<span class="hljs-comment">// 注意 Object.getOwnPropertyDescriptor 的第一个参数是 User</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getOwnPropertyDescriptor</span>(<span class="hljs-title class_">User</span>, <span class="hljs-string">"getVersion"</span>));
+
+<span class="hljs-title class_">User</span>.<span class="hljs-property">getVersion</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"HACKED!"</span>;
+};
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">User</span>.<span class="hljs-title function_">getVersion</span>());
+</code></pre><p>编译输出结果：</p><pre><code class="hljs language-bash">$ npx babel user.js -o user.out.js &amp;&amp; node user.out.js
+target Object [Descriptor] {
+  kind: <span class="hljs-string">'method'</span>,
+  key: <span class="hljs-string">'getVersion'</span>,
+  placement: <span class="hljs-string">'static'</span>,
+  descriptor: {
+    value: [Function: getVersion],
+    writable: <span class="hljs-literal">true</span>,
+    configurable: <span class="hljs-literal">true</span>,
+    enumerable: <span class="hljs-literal">false</span>
+  }
+}
+{
+  value: [Function: getVersion],
+  writable: <span class="hljs-literal">false</span>,
+  enumerable: <span class="hljs-literal">false</span>,
+  configurable: <span class="hljs-literal">true</span>
+}
+D:\study\decorator\user.out.js:74
+User.getVersion = <span class="hljs-function"><span class="hljs-title">function</span></span> () {
+                ^
+
+TypeError: Cannot assign to <span class="hljs-built_in">read</span> only property <span class="hljs-string">'getVersion'</span> of <span class="hljs-keyword">function</span> <span class="hljs-string">'function User() {
+    _classCallCheck(this, User);
+
+    _initialize(this);
+  }'</span>
+    at Object.&lt;anonymous&gt; (D:\study\decorator\user.out.js:74:17)
+    at Module._compile (internal/modules/cjs/loader.js:1256:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1277:10)
+    at Module.load (internal/modules/cjs/loader.js:1105:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:967:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:60:12)
+    at internal/main/run_main_module.js:17:47
+</code></pre><p>可以看到 <code>target.placement</code> 为 <code>static</code> 表示 element 是 static 的，因为我们修改 <code>writalbe</code> 为 <code>false</code>，所以再重新赋值 <code>getVersion</code> 时报错。</p><h2 id="类属性 Decorator">类属性 Decorator <a href="#类属性 Decorator">#</a></h2><p>定义一个 <code>User</code> 类。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
+    firstName = <span class="hljs-string">"default-first-name"</span>;
+    lastName = <span class="hljs-string">"default-last-name"</span>;
+
+    getFullName = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstName</span> + <span class="hljs-string">" "</span> + <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span>;
+    }
+
+    <span class="hljs-title function_">constructor</span>(<span class="hljs-params">firstName, lastName</span>) {
+        <span class="hljs-keyword">if</span> (firstName) <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstName</span> = firstName;
+        <span class="hljs-keyword">if</span> (lastName) <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span> = lastName;
+    }
+}
+
+<span class="hljs-keyword">var</span> dummy = <span class="hljs-keyword">new</span> <span class="hljs-title class_">User</span>();
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"dummy =&gt;"</span>, dummy);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"dummy.getFullName() =&gt;"</span>, dummy.<span class="hljs-title function_">getFullName</span>());
+
+<span class="hljs-keyword">var</span> user = <span class="hljs-keyword">new</span> <span class="hljs-title class_">User</span>(<span class="hljs-string">"John"</span>, <span class="hljs-string">"Doe"</span>);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"user =&gt;"</span>, user);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"user.getFullName() =&gt;"</span>, user.<span class="hljs-title function_">getFullName</span>());
+</code></pre><p>首次编译输出结果：</p><pre><code class="hljs language-bash">$ npx babel user.js -o user.out.js &amp;&amp; node user.out.js
+dummy =&gt; User {
+  firstName: <span class="hljs-string">'default-first-name'</span>,
+  lastName: <span class="hljs-string">'default-last-name'</span>,
+  getFullName: [Function (anonymous)]
+}
+dummy.getFullName() =&gt; default-first-name default-last-name
+user =&gt; User {
+  firstName: <span class="hljs-string">'John'</span>,
+  lastName: <span class="hljs-string">'Doe'</span>,
+  getFullName: [Function (anonymous)]
+}
+user.getFullName() =&gt; John Doe
+</code></pre><p>此时，如果你输出 <code>User.prototype</code>，你会发现它没有 <code>firstName</code> 和 <code>lastName</code>，甚至没有 <code>getFullName</code>，因为你定义 <code>getFullName</code> ，是通过 <code>=</code> 语法定义的，此时的 <code>getFullName</code> 是一个类属性，只不过它的值是函数，类的属性是定义在类的 instance 上的。这意味着，如果我们想装饰类的属性，我们需要在 instance 被创建时装饰。</p><p>接下来，创建一个 <code>@upperCase</code> 装饰器，用来更新 instance 属性的默认值。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">upperCase</span>(<span class="hljs-params">target</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"target"</span>, target);
+
+    <span class="hljs-keyword">const</span> value = target.<span class="hljs-title function_">initializer</span>();
+
+    target.<span class="hljs-property">initializer</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">return</span> value.<span class="hljs-title function_">toUpperCase</span>();
+    };
+
+    <span class="hljs-keyword">return</span> target;
+}
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
+    <span class="hljs-comment">// style 1</span>
+    @upperCase
+    firstName = <span class="hljs-string">"default-first-name"</span>;
+
+    <span class="hljs-comment">// stype 2</span>
+    @upperCase lastName = <span class="hljs-string">"default-last-name"</span>;
+
+    getFullName = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstName</span> + <span class="hljs-string">" "</span> + <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span>;
+    }
+
+    <span class="hljs-title function_">constructor</span>(<span class="hljs-params">firstName, lastName</span>) {
+        <span class="hljs-keyword">if</span> (firstName) <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstName</span> = firstName;
+        <span class="hljs-keyword">if</span> (lastName) <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span> = lastName;
+    }
+}
+
+<span class="hljs-keyword">var</span> dummy = <span class="hljs-keyword">new</span> <span class="hljs-title class_">User</span>();
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"dummy.getFullName() =&gt;"</span>, dummy.<span class="hljs-title function_">getFullName</span>());
+</code></pre><p>编译查看结果：</p><pre><code class="hljs language-bash">$ npx babel user.js -o user.out.js &amp;&amp; node user.out.js
+target Object [Descriptor] {
+  kind: <span class="hljs-string">'field'</span>,
+  key: <span class="hljs-string">'firstName'</span>,
+  placement: <span class="hljs-string">'own'</span>,
+  descriptor: { configurable: <span class="hljs-literal">true</span>, writable: <span class="hljs-literal">true</span>, enumerable: <span class="hljs-literal">true</span> },
+  initializer: [Function: value]
+}
+target Object [Descriptor] {
+  kind: <span class="hljs-string">'field'</span>,
+  key: <span class="hljs-string">'lastName'</span>,
+  placement: <span class="hljs-string">'own'</span>,
+  descriptor: { configurable: <span class="hljs-literal">true</span>, writable: <span class="hljs-literal">true</span>, enumerable: <span class="hljs-literal">true</span> },
+  initializer: [Function: value]
+}
+dummy.getFullName() =&gt; DEFAULT-FIRST-NAME DEFAULT-LAST-NAME
+</code></pre><p>可以看到 <code>target.kind: "field"</code>、<code>target.placement: "own"</code>，表示这是一个类属性。</p><p><code>target.initializer</code> 是一个函数，函数的返回值用来初始化类属性的值，所以我们可以在装饰器函数中修改 <code>target.initializer</code> 函数以达到修改默认值的目的。</p><p><code>target.initializer</code> 同样适用于 <code>static properties</code>。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">upperCase</span>(<span class="hljs-params">target</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"target"</span>, target);
+
+    <span class="hljs-keyword">const</span> value = target.<span class="hljs-title function_">initializer</span>();
+
+    target.<span class="hljs-property">initializer</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">return</span> value.<span class="hljs-title function_">toUpperCase</span>();
+    };
+
+    <span class="hljs-keyword">return</span> target;
+}
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
+    <span class="hljs-comment">// style 1</span>
+    @upperCase
+    <span class="hljs-keyword">static</span> firstName = <span class="hljs-string">"default-first-name"</span>;
+
+    <span class="hljs-comment">// stype 2</span>
+    @upperCase <span class="hljs-keyword">static</span> lastName = <span class="hljs-string">"default-last-name"</span>;
+
+    <span class="hljs-keyword">static</span> getFullName = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstName</span> + <span class="hljs-string">" "</span> + <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span>;
+    }
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"getFullName() =&gt;"</span>, <span class="hljs-title class_">User</span>.<span class="hljs-title function_">getFullName</span>());
+</code></pre><p>编译输出：</p><pre><code class="hljs language-bash">$ npx babel user.js -o user.out.js &amp;&amp; node user.out.js
+target Object [Descriptor] {
+  kind: <span class="hljs-string">'field'</span>,
+  key: <span class="hljs-string">'firstName'</span>,
+  placement: <span class="hljs-string">'static'</span>,
+  descriptor: { configurable: <span class="hljs-literal">true</span>, writable: <span class="hljs-literal">true</span>, enumerable: <span class="hljs-literal">true</span> },
+  initializer: [Function: value]
+}
+target Object [Descriptor] {
+  kind: <span class="hljs-string">'field'</span>,
+  key: <span class="hljs-string">'lastName'</span>,
+  placement: <span class="hljs-string">'static'</span>,
+  descriptor: { configurable: <span class="hljs-literal">true</span>, writable: <span class="hljs-literal">true</span>, enumerable: <span class="hljs-literal">true</span> },
+  initializer: [Function: value]
+}
+getFullName() =&gt; DEFAULT-FIRST-NAME DEFAULT-LAST-NAME
+</code></pre><h2 id="类 Decorator">类 Decorator <a href="#类 Decorator">#</a></h2><p>Decorators 同样可以装饰类本身。例如，你想动态的给类增加一个方法。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
+    <span class="hljs-title function_">constructor</span>(<span class="hljs-params">firstName, lastName</span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstName</span> = firstName;
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span> = lastName;
+    }
+}
+
+<span class="hljs-title class_">User</span>.<span class="hljs-property">getVersion</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"1.0.0"</span>;
+}
+
+<span class="hljs-title class_">User</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">getFullName</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstName</span> + <span class="hljs-string">" "</span> + <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span>;
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"version =&gt;"</span>, <span class="hljs-title class_">User</span>.<span class="hljs-title function_">getVersion</span>());
+
+<span class="hljs-keyword">let</span> user = <span class="hljs-keyword">new</span> <span class="hljs-title class_">User</span>(<span class="hljs-string">"John"</span>, <span class="hljs-string">"Doe"</span>);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"full-name =&gt;"</span>, user.<span class="hljs-title function_">getFullName</span>());
+</code></pre><p>上面的代码中，动态的给类添加了一个 static 方法 <code>getVersion</code> 和一个非 static 方法 <code>getFullName</code>。我们可以使用 decorator 实现同样的效果，首先打印查看一下 <code>target</code> 的值。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">peek</span>(<span class="hljs-params">target</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"target"</span>, target);
+    <span class="hljs-keyword">return</span> target;
+}
+
+@peek
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
+    <span class="hljs-title function_">constructor</span>(<span class="hljs-params">firstName, lastName</span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstName</span> = firstName;
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span> = lastName;
+    }
+
+    <span class="hljs-keyword">static</span> <span class="hljs-title function_">getVersion</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"1.0.0"</span>;
+    }
+}
+</code></pre><p>编译输出：</p><pre><code class="hljs language-bash">$ npx babel user.js -o user.out.js &amp;&amp; node user.out.js
+target Object [Descriptor] {
+  kind: <span class="hljs-string">'class'</span>,
+  elements: [
+    Object [Descriptor] {
+      kind: <span class="hljs-string">'method'</span>,
+      key: <span class="hljs-string">'getVersion'</span>,
+      placement: <span class="hljs-string">'static'</span>,
+      descriptor: [Object]
+    }
+  ]
+}
+</code></pre><p>可以看到 <code>target</code> 有一点不同，它的 <code>kind</code> 属性为 <code>class</code>，并且包含了 <code>elements</code> 属性，<code>elements</code> 指示了这个类中的 targets（elements, 装饰器可以装饰的目标），此时他有一个 <code>getVersion</code> 的静态方法。</p><p>我们想要做的是在 <code>elements</code> 数组中添加一个新的 target，下面添加一个 非 static 方法的 element。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">add</span>(<span class="hljs-params">{name, callback}</span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span>(<span class="hljs-params">target</span>) {
+        target.<span class="hljs-property">elements</span>.<span class="hljs-title function_">push</span>({
+            <span class="hljs-attr">kind</span>: <span class="hljs-string">"method"</span>,
+            <span class="hljs-attr">key</span>: name,
+            <span class="hljs-attr">placement</span>: <span class="hljs-string">"prototype"</span>,
+            <span class="hljs-attr">descriptor</span>: {
+                <span class="hljs-attr">value</span>: callback,
+                <span class="hljs-attr">writable</span>: <span class="hljs-literal">false</span>,
+                <span class="hljs-attr">configurable</span>: <span class="hljs-literal">false</span>,
+                <span class="hljs-attr">enumerable</span>: <span class="hljs-literal">false</span>
+            }
+        });
+
+        <span class="hljs-keyword">return</span> target;
+    }
+}
+
+@<span class="hljs-title function_">add</span>({
+    <span class="hljs-attr">name</span>: <span class="hljs-string">"getFullName"</span>,
+    <span class="hljs-attr">callback</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstName</span> + <span class="hljs-string">" : "</span> + <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span>;
+    }
+})
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span> {
+    <span class="hljs-title function_">constructor</span>(<span class="hljs-params">firstName, lastName</span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">firstName</span> = firstName;
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">lastName</span> = lastName;
+    }
+
+    <span class="hljs-keyword">static</span> <span class="hljs-title function_">getVersion</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"1.0.0"</span>;
+    }
+}
+
+<span class="hljs-keyword">let</span> user = <span class="hljs-keyword">new</span> <span class="hljs-title class_">User</span>(<span class="hljs-string">"John"</span>, <span class="hljs-string">"Doe"</span>);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"full-name =&gt;"</span>, user.<span class="hljs-title function_">getFullName</span>());
+</code></pre><p>编译输出结果：</p><pre><code class="hljs language-bash">$ npx babel user.js -o user.out.js &amp;&amp; node user.out.js
+full-name =&gt; John : Doe
+</code></pre><p>可以看到，通过装饰器，我们成功的在类里面添加了一个方法。</p><h2 id="The Legacy Decorator">The Legacy Decorator <a href="#The Legacy Decorator">#</a></h2><p>上面介绍的是目前新的 Decorator 语法，关于旧的语法可以看下面这篇文章。</p><blockquote><p><a href="https://medium.com/jspoint/a-minimal-guide-to-javascript-ecmascript-decorators-and-property-descriptor-of-the-object-e19ce3f3ae">Legacy: A minimal guide to JavaScript (ECMAScript) Decorators and Property Descriptor of the <code>Object</code></a></p></blockquote><h2 id="参考资料">参考资料 <a href="#参考资料">#</a></h2><ul><li><a href="https://medium.com/jspoint/a-minimal-guide-to-ecmascript-decorators-55b70338215e#:~:text=A%20decorator%20is%20a%20JavaScript%20function%20%28%20recommended,can%20use%20to%20modify%20class%20or%20class%20properties.">A minimal guide to JavaScript (ECMAScript) Decorators and Property Descriptor of the <code>Object</code></a></li></ul><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/developer-handbook/uml">上一篇：UML 类图</a></span><span class="next-article"><a href="/blogs/javascript/property-descriptor">下一篇：Property descriptor</a></span></div></div></body></html>

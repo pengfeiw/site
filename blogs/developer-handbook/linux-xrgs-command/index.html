@@ -1,0 +1,36 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="linux,xargs,command,运维,批量删除文件"><meta name="description" content="介绍 linux 下 xargs 命令的基本用法，如何使用 xargs 提高工作效率"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/blogs/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2022年12月3日</span><span class="category"><a href="/blogs/developer-handbook">标签：Developer</a></span></div><div class="markdown-body"><h1 id="linux 中的 xargs 命令">linux 中的 xargs 命令 <a href="#linux 中的 xargs 命令">#</a></h1><p><code>xargs</code> 是 <em>build and execute</em> 的意思，名字有些奇怪（linux 中很多命令都是缩写，在我看来都很奇怪）。用另一种解释可能更容易记忆：<em>execute with arguments</em>，带参数执行。</p><p>使用 <code>tldr</code> 工具查看下 xargs 的基本用法：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">tldr xargs</span>
+xargs
+Execute a command with piped arguments coming from another command, a file, etc.The input is treated as a single block of text and split into separate pieces on spaces, tabs, newlines and end-of-file.More information: https://pubs.opengroup.org/onlinepubs/9699919799/utilities/xargs.html.
+
+ - Run a command using the input data as arguments:
+   {{arguments_source}} | xargs {{command}}
+
+ - Run multiple chained commands on the input data:
+   {{arguments_source}} | xargs sh -c "{{command1}} &amp;&amp; {{command2}} | {{command3}}"
+
+ - Delete all files with a .backup extension (-print0 uses a null character to split file names, and -0 uses it as delimiter):
+   find . -name {{'*.backup'}} -print0 | xargs -0 rm -v
+
+ - Execute the command once for each input line, replacing any occurrences of the placeholder (here marked as _) with the input line:
+   {{arguments_source}} | xargs -I _ {{command}} _ {{optional_extra_arguments}}
+
+ - Parallel runs of up to max-procs processes at a time; the default is 1. If max-procs is 0, xargs will run as many processes as possible at a time:
+   {{arguments_source}} | xargs -P {{max-procs}} {{command}}
+</code></pre><p><code>xargs</code> 的作用是<strong>将一个命令的输出重定向为另一个命令的参数，然后执行这个命令</strong>。</p><blockquote><p>tldr 是查看 linux 中命令的基本用法的工具，毕竟 <code>man &lt;command&gt;</code> 显示的内容太多了，不方便阅读。而 <code>tldr &lt;command&gt;</code> 会列出命令的基本和常用的用法，<code>tldr</code> 是 <em>too long don't read</em> 的缩写，意味<em>太长了懒得读</em>。如果没有安装可以执行：<code>sudo apt install tldr</code>。</p></blockquote><p>为了解释 <code>xargs</code> 命令的作用，看一个例子：将目录下的空文件都删除。</p><p>创建一些文件：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash"><span class="hljs-built_in">mkdir</span> tmp</span>
+<span class="hljs-meta prompt_">$ </span><span class="language-bash"><span class="hljs-built_in">touch</span> tmp/file{1..100}.txt</span>
+</code></pre><p>使用 <code>find &lt;dir&gt; -empty</code> 查看 <code>tmp/</code> 目录下的空文件（刚刚创建的所有文件都是空文件）：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash"><span class="hljs-built_in">cd</span> tmp/</span>
+<span class="hljs-meta prompt_">$ </span><span class="language-bash">find . -empty</span>
+./file57.txt
+./file51.txt
+./file78.txt
+./file7.txt
+./file92.txt
+./file19.txt
+./file39.txt
+./file76.txt
+...
+</code></pre><p>可以通过 pipeline 删除这些空文件，你可能会直接使用 <code>rm</code> 命令：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">find . -empty | <span class="hljs-built_in">rm</span></span>
+rm: missing operand
+Try 'rm --help' for more information.
+</code></pre><blockquote><p>想了解更多关于 pipeline 的知识：<a href="https://pengfeixc.com/blogs/developer-handbook/pipelines-in-shell">Pipelines in Shell</a></p></blockquote><p>但是并没有成功，因为 <code>rm</code> 命令并不会读取标准输入，所以 <code>rm</code> 命令失败了，<code>rm</code> 命令执行需要参数即要删除的文件，那么如何将 <code>find</code> 命令查找的结果作为参数传递给 <code>rm</code> 命令并执行这个命令呢？</p><p>这正是 <code>xargs</code> 命令的作用：</p><pre><code class="hljs language-shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">find . -empty | xargs <span class="hljs-built_in">rm</span></span>
+</code></pre><p>借用 <code>xargs</code> 使 <code>rm</code> 命令成功执行。</p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/clang/gdb-debug-4">上一篇：用 GDB 调试程序（四）</a></span><span class="next-article"><a href="/blogs/developer-handbook/linux-find-command">下一篇：Linux find 命令</a></span></div></div></body></html>

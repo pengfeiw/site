@@ -1,0 +1,36 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="MTL文件与OBJ文件共同描述一个三维几何体。MTL文件一般包括一个或多个材质的定义，每个材质定义都包含颜色（color）、纹理（texture）和反射贴图（reflection map）。它们被用于描述几何体的表面和顶点的纹理。Material文件内容以ASCII格式存储，同时有.mtl文件扩展名。"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/blogs/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年7月8日</span><span class="category"><a href="/blogs/computer-graphics">标签：ComputerGraphics</a></span></div><div class="markdown-body"><h1 id="Wavefront MTL文件格式">Wavefront MTL文件格式 <a href="#Wavefront MTL文件格式">#</a></h1><p><img src="https://pengfeiw.github.io/images/blog/75.jpg" alt="古驰原典恐龙展示"> <i>上海古驰原典展览</i></p><p>在前一篇文章<a href="http://pengfeixc.com/blog/60e66901e97367196dce3f05">OBJ图形格式文件解析</a>中提到<strong>一般三维图形软件（例如blender）生成OBJ文件时，会一起生成一个MTL格式的文件，MTL文件是用来描述几何体的材质的。</strong>，这节内容一起看下MTL文件的组成部分。</p><h2 id="一.概述">一.概述 <a href="#一.概述">#</a></h2><p>MTL文件一般包括一个或多个材质的定义，每个材质定义都包含颜色（color）、纹理（texture）和反射贴图（reflection map）。它们被用于描述几何体的表面和顶点的纹理。Material文件内容以ASCII格式存储，同时有.mtl文件扩展名。</p><p>.mtl文件中的每个材质描述都由<code>newmtl</code>语句构成。<code>newmtl</code>语句给当前材质定义赋予一个名称，并代表了材质定义的起始点。起始语句后紧跟描述材质的材质颜色和纹理贴图语句。一个.mtl文件包含多个不同的材质的定义。</p><p>每当使用<code>newmtl</code>关键字开始定义一个新的材质时，该语句后面描述（定义）该材质的所有语句的顺序是任意的。</p><h2 id="二.格式">二.格式 <a href="#二.格式">#</a></h2><p>下面是一个相对简单的.mtl文件的内容。</p><p>材质名称语句：</p><pre><code>newmtl my_mt1
+</code></pre><p>材质颜色和光线语句：</p><pre><code>Ka 0.0435 0.0435 0.0435
+Kd 0.1086 0.1086 0.1086
+Ks 0.0000 0.0000 0.0000
+Ns 10.0000
+illum 2
+</code></pre><p>纹理贴图语句：</p><pre><code>map_Ka mapfile.png
+map_Kd mapfile.png
+</code></pre><h3 id="纹理名称">纹理名称 <a href="#纹理名称">#</a></h3><p>.mtl文件中<code>newmtl</code>语句是必须包含的，并且在每个材质定义的最顶端，标志一个材质定义的开始。<code>newmtl</code>语句给一个材质命名。</p><pre><code>newmtl name
+</code></pre><p>和一般程序命名一样，材质的名称可以是任意长度的字符串，但是不能包含空格字符。下划线也是可以用于名称当中的。</p><h3 id="材质颜色">材质颜色 <a href="#材质颜色">#</a></h3><p>冯氏光照模型指定了物体的材质属性由环境光照（Ambient Lighting）、漫反射光照（Diffuse Lighting）、镜面光照（Specular Lighting）组成（其实还有一个反光度，下面会介绍）。为了定义这一系列 值，.mtl文件中<code>Ka</code>、<code>Kd</code>、<code>Ks</code>语句分别描述了这几个值，每个值范围都是0—1对应颜色0-255：</p><pre><code>Ka r g b
+Kd r g b
+Ks r g b
+</code></pre><p>通常，为了模拟更真实的效果，还会有一个镜面高光的反光度参数（Shininess），描述了镜面高光的强度，反光度越大表示镜面高光越亮。<strong>所以我们可以认为材质由环境光照、漫反射光照、镜面光照和反光度共同定义和描述</strong>。 .mtl文件中由<code>Ns</code>语句定义了反光度，反光度取值范围为0-1000。</p><pre><code>Ns exponent
+</code></pre><p>关于冯氏模型，暂时我还没有写过相关文章，但是我会尽快更新3D图形中光照这一块的。想了解的朋友可以关注一下。</p><h3 id="光照模型">光照模型 <a href="#光照模型">#</a></h3><p>.mtl还可以指定计算阴影的光照模型。使用<code>illum</code>开头的语句定义，<code>illum</code>关键字后接一个代表光照模型的数字，值为0、1、2。</p><pre><code>illum illumno
+</code></pre><ul><li>0：恒色照明模型，最终颜色取值为Kd值，<code>color = Kd</code>。</li><li>1：漫反射照明模型，最终颜色由环境颜光照和漫反射光照决定，并且受多个光源影响。</li><li>2：漫反射和镜面光照结合模型，最终颜色由环境光照、漫反射光照和镜面光照共同决定。</li></ul><h3 id="材质纹理贴图">材质纹理贴图 <a href="#材质纹理贴图">#</a></h3><p>纹理贴图语句通过将图像或纹理文件与可映射的材料参数关联来修改表面的材料参数，也就是材料显示的颜色。通过修改现有参数而不是替换它们，纹理贴图在改变对象表面外观方面提供了很大的灵活性。</p><pre><code>map_Ka mapfile.png
+map_Kd mapfile.png
+</code></pre><p>纹理图片应该是一个方形的，并且尺寸必须是2的幂次方。例如256x256, 512x512, 1024x1024。</p><h2 id="三.示例">三.示例 <a href="#三.示例">#</a></h2><ol><li>Neon green</li></ol><p>恒色照明模型:</p><pre><code>newmtl neon_green
+Kd 0.0000 1.0000 0.0000
+illum 0
+</code></pre><ol start="2"><li>Flat green</li></ol><p>漫反射照明模型:</p><pre><code>newmtl flat_green
+Ka 0.0000 0.2000 0.0000
+Kd 0.0000 0.8000 0.0000
+illum 1
+</code></pre><ol start="3"><li>Shiny green</li></ol><p>漫反射和镜面光照结合模型:</p><pre><code>newmtl shiny_green
+Ka 0.0000 0.1000 0.0000
+Kd 0.0000 0.4000 0.0000
+Ks 0.5000 0.5000 0.5000
+Ns 200.0000
+illum 2
+</code></pre><ol start="4"><li>texture map</li></ol><p>使用纹理贴图的恒色照明模型：</p><pre><code>newmtl green_flag
+Ka 0.0000 0.2000 0.0000
+Kd 0.0000 0.8000 0.0000
+illum 1
+map_Ka brazil_logo.gif
+map_Kd brazil_logo.gif
+</code></pre><p>这篇文章仅讲解了MTL文件的格式和内容，里面涉及了太多光照的知识，不是很容易理解，我会尽快补充这部分内容。</p><h2 id="附： 参考资料">附： 参考资料 <a href="#附： 参考资料">#</a></h2><p><a href="http://www.paulbourke.net/dataformats/mtl/">MTL文档字段描述</a></p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/computer-graphics/webgl-camera">上一篇：【WebGL】模拟摄像机</a></span><span class="next-article"><a href="/blogs/computer-graphics/obj-graphic-file-parse">下一篇：OBJ图形文件格式解析</a></span></div></div></body></html>

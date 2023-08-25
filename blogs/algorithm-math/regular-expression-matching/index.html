@@ -1,0 +1,67 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="给你一个字符串 s 和一个字符规律 p，实现一个支持 '.' 和 '*' 的正则表达式匹配。"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/blogs/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年9月22日</span><span class="category"><a href="/blogs/algorithm-math">标签：algorithm</a></span></div><div class="markdown-body"><h1 id="正则表达式匹配">正则表达式匹配 <a href="#正则表达式匹配">#</a></h1><h2 id="一.题目">一.题目 <a href="#一.题目">#</a></h2><p>题目来源于leetcode<a href="https://leetcode.com/problems/regular-expression-matching/">Regular Expression Matching</a>:</p><blockquote><p>Given an input string s and a pattern p, implement regular expression matching with support for '.' and '*' where:</p><ol><li><code>.</code> Matches any single character.​​​​</li><li><code>*</code> Matches zero or more of the preceding element. The matching should cover the entire input string (not partial).</li></ol></blockquote><p>翻译：</p><blockquote><p>给定一个字符串s和正则表达式p，实现正则表达式中的<code>.</code>和<code>*</code>匹配功能：</p><ol><li><code>.</code> 匹配任意单个字符。</li><li><code>*</code> 匹配0个或者多个该字符前面的字符。 匹配应该是正确匹配输入的完整字符串而非字符串的一部分。</li></ol></blockquote><p>例子: 1.</p><pre><code>输入: s = "aa", p = "a"
+输出: false
+解释: "a"不匹配"aa"。
+</code></pre><ol start="2"><li></li></ol><pre><code>输入: s = "aa", p = "a*"
+输出: true
+解释: '*'表示将前一个字符重复0次或者多次. 因此, 将前面的'a'重复1次, 匹配"aa"。
+</code></pre><ol start="3"><li></li></ol><pre><code>输入: s = "ab", p = ".*"
+输出: true
+解释: ".*"重复任意字符0次或者多次。
+</code></pre><ol start="4"><li></li></ol><pre><code>输入: s = "aab", p = "c*a*b"
+输出: true
+解释: 重复c0次，重复a一次，p匹配"aab"
+</code></pre><h2 id="二.分析">二.分析 <a href="#二.分析">#</a></h2><p>如果没有<code>*</code>，只需要从头到尾遍历即可得出答案，但是因为<code>*</code>的存在，题目的难度成倍增加。</p><h3 id="递归方法">递归方法 <a href="#递归方法">#</a></h3><p>用<code>isMatch(s, p)</code>表示字符串<code>s</code>与<code>p</code>是否匹配。</p><p>将复杂的情况细化讨论：</p><ol><li>当<code>s</code>和<code>p</code>都为空时，结果为<code>true</code>。</li><li>当<code>s</code>不为空时，<code>p</code>为空时，结果为<code>false</code>。</li><li>当<code>s</code>为空，<code>p</code>长度大于等于2，且<code>p[1]</code>为<code>*</code>时，结果等价于判断<code>s</code>是否与<code>p.slice(2)</code>匹配。</li><li>当<code>s</code>不为空，<code>p</code>长度大于等于2，且<code>p[1]</code>为<code>*</code>时，若<code>s</code>与<code>p</code>首字母匹配（即<code>(!(s.length === 0) &amp;&amp; (s[0] === p[0] || p[0] === "."))</code>)，结果等价于判断<code>isMatch(s, p.slice(2)) || isMatch(s.slice(1), p)</code>。</li><li>当<code>s</code>不为空，<code>p</code>长度大于等于2，且<code>p[1]</code>为<code>*</code>时，若<code>s</code>与<code>p</code>首字母不匹配，即判断<code>isMatch(s, p.slice(2))</code>。</li><li>当<code>p</code>的长度小于2，或者<code>p[1]</code>不等于<code>*</code>时，若<code>s</code>与<code>p</code>首字母匹配即判断<code>isMatch(s.slice(1), p.slice(1))</code>。</li><li>当<code>p</code>的长度小于2，或者<code>p[1]</code>不等于<code>*</code>时，若<code>s</code>与<code>p</code>首字母匹配，结果为<code>false</code>。</li></ol><p>通过上述分析，很容易写出以下递归答案：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">var</span> isMatch = <span class="hljs-keyword">function</span> (<span class="hljs-params">s, p</span>) {
+    <span class="hljs-keyword">if</span> (p.<span class="hljs-property">length</span> === <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">return</span> s.<span class="hljs-property">length</span> === <span class="hljs-number">0</span>;
+    }
+
+    <span class="hljs-keyword">var</span> firstMatch = (!(s.<span class="hljs-property">length</span> === <span class="hljs-number">0</span>) &amp;&amp; (s[<span class="hljs-number">0</span>] === p[<span class="hljs-number">0</span>] || p[<span class="hljs-number">0</span>] === <span class="hljs-string">"."</span>));
+
+    <span class="hljs-keyword">if</span> (p.<span class="hljs-property">length</span> &gt;= <span class="hljs-number">2</span> &amp;&amp; p[<span class="hljs-number">1</span>] === <span class="hljs-string">"*"</span>) {
+        <span class="hljs-keyword">return</span> (<span class="hljs-title function_">isMatch</span>(s, p.<span class="hljs-title function_">slice</span>(<span class="hljs-number">2</span>)) || (firstMatch &amp;&amp; <span class="hljs-title function_">isMatch</span>(s.<span class="hljs-title function_">slice</span>(<span class="hljs-number">1</span>), p)));
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">return</span> firstMatch &amp;&amp; <span class="hljs-title function_">isMatch</span>(s.<span class="hljs-title function_">slice</span>(<span class="hljs-number">1</span>), p.<span class="hljs-title function_">slice</span>(<span class="hljs-number">1</span>));
+    }
+};
+</code></pre><h3 id="动态规划">动态规划 <a href="#动态规划">#</a></h3><p>在上面的递归例子中，其实有大量的计算式重复的。不妨使用动态规划，将已经计算的结果存储起来。</p><p>算法思路如下：</p><ol><li>创建一个二维布尔数组<code>dp[s.length() + 1][p.length() + 1]</code>，<code>dp[n][m]</code>表示<code>s.slice(0, n)</code>与<code>p.slice(0, m)</code>是否匹配，<code>dp[0][0]</code>表示两个空字符串匹配。</li><li>如果s和p都为空，两者匹配，所以<code>dp[0][0]</code>为true，注意这里数组的长度为字符串长度加1，<code>dp[0][0]</code>表示<code>s</code>和<code>p</code>为空。</li><li>用一个例子说明，<code>s = "aab"</code>，<code>p = "c*a*b"</code>，创建一个dp值表：</li></ol><table><thead><tr><th></th><th></th><th></th><th>c</th><th>*</th><th>a</th><th>*</th><th>b</th></tr></thead><tbody><tr><td></td><td></td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr><tr><td></td><td>0</td><td>TRUE</td><td>FALSE</td><td>TRUE</td><td>FALSE</td><td>TRUE</td><td>FALSE</td></tr><tr><td>a</td><td>1</td><td>FALSE</td><td>FALSE</td><td>FALSE</td><td>TRUE</td><td>TRUE</td><td>FALSE</td></tr><tr><td>a</td><td>2</td><td>FALSE</td><td>FALSE</td><td>FALSE</td><td>FALSE</td><td>TRUE</td><td>FALSE</td></tr><tr><td>b</td><td>3</td><td>FALSE</td><td>FALSE</td><td>FALSE</td><td>FALSE</td><td>FALSE</td><td>TRUE</td></tr></tbody></table><ol start="4"><li>通过以上表格分析，第一列表示<code>p</code>为空，只有当<code>s</code>也为空时，结果才为<code>true</code>，所以<code>dp[0][0]</code>为true，<code>dp[i][0]</code>（i &gt; 0）为false。</li><li>第一行表示<code>s</code>为空时，其中<code>dp[0][2]</code>为true，因为<code>p[2]</code>即p的第二个字符为<code>*</code>，它可以表示重复前面的字符0次，所以<code>dp[0][2]</code>与<code>dp[0][0]</code>相等，所以为<code>true</code>。</li><li>对于非空字符串，假设<code>s[i - 1] == p[j - 1]</code>，这表示第i-1个字符与第j-1个字符相同，也就等价于判断剩余的字符串是否匹配，如果剩余的字符串匹配，那么当前的子字符串也就匹配，否则不匹配，<code>dp[i][j] = dp[i - 1][j-1]</code>（注意<code>dp[0][0]</code>表示空字符串，所以<code>1</code>才是字符串的第一个字符）。</li><li>如果<code>p[j - 1] == "."</code>，表示任意单个字符都可以匹配，所以我们需要检查剩余字符是否匹配，即<code>dp[i][j] = dp[i - 1][j - 1]</code>。</li><li>如果<code>p[j - 1] == "*"</code>，此时有两种情况，第一种情况是重复0次的情况时<code>dp[i][j] == dp[i][j - 2]</code>。第二种情况<code>s[i - 1] == p[j -2] || p[j - 2] == "."</code>，此时<code>dp[i][j] == dp[i - 1][j]</code></li></ol><p>通过以上分析，得到以下解法。 JavaScript:</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">var</span> isMatch = <span class="hljs-keyword">function</span> (<span class="hljs-params">s, p</span>) {
+    <span class="hljs-keyword">const</span> rows = s.<span class="hljs-property">length</span>;
+    <span class="hljs-keyword">const</span> columns = p.<span class="hljs-property">length</span>;
+    <span class="hljs-comment">/// Base conditions</span>
+    <span class="hljs-keyword">if</span> (rows == <span class="hljs-number">0</span> &amp;&amp; columns == <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+    }
+    <span class="hljs-keyword">if</span> (columns == <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+    <span class="hljs-comment">// 创建数组，首列都为false（匹配模式为空）</span>
+    <span class="hljs-keyword">const</span> dp = <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>({ <span class="hljs-attr">length</span>: s.<span class="hljs-property">length</span> + <span class="hljs-number">1</span> }, <span class="hljs-function">() =&gt;</span> [<span class="hljs-literal">false</span>]);
+    <span class="hljs-comment">// 都为空的情况</span>
+    dp[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>] = <span class="hljs-literal">true</span>;
+    <span class="hljs-comment">// 处理*</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">1</span>; i &lt; columns + <span class="hljs-number">1</span>; i++) {
+        <span class="hljs-keyword">if</span> (p[i - <span class="hljs-number">1</span>] === <span class="hljs-string">'*'</span>) {
+            dp[<span class="hljs-number">0</span>][i] = dp[<span class="hljs-number">0</span>][i - <span class="hljs-number">2</span>];
+        }
+        <span class="hljs-keyword">else</span> {
+            dp[<span class="hljs-number">0</span>][i] = <span class="hljs-literal">false</span>;
+        };
+    }
+    <span class="hljs-comment">// 剩余字符串</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">1</span>; i &lt; rows + <span class="hljs-number">1</span>; i++) {
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> j = <span class="hljs-number">1</span>; j &lt; columns + <span class="hljs-number">1</span>; j++) {
+            <span class="hljs-keyword">if</span> (p[j - <span class="hljs-number">1</span>] === <span class="hljs-string">'*'</span>) {
+                <span class="hljs-keyword">if</span> (p[j - <span class="hljs-number">2</span>] === s[i - <span class="hljs-number">1</span>] || p[j - <span class="hljs-number">2</span>] === <span class="hljs-string">'.'</span>) {
+                    dp[i][j] = dp[i][j - <span class="hljs-number">2</span>] || dp[i - <span class="hljs-number">1</span>][j];
+                } <span class="hljs-keyword">else</span> {
+                    dp[i][j] = dp[i][j - <span class="hljs-number">2</span>];
+                }
+            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (p[j - <span class="hljs-number">1</span>] === s[i - <span class="hljs-number">1</span>] || p[j - <span class="hljs-number">1</span>] === <span class="hljs-string">'.'</span>) {
+                dp[i][j] = dp[i - <span class="hljs-number">1</span>][j - <span class="hljs-number">1</span>];
+            } <span class="hljs-keyword">else</span> {
+                dp[i][j] = <span class="hljs-literal">false</span>;
+            }
+        }
+    }
+    <span class="hljs-keyword">return</span> dp[rows][columns];
+};
+</code></pre><p>时间复杂度：O(m x n)，m表示<code>s</code>的长度，n表示字<code>p</code>的长度。 空间复杂度：O(m × n)，m表示<code>s</code>的长度，n表示字<code>p</code>的长度。</p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/javascript/typescript-module-system">上一篇：深入理解typescript中的模块系统</a></span><span class="next-article"><a href="/blogs/javascript/tsconfig">下一篇：【TypeScirpt】详解tsconfig.json文件</a></span></div></div></body></html>

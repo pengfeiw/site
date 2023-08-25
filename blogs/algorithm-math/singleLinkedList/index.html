@@ -1,0 +1,59 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="利用双指针的思想，求单链表中倒数第k个结点。"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/blogs/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年4月1日</span><span class="category"><a href="/blogs/algorithm-math">标签：algorithm</a></span></div><div class="markdown-body"><h1 id="求链表中倒数第K个结点">求链表中倒数第K个结点 <a href="#求链表中倒数第K个结点">#</a></h1><h3 id="一.单向链表">一.单向链表 <a href="#一.单向链表">#</a></h3><p><a href="https://zh.wikipedia.org/wiki/%E5%8D%95%E5%90%91%E9%93%BE%E8%A1%A8">维基百科中国</a>是这样描述的：</p><blockquote><p>单向链表（又名单链表、线性链表）是链表的一种，其特点是链表的链接方向是单向的，对链表的访问要通过从头部开始，依序往下读取。</p></blockquote><p>从描述中，我们能知道单向链表的方向是单一的，也就是我们只能从第一个结点索引到第二个结点，无法从第二个结点索引到第一个结点。单链表在内存中是一组地址任意的存储单元，与数组不同，单链表是通过指针索引，每个结点除了存储当前结点的值，还会存储下一个结点的指针，尾结点的指针为空。 <img src="https://pengfeiw.github.io/images/blog/3.jpg" alt="单链表"></p><h3 id="二.分析">二.分析 <a href="#二.分析">#</a></h3><p>因为单链表访问顺序是单向的，所以如果是求第K个结点，我们只要从头开始每次指针向右移动一个位置，移动K-1次，就能找到第K个结点。但是题目是倒数第K个。</p><p>留给大家一点思考的时间......</p><p>...............................................</p><p>..............................................</p><p>相信大家都已经知道方法了，没错很简单，就是利用双指针的思路。</p><ol><li>两个指针开始都位于0位置。</li><li>将第二个指针移动到K-1的位置。</li><li>然后两个指针同时移动，直到最后一个指针移动到链表的尾结点，此时第一个指针正好指在第K个结点。</li></ol><p>方法很简单，但是要提醒的是要注意判断一些临界条件，考虑K是否超出链表的长度。否则写出来的代码没有鲁棒性。</p><h3 id="三.解题">三.解题 <a href="#三.解题">#</a></h3><p>通过上面的分析，我们很容易写出下面的代码。代码采用typescript写的。</p><pre><code class="hljs language-typescript">
+<span class="hljs-comment">/**
+ * 找到单链表中倒数第k个结点。
+ * 本例子采用的是数字链表，实际上可以是存储任意类型的值。
+ */</span>
+<span class="hljs-comment">// 链表的结点类</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">ListNode</span> {
+    <span class="hljs-keyword">public</span> <span class="hljs-attr">value</span>: <span class="hljs-built_in">number</span> | <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">public</span> <span class="hljs-attr">next</span>: <span class="hljs-title class_">ListNode</span> | <span class="hljs-literal">null</span>;
+    <span class="hljs-title function_">constructor</span>(<span class="hljs-params">value, next</span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">value</span> = value;
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">next</span> = next;
+    }
+}
+<span class="hljs-comment">// 创建一个链表</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">createLinkList</span> = (<span class="hljs-params">values: <span class="hljs-built_in">number</span>[]</span>) =&gt; {
+    <span class="hljs-keyword">const</span> head = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ListNode</span>(<span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>);
+    <span class="hljs-keyword">let</span> preNode = head;
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; values.<span class="hljs-property">length</span>; i++) {
+        <span class="hljs-keyword">const</span> currentNode = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ListNode</span>(values[i], <span class="hljs-literal">null</span>);
+        preNode.<span class="hljs-property">next</span> = currentNode;
+        preNode = currentNode;
+    }
+    <span class="hljs-keyword">return</span> head;
+};
+<span class="hljs-comment">// 获得倒数第k个值</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">getKthFromLast</span> = (<span class="hljs-params">k: <span class="hljs-built_in">number</span>, linkHead: ListNode</span>) =&gt; {
+    <span class="hljs-keyword">if</span> (k &lt; <span class="hljs-number">1</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">"k值必须大于0"</span>);
+    <span class="hljs-comment">// 开始时p1和p2都指向head结点</span>
+    <span class="hljs-keyword">let</span> p1 = linkHead, p2 = linkHead;
+    <span class="hljs-comment">// 先将p2移动到k-1的位置</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; k - <span class="hljs-number">1</span>; i++) {
+        <span class="hljs-keyword">if</span> (p2.<span class="hljs-property">next</span> !== <span class="hljs-literal">null</span>) {
+            p2 = p2.<span class="hljs-property">next</span>;     
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+        }
+    }
+    <span class="hljs-comment">// 同时移动k1和k2,直到p2移动到尾结点</span>
+    <span class="hljs-keyword">while</span> (p2.<span class="hljs-property">next</span> !== <span class="hljs-literal">null</span>) {
+        p1 = p1.<span class="hljs-property">next</span>;
+        p2 = p2.<span class="hljs-property">next</span>;
+    }
+    <span class="hljs-keyword">return</span> p1.<span class="hljs-property">value</span>;
+};
+<span class="hljs-comment">// 测试</span>
+<span class="hljs-keyword">const</span> linkList1 = <span class="hljs-title function_">createLinkList</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>]);
+<span class="hljs-keyword">const</span> linkList2 = <span class="hljs-title function_">createLinkList</span>([-<span class="hljs-number">1</span>, -<span class="hljs-number">3</span>, -<span class="hljs-number">10</span>, <span class="hljs-number">10</span>, -<span class="hljs-number">1</span>, <span class="hljs-number">3</span>]);
+<span class="hljs-keyword">const</span> linkList3 = <span class="hljs-title function_">createLinkList</span>([]);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">getKthFromLast</span>(<span class="hljs-number">1</span>, linkList1));
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">getKthFromLast</span>(<span class="hljs-number">2</span>, linkList1));
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">getKthFromLast</span>(<span class="hljs-number">6</span>, linkList1));
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">getKthFromLast</span>(<span class="hljs-number">7</span>, linkList1));
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">getKthFromLast</span>(<span class="hljs-number">1</span>, linkList2));
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">getKthFromLast</span>(<span class="hljs-number">6</span>, linkList2));
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">getKthFromLast</span>(<span class="hljs-number">8</span>, linkList2));
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">getKthFromLast</span>(<span class="hljs-number">1</span>, linkList3));
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">getKthFromLast</span>(-<span class="hljs-number">1</span>, linkList3));
+</code></pre><p>测试结果如下： <img src="https://pengfeiw.github.io/images/blog/4.jpg" alt=""></p><p>如有不正确或者遗漏的地方欢迎指出。</p><p><a href="https://github.com/pengfeiw/blog-algorithm/tree/master/%EF%BC%88%E5%8D%95%E9%93%BE%E8%A1%A8%EF%BC%89%E6%89%BE%E5%88%B0%E9%93%BE%E8%A1%A8%E4%B8%AD%E5%80%92%E6%95%B0%E7%AC%ACk%E4%B8%AA%E7%BB%93%E7%82%B9">github地址</a></p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/algorithm-math/recursion-steps">上一篇：递归—台阶问题</a></span><span class="next-article"><a href="/blogs/site/website-infomation">下一篇：关于我的个人网站</a></span></div></div></body></html>

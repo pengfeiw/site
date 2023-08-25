@@ -1,0 +1,154 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="WebGL/OpenGL本身没有摄像机(Camera)的概念，这篇文章模拟一个摄像机，实现通过键盘鼠标移动场景的功能。"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/blogs/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年7月9日</span><span class="category"><a href="/blogs/computer-graphics">标签：ComputerGraphics</a></span></div><div class="markdown-body"><h1 id="摄像机">摄像机 <a href="#摄像机">#</a></h1><p>建议在了解摄像机之前，如果你对<a href="http://pengfeixc.com/blog/60d7f98ae97367196dce3efe">3d图形中的坐标系统</a>不是很了解的话，可以先去阅读一下坐标系统讲解的文章，在回到这里继续阅读。 <img src="https://pengfeiw.github.io/images/blog/76.png" alt="摄像机"></p><p><i>摄像机示意图（来源LearnOpengl_cn官网）</i></p><h2 id="一.介绍">一.介绍 <a href="#一.介绍">#</a></h2><p><img src="https://pengfeiw.github.io/images/blog/77.png" alt="对马岛之魂"> <i>对马岛之魂 镜井仁</i></p><p>多人在线的游戏世界中，同时在线的玩家一般有很多个。虽然他们游戏中的角色同处于一个游戏世界，但是每个玩家所见的场景是不一样的（屏幕上看到的场景），即使玩家站在游戏世界中同一个坐标，所见的场景一般也会不同，因为他们视线的方向不一样，看到的景色当然也不一样。即使角色坐标和视线方向完全一样，他们所见的场景也可能因为玩家的游戏设置导致看到的区域范围也不一样。</p><p>玩家在游戏世界中移动的的速度也不一样，玩家A可能在慢走状态，玩家B可能在奔跑，玩家C也许在骑马，玩家D可能正在睡觉。其实这些玩家在游戏中的角色就是本篇文章要讨论的摄像机。</p><p>通过以上描述，总结下摄像机（游戏角色）的几个功能：</p><ul><li>移动坐标：前、后、左、右不同方向移动，一般移动都是通过键盘控制的，键位无所谓，你可以用w、a、s、d，也可以用↑、↓、←、→。</li><li>改变拍摄（视线）方向：一般游戏世界中改变拍摄方向都是通过鼠标的移动控制的，鼠标上移表示抬头的动作，下移表示低头，左移表示向左看，右移表示向右看。</li><li>缩放（附加功能）：用过一些建模软件（CAD、Blender等）的朋友肯定知道软件有缩放的功能，通过鼠标的滚轮实现的。</li></ul><p>在<strong>移动坐标</strong>的功能里1我们可以设置一个变量控制移动速度，在实现<strong>改变拍摄方向</strong>和<strong>缩放</strong>功能时也可以添加一个鼠标灵敏度的变量控制场景变化幅度。</p><h2 id="二.类实现">二.类实现 <a href="#二.类实现">#</a></h2><p>在<a href="http://pengfeixc.com/blog/60b1b739e97367196dce3ef4">3D图形学中的矩阵变换（二）</a>文章中简单的介绍了摄像机的概念，并讲述了<strong>基变换</strong>和<strong>lookAt矩阵</strong>。 摄像机的观察矩阵就是lookAt矩阵, 对矩阵证明感兴趣的可以去看一看我写的三篇有关矩阵证明的文章。</p><p>在<a href="http://pengfeixc.com/blog/60d7f98ae97367196dce3efe">3d图形中的坐标系统</a>文章中，我介绍了gl-matrix和glm, 这两个都是三维数学库，gl-matrix是js写的，glm是c写的，有了这两个库，我们就不需要自己手动去实现lookAt矩阵了。</p><p>gl-matrix和glm都提供了lookAt方法。函数的参数也完全相同，以gl-matrix为例，函数原型如下：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">lookAt</span>(<span class="hljs-params">out: mat4, eye: ReadonlyVec3, center: ReadonlyVec3, up: ReadonlyVec3</span>): mat4;
+</code></pre><table><thead><tr><th>param</th><th>description</th></tr></thead><tbody><tr><td>mat4</td><td>存储结果矩阵。</td></tr><tr><td>eye</td><td>摄像机在世界坐标系中的坐标。</td></tr><tr><td>center</td><td>拍摄的视线中心。</td></tr><tr><td>up</td><td>世界坐标的上方向，一般为[0, 1, 0]。</td></tr></tbody></table><p>例如摄像机的坐标为(0, 0, 10)，看向(0, 0, 0)点，那么可以如下创建lookAt矩阵：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">var</span> result = mat4.<span class="hljs-title function_">create</span>();
+mat4.<span class="hljs-title function_">lookAt</span>(result, [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">10</span>], [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>]);
+</code></pre><p>所以，定义一个camera类，我们可以定义几个如下变量：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Camera</span> {
+    public <span class="hljs-attr">worldUp</span>: vec3; <span class="hljs-comment">// 世界方向的上方向向量</span>
+    public <span class="hljs-attr">position</span>: vec3; <span class="hljs-comment">// 摄像机位置</span>
+    public <span class="hljs-attr">front</span>: vec3; <span class="hljs-comment">// 摄像机的拍摄方向向量</span>
+}
+</code></pre><p>获得lookAt矩阵，可以按照如下方式：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Camera</span> {
+    ...
+    public <span class="hljs-attr">up</span>: vec3; <span class="hljs-comment">// 摄像机坐标系的上轴</span>
+    public <span class="hljs-title function_">getViewMatrix</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">const</span> center = vec3.<span class="hljs-title function_">add</span>(vec3.<span class="hljs-title function_">create</span>(), <span class="hljs-variable language_">this</span>.<span class="hljs-property">position</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">front</span>);
+
+        <span class="hljs-keyword">return</span> mat4.<span class="hljs-title function_">lookAt</span>(mat4.<span class="hljs-title function_">create</span>(), <span class="hljs-variable language_">this</span>.<span class="hljs-property">position</span>, center, <span class="hljs-variable language_">this</span>.<span class="hljs-property">up</span>); <span class="hljs-comment">// 使用gl-matrix的lookAt方法获得lookAt矩阵</span>
+    }
+}
+</code></pre><p>值得注意的是上面代码中的lookAt方法的第三个参数，我用的是<code>up</code>变量，表示的是摄像机的Y轴正向，而不是世界坐标系中的Y轴正向，是因为一般在飞行游戏中，需要模拟飞机绕自身的纵向的旋转，所以这里我使用的是摄像机坐标系统的上轴而不是世界坐标的上轴，当然你用worldUp传入lookAt矩阵的第三个参数也是满足接下来要实现的功能的。</p><p>我们需要让用户传入<code>position</code>、<code>worldUp</code>和<code>front</code>参数创建一个摄像机类, 并增加一个<code>updateCameraVectors</code>方法，用于更新向量。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Camera</span> {
+    public <span class="hljs-attr">worldUp</span>: vec3; <span class="hljs-comment">// 世界方向的上方向向量</span>
+    public <span class="hljs-attr">position</span>: vec3; <span class="hljs-comment">// 摄像机位置</span>
+    public <span class="hljs-attr">front</span>: vec3 = [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, -<span class="hljs-number">1</span>]; <span class="hljs-comment">// 摄像机的拍摄方向向量</span>
+    public <span class="hljs-attr">up</span>: vec3 = [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>]; <span class="hljs-comment">// 摄像机坐标系的上轴，默认指向世界坐标系y轴正向</span>
+    public <span class="hljs-attr">right</span>: vec3 = [<span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>]; <span class="hljs-comment">// 增加摄像机右轴，默认方向为世界坐标系x轴正向</span>
+
+    public <span class="hljs-title function_">constructor</span>(<span class="hljs-params">position: vec3 = [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], worldUp: vec3 = [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>]</span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">position</span> = position;
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">worldUp</span> = worldUp;
+
+        <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">updateCameraVectors</span>();
+    }
+
+    private <span class="hljs-title function_">updateCameraVectors</span>(<span class="hljs-params"></span>) {
+        vec3.<span class="hljs-title function_">cross</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">right</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">front</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">worldUp</span>); <span class="hljs-comment">// 通过front和worldUp的向量叉积更新right</span>
+        vec3.<span class="hljs-title function_">cross</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">up</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">right</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">front</span>); <span class="hljs-comment">// 通过right和front的叉积更新up向量</span>
+    }
+
+    ...
+}
+</code></pre><p>初始的相机类如上，接下来我们实现移动功能。</p><h3 id="移动">移动 <a href="#移动">#</a></h3><p>处理移动我们可以添加一个<code>processKeyboard</code>方法，如下：</p><pre><code class="hljs language-javascript"><span class="hljs-comment">/**移动方向 **/</span>
+enum <span class="hljs-title class_">Camera</span>_Movement {
+    <span class="hljs-variable constant_">FORWARD</span>,
+    <span class="hljs-variable constant_">BACKWARD</span>,
+    <span class="hljs-variable constant_">LEFT</span>,
+    <span class="hljs-variable constant_">RIGHT</span>
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Camera</span> {
+    ...
+
+    public <span class="hljs-attr">movementSpeed</span>: number = <span class="hljs-variable constant_">SPEED</span>; <span class="hljs-comment">// 移动速度</span>
+
+    public <span class="hljs-title function_">processKeyboard</span>(<span class="hljs-params">direction: Camera_Movement, deltaTime: number</span>) {
+        <span class="hljs-keyword">const</span> velocity = <span class="hljs-variable language_">this</span>.<span class="hljs-property">movementSpeed</span> * deltaTime;
+
+        <span class="hljs-keyword">switch</span> (direction) {
+            <span class="hljs-keyword">case</span> <span class="hljs-title class_">Camera</span>_Movement.<span class="hljs-property">FORWARD</span>:
+                <span class="hljs-keyword">var</span> movement = vec3.<span class="hljs-title function_">scale</span>(vec3.<span class="hljs-title function_">create</span>(), <span class="hljs-variable language_">this</span>.<span class="hljs-property">front</span>, velocity);
+                vec3.<span class="hljs-title function_">add</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">position</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">position</span>, movement);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-title class_">Camera</span>_Movement.<span class="hljs-property">BACKWARD</span>:
+                <span class="hljs-keyword">var</span> movement = vec3.<span class="hljs-title function_">scale</span>(vec3.<span class="hljs-title function_">create</span>(), <span class="hljs-variable language_">this</span>.<span class="hljs-property">front</span>, velocity);
+                vec3.<span class="hljs-title function_">sub</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">position</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">position</span>, movement);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-title class_">Camera</span>_Movement.<span class="hljs-property">LEFT</span>:
+                <span class="hljs-keyword">var</span> movement = vec3.<span class="hljs-title function_">scale</span>(vec3.<span class="hljs-title function_">create</span>(), <span class="hljs-variable language_">this</span>.<span class="hljs-property">right</span>, velocity);
+                vec3.<span class="hljs-title function_">sub</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">position</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">position</span>, movement);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-title class_">Camera</span>_Movement.<span class="hljs-property">RIGHT</span>:
+                <span class="hljs-keyword">var</span> movement = vec3.<span class="hljs-title function_">scale</span>(vec3.<span class="hljs-title function_">create</span>(), <span class="hljs-variable language_">this</span>.<span class="hljs-property">right</span>, velocity);
+                vec3.<span class="hljs-title function_">add</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">position</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">position</span>, movement);
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-attr">default</span>:
+                <span class="hljs-keyword">break</span>;
+        }
+    }
+}
+</code></pre><p><code>processKeyboard</code>方法比较简单，就是通过传入的移动方向枚举值，改变<code>position</code>变量。第二个参数<code>deltaTime</code>，是为了处理不同机器（性能不一样）可能帧频率不一样造成移动速度悬殊比较大的问题，所以开放一个参数用于调整。</p><h3 id="视线方向">视线方向 <a href="#视线方向">#</a></h3><h4 id="俯仰角（pitch）">俯仰角（pitch） <a href="#俯仰角（pitch）">#</a></h4><p><img src="https://pengfeiw.github.io/images/blog/79.png" alt="俯仰角（pitch）"></p><p>俯仰角就是我们抬头或者低头时，视线方向与水平方向的夹角。修改Camera的视线方向，就是修改Camera类的front变量，由上图可得front变量更新方法如下：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> x = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">cos</span>(glMatrix.<span class="hljs-title function_">toRadian</span>(pitch)); <span class="hljs-comment">// 注意我们需要将pitch转化为弧度</span>
+<span class="hljs-keyword">const</span> y = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">sin</span>(glMatrix.<span class="hljs-title function_">toRadian</span>(pitch));
+<span class="hljs-keyword">const</span> z = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">cos</span>(glMatrix.<span class="hljs-title function_">toRadian</span>(pitch));
+vec3.<span class="hljs-title function_">normalize</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">front</span>, [x, y, z]);
+</code></pre><h4 id="偏航角">偏航角 <a href="#偏航角">#</a></h4><p><img src="https://pengfeiw.github.io/images/blog/80.png" alt="偏航角"></p><p>偏航角是当我们水平转动摄像机方向时（模拟人向左向右移动视线），摄像机front向量与x正向的夹角。由上图可得x、y、z分量计算如下：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> x = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">cos</span>(glMatrix.<span class="hljs-title function_">toRadian</span>(yaw));
+<span class="hljs-keyword">const</span> z = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">sin</span>(glMatrix.<span class="hljs-title function_">toRadian</span>(yaw));
+<span class="hljs-comment">// y不受偏航角影响</span>
+</code></pre><p>结合俯仰角，front变量更新如下：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> x = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">cos</span>(glMatrix.<span class="hljs-title function_">toRadian</span>(yaw)) * <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">cos</span>(glMatrix.<span class="hljs-title function_">toRadian</span>(pitch));
+<span class="hljs-keyword">const</span> y = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">sin</span>(glMatrix.<span class="hljs-title function_">toRadian</span>(pitch));
+<span class="hljs-keyword">const</span> z = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">sin</span>(glMatrix.<span class="hljs-title function_">toRadian</span>(yaw)) * <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">cos</span>(glMatrix.<span class="hljs-title function_">toRadian</span>(pitch));
+vec3.<span class="hljs-title function_">normalize</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">front</span>, [x, y, z]);
+</code></pre><h4 id="更新Camera">更新Camera <a href="#更新Camera">#</a></h4><p>引入pitch和yaw更新Camera。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">YAW</span> = -<span class="hljs-number">90</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">PITCH</span> = <span class="hljs-number">0</span>;
+...
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Camera</span> {
+    ...
+
+    <span class="hljs-comment">/**yaw angle: 偏航角 */</span>
+    public <span class="hljs-attr">yaw</span>: number;
+    <span class="hljs-comment">/**pitch angle: 俯仰角 */</span>
+    public <span class="hljs-attr">pitch</span>: number;
+
+    public <span class="hljs-title function_">constructor</span>(<span class="hljs-params">position: vec3 = [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], worldUp: vec3 = [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>], yaw: number = YAW, pitch: number = PITCH</span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">position</span> = position;
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">worldUp</span> = worldUp;
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">yaw</span> = yaw;
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">pitch</span> = pitch;
+
+        <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">updateCameraVectors</span>();
+    }
+
+    private <span class="hljs-title function_">updateCameraVectors</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">const</span> x = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">cos</span>(glMatrix.<span class="hljs-title function_">toRadian</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">yaw</span>)) * <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">cos</span>(glMatrix.<span class="hljs-title function_">toRadian</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">pitch</span>));
+        <span class="hljs-keyword">const</span> y = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">sin</span>(glMatrix.<span class="hljs-title function_">toRadian</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">pitch</span>));
+        <span class="hljs-keyword">const</span> z = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">sin</span>(glMatrix.<span class="hljs-title function_">toRadian</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">yaw</span>)) * <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">cos</span>(glMatrix.<span class="hljs-title function_">toRadian</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">pitch</span>));
+        vec3.<span class="hljs-title function_">normalize</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">front</span>, [x, y, z]);
+        vec3.<span class="hljs-title function_">cross</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">right</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">front</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">worldUp</span>);
+        vec3.<span class="hljs-title function_">cross</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">up</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">right</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">front</span>);
+    }
+}
+</code></pre><h4 id="监听鼠标移动">监听鼠标移动 <a href="#监听鼠标移动">#</a></h4><p>接下来，通过鼠标移动来控制摄像机拍摄方向。增加<code>processMouseMovement</code>方法：</p><pre><code class="hljs language-javascript">...
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">SENSITIVITY</span> = <span class="hljs-number">0.1</span>;
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Camera</span> {
+    ...
+    
+    public <span class="hljs-attr">mouseSensitivity</span>: number = <span class="hljs-variable constant_">SENSITIVITY</span>; <span class="hljs-comment">// 鼠标灵敏度</span>
+    public <span class="hljs-title function_">processMouseMovement</span>(<span class="hljs-params">xoffset: number, yoffset: number, constrainPitch: boolean = <span class="hljs-literal">true</span></span>) {
+        xoffset *= <span class="hljs-variable language_">this</span>.<span class="hljs-property">mouseSensitivity</span>;
+        yoffset *= <span class="hljs-variable language_">this</span>.<span class="hljs-property">mouseSensitivity</span>;
+
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">yaw</span> += xoffset;
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">pitch</span> -= yoffset;
+        <span class="hljs-keyword">if</span> (constrainPitch) {
+            <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">pitch</span> &gt; <span class="hljs-number">89</span>) <span class="hljs-variable language_">this</span>.<span class="hljs-property">pitch</span> = <span class="hljs-number">89</span>;
+            <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">pitch</span> &lt; -<span class="hljs-number">89</span>) <span class="hljs-variable language_">this</span>.<span class="hljs-property">pitch</span> = -<span class="hljs-number">89</span>;
+        }
+
+        <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">updateCameraVectors</span>();
+    }
+}
+</code></pre><p>第二个参数<code>constrainPitch</code>,是用于限制俯仰角的，一般玩家在游戏世界中，只允许抬头低头在负90至正90度范围。</p><p>至此，我们已经完成了主要的移动和更改视线方向的功能。</p><h3 id="缩放（附加功能）">缩放（附加功能） <a href="#缩放（附加功能）">#</a></h3><p>缩放功能，可以通过几种方式实现，第一种可以改变相机距离物体的距离，第二种通过视野改变也就是透视矩阵的<strong>fov</strong>，即<code>mat4.perspective</code>的第二个参数：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">perspective</span>(<span class="hljs-params">out: mat4, fovy: number, aspect: number, near: number, far: number</span>): mat4;
+</code></pre><p>当视野从小变大，视野中的物体由于相对关系会变得越来越小。这两种方式，第一种显然不是我们想要的。所以我们使用第二种方式。 关于透视矩阵，可以看之前的文章：<a href="http://pengfeixc.com/blog/60baf9aae97367196dce3ef6">3D图形学中的矩阵变换</a>。</p><p>使用第二种方式，我们在Camera类中增加一个zoom变量。</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">ZOOM</span> = <span class="hljs-number">45</span>;
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Camera</span> {
+    public <span class="hljs-attr">zoom</span>: number = <span class="hljs-variable constant_">ZOOM</span>;
+
+    <span class="hljs-comment">// 处理鼠标滚轮，控制zoom增减</span>
+    public <span class="hljs-title function_">processMouseScroll</span>(<span class="hljs-params">yoffset: number</span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">zoom</span> += yoffset;
+        <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">zoom</span> &lt; <span class="hljs-number">1</span>) <span class="hljs-variable language_">this</span>.<span class="hljs-property">zoom</span> = <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">zoom</span> &gt; <span class="hljs-number">60</span>) <span class="hljs-variable language_">this</span>.<span class="hljs-property">zoom</span> = <span class="hljs-number">60</span>;
+
+        <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">updateCameraVectors</span>();
+    }
+}
+</code></pre><p>在使用时，只需要将zoom变量传入perspective函数，创建透视矩阵即可：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> projection = mat4.<span class="hljs-title function_">perspective</span>(mat4.<span class="hljs-title function_">create</span>(), glMatrix.<span class="hljs-title function_">toRadian</span>(camera.<span class="hljs-property">zoom</span>), gl.<span class="hljs-property">canvas</span>.<span class="hljs-property">width</span> / gl.<span class="hljs-property">canvas</span>.<span class="hljs-property">height</span>, <span class="hljs-number">0.1</span>, <span class="hljs-number">100</span>);
+</code></pre><p>至此所有功能均已完成。</p><p>可以在这里获得完整代码：<a href="https://github.com/pengfeiw/cameraDemo/blob/master/src/util/camera.ts">camera.ts</a></p><p>下面是我写的一个简单的使用demo。</p><p><img src="https://pengfeiw.github.io/images/blog/78.gif" alt="webgl摄像机"></p><p>代码：<a href="https://github.com/pengfeiw/cameraDemo">cameraDemo</a>。</p><p>(完)</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/computer-graphics/color-and-feng-illumination-model">上一篇：【光照理论】（一）颜色与冯氏光照模型</a></span><span class="next-article"><a href="/blogs/computer-graphics/mtl-graphic-file-parse">下一篇：MTL图形文件格式解析</a></span></div></div></body></html>

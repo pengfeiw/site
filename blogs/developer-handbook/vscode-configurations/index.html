@@ -1,0 +1,417 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="vscode config, vscode-vim, vscode,配置,configuration,settings,plugins,keyboard shortcuts"><meta name="description" content="自用的 VsCode 环境配置：settings 和 plugins"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/blogs/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2022年1月27日</span><span class="category"><a href="/blogs/developer-handbook">标签：Developer</a></span></div><div class="markdown-body"><h1 id="自用 VSCode 环境配置">自用 VSCode 环境配置 <a href="#自用 VSCode 环境配置">#</a></h1><p>以下是我目前使用的 VsCode 环境，VsCode 是我用来作为 Web 开发的主要工具。</p><blockquote><p>建议搭配 <a href="https://www.pengfeixc.com/blogs/developer-handbook/vim-shortcuts">vim 使用技巧</a> 使用</p></blockquote><h2 id="Plugins">Plugins <a href="#Plugins">#</a></h2><p>安装的比较常用的插件。</p><ol><li>Bookmarks</li><li>formate: CSS/LESS/SCSS formatter</li><li>Git Graph</li><li>Markdown All in One</li><li>MDX</li><li>Multiple clipboards for VSCode</li><li>open in browser</li><li>Shader languages support for VS Code</li><li>XML</li><li>ESLint</li><li>Vetur</li><li>Search node_modules</li><li>Indent-Rainbow</li><li>GitLens — Git supercharged</li><li>Todo Tree</li><li>Markdown Shortcuts</li><li>vim（可选，如果熟悉 vim 的操作，建议安装）</li><li>Tmux Keybinding</li></ol><h2 id="Settings">Settings <a href="#Settings">#</a></h2><p>vscode 的 users settings。</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"workbench.editor.enablePreview"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"workbench.editor.enablePreviewFromQuickOpen"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"editor.lineNumbers"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"relative"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"typescript.implementationsCodeLens.enabled"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"files.eol"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"\n"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"files.trimFinalNewlines"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"typescript.updateImportsOnFileMove.enabled"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"always"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"typescript.referencesCodeLens.enabled"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"git.inputValidationSubjectLength"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">72</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"[css]"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"editor.defaultFormatter"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vscode.css-language-features"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"[html]"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"editor.defaultFormatter"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vscode.html-language-features"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"[json]"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"editor.defaultFormatter"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vscode.json-language-features"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"[javascript]"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"editor.defaultFormatter"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vscode.typescript-language-features"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vetur.format.options.tabSize"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">4</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"diffEditor.ignoreTrimWhitespace"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"[jsonc]"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"editor.defaultFormatter"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vscode.json-language-features"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vetur.format.options.useTabs"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"editor.detectIndentation"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"[less]"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"editor.defaultFormatter"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"MikeBovenlander.formate"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"editor.fontSize"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">20</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"files.autoSave"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"afterDelay"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"terminal.integrated.defaultProfile.windows"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Git Bash"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"terminal.integrated.profiles.windows"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe (migrated)"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"path"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"args"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+                <span class="hljs-string">"--login"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-string">"-i"</span>
+            <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"redhat.telemetry.enabled"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"files.associations"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"*.cjson"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"jsonc"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"*.wxss"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"css"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"*.wxs"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"javascript"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"emmet.includeLanguages"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"wxml"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"html"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"editor.fontFamily"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"'Courier New',monospace"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"terminal.integrated.fontFamily"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Consolas,'Courier New',monospace"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"editor.bracketPairColorization.enabled"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"editor.guides.bracketPairs"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"active"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"security.workspace.trust.untrustedFiles"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"open"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"gitlens.hovers.currentLine.over"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"line"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"gitlens.hovers.enabled"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"extensions.ignoreRecommendations"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"workbench.iconTheme"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vscode-icons"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"markdownShortcuts.icons.bold"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"markdownShortcuts.icons.bullets"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"markdownShortcuts.icons.italic"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"markdownShortcuts.icons.strikethrough"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"workbench.colorTheme"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"NetBeans Light Theme"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vim.cursorStylePerMode.normal"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"block"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vim.easymotion"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vim.incsearch"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vim.useSystemClipboard"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vim.useCtrlKeys"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vim.hlsearch"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vim.leader"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"&lt;space&gt;"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vim.foldfix"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vim.smartRelativeLine"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vim.handleKeys"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"&lt;C-a&gt;"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"&lt;C-f&gt;"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vim.normalModeKeyBindingsNonRecursive"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"before"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+                <span class="hljs-string">"&lt;leader&gt;"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-string">"d"</span>
+            <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"after"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+                <span class="hljs-string">"d"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-string">"d"</span>
+            <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"before"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+                <span class="hljs-string">"&lt;C-n&gt;"</span>
+            <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"commands"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+                <span class="hljs-string">":nohl"</span>
+            <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"before"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+                <span class="hljs-string">"K"</span>
+            <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"commands"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+                <span class="hljs-string">"lineBreakInsert"</span>
+            <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"silent"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span>
+        <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 输入法</span>
+    <span class="hljs-attr">"vim.autoSwitchInputMethod.enable"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vim.autoSwitchInputMethod.defaultIM"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"1033"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vim.autoSwitchInputMethod.obtainIMCmd"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"C:\\im-select\\im-select.exe"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vim.autoSwitchInputMethod.switchIMCmd"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"C:\\im-select\\im-select.exe {im}"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"[scss]"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"editor.defaultFormatter"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"MikeBovenlander.formate"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vsicons.dontShowNewVersionMessage"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><h2 id="Keyboard shortcuts">Keyboard shortcuts <a href="#Keyboard shortcuts">#</a></h2><pre><code class="hljs language-json"><span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+b ctrl+b"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"bookmarks.toggle"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"editorTextFocus"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+b ctrl+n"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"bookmarks.jumpToNext"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"editorTextFocus"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+alt+l"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"-bookmarks.jumpToNext"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"editorTextFocus"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+b ctrl+p"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"bookmarks.jumpToPrevious"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"editorTextFocus"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+alt+j"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"-bookmarks.jumpToPrevious"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"editorTextFocus"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+b ctrl+c"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"bookmarks.clear"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+shift+enter"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"editor.action.insertLineAfter"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"editorTextFocus &amp;&amp; !editorReadonly"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+enter"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"editor.action.insertLineBefore"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"editorTextFocus &amp;&amp; !editorReadonly"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+shift+k"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"-editor.action.deleteLines"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"textInputFocus &amp;&amp; !editorReadonly"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+k ctrl+v"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"markdown.showPreviewToSide"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"!notebookEditorFocused &amp;&amp; editorLangId == 'markdown'"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+k ctrl+v"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"markdown.extension.closePreview"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"markdownPreviewFocus"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+k"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"-extension.vim_ctrl+k"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"editorTextFocus &amp;&amp; vim.active &amp;&amp; vim.use&lt;C-k&gt; &amp;&amp; !inDebugRepl"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// -- 侧边栏命令</span>
+    <span class="hljs-comment">// 切换侧边栏显示状态</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+n alt+n"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.action.toggleSidebarVisibility"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 切换二级侧边栏显示状态</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+l alt+l"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.action.toggleAuxiliaryBar"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 显示文件资源管理器</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+n alt+1"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.files.action.focusFilesExplorer"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 折叠所有文件夹</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"-"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.files.action.collapseExplorerFolders"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"filesExplorerFocus"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 侧边栏显示激活文件</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+n alt+a"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.files.action.showActiveFileInExplorer"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 显示全局搜索</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+n alt+2"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.action.replaceInFiles"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 显示版本控制</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+n alt+3"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.view.scm"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.scm.active"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 显示debug</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+n alt+4"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.view.debug"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"viewContainer.workbench.view.debug.enabled"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 显示插件商店</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+n alt+5"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.view.extensions"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"viewContainer.workbench.view.extensions.enabled"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 显示书签面板</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+n alt+6"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"bookmarksExplorer.focus"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 显示TODO Tree</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+n alt+7"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"todo-tree-view.focus"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// --- 文件命令</span>
+    <span class="hljs-comment">// 保存文件</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+s"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.action.files.save"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 保存所有文件</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+shift+s"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.action.files.saveAll"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 关闭文件</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+w"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.action.closeActiveEditor"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 关闭其他所有文件</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+o alt+w"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.action.closeOtherEditors"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 关闭其他分屏</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+o alt+g"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.action.closeEditorsInOtherGroups"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 关闭所有文件</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+shift+w"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.action.closeAllEditors"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// INSERT 模式下复制、粘贴、剪切</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+c"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"-editor.action.clipboardCopyAction"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+v"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"-editor.action.clipboardPasteAction"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+x"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"multiclip.cut"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"-editorTextFocus"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+c"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"editor.action.clipboardCopyAction"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vim.mode != 'Normal' &amp;&amp; vim.mode != 'Visual' &amp;&amp; vim.mode != 'VisualLine' &amp;&amp; vim.mode != 'VisualBlock' &amp;&amp; vim.mode != 'CommandlineInProgress'"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+v"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"editor.action.clipboardPasteAction"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vim.mode != 'Normal' &amp;&amp; vim.mode != 'Visual' &amp;&amp; vim.mode != 'VisualLine' &amp;&amp; vim.mode != 'VisualBlock' &amp;&amp; vim.mode != 'CommandlineInProgress'"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+x"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"multiclip.cut"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vim.mode != 'Normal' &amp;&amp; vim.mode != 'Visual' &amp;&amp; vim.mode != 'VisualLine' &amp;&amp; vim.mode != 'VisualBlock' &amp;&amp; vim.mode != 'CommandlineInProgress'"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// --- 资源管理器中对文件或目录的操作</span>
+    <span class="hljs-comment">// 新建文件</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"i"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"explorer.newFile"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">" explorerViewletVisible &amp;&amp; filesExplorerFocus &amp;&amp; !explorerResourceIsRoot &amp;&amp; !explorerResourceReadonly &amp;&amp; !inputFocus "</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 新建目录</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"o"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"explorer.newFolder"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">" explorerViewletVisible &amp;&amp; filesExplorerFocus &amp;&amp; !explorerResourceIsRoot &amp;&amp; !explorerResourceReadonly &amp;&amp; !inputFocus "</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 刷新资源管理器</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"f5"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.files.action.refreshFilesExplorer"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">" explorerViewletVisible &amp;&amp; filesExplorerFocus &amp;&amp; !explorerResourceIsRoot &amp;&amp; !explorerResourceReadonly &amp;&amp; !inputFocus "</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 重命名文件或目录</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"r"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"renameFile"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">" explorerViewletVisible &amp;&amp; filesExplorerFocus &amp;&amp; !explorerResourceIsRoot &amp;&amp; !explorerResourceReadonly &amp;&amp; !inputFocus "</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 删除文件或目录</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"d"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"deleteFile"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">" explorerViewletVisible &amp;&amp; filesExplorerFocus &amp;&amp; !explorerResourceIsRoot &amp;&amp; !explorerResourceReadonly &amp;&amp; !inputFocus "</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 剪切文件或目录</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"x"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"filesExplorer.cut"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"explorerViewletVisible &amp;&amp; filesExplorerFocus &amp;&amp; !explorerResourceIsRoot &amp;&amp; !explorerResourceReadonly &amp;&amp; !inputFocus"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 复制文件或目录</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"y"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"filesExplorer.copy"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"explorerViewletVisible &amp;&amp; filesExplorerFocus &amp;&amp; !explorerResourceIsRoot &amp;&amp; !inputFocus"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 粘贴文件或目录</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"p"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"filesExplorer.paste"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"explorerViewletVisible &amp;&amp; filesExplorerFocus &amp;&amp; !explorerResourceReadonly &amp;&amp; !inputFocus"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// --- 面板命令</span>
+    <span class="hljs-comment">// 切换面板显示状态</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+j alt+j"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.action.togglePanel"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 最大化面板</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+j alt+m"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.action.toggleMaximizedPanel"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 显示问题</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+j alt+1"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.panel.markers.view.focus"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 显示输出</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+j alt+2"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.action.output.toggleOutput"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.panel.output.active"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 显示调试控制台</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+j alt+3"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.debug.action.toggleRepl"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.panel.repl.view.active"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 显示终端</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+j alt+4"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.action.terminal.toggleTerminal"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"terminal.active"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// go to next change</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+d"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.action.editor.nextChange"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"editorTextFocus &amp;&amp; !textCompareEditorActive"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alt+d"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.action.compareEditor.nextChange"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"textCompareEditorVisible"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// go to previous change</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"shift+alt+d"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.action.editor.previousChange"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"editorTextFocus &amp;&amp; !textCompareEditorActive"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"shift+alt+d"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"workbench.action.compareEditor.previousChange"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"when"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"textCompareEditorVisible"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// open link</span>
+    <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+shift+u"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"command"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"editor.action.openLink"</span>
+    <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">]</span>
+</code></pre><h2 id="解决 vim 中文输入法的问题">解决 vim 中文输入法的问题 <a href="#解决 vim 中文输入法的问题">#</a></h2><blockquote><p>使用 vim 的一个痛点是当你从 INSERT 模式切换到 NORMAL 模式下，如果你在 INSERT 模式中使用的是中文输入法，那么退回到 NORMAL 模式，输入无效，NORMAL 模式只接受英文输入。</p></blockquote><p>可以下载 <a href="https://github.com/daipeihust/im-select">im-select</a>，根据 readme 安装。</p><p>我自己使用的是 windows，将 im-select 放到目录 <code>C:\im-select\im-select.ext</code>，然后在 vscode settings 中添加以下设置：</p><pre><code class="hljs language-json"><span class="hljs-attr">"vim.autoSwitchInputMethod.enable"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">"vim.autoSwitchInputMethod.defaultIM"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"1033"</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">"vim.autoSwitchInputMethod.obtainIMCmd"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"C:\\im-select\\im-select.exe"</span><span class="hljs-punctuation">,</span>
+<span class="hljs-attr">"vim.autoSwitchInputMethod.switchIMCmd"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"C:\\im-select\\im-select.exe {im}"</span>
+</code></pre><p><code>1033</code> 是英文输入法的代码，需要在<strong>设置-语言</strong>中提前添加<strong>英语(美国)</strong>。</p><p>使用上述配置，当退回到 NORMAL 模式，输入法会自动切换到英语输入。</p><p>不定期更新...</p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/developer-handbook/original-inverse-complement-code">上一篇：计算机是如何存储整数的—原码、反码、补码</a></span><span class="next-article"><a href="/blogs/minicode/threejs-gallery">下一篇：Threejs 制作的画展</a></span></div></div></body></html>

@@ -1,0 +1,73 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="rollup,rollupjs,typescript,server,web-dev-server,build,front-end,build-tools"><meta name="description" content="使用 rollupjs、typescript 和 web-dev-server 配置前端项目"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/blogs/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2022年11月5日</span><span class="category"><a href="/blogs/javascript">标签：JavaScript</a></span></div><div class="markdown-body"><h1 id="使用 rollup 打包启动项目">使用 rollup 打包启动项目 <a href="#使用 rollup 打包启动项目">#</a></h1><p>在之前的教程介绍过 webpack 的使用，如何使用 webpack 构建我们的项目。本篇文章将要介绍如何使用 rollup.js 作为 webpack 的替代品打包一个前端项目。</p><p>要实现的功能很简单：</p><ul><li>通过 rollup 可以打包项目</li><li>支持 typescript 语法</li><li>可以启动本地服务打开项目，并监听（watch）项目的变化，实时更新网页</li></ul><p>写这篇文章时，我使用的是最新版的 nodejs 版本。</p><pre><code class="hljs language-bash">$ node -v
+v18.12.0
+</code></pre><h2 id="初始化项目、安装依赖">初始化项目、安装依赖 <a href="#初始化项目、安装依赖">#</a></h2><p>1）初始化项目</p><p>使用如下命令创建一个项目（package.json 文件）</p><pre><code class="hljs language-bash">npm init
+</code></pre><ol start="2"><li>安装依赖</li></ol><p>首先安装程序所需的 package。</p><p>安装 rollupjs:</p><pre><code class="hljs language-bash">$ npm install rollup --save-dev
+</code></pre><p>为了支持 typescript 语法，安装 <code>@rollup/plugin-typescript</code>、<code>rollup-plugin-dts</code>（方便生成 ts 声明文件） 和 <code>typescript</code>：</p><pre><code class="hljs language-bash">$ npm install @rollup/plugin-typescript rollup-plugin-dts typescript --save-dev
+</code></pre><p>其中某个 package 需要依赖 <code>tslib</code>，所以安装 <code>tslib</code>:</p><pre><code class="hljs language-bash">$ npm install tslib --save-dev
+</code></pre><p>启动本地服务，使用 web-dev-server，需要安装 <code>@web/dev/server</code>:</p><pre><code class="hljs language-bash">$ npm install @web/dev-server
+</code></pre><p>为了方便脚本执行，我还安装了 <code>concurrently</code>，这样我可以同时执行多个命令：</p><pre><code class="hljs language-bash">$ npm install concurrently --save-dev
+</code></pre><h2 id="配置文件">配置文件 <a href="#配置文件">#</a></h2><p>1）rollup 的默认配置文件为 <code>rollup.config.js</code>，在项目根目录创建 <code>rollup.config.js</code> 文件并输入以下内容：</p><pre><code class="hljs language-js"><span class="hljs-keyword">import</span> typescript <span class="hljs-keyword">from</span> <span class="hljs-string">"@rollup/plugin-typescript"</span>;
+<span class="hljs-keyword">import</span> dts <span class="hljs-keyword">from</span> <span class="hljs-string">"rollup-plugin-dts"</span>;
+
+<span class="hljs-keyword">const</span> config = [
+    {
+        <span class="hljs-attr">input</span>: <span class="hljs-string">'src/index.ts'</span>,
+        <span class="hljs-attr">output</span>: [
+            {
+                <span class="hljs-attr">file</span>: <span class="hljs-string">'./lib/index.esm.js'</span>,
+                <span class="hljs-attr">format</span>: <span class="hljs-string">'es'</span>,
+                <span class="hljs-attr">sourcemap</span>: <span class="hljs-literal">true</span>,
+            }
+        ],
+        <span class="hljs-attr">plugins</span>: [
+            <span class="hljs-title function_">typescript</span>({
+                <span class="hljs-attr">tsconfig</span>: <span class="hljs-string">'./tsconfig.json'</span>
+            })
+        ]
+    },
+    {
+        <span class="hljs-attr">input</span>: <span class="hljs-string">"src/index.ts"</span>,
+        <span class="hljs-attr">output</span>: [{ <span class="hljs-attr">file</span>: <span class="hljs-string">"lib/index.d.ts"</span>, <span class="hljs-attr">format</span>: <span class="hljs-string">"es"</span> }],
+        <span class="hljs-attr">plugins</span>: [<span class="hljs-title function_">dts</span>()]
+    }
+]
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> config;
+</code></pre><p>2）在项目根目录下创建 <code>tsconfig.json</code> 文件输入以下配置：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"sourceMap"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"target"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"es2015"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"module"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"es2015"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"moduleResolution"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"node"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"noEmitOnError"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"lib"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+            <span class="hljs-string">"es2017"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-string">"DOM"</span>
+        <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"strict"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"esModuleInterop"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"out-tsc"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"rootDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"./"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"allowJs"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"noImplicitAny"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-string">"./src/**/*.ts"</span>
+    <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>3）配置 web-dev-server 配置，项目根目录下创建 <code>web-dev-server.config.json</code> 文件，输入以下内容：</p><pre><code class="hljs language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+    <span class="hljs-attr">port</span>: <span class="hljs-number">8000</span>,
+    <span class="hljs-attr">nodeResolve</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">open</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">watch</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">appIndex</span>: <span class="hljs-string">"index.html"</span>
+};
+</code></pre><p>当我们使用 <code>wds</code> 命令启动服务时，会默认打开浏览器，端口为 8000，并监听本地文件的变化。</p><p>其中 appIndex 表示要启动的项目 html 文件。</p><p>4）配置脚本命令</p><p>在 <code>package.json</code> 文件添加 <code>scripts</code>：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    ...
+    <span class="hljs-attr">"scripts"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"clear"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"rm -rf lib/"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"build"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"npm run clear &amp;&amp; rollup -c"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"dev"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"concurrently 'rollup -c -w' 'wds'"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    ...
+<span class="hljs-punctuation">}</span>
+</code></pre><p>其中包含三个命令：</p><ul><li><code>clear</code>: 删除构建内容</li><li><code>build</code>: 使用 rollup 构建项目</li><li><code>dev</code>: 利用 <code>concurrently</code> 同时执行两个命令，使用 rollup 打包项目并监听项目，项目一旦发生变化就重新打包，使用 web-dev-server 启动本地服务</li></ul><p>当本地开发时，执行 <code>npm run dev</code>，打包执行 <code>npm run build</code>。</p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/javascript/yarn-workspace">上一篇：Yarn Workspace</a></span><span class="next-article"><a href="/blogs/developer-handbook/install-mongodb-in-docker">下一篇：Docker 中运行 Mongo</a></span></div></div></body></html>

@@ -1,0 +1,126 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="GDB,陈皓,C,C++,unix"><meta name="description" content="GDB 调试系列文章"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/blogs/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2023年1月7日</span><span class="category"><a href="/blogs/clang">标签：C/C++</a></span></div><div class="markdown-body"><h1 id="用 GDB 调试程序（四）">用 GDB 调试程序（四） <a href="#用 GDB 调试程序（四）">#</a></h1><p>文章转自：<a href="https://blog.csdn.net/haoel/article/details/2879?spm=a2c6h.12873639.article-detail.7.3642f402OMUfoN">陈皓的 GDB 调试系列教程</a></p><p>系列文章：</p><ul><li><a href="http://pengfeixc.com/blogs/developer-handbook/gdb-debug-1">用 GDB 调试程序（一）</a></li><li><a href="http://pengfeixc.com/blogs/developer-handbook/gdb-debug-2-and-3">用 GDB 调试程序（二）、（三）</a></li><li><a href="http://pengfeixc.com/blogs/developer-handbook/gdb-debug-4">用 GDB 调试程序（四）</a></li><li><a href="http://pengfeixc.com/blogs/developer-handbook/gdb-debug-5-and-6">用 GDB 调试程序（五）、（六）</a></li><li><a href="http://pengfeixc.com/blogs/developer-handbook/gdb-debug-7">用 GDB 调试程序（七）</a></li></ul><h2 id="查看栈信息">查看栈信息 <a href="#查看栈信息">#</a></h2><p>当程序被停住了，你需要做的第一件事就是查看程序是在哪里停住的。当你的程序调用了一个函数，函数的地址，函数参数，函数内的局部变量都会被压入“栈”（Stack）中。你可以用GDB命令来查看当前的栈中的信息。</p><p>下面是一些查看函数调用栈信息的GDB命令：</p><pre><code>    backtrace
+    bt
+        打印当前的函数调用栈的所有信息。如：
+       
+        (gdb) bt
+        #0  func (n=250) at tst.c:6
+        #1  0x08048524 in main (argc=1, argv=0xbffff674) at tst.c:30
+        #2  0x400409ed in __libc_start_main () from /lib/libc.so.6
+       
+        从上可以看出函数的调用栈信息：__libc_start_main --&gt; main() --&gt; func()
+       
+   
+    backtrace &lt;n&gt;
+    bt &lt;n&gt;
+        n是一个正整数，表示只打印栈顶上n层的栈信息。
+
+    backtrace &lt;-n&gt;
+    bt &lt;-n&gt;
+        -n表一个负整数，表示只打印栈底下n层的栈信息。
+</code></pre><p>如果你要查看某一层的信息，你需要在切换当前的栈，一般来说，程序停止时，最顶层的栈就是当前栈，如果你要查看栈下面层的详细信息，首先要做的是切换当前栈。</p><pre><code>    frame &lt;n&gt;
+    f &lt;n&gt;
+        n是一个从0开始的整数，是栈中的层编号。比如：frame 0，表示栈顶，frame 1，表示栈的第二层。
+   
+    up &lt;n&gt;
+        表示向栈的上面移动n层，可以不打n，表示向上移动一层。
+       
+    down &lt;n&gt;
+        表示向栈的下面移动n层，可以不打n，表示向下移动一层。
+</code></pre><p>上面的命令，都会打印出移动到的栈层的信息。如果你不想让其打出信息。你可以使用这三个命令：</p><pre><code>    select-frame &lt;n&gt; 对应于 frame 命令。
+    up-silently &lt;n&gt; 对应于 up 命令。
+    down-silently &lt;n&gt; 对应于 down 命令。
+</code></pre><p>查看当前栈层的信息，你可以用以下GDB命令：</p><pre><code>    frame 或 f
+        会打印出这些信息：栈的层编号，当前的函数名，函数参数值，函数所在文件及行号，函数执行到的语句。
+</code></pre><pre><code>    info frame
+    info f
+</code></pre><p>这个命令会打印出更为详细的当前栈层的信息，只不过，大多数都是运行时的内内地址。比如：函数地址，调用函数的地址，被调用函数的地址，目前的函数是由什么样的程序语言写成的、函数参数地址及值、局部变量的地址等等。如：</p><pre><code>    (gdb) info f
+    Stack level 0, frame at 0xbffff5d4:
+        eip = 0x804845d in func (tst.c:6); saved eip 0x8048524
+        called by frame at 0xbffff60c
+        source language c.
+        Arglist at 0xbffff5d4, args: n=250
+        Locals at 0xbffff5d4, Previous frame's sp is 0x0
+        Saved registers:
+        ebp at 0xbffff5d4, eip at 0xbffff5d8
+
+    info args
+        打印出当前函数的参数名及其值。
+
+    info locals
+        打印出当前函数中所有局部变量及其值。
+    
+    info catch
+        打印出当前的函数中的异常处理信息。
+</code></pre><h2 id="查看源程序">查看源程序 <a href="#查看源程序">#</a></h2><h3 id="一、显示源代码">一、显示源代码 <a href="#一、显示源代码">#</a></h3><p>GDB 可以打印出所调试程序的源代码，当然，在程序编译时一定要加上-g的参数，把源程序信息编译到执行文件中。不然就看不到源程序了。当程序停下来以后，GDB会报告程序停在了那个文件的第几行上。你可以用list命令来打印程序的源代码。还是来看一看查看源代码的GDB命令吧。</p><pre><code>    list &lt;linenum&gt;
+        显示程序第linenum行的周围的源程序。
+   
+    list &lt;function&gt;
+        显示函数名为function的函数的源程序。
+       
+    list
+        显示当前行后面的源程序。
+   
+    list -
+        显示当前行前面的源程序。
+</code></pre><p>一般是打印当前行的上5行和下5行，如果显示函数是是上2行下8行，默认是10行，当然，你也可以定制显示的范围，使用下面命令可以设置一次显示源程序的行数。</p><pre><code>    set listsize &lt;count&gt;
+        设置一次显示源代码的行数。
+       
+    show listsize
+        查看当前listsize的设置。
+</code></pre><p>list命令还有下面的用法：</p><pre><code>    list &lt;first&gt;, &lt;last&gt;
+        显示从first行到last行之间的源代码。
+   
+    list , &lt;last&gt;
+        显示从当前行到last行之间的源代码。
+       
+    list +
+        往后显示源代码。
+</code></pre><p>一般来说在list后面可以跟以下这们的参数：</p><pre><code>&lt;linenum&gt;   行号。
+&lt;+offset&gt;   当前行号的正偏移量。
+&lt;-offset&gt;   当前行号的负偏移量。
+&lt;filename:linenum&gt;  哪个文件的哪一行。
+&lt;function&gt;  函数名。
+&lt;filename:function&gt; 哪个文件中的哪个函数。
+&lt;*address&gt;  程序运行时的语句在内存中的地址。
+</code></pre><h3 id="二、搜索源代码">二、搜索源代码 <a href="#二、搜索源代码">#</a></h3><p>不仅如此，GDB还提供了源代码搜索的命令：</p><pre><code>    forward-search &lt;regexp&gt;
+    search &lt;regexp&gt;
+        向前面搜索。
+
+    reverse-search &lt;regexp&gt;
+        全部搜索。
+</code></pre><p>其中，<code>&lt;regexp&gt;</code> 就是正则表达式，也主一个字符串的匹配模式，关于正则表达式，我就不在这里讲了，还请各位查看相关资料。</p><h3 id="三、指定源文件的路径">三、指定源文件的路径 <a href="#三、指定源文件的路径">#</a></h3><p>某些时候，用-g编译过后的执行程序中只是包括了源文件的名字，没有路径名。GDB提供了可以让你指定源文件的路径的命令，以便GDB进行搜索。</p><pre><code>    directory &lt;dirname ... &gt;
+    dir &lt;dirname ... &gt;
+        加一个源文件路径到当前路径的前面。如果你要指定多个路径，UNIX下你可以使用“:”，Windows下你可以使用“;”。
+    directory
+        清除所有的自定义的源文件搜索路径信息。
+   
+    show directories
+        显示定义了的源文件搜索路径。
+</code></pre><h3 id="四、源代码的内存">四、源代码的内存 <a href="#四、源代码的内存">#</a></h3><p>你可以使用info line命令来查看源代码在内存中的地址。info line后面可以跟“行号”，“函数名”，“文件名:行号”，“文件名:函数名”，这个命令会打印出所指定的源码在运行时的内存地址，如：</p><pre><code>        (gdb) info line tst.c:func
+        Line 5 of "tst.c" starts at address 0x8048456 &lt;func+6&gt; and ends at 0x804845d &lt;func+13&gt;.
+</code></pre><p>还有一个命令（disassemble）你可以查看源程序的当前执行时的机器码，这个命令会把目前内存中的指令dump出来。如下面的示例表示查看函数func的汇编代码。</p><pre><code>        (gdb) disassemble func
+        Dump of assembler code for function func:
+        0x8048450 &lt;func&gt;:       push   %ebp
+        0x8048451 &lt;func+1&gt;:     mov    %esp,%ebp
+        0x8048453 &lt;func+3&gt;:     sub    $0x18,%esp
+        0x8048456 &lt;func+6&gt;:     movl   $0x0,0xfffffffc(%ebp)
+        0x804845d &lt;func+13&gt;:    movl   $0x1,0xfffffff8(%ebp)
+        0x8048464 &lt;func+20&gt;:    mov    0xfffffff8(%ebp),%eax
+        0x8048467 &lt;func+23&gt;:    cmp    0x8(%ebp),%eax
+        0x804846a &lt;func+26&gt;:    jle    0x8048470 &lt;func+32&gt;
+        0x804846c &lt;func+28&gt;:    jmp    0x8048480 &lt;func+48&gt;
+        0x804846e &lt;func+30&gt;:    mov    %esi,%esi
+        0x8048470 &lt;func+32&gt;:    mov    0xfffffff8(%ebp),%eax
+        0x8048473 &lt;func+35&gt;:    add    %eax,0xfffffffc(%ebp)
+        0x8048476 &lt;func+38&gt;:    incl   0xfffffff8(%ebp)
+        0x8048479 &lt;func+41&gt;:    jmp    0x8048464 &lt;func+20&gt;
+        0x804847b &lt;func+43&gt;:    nop
+        0x804847c &lt;func+44&gt;:    lea    0x0(%esi,1),%esi
+        0x8048480 &lt;func+48&gt;:    mov    0xfffffffc(%ebp),%edx
+        0x8048483 &lt;func+51&gt;:    mov    %edx,%eax
+        0x8048485 &lt;func+53&gt;:    jmp    0x8048487 &lt;func+55&gt;
+        0x8048487 &lt;func+55&gt;:    mov    %ebp,%esp
+        0x8048489 &lt;func+57&gt;:    pop    %ebp
+        0x804848a &lt;func+58&gt;:    ret
+        End of assembler dump.
+</code></pre></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/clang/gdb-debug-5-and-6">上一篇：用 GDB 调试程序（五）(六）</a></span><span class="next-article"><a href="/blogs/developer-handbook/linux-xrgs-command">下一篇：Linux xargs 命令</a></span></div></div></body></html>

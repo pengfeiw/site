@@ -1,0 +1,118 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="现实世界中，不同物体材质不一样，对光照产生的反应也不同，文章讲述了如何基于冯氏光照理论去定义物体和光照的材质。"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/blogs/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年7月15日</span><span class="category"><a href="/blogs/computer-graphics">标签：ComputerGraphics</a></span></div><div class="markdown-body"><h1 id="材质">材质 <a href="#材质">#</a></h1><p>在<a href="http://pengfeixc.com/blog/60ebe68be97367196dce3f09">前一篇</a>文章中，我介绍了<strong>冯氏光照理论</strong>，冯氏光照理论主要由三个部分组成：</p><ul><li>环境光照</li><li>漫反射光照</li><li>镜面光照</li></ul><p>按照冯氏光照理论，我们可以绘制出非常真实的场景，但是与现实世界相比总会差那么一点。现实中，不同的物体，它们对光产生的反应是不一样的，也就是说当光线照射在物体上，它们反射的颜色不一样，亮度也不一样，这是由物体本身的材质决定的。木头、石头、金属对同一种光线产生的反应当然是不一样的，金属反光度会强很多，石头次之，木头最弱。</p><h2 id="一. 物体材质">一. 物体材质 <a href="#一. 物体材质">#</a></h2><p>所以我们需要给物体定义一个<strong>材质</strong>颜色属性。物体材质定义成如下几个部分：</p><ul><li><p>环境光照（ambient）</p></li><li><p>漫反射光照（diffuse)</p></li><li><p>镜面光照（specular）</p></li><li><p>反光度（shininess）</p></li></ul><p>在glsl中这样定义：</p><pre><code class="hljs language-c"><span class="hljs-comment">// 物体材质struct</span>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Material</span> {</span>
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    <span class="hljs-type">float</span> shininess;
+};
+
+uniform Material material; <span class="hljs-comment">// 使用Material类型，定义一个材质uniform</span>
+</code></pre><p>通过上一篇的学习，物体<code>Material</code>的几个分量，我们应该并不会感觉到陌生。这几个分量的概念，均在上一篇文章中讲解过，并通过例子说明。这里只不过是将其封装成一个结构体，构成一个<strong>材质</strong>的概念, 每个分量对<strong>冯氏光照模型</strong>的某个环节产生一定的作用。</p><p>接下来在之前代码的基础上修改。 修改片段着色器如下：</p><pre><code class="hljs language-c"><span class="hljs-meta">#version 300 es</span>
+precision highp <span class="hljs-type">float</span>;
+
+in vec3 v_normal;
+in vec3 v_pos;
+
+out vec4 FragColor;
+
+uniform vec3 u_lightColor; <span class="hljs-comment">// 光照颜色</span>
+uniform vec3 u_lightDirection; <span class="hljs-comment">// 光照方向</span>
+uniform vec3 viewPos; <span class="hljs-comment">// 摄像机位置</span>
+
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Material</span> {</span>
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    <span class="hljs-type">float</span> shininess;
+};
+
+uniform Material material;
+
+<span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {
+    <span class="hljs-comment">// 环境光照</span>
+    vec3 ambient = material.ambient * u_lightColor;
+    
+    <span class="hljs-comment">// 漫反射</span>
+    vec3 lightDirectionReverse = normalize(-u_lightDirection);
+    vec3 normal = normalize(v_normal);
+    <span class="hljs-type">float</span> diffuseStrength = max(dot(normal, lightDirectionReverse), <span class="hljs-number">0.0</span>);
+    vec3 diffuse = u_lightColor * (diffuseStrength * material.diffuse);
+
+    <span class="hljs-comment">// 镜面光照</span>
+    vec3 viewDir = normalize(viewPos - v_pos);
+    vec3 reflectDir = reflect(u_lightDirection, normal);
+    <span class="hljs-type">float</span> spec = <span class="hljs-built_in">pow</span>(max(dot(viewDir, reflectDir), <span class="hljs-number">0.0</span>), material.shininess);
+    vec3 specular = u_lightColor * (spec * material.specular);
+
+    vec3 result = ambient + diffuse + specular;
+    FragColor = vec4(result, <span class="hljs-number">1.0</span>);
+}
+</code></pre><p>设置属性材质，向着色器传递数据：</p><pre><code class="hljs language-typescript">shader.<span class="hljs-title function_">setFloat3</span>(<span class="hljs-string">"material.ambient"</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.31</span>);
+shader.<span class="hljs-title function_">setFloat3</span>(<span class="hljs-string">"material.diffuse"</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.31</span>);
+shader.<span class="hljs-title function_">setFloat3</span>(<span class="hljs-string">"material.specular"</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.5</span>);
+shader.<span class="hljs-title function_">setFloat</span>(<span class="hljs-string">"material.shininess"</span>, <span class="hljs-number">32</span>);
+</code></pre><p>运行程序，你应该能看见如下场景。</p><p><img src="https://pengfeiw.github.io/images/blog/89.jpg" alt="webgl物体材质"></p><h2 id="二.光的材质">二.光的材质 <a href="#二.光的材质">#</a></h2><p>虽然我们添加了物体材质，在着色器中添加了Material Struct, 但是最后的结果有点过于亮？物体过亮的原因是环境光、漫反射和镜面光这三个颜色对任何一个光源都会去全力反射，假设光的颜色是<code>vec3(1.0)</code>,那么之前我们计算不同分量的光如下：</p><pre><code class="hljs language-c">vec3 ambient  = vec3(<span class="hljs-number">1.0</span>) * material.ambient;
+vec3 diffuse  = vec3(<span class="hljs-number">1.0</span>) * (diff * material.diffuse);
+vec3 specular = vec3(<span class="hljs-number">1.0</span>) * (spec * material.specular);
+</code></pre><p>其实光源对环境光、漫反射和镜面反射光的分量也具有着不同的强度的。所以我们需要为光也定义一个属性，也就是<strong>光的材质</strong>。以环境光为例，环境光一般会对物体的颜色产生很小的影响，我们希望其计算如下：</p><pre><code class="hljs language-c">vec3 ambient = vec3(<span class="hljs-number">0.1</span>) * material.ambient; <span class="hljs-comment">// 使用vec3(0.1)而不是vec3(1.0), 否则过亮</span>
+</code></pre><p>可以使用同样的方式定义光的材质：</p><pre><code class="hljs language-c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Light</span> {</span>
+    vec3 direction; <span class="hljs-comment">// 如果需要点光源，可以设置成vec3 position;</span>
+
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+uniform Light light;
+</code></pre><p>完整的片段着色器代码如下：</p><pre><code class="hljs language-c"><span class="hljs-meta">#version 300 es</span>
+precision highp <span class="hljs-type">float</span>;
+
+in vec3 v_normal;
+in vec3 v_pos;
+
+out vec4 FragColor;
+
+<span class="hljs-comment">// uniform vec3 u_lightDirection; // 光照方向</span>
+uniform vec3 viewPos; <span class="hljs-comment">// 摄像机位置</span>
+
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Material</span> {</span>
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    <span class="hljs-type">float</span> shininess;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Light</span> {</span>
+    vec3 direction; <span class="hljs-comment">// 如果是点光源，需设置成vec3 position;</span>
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+uniform Material material;
+uniform Light light;
+
+<span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> {
+    <span class="hljs-comment">// 环境光照</span>
+    vec3 ambient = material.ambient * light.ambient;
+    
+    <span class="hljs-comment">// 漫反射</span>
+    vec3 lightDirectionReverse = normalize(-light.direction);
+    vec3 normal = normalize(v_normal);
+    <span class="hljs-type">float</span> diffuseStrength = max(dot(normal, lightDirectionReverse), <span class="hljs-number">0.0</span>);
+    vec3 diffuse = light.diffuse * (diffuseStrength * material.diffuse);
+
+    <span class="hljs-comment">// 镜面光照</span>
+    vec3 viewDir = normalize(viewPos - v_pos);
+    vec3 reflectDir = reflect(light.direction, normal);
+    <span class="hljs-type">float</span> spec = <span class="hljs-built_in">pow</span>(max(dot(viewDir, reflectDir), <span class="hljs-number">0.0</span>), material.shininess);
+    vec3 specular = light.specular * (spec * material.specular);
+
+    vec3 result = ambient + diffuse + specular;
+    FragColor = vec4(result, <span class="hljs-number">1.0</span>);
+}
+</code></pre><p>给着色器传递<code>light</code>数据：</p><pre><code class="hljs language-typescript">shader.<span class="hljs-title function_">setFloat3</span>(<span class="hljs-string">"light.ambient"</span>,  <span class="hljs-number">0.2</span>, <span class="hljs-number">0.2</span>, <span class="hljs-number">0.2</span>);
+shader.<span class="hljs-title function_">setFloat3</span>(<span class="hljs-string">"light.diffuse"</span>,  <span class="hljs-number">0.5</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.5</span>); <span class="hljs-comment">// 将光照调暗了一些以搭配场景</span>
+shader.<span class="hljs-title function_">setFloat3</span>(<span class="hljs-string">"light.specular"</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>); 
+shader.<span class="hljs-title function_">setFloat3</span>(<span class="hljs-string">"light.direction"</span>, <span class="hljs-number">1.0</span>, -<span class="hljs-number">0.5</span>, -<span class="hljs-number">1.0</span>);
+</code></pre><p>如果你的代码正确，应该能看到如下效果：</p><p><img src="https://pengfeiw.github.io/images/blog/90.jpg" alt="webgl材质"></p><p>完整的代码可以在<a href="https://github.com/pengfeiw/webgl2-demos/blob/master/src/demos/theroyOfLight/material.ts">这里</a>获得。</p><p>你可以尝试更改材质分量值，看看不同值对视觉产生的影响。</p><h2 id="附">附 <a href="#附">#</a></h2><p>材质分量值表：<a href="http://devernay.free.fr/cours/opengl/materials.html">http://devernay.free.fr/cours/opengl/materials.html</a></p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/developer-handbook/regular-expression">上一篇：正则表达式</a></span><span class="next-article"><a href="/blogs/minicode/webgl-solar-system">下一篇：webgl模拟太阳系动画</a></span></div></div></body></html>

@@ -1,0 +1,213 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="javascript decorator 原理,decorator,装饰器,javascript,原理"><meta name="description" content="从编译后的文件，探究 javascript decorator 的原理"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/blogs/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2022年7月23日</span><span class="category"><a href="/blogs/javascript">标签：JavaScript</a></span></div><div class="markdown-body"><h1 id="JavaScript Decorator 原理">JavaScript Decorator 原理 <a href="#JavaScript Decorator 原理">#</a></h1><blockquote><p>JavaScript Decorator 的使用方法可以看这两篇文章：<a href="https://www.pengfeixc.com/blogs/javascript/legacy-javascript-decorator">Legacy JavaScript Decorator</a> 和 <a href="https://www.pengfeixc.com/blogs/javascript/decorator">JavaScript Decorator</a></p></blockquote><p>本章内容介绍 Decorator 内部的原理，typescript 是如何实现 decorator 的。</p><h2 id="tsconfig">tsconfig <a href="#tsconfig">#</a></h2><p>为了启用 decorator 语法，需要配置 tsconfig.json 文件：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"target"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ESNext"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"experimentalDecorators"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"emitDecoratorMetadata"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">"./**/*.ts"</span><span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><h2 id="编译 decorator">编译 decorator <a href="#编译 decorator">#</a></h2><p>包含 decorator 语法的 TypeScript 文件：</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">Enumerable</span>(<span class="hljs-params">
+    target: <span class="hljs-built_in">any</span>,
+    propertyKey: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">symbol</span>,
+    descriptor: PropertyDescriptor,
+</span>) {
+    descriptor.<span class="hljs-property">enumerable</span> = <span class="hljs-literal">true</span>;
+    <span class="hljs-keyword">return</span> descriptor;
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Demo</span> {
+    <span class="hljs-meta">@Enumerable</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-comment">// do nothing</span>
+    }
+}
+
+<span class="hljs-keyword">const</span> demo = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Demo</span>();
+</code></pre><p>编译后的 js 文件：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">var</span> __decorate = (<span class="hljs-variable language_">this</span> &amp;&amp; <span class="hljs-variable language_">this</span>.<span class="hljs-property">__decorate</span>) || <span class="hljs-keyword">function</span> (<span class="hljs-params">decorators, target, key, desc</span>) {
+    <span class="hljs-keyword">var</span> c = <span class="hljs-variable language_">arguments</span>.<span class="hljs-property">length</span>, r = c &lt; <span class="hljs-number">3</span> ? target : desc === <span class="hljs-literal">null</span> ? desc = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getOwnPropertyDescriptor</span>(target, key) : desc, d;
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Reflect</span> === <span class="hljs-string">"object"</span> &amp;&amp; <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Reflect</span>.<span class="hljs-property">decorate</span> === <span class="hljs-string">"function"</span>) r = <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">decorate</span>(decorators, target, key, desc);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = decorators.<span class="hljs-property">length</span> - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) <span class="hljs-keyword">if</span> (d = decorators[i]) r = (c &lt; <span class="hljs-number">3</span> ? <span class="hljs-title function_">d</span>(r) : c &gt; <span class="hljs-number">3</span> ? <span class="hljs-title function_">d</span>(target, key, r) : <span class="hljs-title function_">d</span>(target, key)) || r;
+    <span class="hljs-keyword">return</span> c &gt; <span class="hljs-number">3</span> &amp;&amp; r &amp;&amp; <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(target, key, r), r;
+};
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">Enumerable</span>(<span class="hljs-params">target, propertyKey, descriptor</span>) {
+    descriptor.<span class="hljs-property">enumerable</span> = <span class="hljs-literal">true</span>;
+    <span class="hljs-keyword">return</span> descriptor;
+}
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Demo</span> {
+    <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-comment">// do nothing</span>
+    }
+}
+<span class="hljs-title function_">__decorate</span>([
+    <span class="hljs-title class_">Enumerable</span>
+], <span class="hljs-title class_">Demo</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>, <span class="hljs-string">"foo"</span>, <span class="hljs-literal">null</span>);
+<span class="hljs-keyword">const</span> demo = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Demo</span>();
+</code></pre><p>可以看到编译后的 js 文件中有一个 <code>__decorate</code> 函数，<code>__decorate</code> 函数就是 decorator 的原理。</p><h2 id="%E6%A0%BC%E5%BC%8F%E5%8C%96%20%3Ccode%3E__decorate%3C/code%3E">格式化 <code>__decorate</code> <a href="#%E6%A0%BC%E5%BC%8F%E5%8C%96%20%3Ccode%3E__decorate%3C/code%3E">#</a></h2><p>为了看清楚 <code>__decorate</code>，将其结构展开，并分析：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">var</span> __decorate = (
+    <span class="hljs-comment">// 如果 this.__decorate 已经定义，则直接取 this.__decorate</span>
+    <span class="hljs-comment">// 这里应该是为以后兼容，如果以后 javascript 已经包含了 __decorate 定义，这里就不需要更改了</span>
+    (<span class="hljs-variable language_">this</span> &amp;&amp; <span class="hljs-variable language_">this</span>.<span class="hljs-property">__decorate</span>)
+    ||
+    <span class="hljs-comment">// 如果 this.__decorate 没有定义，则返回下面的函数</span>
+    <span class="hljs-comment">// 函数后面三个参数的意义分别是：</span>
+    <span class="hljs-comment">// target: 类对象</span>
+    <span class="hljs-comment">// key: 方法名称</span>
+    <span class="hljs-comment">// desc: 方法的 descriptor</span>
+    <span class="hljs-keyword">function</span>(<span class="hljs-params">decorators, target, key, desc</span>) {
+        <span class="hljs-keyword">var</span> c = <span class="hljs-variable language_">arguments</span>.<span class="hljs-property">length</span>,
+        <span class="hljs-comment">// 参数个数小于 3，则 r 为 target，</span>
+        <span class="hljs-comment">// 参数个数大于3，判断 desc 是否为 null，如果为 null 则将 desc 重新赋值为 descriptor，并将 r 赋值为 descriptor</span>
+            r = (
+                c &lt; <span class="hljs-number">3</span>
+                    ? target
+                    : (
+                        desc === <span class="hljs-literal">null</span>
+                            ? desc = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getOwnPropertyDescriptor</span>(target, key)
+                            : desc
+                    )
+            ),
+            d;
+        <span class="hljs-comment">// 判断 Reflect.decorate 函数是否存在，如果存在，则直接调用 Reflect.decorate 函数</span>
+        <span class="hljs-comment">// 实际上 Reflect.decorate 函数还没有实现，所以这里也是为了以后做准备，说不定哪一天 javascript 标准就实现了 Reflect.decorate 函数</span>
+        <span class="hljs-keyword">if</span> (
+            <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Reflect</span> === <span class="hljs-string">"object"</span>
+            &amp;&amp;
+            <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Reflect</span>.<span class="hljs-property">decorate</span> === <span class="hljs-string">"function"</span>
+        ) {
+            r = <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">decorate</span>(decorators, target, key, desc);
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-comment">// 根据参数的个数（c），依次执行 decorators 函数</span>
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = decorators.<span class="hljs-property">length</span> - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) {
+                <span class="hljs-keyword">if</span> (d = decorators[i]) {
+                    r = (
+                        (
+                            c &lt; <span class="hljs-number">3</span>
+                                ? <span class="hljs-title function_">d</span>(r)
+                                : (
+                                    c &gt; <span class="hljs-number">3</span>
+                                        ? <span class="hljs-title function_">d</span>(target, key, r)
+                                        : <span class="hljs-title function_">d</span>(target, key)
+                                )
+                        )
+                        ||
+                        r
+                    );
+                }
+            }
+        }
+        <span class="hljs-comment">// 返回结果</span>
+        <span class="hljs-keyword">return</span> (
+            c &gt; <span class="hljs-number">3</span>
+            &amp;&amp;
+            r
+            &amp;&amp;
+            <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(target, key, r),
+            r
+        );
+    }
+);
+</code></pre><h2 id="其他类型的 decorator 编译后的文件">其他类型的 decorator 编译后的文件 <a href="#其他类型的 decorator 编译后的文件">#</a></h2><h3 id="parameter decorator">parameter decorator <a href="#parameter decorator">#</a></h3><p>ts 源文件：</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">LogParameter</span>(<span class="hljs-params">
+    target: <span class="hljs-built_in">any</span>,
+    propertyKey: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">symbol</span>,
+    parameterIndex: <span class="hljs-built_in">number</span>,
+</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(target);
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(propertyKey);
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(parameterIndex);
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">ParameterExample</span> {
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">logThis</span>(<span class="hljs-params">
+        first: <span class="hljs-built_in">string</span> = <span class="hljs-string">""</span>,
+        <span class="hljs-meta">@LogParameter</span> greeting: <span class="hljs-built_in">string</span> = <span class="hljs-string">"Hello, world"</span>,
+    </span>) {
+        <span class="hljs-comment">// do nothing</span>
+    }
+}
+
+<span class="hljs-keyword">const</span> demoParameter = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ParameterExample</span>();
+</code></pre><p>编译后的 js 文件：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">var</span> __decorate = (<span class="hljs-variable language_">this</span> &amp;&amp; <span class="hljs-variable language_">this</span>.<span class="hljs-property">__decorate</span>) || <span class="hljs-keyword">function</span> (<span class="hljs-params">decorators, target, key, desc</span>) {
+    <span class="hljs-keyword">var</span> c = <span class="hljs-variable language_">arguments</span>.<span class="hljs-property">length</span>, r = c &lt; <span class="hljs-number">3</span> ? target : desc === <span class="hljs-literal">null</span> ? desc = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getOwnPropertyDescriptor</span>(target, key) : desc, d;
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Reflect</span> === <span class="hljs-string">"object"</span> &amp;&amp; <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Reflect</span>.<span class="hljs-property">decorate</span> === <span class="hljs-string">"function"</span>) r = <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">decorate</span>(decorators, target, key, desc);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = decorators.<span class="hljs-property">length</span> - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) <span class="hljs-keyword">if</span> (d = decorators[i]) r = (c &lt; <span class="hljs-number">3</span> ? <span class="hljs-title function_">d</span>(r) : c &gt; <span class="hljs-number">3</span> ? <span class="hljs-title function_">d</span>(target, key, r) : <span class="hljs-title function_">d</span>(target, key)) || r;
+    <span class="hljs-keyword">return</span> c &gt; <span class="hljs-number">3</span> &amp;&amp; r &amp;&amp; <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(target, key, r), r;
+};
+<span class="hljs-keyword">var</span> __param = (<span class="hljs-variable language_">this</span> &amp;&amp; <span class="hljs-variable language_">this</span>.<span class="hljs-property">__param</span>) || <span class="hljs-keyword">function</span> (<span class="hljs-params">paramIndex, decorator</span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span> (<span class="hljs-params">target, key</span>) { <span class="hljs-title function_">decorator</span>(target, key, paramIndex); }
+};
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">LogParameter</span>(<span class="hljs-params">target, propertyKey, parameterIndex</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(target);
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(propertyKey);
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(parameterIndex);
+}
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">ParameterExample</span> {
+    <span class="hljs-title function_">logThis</span>(<span class="hljs-params">first = <span class="hljs-string">""</span>, greeting = <span class="hljs-string">"Hello, world"</span></span>) {
+        <span class="hljs-comment">// do nothing</span>
+    }
+}
+<span class="hljs-title function_">__decorate</span>([
+    <span class="hljs-title function_">__param</span>(<span class="hljs-number">1</span>, <span class="hljs-title class_">LogParameter</span>)
+], <span class="hljs-title class_">ParameterExample</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>, <span class="hljs-string">"logThis"</span>, <span class="hljs-literal">null</span>);
+<span class="hljs-keyword">const</span> demoParameter = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ParameterExample</span>();
+</code></pre><h3 id="property decorator">property decorator <a href="#property decorator">#</a></h3><p>ts 源文件：</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">LogProperty</span>(<span class="hljs-params">
+    target: <span class="hljs-built_in">any</span>,
+    propertyKey: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">symbol</span>,
+</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(target);
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(propertyKey);
+}
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">PropertyExample</span> {
+    <span class="hljs-meta">@LogProperty</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-attr">greeting</span>: <span class="hljs-built_in">string</span>;
+
+    <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">greeting</span> = <span class="hljs-string">"Hello, world"</span>;
+    }
+}
+
+<span class="hljs-keyword">const</span> demoExample = <span class="hljs-keyword">new</span> <span class="hljs-title class_">PropertyExample</span>();
+</code></pre><p>编译后的 js 文件：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">var</span> __decorate = (<span class="hljs-variable language_">this</span> &amp;&amp; <span class="hljs-variable language_">this</span>.<span class="hljs-property">__decorate</span>) || <span class="hljs-keyword">function</span> (<span class="hljs-params">decorators, target, key, desc</span>) {
+    <span class="hljs-keyword">var</span> c = <span class="hljs-variable language_">arguments</span>.<span class="hljs-property">length</span>, r = c &lt; <span class="hljs-number">3</span> ? target : desc === <span class="hljs-literal">null</span> ? desc = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getOwnPropertyDescriptor</span>(target, key) : desc, d;
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Reflect</span> === <span class="hljs-string">"object"</span> &amp;&amp; <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Reflect</span>.<span class="hljs-property">decorate</span> === <span class="hljs-string">"function"</span>) r = <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">decorate</span>(decorators, target, key, desc);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = decorators.<span class="hljs-property">length</span> - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) <span class="hljs-keyword">if</span> (d = decorators[i]) r = (c &lt; <span class="hljs-number">3</span> ? <span class="hljs-title function_">d</span>(r) : c &gt; <span class="hljs-number">3</span> ? <span class="hljs-title function_">d</span>(target, key, r) : <span class="hljs-title function_">d</span>(target, key)) || r;
+    <span class="hljs-keyword">return</span> c &gt; <span class="hljs-number">3</span> &amp;&amp; r &amp;&amp; <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(target, key, r), r;
+};
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">LogProperty</span>(<span class="hljs-params">target, propertyKey</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(target);
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(propertyKey);
+}
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">PropertyExample</span> {
+    <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-variable language_">this</span>.<span class="hljs-property">greeting</span> = <span class="hljs-string">"Hello, world"</span>;
+    }
+}
+<span class="hljs-title function_">__decorate</span>([
+    <span class="hljs-title class_">LogProperty</span>
+], <span class="hljs-title class_">PropertyExample</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>, <span class="hljs-string">"greeting"</span>, <span class="hljs-keyword">void</span> <span class="hljs-number">0</span>);
+<span class="hljs-keyword">const</span> demoExample = <span class="hljs-keyword">new</span> <span class="hljs-title class_">PropertyExample</span>();
+</code></pre><h3 id="class decorator">class decorator <a href="#class decorator">#</a></h3><p>ts 源文件：</p><pre><code class="hljs language-typescript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">LogClass</span>(<span class="hljs-params">target: <span class="hljs-built_in">any</span></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(target.<span class="hljs-property">constructor</span>.<span class="hljs-property">name</span>);
+}
+
+<span class="hljs-meta">@LogClass</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">ClassExample</span> {
+    <span class="hljs-comment">// do nothing</span>
+}
+
+<span class="hljs-keyword">const</span> demoClass = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ClassExample</span>();
+</code></pre><p>编译后的 js 文件：</p><pre><code class="hljs language-javascript"><span class="hljs-keyword">var</span> __decorate = (<span class="hljs-variable language_">this</span> &amp;&amp; <span class="hljs-variable language_">this</span>.<span class="hljs-property">__decorate</span>) || <span class="hljs-keyword">function</span> (<span class="hljs-params">decorators, target, key, desc</span>) {
+    <span class="hljs-keyword">var</span> c = <span class="hljs-variable language_">arguments</span>.<span class="hljs-property">length</span>, r = c &lt; <span class="hljs-number">3</span> ? target : desc === <span class="hljs-literal">null</span> ? desc = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getOwnPropertyDescriptor</span>(target, key) : desc, d;
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Reflect</span> === <span class="hljs-string">"object"</span> &amp;&amp; <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Reflect</span>.<span class="hljs-property">decorate</span> === <span class="hljs-string">"function"</span>) r = <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">decorate</span>(decorators, target, key, desc);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = decorators.<span class="hljs-property">length</span> - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) <span class="hljs-keyword">if</span> (d = decorators[i]) r = (c &lt; <span class="hljs-number">3</span> ? <span class="hljs-title function_">d</span>(r) : c &gt; <span class="hljs-number">3</span> ? <span class="hljs-title function_">d</span>(target, key, r) : <span class="hljs-title function_">d</span>(target, key)) || r;
+    <span class="hljs-keyword">return</span> c &gt; <span class="hljs-number">3</span> &amp;&amp; r &amp;&amp; <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(target, key, r), r;
+};
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">LogClass</span>(<span class="hljs-params">target</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(target.<span class="hljs-property">constructor</span>.<span class="hljs-property">name</span>);
+}
+<span class="hljs-keyword">let</span> <span class="hljs-title class_">ClassExample</span> = <span class="hljs-keyword">class</span> <span class="hljs-title class_">ClassExample</span> {
+};
+<span class="hljs-title class_">ClassExample</span> = <span class="hljs-title function_">__decorate</span>([
+    <span class="hljs-title class_">LogClass</span>
+], <span class="hljs-title class_">ClassExample</span>);
+<span class="hljs-keyword">const</span> demoClass = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ClassExample</span>();
+</code></pre><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/developer-handbook/vimrc">上一篇：自用 .vimrc</a></span><span class="next-article"><a href="/blogs/javascript/reflect-metadata">下一篇：JavaScript Reflect</a></span></div></div></body></html>

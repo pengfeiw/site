@@ -1,0 +1,217 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="Git,命令,cli,command"><meta name="description" content="记录自己平时常用的一些 Git 基础命令。"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/blogs/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2022年4月30日</span><span class="category"><a href="/blogs/developer-handbook">标签：Developer</a></span></div><div class="markdown-body"><h1 id="Git 基础操作">Git 基础操作 <a href="#Git 基础操作">#</a></h1><h2 id="配置">配置 <a href="#配置">#</a></h2><p>1、查看配置</p><pre><code class="hljs language-bash"><span class="hljs-comment"># 列出所有配置</span>
+git config --list
+<span class="hljs-comment"># 列出所有配置以及配置文件路径</span>
+git config --list --show-origin
+<span class="hljs-comment"># 查看某一项配置</span>
+git config &lt;key&gt;
+</code></pre><p>2、用户信息</p><p>设置全局信息，全局信息只需要设置一次，会在系统上的所有 git 仓库适用。</p><pre><code class="hljs language-bash">git config --global user.name <span class="hljs-string">"John Doe"</span>
+git config --global user.email johndoe@example.com
+</code></pre><p>当你想针对特定项目使用不同的用户名称与邮件地址时，可以在那个项目目录下运行没有 <code>--global</code> 选项的命令来配置。</p><pre><code class="hljs language-bash">git config user.name <span class="hljs-string">"John Doe"</span>
+git config user.email johndoe@example.com
+</code></pre><p>3、文本编辑器</p><p>git 默认的编辑器是 vim, 可以设置默认编辑器，例如设置为 vscode。</p><pre><code class="hljs language-bash">git config --global core.editor <span class="hljs-string">"code --wait --new-window"</span>
+</code></pre><p>如果想恢复成 vim，使用下列命令即可。</p><pre><code class="hljs language-bash">git config --global --<span class="hljs-built_in">unset</span> core.editor
+</code></pre><p>可以使用编辑器，直接编辑 config 文件。</p><pre><code class="hljs language-bash"><span class="hljs-comment"># 编辑 global 配置文件</span>
+git config --global --edit
+
+<span class="hljs-comment"># 编辑 local 配置文件</span>
+git cofnig --<span class="hljs-built_in">local</span> --edit
+</code></pre><h2 id="新建或克隆仓库">新建或克隆仓库 <a href="#新建或克隆仓库">#</a></h2><pre><code class="hljs language-bash"><span class="hljs-comment"># 初始化仓库</span>
+$ git init
+<span class="hljs-comment"># 克隆现有仓库</span>
+$ git <span class="hljs-built_in">clone</span> https://github.com/libgit2/libgit2 mylibgit
+</code></pre><h2 id="增加、删除文件">增加、删除文件 <a href="#增加、删除文件">#</a></h2><p>查看仓库状态。</p><pre><code class="hljs language-bash">$ git status
+</code></pre><pre><code class="hljs language-bash"><span class="hljs-comment"># 添加文件至暂存区，如果文件是 untracked，被添加后会变成tracked file</span>
+$ git add [file1] [file2]
+
+<span class="hljs-comment"># 添加指定目录到暂存区，包括子目录</span>
+$ git add [<span class="hljs-built_in">dir</span>]
+
+<span class="hljs-comment"># 添加当前目录的所有文件到暂存区</span>
+$ git add .
+
+<span class="hljs-comment"># 添加每个变化前，都会要求确认</span>
+<span class="hljs-comment"># 对于同一个文件的多处变化，可以实现分次提交</span>
+$ git add -p
+
+<span class="hljs-comment"># 删除工作区文件，并且将这次删除放入暂存区</span>
+$ git <span class="hljs-built_in">rm</span> [file1] [file2] ...
+
+<span class="hljs-comment"># 停止追踪指定文件，但该文件会保留在工作区</span>
+$ git <span class="hljs-built_in">rm</span> --cached [file]
+
+<span class="hljs-comment"># 改名文件，并且将这个改名放入暂存区</span>
+$ git <span class="hljs-built_in">mv</span> [file-original] [file-renamed]
+</code></pre><h2 id="提交代码">提交代码 <a href="#提交代码">#</a></h2><pre><code class="hljs language-bash"><span class="hljs-comment"># 提交暂存区到仓库区</span>
+$ git commit -m [message]
+
+<span class="hljs-comment"># 提交暂存区的指定文件到仓库区</span>
+$ git commit [file1] [file2] ... -m [message]
+
+<span class="hljs-comment"># 提交工作区自上次commit之后的变化，直接到仓库区</span>
+$ git commit -a
+
+<span class="hljs-comment"># 使用一次新的commit，替代上一次提交</span>
+<span class="hljs-comment"># 如果代码没有任何新变化，则用来改写上一次commit的提交信息</span>
+$ git commit --amend -m [message]
+
+<span class="hljs-comment"># 重做上一次commit，并包括指定文件的新变化</span>
+$ git commit --amend [file1] [file2] ...
+</code></pre><h2 id="撤销">撤销 <a href="#撤销">#</a></h2><p>很多时候使用 <code>git status</code> 命令会提示某些操作。</p><p>例如：</p><pre><code class="hljs language-bash">$ git status
+On branch master
+Changes to be committed:
+  (use <span class="hljs-string">"git reset HEAD &lt;file&gt;..."</span> to unstage)
+
+    renamed:    README.md -&gt; README
+    modified:   CONTRIBUTING.md
+</code></pre><p>注意上述括号中的提示 <strong>(use "git reset HEAD<file>..." to unstage)</file></strong>。</p><pre><code class="hljs language-bash"><span class="hljs-comment"># 丢弃工作区的文件更改</span>
+$ git restore &lt;file&gt;
+
+<span class="hljs-comment"># 将文件从暂存区移动到工作区，但是文件依旧保留更改</span>
+$ git restore --staged &lt;file&gt;
+</code></pre><p>reset 和 revert 的区别：reset 指回退到某个 commit，而 revert 是添加一个新的 commit 用来回退到某个 commit。</p><p>reset 基本用法：</p><pre><code class="hljs language-bash"><span class="hljs-comment"># 回退时会保留源码，修改的源码保存在暂存区</span>
+$ git reset --soft &lt;commit&gt;
+
+<span class="hljs-comment"># reset 的默认行为，回退时会保留源码，修改的源码保存在工作区</span>
+$ git reset --mixed &lt;commit&gt;
+
+<span class="hljs-comment"># 会退时不会保留源码，危险操作！！</span>
+$ git reset --hard &lt;commit&gt;
+</code></pre><p>reset 后想要推送到远程仓库，这是个比较危险的操作，因为会清除提交历史，需要加上 <code>--force</code>:</p><pre><code class="hljs language-bash">$ git push --force
+</code></pre><p><code>git revert</code> 只不过是用一个新的提交去回滚代码，所以与普通的提交没有本质区别，不会影响其他的。</p><h2 id="查看信息">查看信息 <a href="#查看信息">#</a></h2><pre><code class="hljs language-bash"><span class="hljs-comment"># 显示版本历史</span>
+$ git <span class="hljs-built_in">log</span>
+
+<span class="hljs-comment"># 显示版本历史，以及每次commit发生的变更的文件</span>
+$ git <span class="hljs-built_in">log</span> --<span class="hljs-built_in">stat</span>
+
+<span class="hljs-comment"># 显示最近的2次提交的文件的差异</span>
+$ git <span class="hljs-built_in">log</span> -p -2
+
+<span class="hljs-comment"># 每个提交信息显示为一行</span>
+$ git <span class="hljs-built_in">log</span> --pretty=oneline
+
+<span class="hljs-comment"># 显示最近两周的所有提交</span>
+$ git <span class="hljs-built_in">log</span> --since=2.weeks
+
+<span class="hljs-comment"># 搜索提交历史，根据关键词</span>
+$ git <span class="hljs-built_in">log</span> -S [keyword]
+  
+<span class="hljs-comment"># 显示暂存区和工作区的差异</span>
+$ git diff
+
+<span class="hljs-comment"># 显示暂存区和上一个commit的差异</span>
+$ git diff --cached [file]
+
+<span class="hljs-comment"># 显示工作区与当前分支最新commit之间的差异</span>
+$ git diff HEAD
+
+<span class="hljs-comment"># 显示两次提交之间的差异</span>
+$ git diff [first-branch]...[second-branch]
+</code></pre><h2 id="远程协作">远程协作 <a href="#远程协作">#</a></h2><pre><code class="hljs language-bash"><span class="hljs-comment"># 查看远程服务器的简写</span>
+$ git remote
+
+<span class="hljs-comment"># 显示需要读写远程仓库使用的 Git 保存的简写与其对应的 URL</span>
+$ git remote -v
+
+<span class="hljs-comment"># 显示摸个远程仓库的详细信息</span>
+$ git remote show [remote]
+
+<span class="hljs-comment"># 添加一个新的远程 Git 仓库，同时指定一个方便使用的简写</span>
+$ git remote add &lt;shortname&gt; &lt;url&gt;
+
+<span class="hljs-comment"># 从远程仓库中拉取代码，但不会合并</span>
+$ git fetch [remote]
+
+<span class="hljs-comment"># 取回远程仓库的变化，并与本地分支合并</span>
+$ git pull [remote] [branch]
+
+<span class="hljs-comment"># 将 &lt;branch&gt; 分支上的代码推送到 &lt;remote&gt;</span>
+$ git push &lt;remote&gt; &lt;branch&gt;
+
+<span class="hljs-comment"># 推送所有分支到远程仓库</span>
+$ git push [remote] -all
+
+<span class="hljs-comment"># 修改远程仓库的简写名</span>
+$ git remote rename &lt;old&gt; &lt;new&gt;
+
+<span class="hljs-comment"># 移除远程仓库</span>
+$ git remote remove &lt;remote&gt;
+
+<span class="hljs-comment"># 删除远程分支</span>
+$ git push origin --delete &lt;branch&gt;
+</code></pre><h2 id="标签">标签 <a href="#标签">#</a></h2><p>像其他版本控制系统（VCS）一样，Git 可以给仓库历史中的某一个提交打上标签，以示重要。</p><p>1、显示标签</p><pre><code class="hljs language-bash"><span class="hljs-comment"># 按字母顺序列出已有的标签</span>
+$ git tag
+
+<span class="hljs-comment"># 显示标签详细信息</span>
+$ git show [tag]
+</code></pre><p>2、创建标签</p><p>Git 支持两种标签：轻量标签（lightweight）与附注标签（annotated）。附注标签是存储在 Git 数据库中的一个完整对象， 它们是可以被校验的，其中包含打标签者的名字、电子邮件地址、日期时间， 此外还有一个标签信息，并且可以使用 GNU Privacy Guard （GPG）签名并验证。 通常会建议创建附注标签，这样你可以拥有以上所有信息。但是如果你只是想用一个临时的标签， 或者因为某些原因不想要保存这些信息，那么也可以用轻量标签。</p><p>用 <code>-a</code> 选项指定创建附注标签，<code>-m</code> 表示标签信息，如果没有为附注标签指定一条信息，Git 会启动编辑器要求你输入信息。</p><pre><code class="hljs language-bash"><span class="hljs-comment"># 在当前 commit 创建 v1.4 标签，并指定信息：my version 1.4</span>
+$ git tag -a v1.4 -m <span class="hljs-string">"my version 1.4"</span>
+</code></pre><p>创建轻量标签，不需要使用 <code>-a</code>、<code>-s</code> 或者 <code>-m</code> 选项，只需要提供标签名字：</p><pre><code class="hljs language-bash"><span class="hljs-comment"># 在当前 commit 创建 v1.4 的轻量标签</span>
+$ git tag v1.4
+</code></pre><p>也可以对过去的提交打标签，需要指定提交的 hash。</p><pre><code class="hljs language-bash"><span class="hljs-comment"># 附注标签</span>
+$ git tag -a v1.4 9fceb02
+
+<span class="hljs-comment"># 轻量标签</span>
+$ git tag v1.4 9fceb02
+</code></pre><p>3、共享标签</p><p>默认情况下，<code>git push</code> 命令并不会传送标签到远程仓库服务器上。 在创建完标签后你必须显式地推送标签到共享服务器上。</p><pre><code class="hljs language-bash"><span class="hljs-comment"># 类似推送分支一样，推送 tag</span>
+$ git push origin &lt;tagname&gt;
+</code></pre><p>使用 <code>--tags</code> 选项，可以一次性推送很多标签。</p><pre><code class="hljs language-bash">$ git push &lt;remote&gt; --tags
+</code></pre><p>4、删除标签</p><pre><code class="hljs language-bash"><span class="hljs-comment"># 删除本地仓库上的标签</span>
+$ git tag -d &lt;tagname&gt;
+</code></pre><p>上述命令不会从远程仓库上移除这个标签，必须使用 <code>git push &lt;remote&gt; :refs/tags/&lt;tagname&gt;</code> 来更新远程仓库。</p><p>第二种更直观的删除远程标签的方式是：</p><pre><code class="hljs language-bash">$ git push origin --delete &lt;tagname&gt;
+</code></pre><p>5、查看某个标签的文件版本</p><pre><code class="hljs language-bash"><span class="hljs-comment"># 查看指定 tag 的文件</span>
+$ git chekcout &lt;tagname&gt;
+</code></pre><p>使用 <code>git checkout</code> 命令， 会使你的仓库处于“分离头指针（detached HEAD）”的状态，如果你当前做出了修改，新的提交将不属于任何分支，并且将无法访问，除非通过确切的提交哈希才能访问。因此，如果你需要进行更改，比如你要修复旧版本中的错误，那么通常需要创建一个新分支：</p><pre><code class="hljs language-bash">$ git checkout -b version2 v2.0.0
+Switched to a new branch <span class="hljs-string">'version2'</span>
+</code></pre><p>然后，你可以在 <code>version2</code> 分支上做出修改。</p><h2 id="分支">分支 <a href="#分支">#</a></h2><pre><code class="hljs language-bash"><span class="hljs-comment"># 查看本地分支列表</span>
+$ git branch
+
+<span class="hljs-comment"># -v 标记查看本地分支的最后一次提交</span>
+$ git branch -v
+
+<span class="hljs-comment"># --merged 标记可以查看已合并到当前分支的分支列表</span>
+$ git branch --merged
+
+<span class="hljs-comment"># --no-merged 标记可以查看未合并到当前分支的分支列表</span>
+$ git branch --no-merged
+
+<span class="hljs-comment"># 新建分支</span>
+$ git branch &lt;branch&gt;
+
+<span class="hljs-comment"># 切换分支</span>
+$ git checkout &lt;branch&gt;
+
+<span class="hljs-comment"># 新建分支后，并切换到新建的分支</span>
+$ git checkout -b &lt;branch&gt;
+
+<span class="hljs-comment"># 合并分支到当前分支</span>
+$ git merge &lt;branch&gt;
+
+<span class="hljs-comment"># 删除分支</span>
+$ git branch -d &lt;branch&gt;
+</code></pre><h2 id="submodule">submodule <a href="#submodule">#</a></h2><pre><code class="hljs language-bash"><span class="hljs-comment"># 添加 submodule</span>
+$ git submodule add &lt;submodule_url&gt;
+
+<span class="hljs-comment"># 初始化配置、更新子模块</span>
+$ git submodule init &amp;&amp; git submodule update
+
+<span class="hljs-comment"># 初始化配置、更新子模块（包括嵌套的子模块）</span>
+$ git submodule init &amp;&amp; git submodule update --init --recursive
+
+<span class="hljs-comment"># 克隆主仓库时，初始化并更新子模块（包括嵌套的子模块）</span>
+$ git <span class="hljs-built_in">clone</span> &lt;main_repo&gt; --recurse-submodules
+
+<span class="hljs-comment"># 初始化并获取子模块的代码（不包括嵌套子模块），与 'git submodule init &amp;&amp; git submodule update' 等价</span>
+$ git submodule update --init
+
+<span class="hljs-comment"># 初始化并获取任何嵌套的子模块</span>
+$ git submodule update --init --recursive
+
+<span class="hljs-comment"># 切换子模块跟踪的分支</span>
+$ git config -f .gitmodules submodule.&lt;submodule_name&gt;.branch &lt;branch_name&gt;
+
+<span class="hljs-comment"># 抓取子模块的更新</span>
+$ git submodule update --remote [submodule_name]
+
+<span class="hljs-comment"># 拉取代码，包括子模块以及嵌套子模块</span>
+$ git pull --recurse-submodules
+</code></pre><p>默认情况下，在诸项目中使用 <code>git pull</code> 命令会递归的抓取子模块的更改，但是它不会更新子模块。你需要运行 <code>git submodule update --init --recursive</code> 来完成子模块的更新。如果你想要一步达到这个效果，可以使用 <code>git pull --recurse-submodules</code></p><p>另一个需要注意的是，当运行 <code>git submodule update</code> 从子模块仓库中抓取修改时，Git 将会获得这些改动并更新子目录中的文件，但是会将子仓库留在一个称作 <a href="https://stackoverflow.com/a/58142219">“游离的 HEAD 状态”</a>，这意味着没有本地工作分支（例如 ”master“）跟踪改动。如果没有工作分支跟踪改动，也就意味着即便你将更改提交到了子模块，这些更改可能会在下次运行 <code>git submodule update</code> 时丢失，所以在子模块中跟踪这些修改，还需要一些额外的步骤。首先，进入每个子模块并检出其相应的工作分支，接着如果你做了更改就需要告诉 Git 它该做什么，然后云心 <code>git submodule update --remote</code> 从上游拉取新工作，你可以选择将他们合并到你的本地工作中，也可以尝试将你的工作变基到新的更改上。</p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/javascript/property-descriptor">上一篇：Property descriptor</a></span><span class="next-article"><a href="/blogs/developer-handbook/clean-code">下一篇：写给自己的代码整洁之道</a></span></div></div></body></html>

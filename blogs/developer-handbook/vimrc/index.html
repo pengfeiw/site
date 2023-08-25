@@ -1,0 +1,50 @@
+<html lang="zh_cn"><head><title></title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="自用 vim 配置"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.png" alt="rss"></a></div></div></div><h1><a href="/blogs/"><img src="https://avatars.githubusercontent.com/u/37898750?s=400&amp;u=33f96e0bbc5bee7a7d1fa8f1eecee9a3d4a6d96c&amp;v=4"></a></h1></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2022年9月17日</span><span class="category"><a href="/blogs/developer-handbook">标签：Developer</a></span></div><div class="markdown-body"><h1 id="自用 .vimrc">自用 .vimrc <a href="#自用 .vimrc">#</a></h1><p>分享自己使用的未安装任何插件的 vim 配置，平时用来查看 log，写一些不是很简单的文档。平时写代码用的是 vscode + vim 插件。</p><p>曾经尝试过把 vim 配置成 ide，但是总觉得少了点什么，有些经常用到的工具，比如 git，比如 diff，使用 vim 插件总是不能达到我想要的效果，总是差那么一点意思，所以最终还是回到了最原始的状态，无插件版本。</p><pre><code>" 显示行号
+set number
+set relativenumber
+" 出错时不要发出响
+set noerrorbells
+" 出错时取消屏幕闪烁
+set novisualbell
+" 记住多少次历史操作
+set history=100
+" 语法高亮
+syntax on
+" 底部显示当前模式
+set showmode
+" 底部显示当前键入的指令
+set showcmd
+" 使用鼠标
+set mouse=a
+set encoding=utf-8
+" 根据文件类型采用合适的缩进
+filetype indent on
+" 按下回车自动与上一行保持同样的缩进
+set autoindent
+" tab 的空格数
+set tabstop=4
+" 设置缩进
+set shiftwidth=4
+" tab 自动转为空格
+set expandtab
+" tab 转化为空格的数量
+set softtabstop=4
+" 一行显示多少个字符
+set textwidth=140
+" 自动折行
+set wrap
+" 只有遇到指定的符号（比如空格）才发生折行，不会在单词内部发生折行
+set linebreak
+" 显示状态栏：0表示显示，1表示只在多窗口显示，2表示显示
+set laststatus=2
+" 匹配括号高亮
+set showmatch
+" 高亮显示搜索结果
+set hlsearch
+" 输入搜索模式时，每输入一个字符，自动跳转到第一个匹配的结果
+set incsearch
+" 搜索时忽略大小写
+set ignorecase
+" 如果同时打开了
+" ignorecase，那么对于只有一个大写字母的搜索词，将大小写敏感，其他情况都是大小写不敏感
+set smartcase
+</code></pre><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/developer-handbook/install-mongodb-in-docker">上一篇：Docker 中运行 Mongo</a></span><span class="next-article"><a href="/blogs/javascript/decorator-foundation">下一篇：JavaScript Decorator 原理</a></span></div></div></body></html>
