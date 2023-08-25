@@ -1,5 +1,6 @@
-# site
+# Hello, This is Wang Pengfei
 
-blogs: https://pengfeixc.com/blogs
+A developer in China.
 
-minicode: https://pengfeiw.github.io/minicode
+- Blog: [https://pengfeixc.com/blogs](https://pengfeixc.com/blogs)
+- MiniCode: [https://pengfeiw.github.io/minicode]
