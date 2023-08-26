@@ -1,69 +1,117 @@
 <!DOCTYPE html>
-<html lang="zh_cn">
+<html lang="zh_cn" xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh_cn">
 
 <head>
-    <title>王鹏飞</title>
-    <meta charSet="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="./blogs/assests/images/icon.jpg">
+    <title>
+        王鹏飞的个人网站
+    </title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta property="author" content="王鹏飞" />
+    <link rel="icon" href="https://pengfeixc.com/blogs/assests/images/icon.jpg">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
+        *,
+        :before,
+        :after {
+            box-sizing: border-box;
         }
 
         body {
+            --gary-2: #D3D9DF; 
+            --gray-5: #8A939B;
+            --gray-7: #5E666E;
+            --gray-8: #495057;
             display: flex;
-            flex-direction: column;
-            row-gap: 30px;
-            background-color: white;
-            width: 100vw;
-            height: 100vh;
             align-items: center;
-            justify-content: center;
+            background: var(--gray-1);
+            min-width: 275px;
+            height: 100vh;
+            margin: 0 10vw;
+            overflow: hidden;
+            color: var(--gray-7);
+            font-family: Roboto;
         }
 
-        .header {
-            display: flex;
-            justify-content: center;
+        .wrapper {
+            flex-grow: 2;
+            width: 40vw;
+            max-width: 500px;
+            margin: 0 auto;
         }
 
-        .avatar {
-            width: 80px;
+        h1 {
+            margin: 0;
+            font-size: 6em;
+            font-weight: 100;
         }
 
-        .body {
-            display: flex;
-            justify-content: center;
-            column-gap: 30px;
+        p {
+            width: 95%;
+            font-size: 1.5em;
+            line-height: 1.4;
         }
 
-        .link {
-            color: black;
+        .buttons {
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        span {
+            display: block;
+            text-transform: uppercase;
+            color: var(--gray-5);
+            letter-spacing: 1.5px;
+            text-align: center;
+        }
+
+        a {
+            display: inline-block;
+            padding: .8em 1em;
+            margin-right: 1em;
+            margin-bottom: 1em;
+            border: 3px solid var(--gray-5);
+            color: var(--gray-8);
+            font-weight: 500;
+            text-transform: uppercase;
             text-decoration: none;
-            border: 1px solid #ecf2fa;
-            padding: 8px;
-            border-radius: 3px;
-        }
+            letter-spacing: .2em;
+            position: relative;
+            overflow: hidden;
+            transition: .3s;
 
-        .link:hover {
-            background: #ecf2fa;
+            &:hover {
+                color: #E3F2FD;
+
+                &:before {
+                    top: 0;
+                }
+            }
+
+            &:before {
+                content: '';
+                background: var(--gray-8);
+                height: 100%;
+                width: 100%;
+                position: absolute;
+                top: -100%;
+                left: 0;
+                transition: .3s;
+                z-index: -1;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="header">
-        <h1>
-            <a href="https://pengfeixc.com">
-                <img class="avatar" src="https://pengfeixc.com/blogs/assests/images/icon.jpg" alt="Avatar">
-            </a>
-        </h1>
-    </div>
-    <div class="body">
-        <a class="link" href="https://pengfeixc.com/blogs">BLOG</a>
-        <a class="link" href="https://github.io/pengfeiw">GITHUB</a>
-        <a class="link" href="https://pengfeiw.github.io/minicode">MINICODE</a>
+    <div class="wrapper">
+        <h1>Hello.</h1>
+        <p>This is Wang Pengfei. A developer. Welcome To my web world. </p>
+        <div class="buttons">
+            <a href="https://pengfeixc.com/blogs">Blog</a>
+            <a href="https://pengfeiw.github.io/minicode">MiniCode</a>
+            <a href="https://github.io/pengfeiw">Github</a>
+            <br />
+        </div>
     </div>
 </body>
 
