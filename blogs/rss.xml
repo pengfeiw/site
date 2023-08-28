@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sun, 27 Aug 2023 06:23:06 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 28 Aug 2023 14:11:13 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sun, 27 Aug 2023 06:23:01 GMT</pubDate>
+        <pubDate>Mon, 28 Aug 2023 14:11:06 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2023, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[初次使用 Github 的 SSH deployKey]]></title>
+            <description><![CDATA[如何使用 SSh DeployKey 配合 Github Actions，push 代码时，自动 push 文件到另一个仓库]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/first-use-github-ssh-deploykey</link>
+            <guid isPermaLink="true">https://pengfeixc.com/blogs/developer-handbook/first-use-github-ssh-deploykey</guid>
+            <pubDate>Sun, 27 Aug 2023 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[tmux 极简使用]]></title>
             <description><![CDATA[用 tmux 优化你的终端使用流程]]></description>
