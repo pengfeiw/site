@@ -3,10 +3,6 @@
 }
 
 body {
-    margin: 0;
-    padding: 45px;
-    padding-top: 10px 20px;
-
     --tag-bg: #c6f6d5;
     --tag-radius: 8px;
     --tag-padding: 5px 15px;
@@ -19,12 +15,6 @@ body {
     min-width: 200px;
     margin: 0 auto;
     margin-bottom: 60px;
-}
-
-@media (max-width: 767px) {
-    body {
-        padding: 0 15px;
-    }
 }
 
 .header {

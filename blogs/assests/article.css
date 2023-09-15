@@ -5,10 +5,8 @@
 body {
     --color-border-default: #d0d7de;
     --link-color: rgb(9, 105, 218);
-
-    margin: 0;
-    padding: 10px 20px;
 }
+
 
 a {
     text-decoration: none;
