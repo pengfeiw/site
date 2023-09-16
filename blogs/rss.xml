@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Fri, 15 Sep 2023 23:21:47 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 16 Sep 2023 01:15:14 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Fri, 15 Sep 2023 23:21:41 GMT</pubDate>
+        <pubDate>Sat, 16 Sep 2023 01:15:09 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2023, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[网站加载慢，怎么解决?]]></title>
+            <description><![CDATA[网页有大量的图片展示时，网页打开速度慢，作为开发者应该从哪些方向解决优化。]]></description>
+            <link>https://pengfeixc.com/blogs/site/site-load-slowy.html</link>
+            <guid isPermaLink="true">https://pengfeixc.com/blogs/site/site-load-slowy.html</guid>
+            <pubDate>Sun, 17 Sep 2023 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[初次使用 Github 的 SSH deployKey]]></title>
             <description><![CDATA[如何使用 SSh DeployKey 配合 Github Actions，push 代码时，自动 push 文件到另一个仓库]]></description>
