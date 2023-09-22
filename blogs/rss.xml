@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sun, 17 Sep 2023 03:21:27 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 22 Sep 2023 13:23:10 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sun, 17 Sep 2023 03:21:22 GMT</pubDate>
+        <pubDate>Fri, 22 Sep 2023 13:23:04 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2023, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[坐标系、点、线、面 —— 计算机几何]]></title>
+            <description><![CDATA[计算机图形几何中关于坐标系、点、线面的概念]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/coordinatesystems-points-lines-planes.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/coordinatesystems-points-lines-planes.html</guid>
+            <pubDate>Thu, 21 Sep 2023 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[网站加载慢，怎么解决?]]></title>
             <description><![CDATA[网页有大量的图片展示时，网页打开速度慢，作为开发者应该从哪些方向解决优化。]]></description>
