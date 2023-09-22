@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Fri, 22 Sep 2023 13:23:10 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 22 Sep 2023 16:06:47 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Fri, 22 Sep 2023 13:23:04 GMT</pubDate>
+        <pubDate>Fri, 22 Sep 2023 16:06:42 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2023, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[齐次坐标 —— 计算机几何]]></title>
+            <description><![CDATA[何为齐次坐标，为什么要引入齐次坐标，它解决了什么问题？]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/homogeneous-coordinates.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/homogeneous-coordinates.html</guid>
+            <pubDate>Fri, 22 Sep 2023 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[坐标系、点、线、面 —— 计算机几何]]></title>
             <description><![CDATA[计算机图形几何中关于坐标系、点、线面的概念]]></description>
