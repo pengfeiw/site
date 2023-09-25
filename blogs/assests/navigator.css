@@ -4,6 +4,7 @@ body {
     --tag-padding: 5px 15px;
     --border-color-default: rgb(208, 215, 222);
     --border-color-focus: rgb(9, 105, 218);
+    --foter-text-color: rgba(0, 0, 0, .4);
 
     margin: 0px;
     padding: 45px;
@@ -78,10 +79,18 @@ body {
 .footer {
     text-align: center;
     text-align: center;
-    color: rgba(0, 0, 0, .4);
     font-size: 13.5px;
     font-style: normal;
     font-weight: 400;
     line-height: 19px;
     letter-spacing: .101px;
+    display: flex;
+    column-gap: 15px;
+    justify-content: center;
+    color: var(--foter-text-color);
+}
+
+.footer>a {
+    color: var(--foter-text-color);
+    text-decoration: none;
 }
