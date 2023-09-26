@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Mon, 25 Sep 2023 15:04:08 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 26 Sep 2023 15:02:18 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Mon, 25 Sep 2023 15:04:02 GMT</pubDate>
+        <pubDate>Tue, 26 Sep 2023 15:02:12 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2023, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[翼边结构 —— 计算机几何]]></title>
+            <description><![CDATA[翼边结构是 B-rep 结构中的一种古老的几何体数据结构，如何用它描述一个几何体呢？]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/winged-edge-data-structure.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/winged-edge-data-structure.html</guid>
+            <pubDate>Tue, 26 Sep 2023 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[流形 —— 计算机几何]]></title>
             <description><![CDATA[流行（manifolds）是什么？]]></description>
