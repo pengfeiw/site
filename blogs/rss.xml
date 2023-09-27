@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Tue, 26 Sep 2023 23:59:03 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 27 Sep 2023 13:32:06 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Tue, 26 Sep 2023 23:58:54 GMT</pubDate>
+        <pubDate>Wed, 27 Sep 2023 13:31:57 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2023, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[欧拉泊松公式 —— 计算机几何]]></title>
+            <description><![CDATA[介绍欧拉泊松公式的相关概念]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/euler-poincare-Formula.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/euler-poincare-Formula.html</guid>
+            <pubDate>Wed, 27 Sep 2023 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[翼边结构 —— 计算机几何]]></title>
             <description><![CDATA[翼边结构是 B-rep 结构中的一种古老的几何体数据结构，如何用它描述一个几何体呢？]]></description>
