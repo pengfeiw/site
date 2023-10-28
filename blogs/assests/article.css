@@ -7,7 +7,6 @@ body {
     --link-color: rgb(9, 105, 218);
 }
 
-
 a {
     text-decoration: none;
     color: var(--link-color);
@@ -70,4 +69,75 @@ a:hover {
 
 .markdown-body img {
     box-shadow: rgb(0 0 0 / 9%) 0px 0px 6px 0px;
+}
+
+.body {
+    display: grid;
+    grid-template-columns: 16em 1fr 16em;
+    max-width: 100em;
+    margin: 0 auto;
+}
+
+.toc {
+    position   : sticky;
+    top        : 20;
+    align-self : start;
+    display  : flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    border: 1px solid var(--color-border-default);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.toc .toc-header {
+    background-color: #f6f8fa;
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--color-border-default);
+    font-size: 0.875rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.toc .toc-body {
+    overflow-x: scroll;
+    padding: 20px 0;
+}
+
+.toc .toc-item {
+    font-size: 16px;
+    padding: 4px 0px;
+    width: 100%;
+}
+
+.toc .toc-item:hover {
+    background-color: #F5F5F5;
+}
+
+.toc .toc-item a {
+    color: black;
+    white-space: nowrap;
+    display: block;
+}
+
+.toc .toc-item a:hover {
+    text-decoration: none;
+}
+
+@media (max-width: 1400px) {
+    .body {
+        column-gap: 10px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .body {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+    .toc {
+        display: none;
+    }
 }
