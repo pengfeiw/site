@@ -28,6 +28,9 @@ body {
     display: flex;
     column-gap: 15px;
     align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 10px;
 }
 
 .header .navigator .links a {
@@ -86,7 +89,10 @@ body {
     letter-spacing: .101px;
     display: flex;
     column-gap: 15px;
+    row-gap: 5px;
+    flex-wrap: wrap;
     justify-content: center;
+    align-items: center;
     color: var(--foter-text-color);
 }
 
