@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Tue, 31 Oct 2023 14:38:07 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 03 Nov 2023 14:32:41 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Tue, 31 Oct 2023 14:37:59 GMT</pubDate>
+        <pubDate>Fri, 03 Nov 2023 14:32:34 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2023, Ibas]]></copyright>
         <item>
             <title><![CDATA[构造立体几何法（Constructive Solid Geometry） —— 计算机几何]]></title>
@@ -208,6 +208,13 @@
             <link>https://pengfeixc.com/blogs/javascript/rollup-with-typescript.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/rollup-with-typescript.html</guid>
             <pubDate>Sat, 05 Nov 2022 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Vscode Neovim]]></title>
+            <description><![CDATA[vscode 与 neovim 的完美结合，如何在 vscode 中使用 neovim]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/vscode-neovim.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/vscode-neovim.html</guid>
+            <pubDate>Thu, 03 Nov 2022 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[Docker 中运行 Mongo]]></title>

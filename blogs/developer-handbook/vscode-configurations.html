@@ -119,6 +119,93 @@
     <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
     <span class="hljs-attr">"vsicons.dontShowNewVersionMessage"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
 <span class="hljs-punctuation">}</span>
+</code></pre><p>后面我又将 vim 插件换成了 neovim 插件，配置也需要变化：</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"workbench.editor.enablePreview"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"workbench.editor.enablePreviewFromQuickOpen"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"editor.lineNumbers"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"relative"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"typescript.implementationsCodeLens.enabled"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"files.eol"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"\n"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"files.trimFinalNewlines"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"typescript.updateImportsOnFileMove.enabled"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"always"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"typescript.referencesCodeLens.enabled"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"git.inputValidationSubjectLength"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">72</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"[css]"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"editor.defaultFormatter"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vscode.css-language-features"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"[html]"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"editor.defaultFormatter"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vscode.html-language-features"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"[json]"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"editor.defaultFormatter"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vscode.json-language-features"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"[javascript]"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"editor.defaultFormatter"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vscode.typescript-language-features"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vetur.format.options.tabSize"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">4</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"diffEditor.ignoreTrimWhitespace"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"[jsonc]"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"editor.defaultFormatter"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vscode.json-language-features"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vetur.format.options.useTabs"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"editor.detectIndentation"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"[less]"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"editor.defaultFormatter"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"MikeBovenlander.formate"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"editor.fontSize"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">19</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"files.autoSave"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"afterDelay"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"terminal.integrated.defaultProfile.windows"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Git Bash"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"terminal.integrated.profiles.windows"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe (migrated)"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"path"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"args"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+                <span class="hljs-string">"--login"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-string">"-i"</span>
+            <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"redhat.telemetry.enabled"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"files.associations"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"*.cjson"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"jsonc"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"*.wxss"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"css"</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"*.wxs"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"javascript"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"emmet.includeLanguages"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"wxml"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"html"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"editor.fontFamily"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"'Courier New',monospace"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"terminal.integrated.fontFamily"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Consolas,'Courier New',monospace"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"editor.bracketPairColorization.enabled"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"editor.guides.bracketPairs"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"active"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"security.workspace.trust.untrustedFiles"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"open"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"gitlens.hovers.currentLine.over"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"line"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"gitlens.hovers.enabled"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"extensions.ignoreRecommendations"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"workbench.iconTheme"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vscode-icons"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"markdownShortcuts.icons.bold"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"markdownShortcuts.icons.bullets"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"markdownShortcuts.icons.italic"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"markdownShortcuts.icons.strikethrough"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"workbench.colorTheme"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"NetBeans Light Theme"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"[scss]"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"editor.defaultFormatter"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"MikeBovenlander.formate"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vsicons.dontShowNewVersionMessage"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"todo-tree.tree.showScanModeButton"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"[c]"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"editor.defaultFormatter"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ms-vscode.cpptools"</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"C_Cpp.clang_format_style"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"{ BasedOnStyle: Chromium, IndentWidth: 4, ColumnLimit: 0}"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"editor.unicodeHighlight.ambiguousCharacters"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// NEOVIM CONFIG</span>
+    <span class="hljs-attr">"extensions.experimental.affinity"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"asvetliakov.vscode-neovim"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vscode-neovim.neovimExecutablePaths.win32"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"C:\\Program Files\\Neovim\\bin\\nvim.exe"</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vscode-neovim.useWSL"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"vscode-neovim.neovimExecutablePaths.linux"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"/usr/bin/nvim"</span><span class="hljs-punctuation">,</span>
+<span class="hljs-punctuation">}</span>
 </code></pre><h2 id="Keyboard shortcuts">Keyboard shortcuts <a href="#Keyboard shortcuts">#</a></h2><pre><code class="hljs language-json"><span class="hljs-punctuation">[</span>
     <span class="hljs-punctuation">{</span>
         <span class="hljs-attr">"key"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ctrl+b ctrl+b"</span><span class="hljs-punctuation">,</span>
