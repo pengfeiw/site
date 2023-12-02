@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sun, 12 Nov 2023 14:33:45 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 02 Dec 2023 07:52:32 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sun, 12 Nov 2023 14:33:39 GMT</pubDate>
+        <pubDate>Sat, 02 Dec 2023 07:52:26 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2023, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[vim buffer]]></title>
+            <description><![CDATA[如何使用 vim(neovim) 中的 buffer]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/vim-buffer.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/vim-buffer.html</guid>
+            <pubDate>Sat, 02 Dec 2023 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[Bash 行操作]]></title>
             <description><![CDATA[bash 终端行操作快捷键]]></description>
