@@ -9,10 +9,10 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sat, 23 Dec 2023 00:27:33 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 02 Jan 2024 15:15:34 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sat, 23 Dec 2023 00:27:24 GMT</pubDate>
-        <copyright><![CDATA[All rights reserved 2023, Ibas]]></copyright>
+        <pubDate>Tue, 02 Jan 2024 15:15:24 GMT</pubDate>
+        <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
         <item>
             <title><![CDATA[vim buffer]]></title>
             <description><![CDATA[如何使用 vim(neovim) 中的 buffer]]></description>
