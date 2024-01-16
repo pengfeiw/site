@@ -1,0 +1,137 @@
+<html lang="zh_cn"><head><title>cmake 教程 | 王鹏飞</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="cmake,c,c++,c/c++,makefile,tutorial,教程"><meta name="description" content="cmake 入门教程"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><link rel="icon" href="/blogs/assests/images/icon.jpg"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="home"><a href="/blogs">Home</a></div><div class="email"><a href="mailto:pengfeixc@sina.com">Email</a></div><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.svg" alt="rss"></a></div></div></div></div><div class="body"><div class="nothing"></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2024年1月15日</span><span class="category"><a href="/blogs/clang">标签：C/C++</a></span></div><div class="markdown-body"><h1 id="cmake 教程">cmake 教程 <a href="#cmake 教程">#</a></h1><h2 id="为什么要使用 cmake">为什么要使用 cmake <a href="#为什么要使用 cmake">#</a></h2><p>cmake 允许开发者通过编写 CMakeList.txt 文件来管理项目的编译流程，根据目标用户平台生成对应的 makefile 和工程文件，例如可以生成 unix 的 Makefile 文件或者 windows 的 visual studio 工程。从而达到 "Write once，run everywhere"。</p><p>另外，一般手写 makefile 是一件很痛苦的事，cmake 脚本语言是一种类似 C 的语言，所以更适合程序员理解记忆。避免在 makefile 的逻辑中迷失自我。</p><p>接下来先简单介绍一些 cmake 的一些概念。然后再通过实际例子，使用 cmake 编译程序运行。</p><h2 id="cmake 命令">cmake 命令 <a href="#cmake 命令">#</a></h2><p>cmake 的命令（command）类似与 C++ 中的函数方法，可以接受一些参数执行特定的任务。</p><p>cmake 的命令名称是不区分大小写的。</p><blockquote><p>cmake commands: <a href="https://cmake.org/cmake/help/latest/manual/cmake-commands.7.html">https://cmake.org/cmake/help/latest/manual/cmake-commands.7.html</a></p></blockquote><p>常用的命令：</p><ul><li>message: 打印消息。</li><li><a href="https://cmake.org/cmake/help/latest/command/cmake_minimum_required.html">cmake_minimum_required</a>: 指定 cmake 兼容的最小版本号，防止出现 cmake 语法不兼容，导致无法编译。</li><li><a href="https://cmake.org/cmake/help/latest/command/add_executable.html">add_executable</a>: 根据指定的源文件生成可执行文件。</li><li><a href="https://cmake.org/cmake/help/latest/command/add_library.html">add_library</a>: 生成链接库。</li><li><a href="https://cmake.org/cmake/help/latest/command/add_subdirectory.html">add_subdirectory</a>: 指明项目包含一个子目录。</li></ul><p>cmake 还支持结构化语句：</p><ul><li>if, endif</li><li>elif, endif</li><li>while, endwhile</li><li>foreach, endforeach</li><li>list</li><li>return</li><li>set_property</li></ul><p>cmake 不会关注缩进，但是为了阅读性最好添加缩进空格。每行语句结束也不用加上 ";"。</p><h2 id="cmake 环境变量（environment variables）">cmake 环境变量（environment variables） <a href="#cmake 环境变量（environment variables）">#</a></h2><p>环境变量用于配置编译器标志、链接器标志、常规构建过程的测试配置。可以通过 <code>set()</code> 和 <code>unset()</code> 设置环境变量的值。</p><blockquote><p>cmake 环境变量列表: <a href="https://cmake.org/cmake/help/latest/manual/cmake-env-variables.7.html">https://cmake.org/cmake/help/latest/manual/cmake-env-variables.7.html</a></p><p>cmake 环境变量介绍：<a href="https://cmake.org/cmake/help/latest/manual/cmake-language.7.html#cmake-language-environment-variables">https://cmake.org/cmake/help/latest/manual/cmake-language.7.html#cmake-language-environment-variables</a></p></blockquote><h2 id="Language-wide flags">Language-wide flags <a href="#Language-wide flags">#</a></h2><p><code>CMAKE_&lt;LANG&gt;_FLAGS</code> 用于配置指定语言编译器的标识。</p><ul><li>CMAKE_C_FLAGS</li><li>CMAKE_CXX_FLAGS</li><li>CMAKE_CUDA_FLAGS</li><li>CMAKE_Fortran_FLAGS</li><li>CMAKE_CSharp_FLAGS</li><li>CMAKE_HIP_FLAGS</li><li>CMAKE_ISPC_FLAGS</li></ul><p>上面的变量会被特定的环境变量初始化，例如 CMAKE_CXX_FLAGS 被 CXXFLAGS 初始化，CXXFLAGS 是一个环境变量，CXXFLAGS 的初始值来自调用环境，为 cxx(c++) 文件编译提供编译选项。cmake 将这个环境变量的值和 cmake 默认的编译选项合并后，存储到 CMAKE_CXX_FLAGS 变量中（即，CMAKE_CXX_FLAGS 初始化自 CXXFLAGS），然后提供给编译工具链。但是如果定义了 CMAKE_CXX_FLAGS 变量，那么 CXXFLAGS 的值就会被忽略。</p><p>例如 <code>gcc</code> 命令的 <code>-Wall</code> 用于打印所有的警告信息，我们可以使用 set 命令设置该编译选项。</p><pre><code class="hljs language-cmake"><span class="hljs-comment"># 不建议使用这种，它会覆盖原有的选项</span>
+<span class="hljs-keyword">set</span>(CMAKE_CXX_FLAGS <span class="hljs-string">"-Wall"</span>)
+<span class="hljs-comment"># 使用这种，标识在原有的参数后面增加 -Wall，没有覆盖原有的命令 flag</span>
+<span class="hljs-keyword">set</span>(CMAKE_CXX_FLAGS <span class="hljs-string">"${CMAKE_CXX_FLAGS} -Wall"</span>)
+</code></pre><h2 id="cmake 变量">cmake 变量 <a href="#cmake 变量">#</a></h2><p>可以使用 set 命令定义一个变量，cmake 中也包含一些预定义的变量，例如上面的 <code>CMAKE_CXX_FLAGS</code>。</p><p>与命令不同，变量是区分大小写的。</p><blockquote><p>cmake 变量：<a href="https://cmake.org/cmake/help/v3.0/manual/cmake-language.7.html#variables">https://cmake.org/cmake/help/v3.0/manual/cmake-language.7.html#variables</a></p></blockquote><p>一些常用的预定义变量（暂时不知道如何翻译比较好，先保留英文）：</p><ul><li>CMAKE_BINARY_DIR: Full path to top level of build tree and binary output folder, by default it is defined as top level of build tree.</li><li>CMAKE_HOME_DIRECTORY: Path to top of source tree</li><li>CMAKE_SOURCE_DIR: Full path to top level of source tree.</li><li>CMAKE_INCLUDE_PATH: Path used to find file, path</li></ul><p>可以通过 <code>${variable_name}</code> 获取变量值。</p><pre><code>message("CXX Standard: ${CMAKE_CXX_STANDARD}")
+set(CMAKE_CXX_STANDARD 14)
+</code></pre><p>可以定义一个新变量。</p><pre><code>set(TRIAL_VARIABLE "VALUE")
+message("${TRIAL_VARIABLE}")
+</code></pre><h2 id="cmake 列表">cmake 列表 <a href="#cmake 列表">#</a></h2><p>cmake 中所有的值都被存储为字符串形式，但是一个字符串在特定的上下文环境可以被当成list (列表) 使用。</p><p>设置 files 变量为一个列表，实际存储的是以分号隔开的字符串。</p><pre><code class="hljs language-cmake"><span class="hljs-keyword">set</span>(files a.txt b.txt c.txt)
+<span class="hljs-comment"># sets files to "a.txt;b.txt;c.txt"</span>
+</code></pre><p>遍历 <code>files</code> 列表：</p><pre><code class="hljs language-cmake"><span class="hljs-keyword">foreach</span>(<span class="hljs-keyword">file</span> <span class="hljs-variable">${files}</span>)
+    <span class="hljs-keyword">message</span>(<span class="hljs-string">"Filename: ${file}"</span>)
+<span class="hljs-keyword">endforeach</span>()
+</code></pre><h2 id="cmake 生成器表达式">cmake 生成器表达式 <a href="#cmake 生成器表达式">#</a></h2><blockquote><p>生成器表达式：<a href="https://cmake.org/cmake/help/v3.3/manual/cmake-generator-expressions.7.html">https://cmake.org/cmake/help/v3.3/manual/cmake-generator-expressions.7.html</a></p></blockquote><h2 id="代码实践">代码实践 <a href="#代码实践">#</a></h2><h3 id="一个简单的例子">一个简单的例子 <a href="#一个简单的例子">#</a></h3><p>创建一个 `main.cpp`` 文件，内容如下：</p><pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{
+    std::cout&lt;&lt;<span class="hljs-string">"Hello CMake!"</span>&lt;&lt;std::endl;
+}
+</code></pre><p>我们可以直接使用 g++ 编译该文件：</p><pre><code class="hljs language-bash">$ g++ main.cpp -o cmake_hello
+</code></pre><p>但是我们的目的是使用 cmake 输出 makefile 文件，管理项目的构建过程，在 main.cpp 增加一个 <code>CMakeLists.txt</code> 文件，内容如下：</p><pre><code class="hljs language-cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.9</span>.<span class="hljs-number">1</span>)
+<span class="hljs-keyword">project</span>(CMakeHello)
+<span class="hljs-keyword">add_executable</span>(cmake_hello main.cpp)
+</code></pre><p>CMakeLists 的三行代码分别做了下面三件事：</p><ul><li>指定 cmake 的最小兼容版本</li><li>指定项目的名称</li><li>指定通过 main.cpp 创建可执行文件 cmake_hello</li></ul><p>接下来通过 cmake 生成 makefile：</p><pre><code class="hljs language-bash">$ cmake CMakeLists.txt 
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - <span class="hljs-keyword">done</span>
+-- Check <span class="hljs-keyword">for</span> working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - <span class="hljs-keyword">done</span>
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - <span class="hljs-keyword">done</span>
+-- Check <span class="hljs-keyword">for</span> working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - <span class="hljs-keyword">done</span>
+-- Configuring <span class="hljs-keyword">done</span>
+-- Generating <span class="hljs-keyword">done</span>
+</code></pre><p>cmake 命令执行过程中，可以自动识别了 c(xx) 编译器的版本信息。通过这些信息生成一些默认的配置（CMakeCaceh.txt 等）和 makefile。</p><p>接下来可以执行 make 命令构建项目：</p><pre><code class="hljs language-bash">$ make all
+<span class="hljs-comment"># or</span>
+$ make cmake_hello
+</code></pre><p>make 命令执行完毕后，当前目录会出现可执行文件 <code>cmake_hello</code>，该文件名由 <code>add_executable</code> 命令指定。</p><h3 id="指定 C++ standard">指定 C++ standard <a href="#指定 C++ standard">#</a></h3><p>有时候我们用到了一些 C++ 新语法，例如你用到了 C++14 中的语法，所以我们需要指定 C++ 的版本。</p><p>将 <code>main.cpp</code> 改为如下内容：</p><pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
+
+<span class="hljs-function"><span class="hljs-keyword">auto</span> <span class="hljs-title">sum</span><span class="hljs-params">(<span class="hljs-type">int</span> a, <span class="hljs-type">int</span> b)</span> </span>{
+    <span class="hljs-keyword">return</span> a + b;    
+}
+
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{
+    std::cout &lt;&lt; <span class="hljs-string">"Hello CMake!"</span> &lt;&lt; std::endl;
+    std::cout &lt;&lt; <span class="hljs-string">"Sum of 3 + 4: "</span> &lt;&lt; <span class="hljs-built_in">sum</span>(<span class="hljs-number">3</span>, <span class="hljs-number">4</span>) &lt;&lt; std::endl;
+}
+</code></pre><p>auto 为 C++14 新增语法，所以编译时需要指定 C++14。</p><p>更新 <code>CMakeLists.txt</code>：</p><pre><code class="hljs language-cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.9</span>.<span class="hljs-number">1</span>)
+<span class="hljs-keyword">project</span>(CMakeHello)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD <span class="hljs-number">14</span>)
+<span class="hljs-keyword">add_executable</span>(cmake_hello main.cpp)
+</code></pre><p>通过设置 CMAKE_CXX_STANDARD 变量值，设定 C++14。如果 C++ 版本不正确，构建会出错。</p><h3 id="跨平台编译">跨平台编译 <a href="#跨平台编译">#</a></h3><p>如果你的项目需要编译至多平台：</p><ul><li>为 windows、mac 和 linux 生成可执行文件</li><li>根据 linux 内核版本添加不同的宏（macros）</li></ul><p>cmake 提供了一些变量可以用来检测系统相关信息：</p><ul><li><code>CMAKE_SYSTEM</code>: 存储了完整的系统信息，例如 "Linux-2.4.22", "FreeBSD-5.4-RELEASE"， "Windows 5.1"。</li><li><code>CMAKE_SYSTEM_NAME</code>: 生成的可执行文件的平台名称，常用的有 Windows、Darwin、Linux、Android、FreeBSD 等，例如需要构建 windows 上的可执行程序，可以设置该变量值为 Windows，如果没有设置该值，该变量值默认为 CMAKE_HOST_SYSTEM_NAME。</li><li><code>CMAKE_SYSTEM_VERSION</code>: 系统的内核版本</li><li><code>CMAKE_SYSTEM_PROCESSOR</code>: 系统的处理器名称（e.g. "Intel(R) Pentium(R) M processor 2.00GHz"）</li><li><code>CMAKE_HOST_SYSTEM_NAME</code>: cmake 脚本运行的系统名称。</li></ul><p>我们可以使用下面的脚本，判断当前系统的信息:</p><pre><code class="hljs language-cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.9</span>.<span class="hljs-number">1</span>)
+<span class="hljs-keyword">project</span>(CMakeHello)
+
+<span class="hljs-comment"># UNIX, WIN32, WINRT, CYGWIN, APPLE are environment variables as flags set by default system</span>
+<span class="hljs-keyword">if</span> (UNIX)
+    <span class="hljs-keyword">message</span>(<span class="hljs-string">"This is a ${CMAKE_SYSTEM_NAME} system"</span>)
+<span class="hljs-keyword">elseif</span> (WIN32)
+    <span class="hljs-keyword">message</span>(<span class="hljs-string">"This is a Window System"</span>)
+<span class="hljs-keyword">endif</span>()
+
+<span class="hljs-keyword">if</span> (<span class="hljs-variable">${CMAKE_SYSTEM_NAME}</span> <span class="hljs-keyword">MATCHES</span> Darwin)
+    <span class="hljs-keyword">message</span>(<span class="hljs-string">"This is a ${CMAKE_SYSTEM_NAME} system"</span>)
+<span class="hljs-keyword">elseif</span>(<span class="hljs-variable">${CMAKE_SYSTEM_NAME}</span> <span class="hljs-keyword">MATCHES</span> Windows)
+    <span class="hljs-keyword">message</span>(<span class="hljs-string">"This is a Windows System"</span>)
+<span class="hljs-keyword">endif</span>()
+
+<span class="hljs-keyword">add_executable</span>(cmake_hello main.cpp)
+</code></pre><h3 id="定义宏（Macros）">定义宏（Macros） <a href="#定义宏（Macros）">#</a></h3><p>可以使用 <code>add_definitions</code> 命令定义宏，在宏名称前需要加上 <code>-D</code> 标识，例如定义 <code>CMAKEMACROSAMPLE</code> 宏。</p><pre><code class="hljs language-cmake"><span class="hljs-keyword">add_definitions</span>(-DCMAKEMACROSAMPLE=<span class="hljs-string">"Apple MacOS"</span>)
+</code></pre><p>修改 <code>CMakeLists.txt</code> 文件：</p><pre><code class="hljs language-cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.9</span>.<span class="hljs-number">1</span>)
+<span class="hljs-keyword">project</span>(CMakeHello)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD <span class="hljs-number">14</span>)
+<span class="hljs-comment"># or use MATCHES to see if actual system name </span>
+<span class="hljs-comment"># Darwin is Apple's system name</span>
+<span class="hljs-keyword">if</span>(<span class="hljs-variable">${CMAKE_SYSTEM_NAME}</span> <span class="hljs-keyword">MATCHES</span> Darwin)
+    <span class="hljs-keyword">add_definitions</span>(-DCMAKEMACROSAMPLE=<span class="hljs-string">"Apple MacOS"</span>)
+<span class="hljs-keyword">elseif</span>(<span class="hljs-variable">${CMAKE_SYSTEM_NAME}</span> <span class="hljs-keyword">MATCHES</span> Windows)
+    <span class="hljs-keyword">add_definitions</span>(-DCMAKEMACROSAMPLE=<span class="hljs-string">"Windows PC"</span>)
+<span class="hljs-keyword">elseif</span>(<span class="hljs-variable">${CMAKE_SYSTEM_NAME}</span> <span class="hljs-keyword">MATCHES</span> Linux)
+    <span class="hljs-keyword">add_definitions</span>(-DCMAKEMACROSAMPLE=<span class="hljs-string">"Linux PC"</span>)
+<span class="hljs-keyword">endif</span>()
+<span class="hljs-keyword">add_executable</span>(cmake_hello main.cpp)
+</code></pre><p>在 main.cpp 中打印宏：</p><pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
+
+<span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> CMAKEMACROSAMPLE</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> CMAKEMACROSAMPLE <span class="hljs-string">"NO SYSTEM NAME"</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span></span>
+
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{
+    std::cout &lt;&lt; <span class="hljs-string">"Hello CMake!"</span> &lt;&lt; std::endl;
+    std::cout &lt;&lt; <span class="hljs-string">"CMAKEMACROSAMPLE: "</span> &lt;&lt; CMAKEMACROSAMPLE &lt;&lt; std::endl;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</code></pre><h3 id="文件夹管理">文件夹管理 <a href="#文件夹管理">#</a></h3><p>构建应用时，我们希望保持源文件树干净整洁，将自动生成的文件和源文件放在不同的位置。</p><p>很多开发者习惯在源文件的根目录下创建一个 build 文件夹，然后再 build 文件夹下执行 cmake 命令。</p><p>所以，首先创建一个 build 文件夹：</p><pre><code class="hljs language-bash">$ <span class="hljs-built_in">mkdir</span> build
+$ <span class="hljs-built_in">ls</span> -al
+total 32
+drwxr-xr-x  4 fangyan fangyan  4096 Jan 16 23:10 .
+drwxr-xr-x 16 fangyan fangyan 12288 Jan 16 22:06 ..
+drwxr-xr-x  7 fangyan fangyan  4096 Jan 16 23:10 .git
+-rw-r--r--  1 fangyan fangyan   494 Jan 16 23:04 CMakeLists.txt
+drwxr-xr-x  2 fangyan fangyan  4096 Jan 16 23:10 build
+-rw-r--r--  1 fangyan fangyan   246 Jan 16 23:05 main.cpp
+</code></pre><p>在 build 文件夹执行 cmake 命令。</p><pre><code class="hljs language-bash">$ <span class="hljs-built_in">cd</span> build
+$ cmake ..
+$ <span class="hljs-built_in">ls</span> -al
+total 40
+drwxr-xr-x 3 fangyan fangyan  4096 Jan 16 23:12 .
+drwxr-xr-x 4 fangyan fangyan  4096 Jan 16 23:10 ..
+-rw-r--r-- 1 fangyan fangyan 13861 Jan 16 23:12 CMakeCache.txt
+drwxr-xr-x 5 fangyan fangyan  4096 Jan 16 23:12 CMakeFiles
+-rw-r--r-- 1 fangyan fangyan  5268 Jan 16 23:12 Makefile
+-rw-r--r-- 1 fangyan fangyan  1660 Jan 16 23:12 cmake_install.cmake
+</code></pre><p>上面的命令在 build 文件夹下生成了 build 文件。另外一般习惯将 <code>build</code> 文件夹添加到 <code>.gitignore</code> 文件夹中。</p><p>但是我们不希望每次都创建一个 build 文件夹，再进入（cd） build 文件夹，然后执行 <code>cmake ..</code> 命令。</p><p>我们可以使用 cmake 命令的 <code>-H</code> 和 <code>-B</code> 选项：</p><ul><li><code>-H</code>: 指定源文件根目录</li><li><code>-B</code>: 指定 build 文件夹路径</li></ul><p>所以我们可以直接再源文件根目录下执行下面的命令达到同样的效果：</p><pre><code class="hljs language-bash">$ cmake -H. -Bbuild
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - <span class="hljs-keyword">done</span>
+-- Check <span class="hljs-keyword">for</span> working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - <span class="hljs-keyword">done</span>
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - <span class="hljs-keyword">done</span>
+-- Check <span class="hljs-keyword">for</span> working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - <span class="hljs-keyword">done</span>
+-- Configuring <span class="hljs-keyword">done</span>
+-- Generating <span class="hljs-keyword">done</span>
+-- Build files have been written to: /home/fangyan/projects/program/cmake-study/build
+</code></pre><p>还可以再 CMakeLists.txt 文件中设置 CMAKE_RUNTIME_OUTPUT_DIRECTORY 或者 EXECUTABLE_OUTPUT_PATH 指定库文件和可执行文件生成的位置。</p><pre><code class="hljs language-cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.9</span>.<span class="hljs-number">1</span>)
+<span class="hljs-keyword">project</span>(CMakeHello)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD <span class="hljs-number">14</span>)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_FLAGS <span class="hljs-string">"${CMAKE_CXX_FLAGS} -Wall"</span>)
+<span class="hljs-keyword">set</span>(CMAKE_RUNTIME_OUTPUT_DIRECTORY <span class="hljs-variable">${CMAKE_BINARY_DIR}</span>/bin)
+<span class="hljs-keyword">add_executable</span>(cmake_hello main.cpp)
+</code></pre><p>执行 <code>cmake -H. -Bbuild</code> 后，然后进入 build 文件夹，执行 make 命令，生成的可执行文件在 <code>build/bin/cmake_hello</code>。</p><p>还有一些变量可以设置动态库（.dll，.so）的路径：</p><ul><li>LIBRARY_OUTPUT_PATH</li><li>CMAKE_LIBRARY_OUTPUT_DIRECTORY</li></ul><p>或者设置静态库（.a 或者 .lib）的路径：</p><ul><li>CMAKE_ARCHIVE_OUTPUT_DIRECTORY</li><li>ARCHIVE_OUTPUT_PATH</li></ul><p>（未完待续）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/developer-handbook/vim-buffer">上一篇：vim buffer</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#cmake 教程" style="padding-left:15px">cmake 教程</a></div><div class="toc-item"><a class="toc-item-link" href="#为什么要使用 cmake" style="padding-left:30px">为什么要使用 cmake</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 命令" style="padding-left:30px">cmake 命令</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 环境变量（environment variables）" style="padding-left:30px">cmake 环境变量（environment variables）</a></div><div class="toc-item"><a class="toc-item-link" href="#Language-wide flags" style="padding-left:30px">Language-wide flags</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 变量" style="padding-left:30px">cmake 变量</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 列表" style="padding-left:30px">cmake 列表</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 生成器表达式" style="padding-left:30px">cmake 生成器表达式</a></div><div class="toc-item"><a class="toc-item-link" href="#代码实践" style="padding-left:30px">代码实践</a></div><div class="toc-item"><a class="toc-item-link" href="#一个简单的例子" style="padding-left:45px">一个简单的例子</a></div><div class="toc-item"><a class="toc-item-link" href="#指定 C++ standard" style="padding-left:45px">指定 C++ standard</a></div><div class="toc-item"><a class="toc-item-link" href="#跨平台编译" style="padding-left:45px">跨平台编译</a></div><div class="toc-item"><a class="toc-item-link" href="#定义宏（Macros）" style="padding-left:45px">定义宏（Macros）</a></div><div class="toc-item"><a class="toc-item-link" href="#文件夹管理" style="padding-left:45px">文件夹管理</a></div></div></div></div></body></html>

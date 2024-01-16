@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Tue, 02 Jan 2024 15:15:34 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 16 Jan 2024 15:30:40 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Tue, 02 Jan 2024 15:15:24 GMT</pubDate>
+        <pubDate>Tue, 16 Jan 2024 15:30:34 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[cmake 教程]]></title>
+            <description><![CDATA[cmake 入门教程]]></description>
+            <link>https://pengfeixc.com/blogs/clang/cmake-tutorial.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/clang/cmake-tutorial.html</guid>
+            <pubDate>Mon, 15 Jan 2024 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[vim buffer]]></title>
             <description><![CDATA[如何使用 vim(neovim) 中的 buffer]]></description>
