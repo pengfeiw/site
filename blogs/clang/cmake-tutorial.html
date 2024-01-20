@@ -233,4 +233,95 @@ target_link_libraries(cmake_hello math)
 <span class="hljs-keyword">add_executable</span>(cmake_hello main.cpp)
 
 <span class="hljs-keyword">target_link_libraries</span>(cmake_hello <span class="hljs-keyword">math</span>)
-</code></pre><p>执行 cmake 和 make 后，你会发现结果与之前一致。</p><h3 id="使用 CMake 查找使用其他库文件">使用 CMake 查找使用其他库文件 <a href="#使用 CMake 查找使用其他库文件">#</a></h3><p>很多情况下，你找到一些开源库，你想使用这个库中的 API。例如你使用 apt-get 安装了 boost 库。</p><p>你可以使用 CMake 的条件语句判断库是否存在。然后去进行条件处理。</p><p>（未完待续）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/developer-handbook/vim-buffer">上一篇：vim buffer</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#cmake 教程" style="padding-left:15px">cmake 教程</a></div><div class="toc-item"><a class="toc-item-link" href="#为什么要使用 cmake" style="padding-left:30px">为什么要使用 cmake</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 命令" style="padding-left:30px">cmake 命令</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 环境变量（environment variables）" style="padding-left:30px">cmake 环境变量（environment variables）</a></div><div class="toc-item"><a class="toc-item-link" href="#Language-wide flags" style="padding-left:30px">Language-wide flags</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 变量" style="padding-left:30px">cmake 变量</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 列表" style="padding-left:30px">cmake 列表</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 生成器表达式" style="padding-left:30px">cmake 生成器表达式</a></div><div class="toc-item"><a class="toc-item-link" href="#代码实践" style="padding-left:30px">代码实践</a></div><div class="toc-item"><a class="toc-item-link" href="#一个简单的例子" style="padding-left:45px">一个简单的例子</a></div><div class="toc-item"><a class="toc-item-link" href="#指定 C++ standard" style="padding-left:45px">指定 C++ standard</a></div><div class="toc-item"><a class="toc-item-link" href="#跨平台编译" style="padding-left:45px">跨平台编译</a></div><div class="toc-item"><a class="toc-item-link" href="#定义宏（Macros）" style="padding-left:45px">定义宏（Macros）</a></div><div class="toc-item"><a class="toc-item-link" href="#文件夹管理" style="padding-left:45px">文件夹管理</a></div><div class="toc-item"><a class="toc-item-link" href="#使用 CMake 构建库" style="padding-left:45px">使用 CMake 构建库</a></div><div class="toc-item"><a class="toc-item-link" href="#1.准备文件" style="padding-left:60px">1.准备文件</a></div><div class="toc-item"><a class="toc-item-link" href="#2.将库文件编译到可执行程序中" style="padding-left:60px">2.将库文件编译到可执行程序中</a></div><div class="toc-item"><a class="toc-item-link" href="#3.单独构建库文件" style="padding-left:60px">3.单独构建库文件</a></div><div class="toc-item"><a class="toc-item-link" href="#将库文件作为 cmake 的一个子模块（sub-module）" style="padding-left:45px">将库文件作为 cmake 的一个子模块（sub-module）</a></div><div class="toc-item"><a class="toc-item-link" href="#使用 CMake 查找使用其他库文件" style="padding-left:45px">使用 CMake 查找使用其他库文件</a></div></div></div></div></body></html>
+</code></pre><p>执行 cmake 和 make 后，你会发现结果与之前一致。</p><h3 id="使用 CMake 查找使用其他库文件">使用 CMake 查找使用其他库文件 <a href="#使用 CMake 查找使用其他库文件">#</a></h3><p>很多情况下，你找到一些开源库，你想使用这个库中的 API。例如你使用 apt-get 安装了 boost 库。</p><p>你可以使用 CMake 的条件语句判断库是否存在。然后决定是否继续构建程序。</p><p>cmake 能够在系统默认的库文件位置查找库文件，例如 <code>/usr/lib;/usr/local/lib</code>。</p><p>可以使用包管理器(apt-get,brew)安装 Boost 库。在构建程序前，可以通过 cmake 的 <code>find_package</code> 命令检查 library 是否已经安装。</p><p>接下来，进行实操练习。</p><p>更新 <code>main.cpp</code> 文件，使用 boost 库 API：</p><pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;boost/random.hpp&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">"lib/math/operations.hpp"</span></span>
+
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{
+    std::cout &lt;&lt; <span class="hljs-string">"Hello CMake!"</span> &lt;&lt; std::endl;
+
+    math::operations op;
+
+    <span class="hljs-type">int</span> sum = op.<span class="hljs-built_in">sum</span>(<span class="hljs-number">3</span>, <span class="hljs-number">4</span>);
+
+    std::cout &lt;&lt; <span class="hljs-string">"Sum of 3 + 4: "</span> &lt;&lt; sum &lt;&lt; std::endl;
+
+    <span class="hljs-comment">// Boost Random Sample</span>
+    boost::mt19937 rng;
+    <span class="hljs-type">double</span> mean = <span class="hljs-number">2.3</span>;
+    <span class="hljs-type">double</span> std = <span class="hljs-number">0.34</span>;
+
+    <span class="hljs-keyword">auto</span> normal_dist = boost::random::<span class="hljs-built_in">normal_distribution</span>&lt;<span class="hljs-type">double</span>&gt;(mean, std);
+
+    boost::variate_generator&lt;boost::mt19937&amp;,
+                             boost::normal_distribution&lt;&gt; &gt;
+        <span class="hljs-built_in">random_generator</span>(rng, normal_dist);
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">2</span>; i++) {
+        <span class="hljs-keyword">auto</span> rand_val = <span class="hljs-built_in">random_generator</span>();
+        std::cout &lt;&lt; <span class="hljs-string">"Random Val "</span> &lt;&lt; i + <span class="hljs-number">1</span> &lt;&lt; <span class="hljs-string">" :"</span> &lt;&lt; rand_val &lt;&lt; std::endl;
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</code></pre><p>接下来更新 <code>CMakeLists.txt</code> 文件，我们需要检查 Boost 库是否存在，如果存在则使用 <code>include_directories</code> 将 Boost 头文件添加到编译器的头文件搜索路径之下，最后链接库。</p><pre><code class="hljs language-cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.9</span>.<span class="hljs-number">1</span>)
+<span class="hljs-keyword">project</span>(CMakeHello)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD <span class="hljs-number">14</span>)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_FLAGS <span class="hljs-string">"${CMAKE_CXX_FLAGS} -Wall"</span>)
+
+<span class="hljs-keyword">set</span>(CMAKE_RUNTIME_OUTPUT_DIRECTORY <span class="hljs-variable">${CMAKE_BINARY_DIR}</span>/bin)
+
+<span class="hljs-keyword">message</span>(<span class="hljs-variable">${CMAKE_BINARY_DIR}</span>)
+
+<span class="hljs-keyword">add_subdirectory</span>(lib/<span class="hljs-keyword">math</span>)
+
+<span class="hljs-keyword">add_executable</span>(cmake_hello main.cpp)
+
+<span class="hljs-keyword">find_package</span>(Boost <span class="hljs-number">1.66</span>)
+
+<span class="hljs-comment"># check for library, if found print message, include dirs and link libraries</span>
+<span class="hljs-keyword">if</span> (Boost_FOUND)
+    <span class="hljs-keyword">message</span>(<span class="hljs-string">"Boost Found"</span>)
+    <span class="hljs-keyword">include_directories</span>(<span class="hljs-variable">${Boost_INCLUDE_DIRS}</span>)
+    <span class="hljs-keyword">target_link_libraries</span>(cmake_hello <span class="hljs-variable">${Boost_LIBRARIES}</span>)
+<span class="hljs-keyword">elseif</span>(<span class="hljs-keyword">NOT</span> Boost_FOUND)
+    error(<span class="hljs-string">"Boost Not Found"</span>)
+<span class="hljs-keyword">endif</span>()
+
+<span class="hljs-keyword">target_link_libraries</span>(cmake_hello <span class="hljs-keyword">math</span>)
+</code></pre><p>如果系统没有安装 Boost，执行 cmake 命令会报错。因为判断库文件不存在直接报错。可以执行 <code>sudo apt-get install libboost-all-dev</code> 安装 Boost，再执行 cmake 命令，将构建成功。</p><p>当使用 find_package 查找库文件时，下面的变量会自动创建：</p><ul><li><code>&lt;NAME&gt;_FOUND</code>: 标识是否查找到库文件。</li><li><code>&lt;NAME&gt;_INCLUDE_DIRS</code> 或者 <code>&lt;NAME&gt;_INCLUDES</code>: 库文件的头文件目录</li><li><code>&lt;NAME&gt;_LIBRARIES</code> 或者 <code>&lt;NAME&gt;_LIBRARIES</code> 或者<code>&lt;NAME&gt;_LIBS</code>：库源文件</li><li><code>&lt;NAME&gt;_DEFINITIONS</code></li></ul><p>但是如果，想要链接的 lib 在一个自定义文件夹中，而不是在默认库文件目录，也不再 cmake 构建的 source tree 中呢？</p><p>使用 g++ 链接指定目录的库文件，命令是这样的：</p><pre><code class="hljs language-bash">$ g++ main.cpp -o cmake_hello -I/home/fangyan/libraries/boost/include -L/home/fangyan/libraries/boost -lBoost
+</code></pre><p>上面的命令做了以下几件事：</p><ul><li><code>-I&lt;DIRECTORY&gt;</code>: 指定库头文件的搜索路径</li><li><code>-L&lt;DIRECTORY&gt;</code>: 指定库函数的搜索路径</li><li><code>-l&lt;LIBRARY_NAME&gt;</code>: 指定连接的库文件名称</li></ul><p>在 <code>CMakeLists.txt</code> 需要完成同样的逻辑。</p><pre><code class="hljs language-cmake"><span class="hljs-keyword">include_directories</span>(/Users/User/Projects/libraries/<span class="hljs-keyword">include</span>)
+<span class="hljs-keyword">link_directories</span>(/Users/User/Projects/libraries/libs)
+<span class="hljs-comment"># elseif case can be </span>
+<span class="hljs-keyword">elseif</span>(<span class="hljs-keyword">NOT</span> Boost_FOUND)
+<span class="hljs-keyword">message</span>(<span class="hljs-string">"Boost Not Found"</span>)
+    <span class="hljs-keyword">include_directories</span>(/Users/User/Projects/libraries/<span class="hljs-keyword">include</span>)
+    <span class="hljs-keyword">link_directories</span>(/Users/User/Projects/libraries/libs)
+    <span class="hljs-keyword">target_link_libraries</span>(cmake_hello Boost)
+<span class="hljs-keyword">endif</span>()
+</code></pre><p>还有很多其他的方式，例如你可以写自定义的 cmake 方法。这里最重要的是理解 C/C++ 的编译链接逻辑。</p><blockquote><p>gcc 和 g++: <a href="https://pengfeixc.com/blogs/clang/gcc">https://pengfeixc.com/blogs/clang/gcc</a></p></blockquote><h3 id="目标平台配置">目标平台配置 <a href="#目标平台配置">#</a></h3><p>你希望你开发的程序能够在不同平台运行。希望当程序运行在一个 intel 系统上时，能够包含 intel 相关的库文件。或者你希望能够交叉编译，在 windows 平台开发一个能够在其他系统或者嵌入式系统运行的程序。</p><p>所以你需要在 CMake 脚本中处理所有检查和宏（macros）。</p><h4 id="1.改变构建的编译器和连接器">1.改变构建的编译器和连接器 <a href="#1.改变构建的编译器和连接器">#</a></h4><p>现在你需要将你的程序进行交叉编译，能够在不同平台运行。所以当前 host 系统需要安装目标系统的编译器和链接器。</p><blockquote><p>cmake 官方的交叉编译的例子：<a href="https://cmake.org/cmake/help/v3.6/manual/cmake-toolchains.7.html#cross-compiling-for-linux">https://cmake.org/cmake/help/v3.6/manual/cmake-toolchains.7.html#cross-compiling-for-linux</a></p></blockquote><p>下面是一个为树莓派系统构建应用程序的例子，使用树莓派上的 C/C++ 编译器和工具。</p><pre><code class="hljs language-cmake"><span class="hljs-keyword">set</span>(CMAKE_SYSTEM_NAME Linux)
+<span class="hljs-keyword">set</span>(CMAKE_SYSTEM_PROCESSOR arm)
+<span class="hljs-keyword">set</span>(CMAKE_SYSROOT /home/devel/rasp-pi-rootfs)
+<span class="hljs-keyword">set</span>(CMAKE_STAGING_PREFIX /home/devel/stage)
+<span class="hljs-keyword">set</span>(tools /home/devel/gcc-<span class="hljs-number">4.7</span>-linaro-rpi-gnueabihf)
+<span class="hljs-keyword">set</span>(CMAKE_C_COMPILER <span class="hljs-variable">${tools}</span>/bin/arm-linux-gnueabihf-gcc)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_COMPILER <span class="hljs-variable">${tools}</span>/bin/arm-linux-gnueabihf-g++)
+<span class="hljs-keyword">set</span>(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+<span class="hljs-keyword">set</span>(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+<span class="hljs-keyword">set</span>(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+<span class="hljs-keyword">set</span>(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+</code></pre><p>上面的脚本最重要的地方是设置编译器和编译工具（linker）的路径。</p><p>这里就不详细说了，但是你得知道 cmake 可以实现交叉编译的配置。</p><h3 id="设置编译器和链接器">设置编译器和链接器 <a href="#设置编译器和链接器">#</a></h3><p>设置编译器和链接器的命令项可以定义程序构建过程中的一些行为，例如打印警告信息，可以调试等等。</p><h4 id="1.设置编译命令项">1.设置编译命令项 <a href="#1.设置编译命令项">#</a></h4><pre><code class="hljs language-cmake"><span class="hljs-keyword">set</span>(CMAKE_CXX_FLAGS <span class="hljs-string">"-std=c++0x -Wall"</span>)
+<span class="hljs-comment"># suggested way is to keep previous flags in mind and append new ones</span>
+<span class="hljs-keyword">set</span>(CMAKE_CXX_FLAGS <span class="hljs-string">"${CMAKE_CXX_FLAGS} -std=c++0x -Wall"</span>)
+<span class="hljs-comment"># Alternatively, you can use generator expressions, which are conditional expressions. Below says that, if compiper is c++ then set it to c++11</span>
+<span class="hljs-keyword">add_compile_options</span>(<span class="hljs-string">"$&lt;$&lt;STREQUAL:$&lt;TARGET_PROPERTY:LINKER_LANGUAGE&gt;,CXX&gt;:-std=c++11&gt;"</span>)
+</code></pre><h4 id="2.设置链接命令项">2.设置链接命令项 <a href="#2.设置链接命令项">#</a></h4><pre><code class="hljs language-cmake"><span class="hljs-keyword">set</span>(CMAKE_EXE_LINKER_FLAGS <span class="hljs-string">"${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address"</span>)
+<span class="hljs-keyword">set</span>(CMAKE_EXE_LINKER_FLAGS <span class="hljs-string">"${CMAKE_EXE_LINKER_FLAGS} -Wl"</span>)
+</code></pre><h3 id="Debug 和 Release 配置">Debug 和 Release 配置 <a href="#Debug 和 Release 配置">#</a></h3><p>一般我们会用两种方式构建程序， Debug 和 Release，Debug 用于调试，Release 用于发布。用于发布的程序一般会去掉一些调试信息。</p><p>CMake 可以帮助你构建两种不同的版本。</p><p>使用下面两个命令可以创建不同的版本在不同的文件夹下:</p><pre><code class="hljs language-bash">$ cmake -H. -Bbuild/Debug
+$ cmake -H. -Bbuild/Release
+</code></pre><p>当然上面的两个命令最终生成的文件是一致的，我们需要设置 <code>CMAKE_BUILD_TYPE</code> 的值，来设置创建版本类型。</p><pre><code class="hljs language-bash">$ cmake -DCMAKE_BUILD_TYPE=Debug -H.  -Bbuild/Debug
+$ cmake -DCMAKE_BUILD_TYPE=Release -H. -Bbuild/Release
+</code></pre><p>在 CMakeLists.txt 文件中也能使用 <code>CMAKE_BUILD_TYPE</code> 变量。</p><pre><code class="hljs language-cmake"><span class="hljs-keyword">if</span>(<span class="hljs-variable">${CMAKE_BUILD_TYPE}</span> <span class="hljs-keyword">MATCHES</span> Debug)
+    <span class="hljs-keyword">message</span>(<span class="hljs-string">"Debug Build"</span>)
+<span class="hljs-keyword">elseif</span>(<span class="hljs-variable">${CMAKE_BUILD_TYPE}</span> <span class="hljs-keyword">MATCHES</span> Release)
+    <span class="hljs-keyword">message</span>(<span class="hljs-string">"Release Build"</span>)
+<span class="hljs-keyword">endif</span>()
+</code></pre><p>所以根据 build 类型可以单独设置编译器和链接器的选项。</p><h2 id="CMAKE 安装和部署配置">CMAKE 安装和部署配置 <a href="#CMAKE 安装和部署配置">#</a></h2><p>CMake 还提供了很多命令帮助打包程序，这里有一篇很不错的文章介绍：<a href="https://cmake.org/cmake/help/v3.0/command/install.html">https://cmake.org/cmake/help/v3.0/command/install.html</a></p><h2 id="Reference">Reference <a href="#Reference">#</a></h2><ul><li>CMake Tutorial: <a href="https://medium.com/@onur.dundar1/cmake-tutorial-585dd180109b">https://medium.com/@onur.dundar1/cmake-tutorial-585dd180109b</a></li></ul><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/developer-handbook/vim-buffer">上一篇：vim buffer</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#cmake 教程" style="padding-left:15px">cmake 教程</a></div><div class="toc-item"><a class="toc-item-link" href="#为什么要使用 cmake" style="padding-left:30px">为什么要使用 cmake</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 命令" style="padding-left:30px">cmake 命令</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 环境变量（environment variables）" style="padding-left:30px">cmake 环境变量（environment variables）</a></div><div class="toc-item"><a class="toc-item-link" href="#Language-wide flags" style="padding-left:30px">Language-wide flags</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 变量" style="padding-left:30px">cmake 变量</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 列表" style="padding-left:30px">cmake 列表</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 生成器表达式" style="padding-left:30px">cmake 生成器表达式</a></div><div class="toc-item"><a class="toc-item-link" href="#代码实践" style="padding-left:30px">代码实践</a></div><div class="toc-item"><a class="toc-item-link" href="#一个简单的例子" style="padding-left:45px">一个简单的例子</a></div><div class="toc-item"><a class="toc-item-link" href="#指定 C++ standard" style="padding-left:45px">指定 C++ standard</a></div><div class="toc-item"><a class="toc-item-link" href="#跨平台编译" style="padding-left:45px">跨平台编译</a></div><div class="toc-item"><a class="toc-item-link" href="#定义宏（Macros）" style="padding-left:45px">定义宏（Macros）</a></div><div class="toc-item"><a class="toc-item-link" href="#文件夹管理" style="padding-left:45px">文件夹管理</a></div><div class="toc-item"><a class="toc-item-link" href="#使用 CMake 构建库" style="padding-left:45px">使用 CMake 构建库</a></div><div class="toc-item"><a class="toc-item-link" href="#1.准备文件" style="padding-left:60px">1.准备文件</a></div><div class="toc-item"><a class="toc-item-link" href="#2.将库文件编译到可执行程序中" style="padding-left:60px">2.将库文件编译到可执行程序中</a></div><div class="toc-item"><a class="toc-item-link" href="#3.单独构建库文件" style="padding-left:60px">3.单独构建库文件</a></div><div class="toc-item"><a class="toc-item-link" href="#将库文件作为 cmake 的一个子模块（sub-module）" style="padding-left:45px">将库文件作为 cmake 的一个子模块（sub-module）</a></div><div class="toc-item"><a class="toc-item-link" href="#使用 CMake 查找使用其他库文件" style="padding-left:45px">使用 CMake 查找使用其他库文件</a></div><div class="toc-item"><a class="toc-item-link" href="#目标平台配置" style="padding-left:45px">目标平台配置</a></div><div class="toc-item"><a class="toc-item-link" href="#1.改变构建的编译器和连接器" style="padding-left:60px">1.改变构建的编译器和连接器</a></div><div class="toc-item"><a class="toc-item-link" href="#设置编译器和链接器" style="padding-left:45px">设置编译器和链接器</a></div><div class="toc-item"><a class="toc-item-link" href="#1.设置编译命令项" style="padding-left:60px">1.设置编译命令项</a></div><div class="toc-item"><a class="toc-item-link" href="#2.设置链接命令项" style="padding-left:60px">2.设置链接命令项</a></div><div class="toc-item"><a class="toc-item-link" href="#Debug 和 Release 配置" style="padding-left:45px">Debug 和 Release 配置</a></div><div class="toc-item"><a class="toc-item-link" href="#CMAKE 安装和部署配置" style="padding-left:30px">CMAKE 安装和部署配置</a></div><div class="toc-item"><a class="toc-item-link" href="#Reference" style="padding-left:30px">Reference</a></div></div></div></div></body></html>
