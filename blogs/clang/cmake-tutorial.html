@@ -134,4 +134,103 @@ drwxr-xr-x 5 fangyan fangyan  4096 Jan 16 23:12 CMakeFiles
 <span class="hljs-keyword">set</span>(CMAKE_CXX_FLAGS <span class="hljs-string">"${CMAKE_CXX_FLAGS} -Wall"</span>)
 <span class="hljs-keyword">set</span>(CMAKE_RUNTIME_OUTPUT_DIRECTORY <span class="hljs-variable">${CMAKE_BINARY_DIR}</span>/bin)
 <span class="hljs-keyword">add_executable</span>(cmake_hello main.cpp)
-</code></pre><p>执行 <code>cmake -H. -Bbuild</code> 后，然后进入 build 文件夹，执行 make 命令，生成的可执行文件在 <code>build/bin/cmake_hello</code>。</p><p>还有一些变量可以设置动态库（.dll，.so）的路径：</p><ul><li>LIBRARY_OUTPUT_PATH</li><li>CMAKE_LIBRARY_OUTPUT_DIRECTORY</li></ul><p>或者设置静态库（.a 或者 .lib）的路径：</p><ul><li>CMAKE_ARCHIVE_OUTPUT_DIRECTORY</li><li>ARCHIVE_OUTPUT_PATH</li></ul><p>（未完待续）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/developer-handbook/vim-buffer">上一篇：vim buffer</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#cmake 教程" style="padding-left:15px">cmake 教程</a></div><div class="toc-item"><a class="toc-item-link" href="#为什么要使用 cmake" style="padding-left:30px">为什么要使用 cmake</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 命令" style="padding-left:30px">cmake 命令</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 环境变量（environment variables）" style="padding-left:30px">cmake 环境变量（environment variables）</a></div><div class="toc-item"><a class="toc-item-link" href="#Language-wide flags" style="padding-left:30px">Language-wide flags</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 变量" style="padding-left:30px">cmake 变量</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 列表" style="padding-left:30px">cmake 列表</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 生成器表达式" style="padding-left:30px">cmake 生成器表达式</a></div><div class="toc-item"><a class="toc-item-link" href="#代码实践" style="padding-left:30px">代码实践</a></div><div class="toc-item"><a class="toc-item-link" href="#一个简单的例子" style="padding-left:45px">一个简单的例子</a></div><div class="toc-item"><a class="toc-item-link" href="#指定 C++ standard" style="padding-left:45px">指定 C++ standard</a></div><div class="toc-item"><a class="toc-item-link" href="#跨平台编译" style="padding-left:45px">跨平台编译</a></div><div class="toc-item"><a class="toc-item-link" href="#定义宏（Macros）" style="padding-left:45px">定义宏（Macros）</a></div><div class="toc-item"><a class="toc-item-link" href="#文件夹管理" style="padding-left:45px">文件夹管理</a></div></div></div></div></body></html>
+</code></pre><p>执行 <code>cmake -H. -Bbuild</code> 后，然后进入 build 文件夹，执行 make 命令，生成的可执行文件在 <code>build/bin/cmake_hello</code>。</p><p>还有一些变量可以设置动态库（.dll，.so）的路径：</p><ul><li>LIBRARY_OUTPUT_PATH</li><li>CMAKE_LIBRARY_OUTPUT_DIRECTORY</li></ul><p>或者设置静态库（.a 或者 .lib）的路径：</p><ul><li>CMAKE_ARCHIVE_OUTPUT_DIRECTORY</li><li>ARCHIVE_OUTPUT_PATH</li></ul><h3 id="使用 CMake 构建库">使用 CMake 构建库 <a href="#使用 CMake 构建库">#</a></h3><h4 id="1.准备文件">1.准备文件 <a href="#1.准备文件">#</a></h4><p>首先准备需要编译的代码文件，在当前目录增加两个文件：</p><pre><code class="hljs language-cpp"><span class="hljs-comment">// ============ lib/math/operations.hpp</span>
+<span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> CMAKEHELLO_OPERATIONS_HPP</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> CMAKEHELLO_OPERATIONS_HPP</span>
+<span class="hljs-keyword">namespace</span> math {
+    <span class="hljs-keyword">class</span> <span class="hljs-title class_">operations</span> {
+        <span class="hljs-keyword">public</span>:
+        <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">sum</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; a, <span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; b)</span></span>;
+        <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">mult</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; a, <span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; b)</span></span>;
+        <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">div</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; a, <span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; b)</span></span>;
+        <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">sub</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; a, <span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; b)</span></span>;
+    };
+}
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span>  </span>
+
+<span class="hljs-comment">// ============ lib/math/operations.cpp</span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">"operations.hpp"</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;exception&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdexcept&gt;</span></span>
+
+<span class="hljs-type">int</span> math::operations::<span class="hljs-built_in">sum</span>(<span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; a, <span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; b) {
+    <span class="hljs-keyword">return</span> a + b;
+}
+
+<span class="hljs-type">int</span> math::operations::<span class="hljs-built_in">mult</span>(<span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; a, <span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; b) {
+    <span class="hljs-keyword">return</span> a * b;
+}
+
+<span class="hljs-type">int</span> math::operations::<span class="hljs-built_in">div</span>(<span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; a, <span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; b) {
+    <span class="hljs-keyword">if</span> (b == <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">throw</span> std::<span class="hljs-built_in">overflow_error</span>(<span class="hljs-string">"Divide by zero exception"</span>);
+    }
+    <span class="hljs-keyword">return</span> a / b;
+}
+
+<span class="hljs-type">int</span> math::operations::<span class="hljs-built_in">sub</span>(<span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; a, <span class="hljs-type">const</span> <span class="hljs-type">int</span>&amp; b) {
+    <span class="hljs-keyword">return</span> a - b;
+}
+</code></pre><p>然后更新 main.cpp 如下：</p><pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">"lib/math/operations.hpp"</span></span>
+
+<span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> CMAKEMACROSAMPLE</span>
+    <span class="hljs-meta">#<span class="hljs-keyword">define</span> CMAKEMACROSAMPLE <span class="hljs-string">"NO SYSTEM NAME"</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span></span>
+
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{
+    std::cout &lt;&lt; <span class="hljs-string">"Hello CMake!"</span> &lt;&lt; std::endl;
+    math::operations op;
+    <span class="hljs-type">int</span> sum = op.<span class="hljs-built_in">sum</span>(<span class="hljs-number">3</span>, <span class="hljs-number">4</span>);
+
+    std::cout &lt;&lt; <span class="hljs-string">"Sum of 3 + 4 :"</span> &lt;&lt; sum &lt;&lt; std::endl;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</code></pre><blockquote><p>静态库 vs 动态库：<a href="https://pengfeixc.com/blogs/clang/gcc#%E9%9D%99%E6%80%81%E5%BA%93%E5%92%8C%E5%85%B1%E4%BA%AB%E5%BA%93">https://pengfeixc.com/blogs/clang/gcc#%E9%9D%99%E6%80%81%E5%BA%93%E5%92%8C%E5%85%B1%E4%BA%AB%E5%BA%93</a></p></blockquote><h4 id="2.将库文件编译到可执行程序中">2.将库文件编译到可执行程序中 <a href="#2.将库文件编译到可执行程序中">#</a></h4><p>我们可以将库文件（lib/math）一起打包到最后生成的可执行文件中，只需要在 add_executable 中添加需要编译的文件即可。</p><pre><code class="hljs language-cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.9</span>.<span class="hljs-number">1</span>)
+<span class="hljs-keyword">project</span>(CMakeHello)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD <span class="hljs-number">14</span>)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_FLAGS <span class="hljs-string">"${CMAKE_CXX_FLAGS} -Wall"</span>)
+<span class="hljs-keyword">set</span>(CMAKE_RUNTIME_OUTPUT_DIRECTORY <span class="hljs-variable">${CMAKE_BINARY_DIR}</span>/bin)
+<span class="hljs-keyword">add_executable</span>(cmake_hello main.cpp lib/<span class="hljs-keyword">math</span>/operations.cpp lib/<span class="hljs-keyword">math</span>/operations.hpp)
+</code></pre><p>然后执行 <code>cmake -H. -Bbuild</code> 即生成 makefile，执行 make 命令可以生成最终可执行文件（cmake_hello）。</p><p>你可以创建一个 <code>SOURCES</code> 变量，将需要编译的文件路径放存储到 source list 中。</p><pre><code>cmake_minimum_required(VERSION 3.9.1)
+project(CMakeHello)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set (SOURCES main.cpp lib/math/operations.cpp lib/math/operations.hpp)
+add_executable(cmake_hello ${SOURCES})
+</code></pre><h4 id="3.单独构建库文件">3.单独构建库文件 <a href="#3.单独构建库文件">#</a></h4><p>我们可以将库文件打包成分离的共享库（动态库）或者静态库。</p><p>将库文件打包成分离的库文件，在 build 时，还需要一个链接的过程。</p><p>需要做以下操作：</p><ul><li>设置库输出路径：<code>LIBRARY_OUT_PATH</code></li><li>创建动态库(SHARED)或者静态库(STATIC)</li><li>链接库 <code>target_link_libraries</code></li></ul><p>下面是一个创建静态库的例子：</p><pre><code>cmake_minimum_required(VERSION 3.9.1)
+project(CMakeHello)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+
+message(${CMAKE_BINARY_DIR})
+
+# add_library(math SHARED lib/math/operations.cpp)
+add_library(math STATIC lib/math/operations.cpp)
+
+add_executable(cmake_hello main.cpp)
+
+target_link_libraries(cmake_hello math)
+</code></pre><p>执行 <code>cmake -H. -Bbuild</code>，然后再 build 目录下，执行 <code>make</code> 命令，在 <code>build/lib</code> 目录下会生成一个静态库。<code>build/bin</code> 目录下生成了最终可执行文件程序（cmake_hello），因为生成的是静态库，它已经被链接打包到了最终的可执行文件中，所以即使此时被删除，cmake_hello 也能正常执行。</p><p>创建动态库，只需要将 <code>add_library(math STATIC lib/math/operations.cpp)</code> 改为 <code>add_library(math SHARED lib/math/operations.cpp)</code> 即可。但是最终生成的可执行文件再运行过程中也需要库文件。</p><h3 id="将库文件作为 cmake 的一个子模块（sub-module）">将库文件作为 cmake 的一个子模块（sub-module） <a href="#将库文件作为 cmake 的一个子模块（sub-module）">#</a></h3><p>也可以在库文件目录 <code>lib/math</code> 中，创建一个新的 <code>CMakeLists.txt</code> 文件，在生成可执行文件前，单独构建库文件。</p><p>创建文件 <code>lib/math/CMakeLists.txt</code>:</p><pre><code class="hljs language-cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.9</span>.<span class="hljs-number">1</span>)
+<span class="hljs-keyword">set</span>(LIBRARY_OUTPUT_PATH  <span class="hljs-variable">${CMAKE_BINARY_DIR}</span>/lib)
+<span class="hljs-keyword">add_library</span>(<span class="hljs-keyword">math</span> SHARED operations.cpp)
+</code></pre><p>然后将根目录下的 <code>CMakeLists.txt</code> 文件作出如下更改：</p><ul><li>删除其中的 add_library 和设置 <code>LIBRARY_OUTPUT_PATH</code> 命令</li><li>使用 <code>add_subdirectory</code> 添加新的构件路径。这个命令可以使 cmake 命令查找指定目录下包含的 <code>CMakeLists.txt</code> 文件。</li></ul><pre><code class="hljs language-cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.9</span>.<span class="hljs-number">1</span>)
+<span class="hljs-keyword">project</span>(CMakeHello)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD <span class="hljs-number">14</span>)
+<span class="hljs-keyword">set</span>(CMAKE_CXX_FLAGS <span class="hljs-string">"${CMAKE_CXX_FLAGS} -Wall"</span>)
+
+<span class="hljs-keyword">set</span>(CMAKE_RUNTIME_OUTPUT_DIRECTORY <span class="hljs-variable">${CMAKE_BINARY_DIR}</span>/bin)
+
+<span class="hljs-keyword">message</span>(<span class="hljs-variable">${CMAKE_BINARY_DIR}</span>)
+
+<span class="hljs-keyword">add_subdirectory</span>(lib/<span class="hljs-keyword">math</span>)
+
+<span class="hljs-keyword">add_executable</span>(cmake_hello main.cpp)
+
+<span class="hljs-keyword">target_link_libraries</span>(cmake_hello <span class="hljs-keyword">math</span>)
+</code></pre><p>执行 cmake 和 make 后，你会发现结果与之前一致。</p><h3 id="使用 CMake 查找使用其他库文件">使用 CMake 查找使用其他库文件 <a href="#使用 CMake 查找使用其他库文件">#</a></h3><p>很多情况下，你找到一些开源库，你想使用这个库中的 API。例如你使用 apt-get 安装了 boost 库。</p><p>你可以使用 CMake 的条件语句判断库是否存在。然后去进行条件处理。</p><p>（未完待续）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/developer-handbook/vim-buffer">上一篇：vim buffer</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#cmake 教程" style="padding-left:15px">cmake 教程</a></div><div class="toc-item"><a class="toc-item-link" href="#为什么要使用 cmake" style="padding-left:30px">为什么要使用 cmake</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 命令" style="padding-left:30px">cmake 命令</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 环境变量（environment variables）" style="padding-left:30px">cmake 环境变量（environment variables）</a></div><div class="toc-item"><a class="toc-item-link" href="#Language-wide flags" style="padding-left:30px">Language-wide flags</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 变量" style="padding-left:30px">cmake 变量</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 列表" style="padding-left:30px">cmake 列表</a></div><div class="toc-item"><a class="toc-item-link" href="#cmake 生成器表达式" style="padding-left:30px">cmake 生成器表达式</a></div><div class="toc-item"><a class="toc-item-link" href="#代码实践" style="padding-left:30px">代码实践</a></div><div class="toc-item"><a class="toc-item-link" href="#一个简单的例子" style="padding-left:45px">一个简单的例子</a></div><div class="toc-item"><a class="toc-item-link" href="#指定 C++ standard" style="padding-left:45px">指定 C++ standard</a></div><div class="toc-item"><a class="toc-item-link" href="#跨平台编译" style="padding-left:45px">跨平台编译</a></div><div class="toc-item"><a class="toc-item-link" href="#定义宏（Macros）" style="padding-left:45px">定义宏（Macros）</a></div><div class="toc-item"><a class="toc-item-link" href="#文件夹管理" style="padding-left:45px">文件夹管理</a></div><div class="toc-item"><a class="toc-item-link" href="#使用 CMake 构建库" style="padding-left:45px">使用 CMake 构建库</a></div><div class="toc-item"><a class="toc-item-link" href="#1.准备文件" style="padding-left:60px">1.准备文件</a></div><div class="toc-item"><a class="toc-item-link" href="#2.将库文件编译到可执行程序中" style="padding-left:60px">2.将库文件编译到可执行程序中</a></div><div class="toc-item"><a class="toc-item-link" href="#3.单独构建库文件" style="padding-left:60px">3.单独构建库文件</a></div><div class="toc-item"><a class="toc-item-link" href="#将库文件作为 cmake 的一个子模块（sub-module）" style="padding-left:45px">将库文件作为 cmake 的一个子模块（sub-module）</a></div><div class="toc-item"><a class="toc-item-link" href="#使用 CMake 查找使用其他库文件" style="padding-left:45px">使用 CMake 查找使用其他库文件</a></div></div></div></div></body></html>
