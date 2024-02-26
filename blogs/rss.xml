@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sat, 20 Jan 2024 13:25:13 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 26 Feb 2024 14:11:49 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sat, 20 Jan 2024 13:25:04 GMT</pubDate>
+        <pubDate>Mon, 26 Feb 2024 14:11:40 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
         <item>
             <title><![CDATA[cmake 教程]]></title>
@@ -152,41 +152,6 @@
             <link>https://pengfeixc.com/blogs/developer-handbook/full-adder.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/full-adder.html</guid>
             <pubDate>Sun, 12 Feb 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[用 GDB 调试程序（一）]]></title>
-            <description><![CDATA[GDB 调试系列文章]]></description>
-            <link>https://pengfeixc.com/blogs/clang/gdb-debug-1.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/clang/gdb-debug-1.html</guid>
-            <pubDate>Sat, 07 Jan 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[用 GDB 调试程序（七）]]></title>
-            <description><![CDATA[GDB 调试系列文章]]></description>
-            <link>https://pengfeixc.com/blogs/clang/gdb-debug-7.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/clang/gdb-debug-7.html</guid>
-            <pubDate>Sat, 07 Jan 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[用 GDB 调试程序（二）（三）]]></title>
-            <description><![CDATA[GDB 调试系列文章]]></description>
-            <link>https://pengfeixc.com/blogs/clang/gdb-debug-2-and-3.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/clang/gdb-debug-2-and-3.html</guid>
-            <pubDate>Sat, 07 Jan 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[用 GDB 调试程序（五）(六）]]></title>
-            <description><![CDATA[GDB 调试系列文章]]></description>
-            <link>https://pengfeixc.com/blogs/clang/gdb-debug-5-and-6.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/clang/gdb-debug-5-and-6.html</guid>
-            <pubDate>Sat, 07 Jan 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[用 GDB 调试程序（四）]]></title>
-            <description><![CDATA[GDB 调试系列文章]]></description>
-            <link>https://pengfeixc.com/blogs/clang/gdb-debug-4.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/clang/gdb-debug-4.html</guid>
-            <pubDate>Sat, 07 Jan 2023 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[Linux xargs 命令]]></title>
