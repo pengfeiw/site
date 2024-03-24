@@ -5,7 +5,7 @@ z = h(u)
 </code></pre><p>参数化方程就是定义一个参数 u，然后坐标轴的每一个分量都用含有 u 的方程表示，这就是参数化方程的概念。</p><p>如果去掉一个分量 <code>h(u)</code>，则参数化方程可以用来表示二维平面上的曲线。</p><h2 id="圆的参数化方程">圆的参数化方程 <a href="#圆的参数化方程">#</a></h2><p>圆心为 <code>(p, q)</code>, 半径为 <code>r</code> 的一般方程如下：</p><pre><code>(x - p)^2 + (y - q)^2 = r^2
 </code></pre><p>其参数化方程如下：</p><pre><code>x(u) = rcos(2 * PI * u) + p
 y(u) = rsin(2 * PI * u) + q
-</code></pre><p>其中 u 属于 [0, 1]。<code>2 * PI * u</code> 为 <code>(x(u), y(u))</code> 到圆心 <code>(p, q)</code> 的连线与水平 x 轴的夹角。</p><h2 id="切向量和切线方程">切向量和切线方程 <a href="#切向量和切线方程">#</a></h2><p><img src="../static/images/33.jpg" alt="切向量"></p><p>曲线有两个点 x 和 p，当 p 沿着曲线向 x 移动时，向量 xp 慢慢变成了曲线在点 x 的切向量。</p><p>那么如何计算这个切向量呢？</p><p>假设曲线的参数化方程为 <code>F(u)=(f(u), g(u), h(u))</code>，只需要对参数化方程进行一次求导即可，即对 <code>f(u)</code>、<code>g(u)</code>、<code>h(u)</code> 分别进行求导。</p><pre><code>tangetVec=F'(u)=(f'(u), g'(u), h'(u))
+</code></pre><p>其中 u 属于 [0, 1]。<code>2 * PI * u</code> 为 <code>(x(u), y(u))</code> 到圆心 <code>(p, q)</code> 的连线与水平 x 轴的夹角。</p><h2 id="切向量和切线方程">切向量和切线方程 <a href="#切向量和切线方程">#</a></h2><p><img src="../static/images/34.jpg" alt="切向量"></p><p>曲线有两个点 x 和 p，当 p 沿着曲线向 x 移动时，向量 xp 慢慢变成了曲线在点 x 的切向量。</p><p>那么如何计算这个切向量呢？</p><p>假设曲线的参数化方程为 <code>F(u)=(f(u), g(u), h(u))</code>，只需要对参数化方程进行一次求导即可，即对 <code>f(u)</code>、<code>g(u)</code>、<code>h(u)</code> 分别进行求导。</p><pre><code>tangetVec=F'(u)=(f'(u), g'(u), h'(u))
 </code></pre><p>上式中的 tangetVec 不是单位向量，我们需要将向量标准化：</p><pre><code>len = |tangetVec|
 tangetVec/len
 </code></pre><p>由直线参数化方程定义，以及切向量可以计算得到切线方程：</p><pre><code>F(u) + t(F'(u))/|F'(u)|
