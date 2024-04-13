@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sat, 13 Apr 2024 00:53:02 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 13 Apr 2024 03:55:06 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sat, 13 Apr 2024 00:52:56 GMT</pubDate>
+        <pubDate>Sat, 13 Apr 2024 03:54:59 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
         <item>
             <title><![CDATA[Latex 数学符号和公式]]></title>
@@ -19,6 +19,13 @@
             <link>https://pengfeixc.com/blogs/developer-handbook/latex-for-math.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/latex-for-math.html</guid>
             <pubDate>Mon, 01 Apr 2024 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[参数化曲线]]></title>
+            <description><![CDATA[参数化曲线的概念以及如何计算切向量和切线]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/parametric-curve-review.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/parametric-curve-review.html</guid>
+            <pubDate>Sun, 24 Mar 2024 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[常量指针 or 指针常量]]></title>
@@ -35,6 +42,13 @@
             <pubDate>Mon, 15 Jan 2024 00:00:00 GMT</pubDate>
         </item>
         <item>
+            <title><![CDATA[vim buffer]]></title>
+            <description><![CDATA[如何使用 vim(neovim) 中的 buffer]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/vim-buffer.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/vim-buffer.html</guid>
+            <pubDate>Sat, 02 Dec 2023 00:00:00 GMT</pubDate>
+        </item>
+        <item>
             <title><![CDATA[Bash 行操作]]></title>
             <description><![CDATA[bash 终端行操作快捷键]]></description>
             <link>https://pengfeixc.com/blogs/developer-handbook/bash-shortcuts.html</link>
@@ -47,6 +61,83 @@
             <link>https://pengfeixc.com/blogs/developer-handbook/vscode-neovim.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/vscode-neovim.html</guid>
             <pubDate>Fri, 03 Nov 2023 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[构造立体几何法（Constructive Solid Geometry） —— 计算机几何]]></title>
+            <description><![CDATA[Constructive solid geometry，中文名为构造立体几何法，是另一种实体模型表示方法，通过布尔运算将简单的基本实体拼合成复杂实体的描述方法]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/constructive-solid-geometry.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/constructive-solid-geometry.html</guid>
+            <pubDate>Thu, 05 Oct 2023 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[欧拉泊松公式 —— 计算机几何]]></title>
+            <description><![CDATA[介绍欧拉泊松公式的相关概念]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/euler-poincare-Formula.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/euler-poincare-Formula.html</guid>
+            <pubDate>Wed, 27 Sep 2023 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[翼边结构 —— 计算机几何]]></title>
+            <description><![CDATA[翼边结构是 B-rep 结构中的一种古老的几何体数据结构，如何用它描述一个几何体呢？]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/winged-edge-data-structure.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/winged-edge-data-structure.html</guid>
+            <pubDate>Tue, 26 Sep 2023 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[流形 —— 计算机几何]]></title>
+            <description><![CDATA[流形（manifolds）是什么？]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/manifolds.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/manifolds.html</guid>
+            <pubDate>Mon, 25 Sep 2023 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Wireframe Model —— 计算机几何]]></title>
+            <description><![CDATA[本文介绍了一种再 CAD 中表示几何模型的方法，即 Wireframe Model]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/wireframe-models.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/wireframe-models.html</guid>
+            <pubDate>Sat, 23 Sep 2023 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[齐次坐标 —— 计算机几何]]></title>
+            <description><![CDATA[何为齐次坐标，为什么要引入齐次坐标，它解决了什么问题？]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/homogeneous-coordinates.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/homogeneous-coordinates.html</guid>
+            <pubDate>Fri, 22 Sep 2023 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[坐标系、点、线、面 —— 计算机几何]]></title>
+            <description><![CDATA[计算机图形几何中关于坐标系、点、线面的概念]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/coordinatesystems-points-lines-planes.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/coordinatesystems-points-lines-planes.html</guid>
+            <pubDate>Thu, 21 Sep 2023 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[网站加载慢，怎么解决?]]></title>
+            <description><![CDATA[网页有大量的图片展示时，网页打开速度慢，作为开发者应该从哪些方向解决优化。]]></description>
+            <link>https://pengfeixc.com/blogs/site/site-load-slowy.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/site/site-load-slowy.html</guid>
+            <pubDate>Sat, 16 Sep 2023 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[初次使用 Github 的 SSH deployKey]]></title>
+            <description><![CDATA[如何使用 SSh DeployKey 配合 Github Actions，push 代码时，自动 push 文件到另一个仓库]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/first-use-github-ssh-deploykey.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/first-use-github-ssh-deploykey.html</guid>
+            <pubDate>Sun, 27 Aug 2023 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[tmux 极简使用]]></title>
+            <description><![CDATA[用 tmux 优化你的终端使用流程]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/tmux.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/tmux.html</guid>
+            <pubDate>Sat, 17 Jun 2023 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[坐标系、点和向量的矩阵表示]]></title>
+            <description><![CDATA[如何用矩阵表示点、向量以及坐标系]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/matrix-stand-for-vectors-points.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/matrix-stand-for-vectors-points.html</guid>
+            <pubDate>Sun, 28 May 2023 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[Linux Shell 命令速查表]]></title>
@@ -75,6 +166,13 @@
             <link>https://pengfeixc.com/blogs/clang/gcc.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/clang/gcc.html</guid>
             <pubDate>Fri, 17 Feb 2023 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[计算机如何用二进制计数]]></title>
+            <description><![CDATA[全加器和多位加法器的原理，以及计算机是如何用二进制计数的]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/full-adder.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/full-adder.html</guid>
+            <pubDate>Sun, 12 Feb 2023 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[用 GDB 调试程序（一）]]></title>
@@ -168,6 +266,13 @@
             <pubDate>Sat, 08 Oct 2022 00:00:00 GMT</pubDate>
         </item>
         <item>
+            <title><![CDATA[自用 .vimrc]]></title>
+            <description><![CDATA[自用 vim 配置]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/vimrc.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/vimrc.html</guid>
+            <pubDate>Sat, 17 Sep 2022 00:00:00 GMT</pubDate>
+        </item>
+        <item>
             <title><![CDATA[JavaScript Decorator 原理]]></title>
             <description><![CDATA[从编译后的文件，探究 javascript decorator 的原理]]></description>
             <link>https://pengfeixc.com/blogs/javascript/decorator-foundation.html</link>
@@ -187,6 +292,20 @@
             <link>https://pengfeixc.com/blogs/javascript/legacy-javascript-decorator.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/legacy-javascript-decorator.html</guid>
             <pubDate>Sat, 23 Jul 2022 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[vim 快捷键之高效编程]]></title>
+            <description><![CDATA[vim 使用技巧，高效编辑代码]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/vim-shortcuts.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/vim-shortcuts.html</guid>
+            <pubDate>Sat, 02 Jul 2022 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[去大公司还是小公司]]></title>
+            <description><![CDATA[毕业了，该去大公司还是小公司呢？]]></description>
+            <link>https://pengfeixc.com/blogs/site/big-company-vs-small-company.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/site/big-company-vs-small-company.html</guid>
+            <pubDate>Sat, 02 Jul 2022 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[ESLint 教程]]></title>
@@ -231,6 +350,13 @@
             <pubDate>Sat, 30 Apr 2022 00:00:00 GMT</pubDate>
         </item>
         <item>
+            <title><![CDATA[写给自己的代码整洁之道]]></title>
+            <description><![CDATA[如何写出简洁、清晰、易于维护的代码。]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/clean-code.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/clean-code.html</guid>
+            <pubDate>Wed, 16 Mar 2022 00:00:00 GMT</pubDate>
+        </item>
+        <item>
             <title><![CDATA[hextris]]></title>
             <description><![CDATA[使用 vue.js 和 canvas 制作一个类似俄罗斯方块的 hextris 游戏]]></description>
             <link>https://pengfeixc.com/blogs/minicode/hextris.html</link>
@@ -243,320 +369,6 @@
             <link>https://pengfeixc.com/blogs/javascript/package-json.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/package-json.html</guid>
             <pubDate>Wed, 23 Feb 2022 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[Threejs 制作的画展]]></title>
-            <description><![CDATA[基于 ThreeJs 制作的 3D 画展]]></description>
-            <link>https://pengfeixc.com/blogs/minicode/threejs-gallery.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/minicode/threejs-gallery.html</guid>
-            <pubDate>Sun, 16 Jan 2022 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[Threejs 实现任意阶级的魔方]]></title>
-            <description><![CDATA[基于 html ,使用 Threejs 和 TypeScript 制作的任意阶级的魔方游戏]]></description>
-            <link>https://pengfeixc.com/blogs/minicode/threejs-rubik.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/minicode/threejs-rubik.html</guid>
-            <pubDate>Fri, 17 Dec 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[Web Workers的简单介绍]]></title>
-            <description><![CDATA["JavaScript是单线程的"，Js的开发这们一直这样认为。但是今天要介绍的是JavaScript中的多线程编程，你没有听错，我说的就是多线程编程——Web Workers。]]></description>
-            <link>https://pengfeixc.com/blogs/javascript/web-workers-simple-introduction.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/web-workers-simple-introduction.html</guid>
-            <pubDate>Wed, 01 Dec 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[全面解析JS中的this关键字]]></title>
-            <description><![CDATA[讲述如何确定javascript中this关键字的绑定对象。]]></description>
-            <link>https://pengfeixc.com/blogs/javascript/javascript-this.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/javascript-this.html</guid>
-            <pubDate>Fri, 26 Nov 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[css transition属性]]></title>
-            <description><![CDATA[CSS transitions 提供了一种在更改CSS属性时控制动画速度的方法。其可以让属性变化成为一个持续一段时间的过程，而不是立即生效的。比如，将一个元素的颜色从白色改为黑色，通常这个改变是立即生效的，使用 CSS transitions 后该元素的颜色将逐渐从白色变为黑色，按照一定的曲线速率变化。这个过程可以自定义。]]></description>
-            <link>https://pengfeixc.com/blogs/css/css-transition.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/css/css-transition.html</guid>
-            <pubDate>Thu, 14 Oct 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[一些超酷的css特效]]></title>
-            <description><![CDATA[本节内容主要是展示一些酷炫的纯CSS悬浮特效，主要利用了css transition、transform属性和伪元素实现。]]></description>
-            <link>https://pengfeixc.com/blogs/css/pure-css-hover-animation.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/css/pure-css-hover-animation.html</guid>
-            <pubDate>Thu, 14 Oct 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[TypeScript类型声明完全指南]]></title>
-            <description><![CDATA[详细讲解TypeScript中所有类型声明相关的内容，帮助你更好的认识typescirpt，全面拥抱typescript。]]></description>
-            <link>https://pengfeixc.com/blogs/javascript/typescript-declarations.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/typescript-declarations.html</guid>
-            <pubDate>Sun, 26 Sep 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[【TypeScript】使用namespace封装数据]]></title>
-            <description><![CDATA[详细介绍typescript中命名空间（namespace）的使用，了解如何通过namespace实现代码的模块化。]]></description>
-            <link>https://pengfeixc.com/blogs/javascript/typescript-namespace.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/typescript-namespace.html</guid>
-            <pubDate>Fri, 24 Sep 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[深入理解typescript中的模块系统]]></title>
-            <description><![CDATA[深入理解TypeScript的导入模块的方式和两种模块定位策略。]]></description>
-            <link>https://pengfeixc.com/blogs/javascript/typescript-module-system.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/typescript-module-system.html</guid>
-            <pubDate>Thu, 23 Sep 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[【TypeScirpt】详解tsconfig.json文件]]></title>
-            <description><![CDATA[工欲善其事必先利其器，本篇文章详细介绍tsconfig的内容和tsc编译器的原理，如何自己去配置一个typescirpt项目。]]></description>
-            <link>https://pengfeixc.com/blogs/javascript/tsconfig.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/tsconfig.html</guid>
-            <pubDate>Sat, 18 Sep 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[Babel入门教程]]></title>
-            <description><![CDATA[本教程是针对新人的入门级教程，教程参考了Babel官方文档，通过本教程你将学习如何使用Babel。]]></description>
-            <link>https://pengfeixc.com/blogs/javascript/babel-tutorial.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/babel-tutorial.html</guid>
-            <pubDate>Sat, 21 Aug 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[css元素居中教程]]></title>
-            <description><![CDATA[作为一名web开发者，你应该经常会遇到居中一个元素的场景，通常你会觉得居中一个元素会很困难。本节内容，我将各个场景细分，讨论每种场景的可用的居中方式。]]></description>
-            <link>https://pengfeixc.com/blogs/css/css-center-element-tutorial.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/css/css-center-element-tutorial.html</guid>
-            <pubDate>Tue, 10 Aug 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[【TypeScript】内置的泛型]]></title>
-            <description><![CDATA[TypeScript提供了一些比较实用的泛型类型，但是我们常常会忽略它们。本节我们将一起看看这些泛型的用法。]]></description>
-            <link>https://pengfeixc.com/blogs/javascript/typescript-builtin-generic.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/typescript-builtin-generic.html</guid>
-            <pubDate>Wed, 04 Aug 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[webgl模拟太阳系动画]]></title>
-            <description><![CDATA[使用webgl，模拟绘制太阳系行星天体图。]]></description>
-            <link>https://pengfeixc.com/blogs/minicode/webgl-solar-system.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/minicode/webgl-solar-system.html</guid>
-            <pubDate>Wed, 14 Jul 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[React组件何时重渲染]]></title>
-            <description><![CDATA[译文：主要从原理上讲述React重渲染机制，说明virtual dom和native dom等相关概念，并描述了render函数何时执行。]]></description>
-            <link>https://pengfeixc.com/blogs/react/when-does-react-render.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/react/when-does-react-render.html</guid>
-            <pubDate>Fri, 02 Jul 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[webgl实现3D俄罗斯方块]]></title>
-            <description><![CDATA[webgl实现一个3d版的俄罗斯方块，讲述如何去实现一个俄罗斯方块游戏的算法思路。]]></description>
-            <link>https://pengfeixc.com/blogs/minicode/3d-tetris.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/minicode/3d-tetris.html</guid>
-            <pubDate>Fri, 25 Jun 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[react实现简易画板程序]]></title>
-            <description><![CDATA[使用react实现一个简单的画板程序。]]></description>
-            <link>https://pengfeixc.com/blogs/minicode/react-paint-tool.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/minicode/react-paint-tool.html</guid>
-            <pubDate>Mon, 21 Jun 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[MINICODE]]></title>
-            <description><![CDATA[minicode平台介绍]]></description>
-            <link>https://pengfeixc.com/blogs/minicode/minicode-introduction.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/minicode/minicode-introduction.html</guid>
-            <pubDate>Sat, 19 Jun 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[揭开react hook的神秘面纱]]></title>
-            <description><![CDATA[通过自己实现react及hook，了解react是如何运行的。]]></description>
-            <link>https://pengfeixc.com/blogs/react/mistery-of-react-hook.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/react/mistery-of-react-hook.html</guid>
-            <pubDate>Tue, 18 May 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[跨域导致tainted canvas]]></title>
-            <description><![CDATA[简单介绍浏览器同源限制，浏览器缓存导致canvas图片跨域问题如何解决。]]></description>
-            <link>https://pengfeixc.com/blogs/javascript/cors-problem.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/cors-problem.html</guid>
-            <pubDate>Sat, 15 May 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[最简洁的webpack入门教程2021]]></title>
-            <description><![CDATA[适用于新手的，简洁易懂的webpack入门教程。]]></description>
-            <link>https://pengfeixc.com/blogs/javascript/webpack-tutorial.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/webpack-tutorial.html</guid>
-            <pubDate>Mon, 19 Apr 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[（miracle-canvas）增强Html canvas的功能]]></title>
-            <description><![CDATA[miracle-canvas, 可以在html canvas上添加可移动、旋转、缩放的图元。]]></description>
-            <link>https://pengfeixc.com/blogs/javascript/miracle-canvas.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/miracle-canvas.html</guid>
-            <pubDate>Sun, 18 Apr 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[winform treeview树节点添加自定义按钮]]></title>
-            <description><![CDATA[自定义treeview控件，可以在树节点旁添加按钮，当鼠标悬浮在树节点上显示按钮，移开按钮自动消失。]]></description>
-            <link>https://pengfeixc.com/blogs/csharp/custom-winform-treeview.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/csharp/custom-winform-treeview.html</guid>
-            <pubDate>Sun, 11 Apr 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[valueOf和toString方法]]></title>
-            <description><![CDATA[经常被忽视的valueOf和toString这两个方法，你真的理解了吗？]]></description>
-            <link>https://pengfeixc.com/blogs/javascript/valueOf-and-toString.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/valueOf-and-toString.html</guid>
-            <pubDate>Fri, 09 Apr 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[useEffect和useLayoutEffect的区别]]></title>
-            <description><![CDATA[了解useEffect和useLayoutEffect的执行过程，知道什么时候该用useEffect，什么时候应该用useLayoutEffect。]]></description>
-            <link>https://pengfeixc.com/blogs/react/useEffect-and-useLayoutEffect.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/react/useEffect-and-useLayoutEffect.html</guid>
-            <pubDate>Wed, 24 Mar 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[组件通信之ref]]></title>
-            <description><![CDATA[Refs 提供了一种方式，允许我们访问 DOM 节点或在 render 方法中创建的 React 元素。]]></description>
-            <link>https://pengfeixc.com/blogs/react/react-ref.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/react/react-ref.html</guid>
-            <pubDate>Wed, 24 Mar 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[image.png]]></title>
-            <link>https://pengfeixc.com/blogs/developer-handbook/undefined.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/undefined.html</guid>
-            <pubDate>Invalid Date</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[参数化曲线]]></title>
-            <description><![CDATA[参数化曲线的概念以及如何计算切向量和切线]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/parametric-curve-review.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/parametric-curve-review.html</guid>
-            <pubDate>Sun, 24 Mar 2024 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[vim buffer]]></title>
-            <description><![CDATA[如何使用 vim(neovim) 中的 buffer]]></description>
-            <link>https://pengfeixc.com/blogs/developer-handbook/vim-buffer.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/vim-buffer.html</guid>
-            <pubDate>Sat, 02 Dec 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[构造立体几何法（Constructive Solid Geometry） —— 计算机几何]]></title>
-            <description><![CDATA[Constructive solid geometry，中文名为构造立体几何法，是另一种实体模型表示方法，通过布尔运算将简单的基本实体拼合成复杂实体的描述方法]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/constructive-solid-geometry.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/constructive-solid-geometry.html</guid>
-            <pubDate>Thu, 05 Oct 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[欧拉泊松公式 —— 计算机几何]]></title>
-            <description><![CDATA[介绍欧拉泊松公式的相关概念]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/euler-poincare-Formula.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/euler-poincare-Formula.html</guid>
-            <pubDate>Wed, 27 Sep 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[翼边结构 —— 计算机几何]]></title>
-            <description><![CDATA[翼边结构是 B-rep 结构中的一种古老的几何体数据结构，如何用它描述一个几何体呢？]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/winged-edge-data-structure.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/winged-edge-data-structure.html</guid>
-            <pubDate>Tue, 26 Sep 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[流形 —— 计算机几何]]></title>
-            <description><![CDATA[流形（manifolds）是什么？]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/manifolds.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/manifolds.html</guid>
-            <pubDate>Mon, 25 Sep 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[Wireframe Model —— 计算机几何]]></title>
-            <description><![CDATA[本文介绍了一种再 CAD 中表示几何模型的方法，即 Wireframe Model]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/wireframe-models.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/wireframe-models.html</guid>
-            <pubDate>Sat, 23 Sep 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[齐次坐标 —— 计算机几何]]></title>
-            <description><![CDATA[何为齐次坐标，为什么要引入齐次坐标，它解决了什么问题？]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/homogeneous-coordinates.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/homogeneous-coordinates.html</guid>
-            <pubDate>Fri, 22 Sep 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[坐标系、点、线、面 —— 计算机几何]]></title>
-            <description><![CDATA[计算机图形几何中关于坐标系、点、线面的概念]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/coordinatesystems-points-lines-planes.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/coordinatesystems-points-lines-planes.html</guid>
-            <pubDate>Thu, 21 Sep 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[网站加载慢，怎么解决?]]></title>
-            <description><![CDATA[网页有大量的图片展示时，网页打开速度慢，作为开发者应该从哪些方向解决优化。]]></description>
-            <link>https://pengfeixc.com/blogs/site/site-load-slowy.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/site/site-load-slowy.html</guid>
-            <pubDate>Sat, 16 Sep 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[初次使用 Github 的 SSH deployKey]]></title>
-            <description><![CDATA[如何使用 SSh DeployKey 配合 Github Actions，push 代码时，自动 push 文件到另一个仓库]]></description>
-            <link>https://pengfeixc.com/blogs/developer-handbook/first-use-github-ssh-deploykey.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/first-use-github-ssh-deploykey.html</guid>
-            <pubDate>Sun, 27 Aug 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[tmux 极简使用]]></title>
-            <description><![CDATA[用 tmux 优化你的终端使用流程]]></description>
-            <link>https://pengfeixc.com/blogs/developer-handbook/tmux.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/tmux.html</guid>
-            <pubDate>Sat, 17 Jun 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[坐标系、点和向量的矩阵表示]]></title>
-            <description><![CDATA[如何用矩阵表示点、向量以及坐标系]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/matrix-stand-for-vectors-points.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/matrix-stand-for-vectors-points.html</guid>
-            <pubDate>Sun, 28 May 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[计算机如何用二进制计数]]></title>
-            <description><![CDATA[全加器和多位加法器的原理，以及计算机是如何用二进制计数的]]></description>
-            <link>https://pengfeixc.com/blogs/developer-handbook/full-adder.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/full-adder.html</guid>
-            <pubDate>Sun, 12 Feb 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[自用 .vimrc]]></title>
-            <description><![CDATA[自用 vim 配置]]></description>
-            <link>https://pengfeixc.com/blogs/developer-handbook/vimrc.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/vimrc.html</guid>
-            <pubDate>Sat, 17 Sep 2022 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[vim 快捷键之高效编程]]></title>
-            <description><![CDATA[vim 使用技巧，高效编辑代码]]></description>
-            <link>https://pengfeixc.com/blogs/developer-handbook/vim-shortcuts.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/vim-shortcuts.html</guid>
-            <pubDate>Sat, 02 Jul 2022 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[去大公司还是小公司]]></title>
-            <description><![CDATA[毕业了，该去大公司还是小公司呢？]]></description>
-            <link>https://pengfeixc.com/blogs/site/big-company-vs-small-company.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/site/big-company-vs-small-company.html</guid>
-            <pubDate>Sat, 02 Jul 2022 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[写给自己的代码整洁之道]]></title>
-            <description><![CDATA[如何写出简洁、清晰、易于维护的代码。]]></description>
-            <link>https://pengfeixc.com/blogs/developer-handbook/clean-code.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/clean-code.html</guid>
-            <pubDate>Wed, 16 Mar 2022 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[计算机是如何存储整数的—原码、反码、补码]]></title>
@@ -573,6 +385,13 @@
             <pubDate>Thu, 27 Jan 2022 00:00:00 GMT</pubDate>
         </item>
         <item>
+            <title><![CDATA[Threejs 制作的画展]]></title>
+            <description><![CDATA[基于 ThreeJs 制作的 3D 画展]]></description>
+            <link>https://pengfeixc.com/blogs/minicode/threejs-gallery.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/minicode/threejs-gallery.html</guid>
+            <pubDate>Sun, 16 Jan 2022 00:00:00 GMT</pubDate>
+        </item>
+        <item>
             <title><![CDATA[常见的函数图像]]></title>
             <description><![CDATA[从函数的有界性、单调性、奇偶性和周期性分析常见函数的图像及其规律]]></description>
             <link>https://pengfeixc.com/blogs/algorithm-math/math-function-graphics.html</link>
@@ -585,6 +404,13 @@
             <link>https://pengfeixc.com/blogs/developer-handbook/debug-android-webpage-from-desktop.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/debug-android-webpage-from-desktop.html</guid>
             <pubDate>Tue, 04 Jan 2022 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Threejs 实现任意阶级的魔方]]></title>
+            <description><![CDATA[基于 html ,使用 Threejs 和 TypeScript 制作的任意阶级的魔方游戏]]></description>
+            <link>https://pengfeixc.com/blogs/minicode/threejs-rubik.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/minicode/threejs-rubik.html</guid>
+            <pubDate>Fri, 17 Dec 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[Threejs 分屏绘制]]></title>
@@ -601,6 +427,13 @@
             <pubDate>Thu, 02 Dec 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
+            <title><![CDATA[Web Workers的简单介绍]]></title>
+            <description><![CDATA["JavaScript是单线程的"，Js的开发这们一直这样认为。但是今天要介绍的是JavaScript中的多线程编程，你没有听错，我说的就是多线程编程——Web Workers。]]></description>
+            <link>https://pengfeixc.com/blogs/javascript/web-workers-simple-introduction.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/web-workers-simple-introduction.html</guid>
+            <pubDate>Wed, 01 Dec 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
             <title><![CDATA[贝塞尔曲线]]></title>
             <description><![CDATA[用简洁易懂的方式，讲述贝塞尔曲线。]]></description>
             <link>https://pengfeixc.com/blogs/computer-graphics/bezier-curve.html</link>
@@ -613,6 +446,13 @@
             <link>https://pengfeixc.com/blogs/developer-handbook/IEEE754.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/IEEE754.html</guid>
             <pubDate>Mon, 29 Nov 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[全面解析JS中的this关键字]]></title>
+            <description><![CDATA[讲述如何确定javascript中this关键字的绑定对象。]]></description>
+            <link>https://pengfeixc.com/blogs/javascript/javascript-this.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/javascript-this.html</guid>
+            <pubDate>Fri, 26 Nov 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[3D空间中的点坐标转化为屏幕二维点坐标（二）]]></title>
@@ -643,11 +483,46 @@
             <pubDate>Mon, 25 Oct 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
+            <title><![CDATA[css transition属性]]></title>
+            <description><![CDATA[CSS transitions 提供了一种在更改CSS属性时控制动画速度的方法。其可以让属性变化成为一个持续一段时间的过程，而不是立即生效的。比如，将一个元素的颜色从白色改为黑色，通常这个改变是立即生效的，使用 CSS transitions 后该元素的颜色将逐渐从白色变为黑色，按照一定的曲线速率变化。这个过程可以自定义。]]></description>
+            <link>https://pengfeixc.com/blogs/css/css-transition.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/css/css-transition.html</guid>
+            <pubDate>Thu, 14 Oct 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[一些超酷的css特效]]></title>
+            <description><![CDATA[本节内容主要是展示一些酷炫的纯CSS悬浮特效，主要利用了css transition、transform属性和伪元素实现。]]></description>
+            <link>https://pengfeixc.com/blogs/css/pure-css-hover-animation.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/css/pure-css-hover-animation.html</guid>
+            <pubDate>Thu, 14 Oct 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
             <title><![CDATA[站内搜索功能的几种实现方式]]></title>
             <description><![CDATA[通过谷歌自定义搜索引擎、必应自定义搜索引擎、Lrnu等方式实现站内搜索功能。]]></description>
             <link>https://pengfeixc.com/blogs/site/site-search.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/site/site-search.html</guid>
             <pubDate>Mon, 27 Sep 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[TypeScript类型声明完全指南]]></title>
+            <description><![CDATA[详细讲解TypeScript中所有类型声明相关的内容，帮助你更好的认识typescirpt，全面拥抱typescript。]]></description>
+            <link>https://pengfeixc.com/blogs/javascript/typescript-declarations.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/typescript-declarations.html</guid>
+            <pubDate>Sun, 26 Sep 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[【TypeScript】使用namespace封装数据]]></title>
+            <description><![CDATA[详细介绍typescript中命名空间（namespace）的使用，了解如何通过namespace实现代码的模块化。]]></description>
+            <link>https://pengfeixc.com/blogs/javascript/typescript-namespace.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/typescript-namespace.html</guid>
+            <pubDate>Fri, 24 Sep 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[深入理解typescript中的模块系统]]></title>
+            <description><![CDATA[深入理解TypeScript的导入模块的方式和两种模块定位策略。]]></description>
+            <link>https://pengfeixc.com/blogs/javascript/typescript-module-system.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/typescript-module-system.html</guid>
+            <pubDate>Thu, 23 Sep 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[正则表达式匹配]]></title>
@@ -657,11 +532,25 @@
             <pubDate>Wed, 22 Sep 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
+            <title><![CDATA[【TypeScirpt】详解tsconfig.json文件]]></title>
+            <description><![CDATA[工欲善其事必先利其器，本篇文章详细介绍tsconfig的内容和tsc编译器的原理，如何自己去配置一个typescirpt项目。]]></description>
+            <link>https://pengfeixc.com/blogs/javascript/tsconfig.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/tsconfig.html</guid>
+            <pubDate>Sat, 18 Sep 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
             <title><![CDATA[整数反转]]></title>
             <description><![CDATA[Given a signed 32-bit integer x, return x with its digits reversed. If reversing x causes the value to go outside the signed 32-bit integer range [-2^31, 2^31 - 1], then return 0.]]></description>
             <link>https://pengfeixc.com/blogs/algorithm-math/reverse-interger.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/algorithm-math/reverse-interger.html</guid>
             <pubDate>Thu, 16 Sep 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Babel入门教程]]></title>
+            <description><![CDATA[本教程是针对新人的入门级教程，教程参考了Babel官方文档，通过本教程你将学习如何使用Babel。]]></description>
+            <link>https://pengfeixc.com/blogs/javascript/babel-tutorial.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/babel-tutorial.html</guid>
+            <pubDate>Sat, 21 Aug 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[设计模式]]></title>
@@ -678,11 +567,25 @@
             <pubDate>Wed, 11 Aug 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
+            <title><![CDATA[css元素居中教程]]></title>
+            <description><![CDATA[作为一名web开发者，你应该经常会遇到居中一个元素的场景，通常你会觉得居中一个元素会很困难。本节内容，我将各个场景细分，讨论每种场景的可用的居中方式。]]></description>
+            <link>https://pengfeixc.com/blogs/css/css-center-element-tutorial.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/css/css-center-element-tutorial.html</guid>
+            <pubDate>Tue, 10 Aug 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
             <title><![CDATA[网站更新（2021年）]]></title>
             <description><![CDATA[我的网站更新了一些内容，主要是界面和使用的技术框架的变化。]]></description>
             <link>https://pengfeixc.com/blogs/site/website-update-2021.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/site/website-update-2021.html</guid>
             <pubDate>Thu, 05 Aug 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[【TypeScript】内置的泛型]]></title>
+            <description><![CDATA[TypeScript提供了一些比较实用的泛型类型，但是我们常常会忽略它们。本节我们将一起看看这些泛型的用法。]]></description>
+            <link>https://pengfeixc.com/blogs/javascript/typescript-builtin-generic.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/typescript-builtin-generic.html</guid>
+            <pubDate>Wed, 04 Aug 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[正则表达式]]></title>
@@ -697,6 +600,13 @@
             <link>https://pengfeixc.com/blogs/computer-graphics/graphics-material.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/graphics-material.html</guid>
             <pubDate>Thu, 15 Jul 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[webgl模拟太阳系动画]]></title>
+            <description><![CDATA[使用webgl，模拟绘制太阳系行星天体图。]]></description>
+            <link>https://pengfeixc.com/blogs/minicode/webgl-solar-system.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/minicode/webgl-solar-system.html</guid>
+            <pubDate>Wed, 14 Jul 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[【光照理论】（一）颜色与冯氏光照模型]]></title>
@@ -727,6 +637,13 @@
             <pubDate>Thu, 08 Jul 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
+            <title><![CDATA[React组件何时重渲染]]></title>
+            <description><![CDATA[译文：主要从原理上讲述React重渲染机制，说明virtual dom和native dom等相关概念，并描述了render函数何时执行。]]></description>
+            <link>https://pengfeixc.com/blogs/react/when-does-react-render.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/react/when-does-react-render.html</guid>
+            <pubDate>Fri, 02 Jul 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
             <title><![CDATA[坐标系统和glMatrix(GLM)]]></title>
             <description><![CDATA[使用webgl/opengl如何去构建一个三维场景，使用了哪些坐标系统，坐标系之间是如何转换的。]]></description>
             <link>https://pengfeixc.com/blogs/computer-graphics/coordinate-system-and-glm.html</link>
@@ -734,11 +651,32 @@
             <pubDate>Sun, 27 Jun 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
+            <title><![CDATA[webgl实现3D俄罗斯方块]]></title>
+            <description><![CDATA[webgl实现一个3d版的俄罗斯方块，讲述如何去实现一个俄罗斯方块游戏的算法思路。]]></description>
+            <link>https://pengfeixc.com/blogs/minicode/3d-tetris.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/minicode/3d-tetris.html</guid>
+            <pubDate>Fri, 25 Jun 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[react实现简易画板程序]]></title>
+            <description><![CDATA[使用react实现一个简单的画板程序。]]></description>
+            <link>https://pengfeixc.com/blogs/minicode/react-paint-tool.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/minicode/react-paint-tool.html</guid>
+            <pubDate>Mon, 21 Jun 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
             <title><![CDATA[高效率种子填充算法]]></title>
             <description><![CDATA[高效率种子填充算法的实现]]></description>
             <link>https://pengfeixc.com/blogs/computer-graphics/efficent-SeedFilling-algorithm.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/efficent-SeedFilling-algorithm.html</guid>
             <pubDate>Mon, 21 Jun 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[MINICODE]]></title>
+            <description><![CDATA[minicode平台介绍]]></description>
+            <link>https://pengfeixc.com/blogs/minicode/minicode-introduction.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/minicode/minicode-introduction.html</guid>
+            <pubDate>Sat, 19 Jun 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[【webgl】绘制一个三角形]]></title>
@@ -769,6 +707,20 @@
             <pubDate>Fri, 21 May 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
+            <title><![CDATA[揭开react hook的神秘面纱]]></title>
+            <description><![CDATA[通过自己实现react及hook，了解react是如何运行的。]]></description>
+            <link>https://pengfeixc.com/blogs/react/mistery-of-react-hook.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/react/mistery-of-react-hook.html</guid>
+            <pubDate>Tue, 18 May 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[跨域导致tainted canvas]]></title>
+            <description><![CDATA[简单介绍浏览器同源限制，浏览器缓存导致canvas图片跨域问题如何解决。]]></description>
+            <link>https://pengfeixc.com/blogs/javascript/cors-problem.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/cors-problem.html</guid>
+            <pubDate>Sat, 15 May 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
             <title><![CDATA[二叉树—已知二叉树的前序遍历和中序遍历，输出二叉树]]></title>
             <description><![CDATA[已知一个结点值不重复的二叉树的前序遍历和中序遍历，输出该二叉树。]]></description>
             <link>https://pengfeixc.com/blogs/algorithm-math/binaryTree-traverse.html</link>
@@ -776,11 +728,39 @@
             <pubDate>Thu, 06 May 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
+            <title><![CDATA[最简洁的webpack入门教程2021]]></title>
+            <description><![CDATA[适用于新手的，简洁易懂的webpack入门教程。]]></description>
+            <link>https://pengfeixc.com/blogs/javascript/webpack-tutorial.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/webpack-tutorial.html</guid>
+            <pubDate>Mon, 19 Apr 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[（miracle-canvas）增强Html canvas的功能]]></title>
+            <description><![CDATA[miracle-canvas, 可以在html canvas上添加可移动、旋转、缩放的图元。]]></description>
+            <link>https://pengfeixc.com/blogs/javascript/miracle-canvas.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/miracle-canvas.html</guid>
+            <pubDate>Sun, 18 Apr 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
             <title><![CDATA[单链表—从尾到头打印链表]]></title>
             <description><![CDATA[利用栈的后进先出思想，从尾到头打印链表。]]></description>
             <link>https://pengfeixc.com/blogs/algorithm-math/print-singleLinkList-backward.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/algorithm-math/print-singleLinkList-backward.html</guid>
             <pubDate>Mon, 12 Apr 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[winform treeview树节点添加自定义按钮]]></title>
+            <description><![CDATA[自定义treeview控件，可以在树节点旁添加按钮，当鼠标悬浮在树节点上显示按钮，移开按钮自动消失。]]></description>
+            <link>https://pengfeixc.com/blogs/csharp/custom-winform-treeview.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/csharp/custom-winform-treeview.html</guid>
+            <pubDate>Sun, 11 Apr 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[valueOf和toString方法]]></title>
+            <description><![CDATA[经常被忽视的valueOf和toString这两个方法，你真的理解了吗？]]></description>
+            <link>https://pengfeixc.com/blogs/javascript/valueOf-and-toString.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/valueOf-and-toString.html</guid>
+            <pubDate>Fri, 09 Apr 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[数组—二维数组中的查找]]></title>
@@ -809,6 +789,20 @@
             <link>https://pengfeixc.com/blogs/site/website-infomation.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/site/website-infomation.html</guid>
             <pubDate>Sat, 27 Mar 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[useEffect和useLayoutEffect的区别]]></title>
+            <description><![CDATA[了解useEffect和useLayoutEffect的执行过程，知道什么时候该用useEffect，什么时候应该用useLayoutEffect。]]></description>
+            <link>https://pengfeixc.com/blogs/react/useEffect-and-useLayoutEffect.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/react/useEffect-and-useLayoutEffect.html</guid>
+            <pubDate>Wed, 24 Mar 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[组件通信之ref]]></title>
+            <description><![CDATA[Refs 提供了一种方式，允许我们访问 DOM 节点或在 render 方法中创建的 React 元素。]]></description>
+            <link>https://pengfeixc.com/blogs/react/react-ref.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/react/react-ref.html</guid>
+            <pubDate>Wed, 24 Mar 2021 00:00:00 GMT</pubDate>
         </item>
     </channel>
 </rss>
