@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sat, 13 Apr 2024 04:24:04 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 17 Apr 2024 15:28:38 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sat, 13 Apr 2024 04:23:57 GMT</pubDate>
+        <pubDate>Wed, 17 Apr 2024 15:28:30 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[点到直线的距离]]></title>
+            <description><![CDATA[直线的参数化和法线形式，以及如何计算点到直线的距离。]]></description>
+            <link>https://pengfeixc.com/blogs/algorithm-math/point-to-line.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/algorithm-math/point-to-line.html</guid>
+            <pubDate>Wed, 17 Apr 2024 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[Latex 数学符号和公式]]></title>
             <description><![CDATA[使用 latex 输入复杂的数学公式以及符号]]></description>
