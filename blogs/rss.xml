@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sat, 20 Apr 2024 01:51:35 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 20 Apr 2024 06:29:50 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sat, 20 Apr 2024 01:51:28 GMT</pubDate>
+        <pubDate>Sat, 20 Apr 2024 06:29:43 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[JavaScript Event Loop]]></title>
+            <description><![CDATA[理解 javascript 中 event loop、宏任务、微任务的概念]]></description>
+            <link>https://pengfeixc.com/blogs/javascript/js-event-loop.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/js-event-loop.html</guid>
+            <pubDate>Sat, 20 Apr 2024 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[点到直线的距离]]></title>
             <description><![CDATA[直线的参数化和法线形式，以及如何计算点到直线的距离。]]></description>
