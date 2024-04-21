@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sun, 21 Apr 2024 01:38:38 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 21 Apr 2024 13:18:43 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sun, 21 Apr 2024 01:38:31 GMT</pubDate>
+        <pubDate>Sun, 21 Apr 2024 13:18:36 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[点到多义线的距离]]></title>
+            <description><![CDATA[点到多义线的距离，点到直线的距离]]></description>
+            <link>https://pengfeixc.com/blogs/algorithm-math/point-to-polyline.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/algorithm-math/point-to-polyline.html</guid>
+            <pubDate>Sun, 21 Apr 2024 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[JavaScript Event Loop]]></title>
             <description><![CDATA[理解 javascript 中 event loop、宏任务、微任务的概念]]></description>
