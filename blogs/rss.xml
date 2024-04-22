@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Mon, 22 Apr 2024 15:21:21 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 22 Apr 2024 15:22:46 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Mon, 22 Apr 2024 15:21:13 GMT</pubDate>
+        <pubDate>Mon, 22 Apr 2024 15:22:39 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
         <item>
             <title><![CDATA[点到多义线的距离]]></title>
@@ -29,7 +29,7 @@
         </item>
         <item>
             <title><![CDATA[点到直线的距离]]></title>
-            <description><![CDATA[直线的参数化和法线形式，以及如何计算点到直线的距离。]]></description>
+            <description><![CDATA[直线的参数化和法线形式，以及如何计算点到直线的距离，点到线段的距离，点到多边形的距离。]]></description>
             <link>https://pengfeixc.com/blogs/algorithm-math/point-to-line.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/algorithm-math/point-to-line.html</guid>
             <pubDate>Wed, 17 Apr 2024 00:00:00 GMT</pubDate>
