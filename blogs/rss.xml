@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Mon, 22 Apr 2024 15:22:46 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 24 Apr 2024 15:23:00 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Mon, 22 Apr 2024 15:22:39 GMT</pubDate>
+        <pubDate>Wed, 24 Apr 2024 15:22:53 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[Cheat Sheet for Matrix]]></title>
+            <description><![CDATA[矩阵公式笔记。]]></description>
+            <link>https://pengfeixc.com/blogs/algorithm-math/cheat-sheet-for-matrix.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/algorithm-math/cheat-sheet-for-matrix.html</guid>
+            <pubDate>Wed, 24 Apr 2024 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[点到多义线的距离]]></title>
             <description><![CDATA[点到多义线的距离，点到直线的距离]]></description>
