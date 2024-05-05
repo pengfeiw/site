@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sun, 05 May 2024 10:17:56 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 05 May 2024 11:19:20 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sun, 05 May 2024 10:17:49 GMT</pubDate>
+        <pubDate>Sun, 05 May 2024 11:19:12 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[线性系统]]></title>
+            <description><![CDATA[线性系统与矩阵。]]></description>
+            <link>https://pengfeixc.com/blogs/algorithm-math/linear-spaces.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/algorithm-math/linear-spaces.html</guid>
+            <pubDate>Sun, 05 May 2024 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[Cheat Sheet for Matrix]]></title>
             <description><![CDATA[矩阵公式笔记。]]></description>
