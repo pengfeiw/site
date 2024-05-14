@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sun, 05 May 2024 12:34:46 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 14 May 2024 15:10:13 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sun, 05 May 2024 12:34:37 GMT</pubDate>
+        <pubDate>Tue, 14 May 2024 15:10:04 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[欧拉角]]></title>
+            <description><![CDATA[欧拉角的基本思想，如何用欧拉角描述物体的方位。]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/euler-angles.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/euler-angles.html</guid>
+            <pubDate>Tue, 14 May 2024 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[线性系统]]></title>
             <description><![CDATA[线性系统与矩阵。]]></description>
