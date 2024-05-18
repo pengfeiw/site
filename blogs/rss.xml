@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Tue, 14 May 2024 15:10:13 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 18 May 2024 03:21:18 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Tue, 14 May 2024 15:10:04 GMT</pubDate>
+        <pubDate>Sat, 18 May 2024 03:21:08 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[四元数]]></title>
+            <description><![CDATA[四元数的基本思想，何为四元数，如何用四元数表示方位。]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/Quaternion.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/Quaternion.html</guid>
+            <pubDate>Sat, 18 May 2024 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[欧拉角]]></title>
             <description><![CDATA[欧拉角的基本思想，如何用欧拉角描述物体的方位。]]></description>
