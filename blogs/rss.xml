@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sat, 18 May 2024 03:21:18 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 19 May 2024 14:50:54 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sat, 18 May 2024 03:21:08 GMT</pubDate>
+        <pubDate>Sun, 19 May 2024 14:50:44 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[曲线插值之艾肯特算法]]></title>
+            <description><![CDATA[如何使用艾肯特算法进行曲线插值]]></description>
+            <link>https://pengfeixc.com/blogs/algorithm-math/aitken-algorithm.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/algorithm-math/aitken-algorithm.html</guid>
+            <pubDate>Sun, 19 May 2024 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[四元数]]></title>
             <description><![CDATA[四元数的基本思想，何为四元数，如何用四元数表示方位。]]></description>
