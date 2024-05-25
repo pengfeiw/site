@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Wed, 22 May 2024 11:37:17 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 25 May 2024 01:27:49 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Wed, 22 May 2024 11:37:07 GMT</pubDate>
+        <pubDate>Sat, 25 May 2024 01:27:37 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[曲线插值之拉格朗日插值法]]></title>
+            <description><![CDATA[拉格朗日插值算法详解]]></description>
+            <link>https://pengfeixc.com/blogs/algorithm-math/lagrange-interpolation.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/algorithm-math/lagrange-interpolation.html</guid>
+            <pubDate>Sat, 25 May 2024 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[曲线插值之艾特肯算法]]></title>
             <description><![CDATA[如何使用艾特肯算法进行曲线插值]]></description>
