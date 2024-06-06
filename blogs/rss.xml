@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sat, 25 May 2024 01:43:56 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 06 Jun 2024 15:28:13 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sat, 25 May 2024 01:43:46 GMT</pubDate>
+        <pubDate>Thu, 06 Jun 2024 15:28:02 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[埃尔米特曲线]]></title>
+            <description><![CDATA[埃尔米特曲线详解]]></description>
+            <link>https://pengfeixc.com/blogs/algorithm-math/hermite-curves.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/algorithm-math/hermite-curves.html</guid>
+            <pubDate>Thu, 06 Jun 2024 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[曲线插值之拉格朗日插值法]]></title>
             <description><![CDATA[拉格朗日插值算法详解]]></description>
