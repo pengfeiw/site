@@ -83,7 +83,7 @@ $ git restore &lt;file&gt;
 
 <span class="hljs-comment"># 将文件从暂存区移动到工作区，但是文件依旧保留更改</span>
 $ git restore --staged &lt;file&gt;
-</code></pre><p>reset 和 revert 的区别：reset 指回退到某个 commit，而 revert 是添加一个新的 commit 用来回退到某个 commit。</p><p>reset 基本用法：</p><pre><code class="hljs language-bash"><span class="hljs-comment"># 回退时会保留源码，修改的源码保存在暂存区</span>
+</code></pre><p>reset 和 revert 的区别：reset 指回退到某个 commit，而 revert 是添加一个新的 commit 用来回退某个 commit，revert 经常会引起代码冲突。</p><p>reset 基本用法：</p><pre><code class="hljs language-bash"><span class="hljs-comment"># 回退时会保留源码，修改的源码保存在暂存区</span>
 $ git reset --soft &lt;commit&gt;
 
 <span class="hljs-comment"># reset 的默认行为，回退时会保留源码，修改的源码保存在工作区</span>
