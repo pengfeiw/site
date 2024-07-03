@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Mon, 24 Jun 2024 14:53:27 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 03 Jul 2024 15:11:14 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Mon, 24 Jun 2024 14:53:15 GMT</pubDate>
+        <pubDate>Wed, 03 Jul 2024 15:11:04 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[const、constexpr 和常量表达式]]></title>
+            <description><![CDATA[理解 C++ 常量、常量表达式的概念]]></description>
+            <link>https://pengfeixc.com/blogs/clang/constexpr.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/clang/constexpr.html</guid>
+            <pubDate>Wed, 03 Jul 2024 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[埃尔米特曲线]]></title>
             <description><![CDATA[埃尔米特曲线详解]]></description>
@@ -236,6 +243,12 @@
             <link>https://pengfeixc.com/blogs/clang/gcc.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/clang/gcc.html</guid>
             <pubDate>Fri, 17 Feb 2023 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[image.png]]></title>
+            <link>https://pengfeixc.com/blogs/clang/undefined.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/clang/undefined.html</guid>
+            <pubDate>Invalid Date</pubDate>
         </item>
         <item>
             <title><![CDATA[计算机如何用二进制计数]]></title>
