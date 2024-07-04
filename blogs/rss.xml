@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Wed, 03 Jul 2024 15:11:14 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 04 Jul 2024 14:59:21 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Wed, 03 Jul 2024 15:11:04 GMT</pubDate>
+        <pubDate>Thu, 04 Jul 2024 14:59:10 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[VsVim]]></title>
+            <description><![CDATA[使用 vsvim 插件在 visual studio 中实现 vim 操作]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/vsvim.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/vsvim.html</guid>
+            <pubDate>Thu, 04 Jul 2024 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[const、constexpr 和常量表达式]]></title>
             <description><![CDATA[理解 C++ 常量、常量表达式的概念]]></description>
