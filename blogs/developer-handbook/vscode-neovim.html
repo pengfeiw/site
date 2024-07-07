@@ -18,29 +18,135 @@ endif
 <span class="hljs-keyword">else</span>
     <span class="hljs-comment">-- ordinary Neovim</span>
 <span class="hljs-keyword">end</span>
-</code></pre><h2 id="我的配置">我的配置 <a href="#我的配置">#</a></h2><p>没有添加任何插件，但解决很多问题：</p><ol><li>vscode neovim 折叠代码快捷键失效</li><li>neovim 搜索忽略大小写</li><li>neovim 使用系统剪贴板</li></ol><pre><code class="hljs language-json">if exists('g<span class="hljs-punctuation">:</span>vscode')
-    <span class="hljs-string">" 展开所有折叠
-    nnoremap zR &lt;Cmd&gt;call VSCodeNotify('editor.unfoldAll')&lt;CR&gt;
-    "</span> 关闭所有折叠
-    nnoremap zM &lt;Cmd&gt;call VSCodeNotify('editor.foldAll')&lt;CR&gt;
-    <span class="hljs-string">" 展开当下折叠
-    nnoremap zo &lt;Cmd&gt;call VSCodeNotify('editor.unfold')&lt;CR&gt;
-    "</span> 关闭当下折叠
-    nnoremap zc &lt;Cmd&gt;call VSCodeNotify('editor.fold')&lt;CR&gt;
-else
-    <span class="hljs-string">" ordinary Neovim
-endif
+</code></pre><h2 id="我的配置">我的配置 <a href="#我的配置">#</a></h2><p>通过 lua 语法设置，更易懂。</p><ol><li>vscode neovim 折叠代码快捷键失效</li><li>neovim 搜索忽略大小写</li><li>neovim 使用系统剪贴板</li></ol><pre><code class="hljs language-lua"><span class="hljs-comment">-- 1.options</span>
+<span class="hljs-comment">-- Hint: use `:h &lt;option&gt;` to figure out the meaning if needed</span>
+vim.opt.clipboard = <span class="hljs-string">'unnamedplus'</span>   <span class="hljs-comment">-- use system clipboard </span>
+vim.opt.completeopt = {<span class="hljs-string">'menu'</span>, <span class="hljs-string">'menuone'</span>, <span class="hljs-string">'noselect'</span>}
+vim.opt.mouse = <span class="hljs-string">'a'</span>                 <span class="hljs-comment">-- allow the mouse to be used in Nvim</span>
 
-set foldmethod=indent
-"</span> 高亮显示搜索结果
-set hlsearch
-<span class="hljs-string">" 输入搜索模式时，每输入一个字符，自动跳转到第一个匹配的结果
-set incsearch
-"</span> 搜索时忽略大小写
-set ignorecase
-<span class="hljs-string">" 如果同时打开了
-"</span> ignorecase，那么对于只有一个大写字母的搜索词，将大小写敏感，其他情况都是大小写不敏感
-set smartcase
-<span class="hljs-string">" 使用系统剪贴板
-set clipboard=unnamedplus</span>
+<span class="hljs-comment">-- Searching</span>
+vim.opt.incsearch = <span class="hljs-literal">true</span>            <span class="hljs-comment">-- search as characters are entered</span>
+vim.opt.hlsearch = <span class="hljs-literal">true</span>            <span class="hljs-comment">-- do not highlight matches</span>
+vim.opt.ignorecase = <span class="hljs-literal">true</span>           <span class="hljs-comment">-- ignore case in searches by default</span>
+vim.opt.smartcase = <span class="hljs-literal">true</span>            <span class="hljs-comment">-- but make it case sensitive if an uppercase is entered</span>
+
+<span class="hljs-comment">-- Tab</span>
+vim.opt.tabstop = <span class="hljs-number">4</span>                 <span class="hljs-comment">-- number of visual spaces per TAB</span>
+vim.opt.softtabstop = <span class="hljs-number">4</span>             <span class="hljs-comment">-- number of spacesin tab when editing</span>
+vim.opt.shiftwidth = <span class="hljs-number">4</span>              <span class="hljs-comment">-- insert 4 spaces on a tab</span>
+vim.opt.expandtab = <span class="hljs-literal">true</span>            <span class="hljs-comment">-- tabs are spaces, mainly because of python</span>
+
+<span class="hljs-comment">-- UI config</span>
+vim.opt.number = <span class="hljs-literal">true</span>               <span class="hljs-comment">-- show absolute number</span>
+vim.opt.relativenumber = <span class="hljs-literal">true</span>       <span class="hljs-comment">-- add numbers to each line on the left side</span>
+vim.opt.cursorline = <span class="hljs-literal">true</span>           <span class="hljs-comment">-- highlight cursor line underneath the cursor horizontally</span>
+vim.opt.splitbelow = <span class="hljs-literal">true</span>           <span class="hljs-comment">-- open new vertical split bottom</span>
+vim.opt.splitright = <span class="hljs-literal">true</span>           <span class="hljs-comment">-- open new horizontal splits right</span>
+<span class="hljs-comment">-- vim.opt.termguicolors = true        -- enabl 24-bit RGB color in the TUI</span>
+vim.opt.showmode = <span class="hljs-literal">false</span>            <span class="hljs-comment">-- we are experienced, wo don't need the "-- INSERT --" mode hint</span>
+
+vim.opt.<span class="hljs-built_in">wrap</span> = <span class="hljs-literal">false</span>          <span class="hljs-comment">-- Wrapping sucks (except on markdown)</span>
+vim.opt.swapfile = <span class="hljs-literal">false</span>      <span class="hljs-comment">-- Do not leave any backup files</span>
+vim.opt.showmatch  = <span class="hljs-literal">true</span>     <span class="hljs-comment">-- Highlights the matching parenthesis</span>
+vim.opt.signcolumn = <span class="hljs-string">"yes"</span>    <span class="hljs-comment">-- Always show the signcolumn, otherwise it would shift the text</span>
+vim.opt.hidden = <span class="hljs-literal">true</span>         <span class="hljs-comment">-- Allow multple buffers</span>
+vim.opt.shortmess:append(<span class="hljs-string">"c"</span>) <span class="hljs-comment">-- Don't pass messages to |ins-completion-menu|.</span>
+vim.opt.encoding = <span class="hljs-string">"utf-8"</span>    <span class="hljs-comment">-- Just in case</span>
+vim.opt.cmdheight = <span class="hljs-number">2</span>           <span class="hljs-comment">-- Shows better messages</span>
+
+vim.opt.foldmethod = <span class="hljs-string">"indent"</span>
+vim.opt.foldlevel = <span class="hljs-number">99</span>
+
+<span class="hljs-comment">-- 2.keymaps</span>
+<span class="hljs-comment">-- define common options</span>
+<span class="hljs-keyword">local</span> opts = {
+    noremap = <span class="hljs-literal">true</span>,      <span class="hljs-comment">-- non-recursive</span>
+    silent = <span class="hljs-literal">true</span>,       <span class="hljs-comment">-- do not show message</span>
+}
+
+<span class="hljs-keyword">local</span> map = vim.api.nvim_set_keymap
+map(<span class="hljs-string">"n"</span>, <span class="hljs-string">"&lt;Space&gt;"</span>, <span class="hljs-string">"&lt;Nop&gt;"</span>, opts)
+vim.g.mapleader = <span class="hljs-string">" "</span>
+vim.g.maplocalleader = <span class="hljs-string">" "</span>
+
+<span class="hljs-comment">-----------------</span>
+<span class="hljs-comment">-- Normal mode --</span>
+<span class="hljs-comment">-----------------</span>
+
+<span class="hljs-comment">-- Hint: see `:h vim.map.set()`</span>
+<span class="hljs-comment">-- Better window navigation</span>
+vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;C-h&gt;'</span>, <span class="hljs-string">'&lt;C-w&gt;h'</span>, opts)
+vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;C-j&gt;'</span>, <span class="hljs-string">'&lt;C-w&gt;j'</span>, opts)
+vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;C-k&gt;'</span>, <span class="hljs-string">'&lt;C-w&gt;k'</span>, opts)
+vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;C-l&gt;'</span>, <span class="hljs-string">'&lt;C-w&gt;l'</span>, opts)
+
+<span class="hljs-comment">-- Resize with arrows</span>
+<span class="hljs-comment">-- delta: 2 lines</span>
+vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;C-Up&gt;'</span>, <span class="hljs-string">':resize -2&lt;CR&gt;'</span>, opts)
+vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;C-Down&gt;'</span>, <span class="hljs-string">':resize +2&lt;CR&gt;'</span>, opts)
+vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;C-Left&gt;'</span>, <span class="hljs-string">':vertical resize -2&lt;CR&gt;'</span>, opts)
+vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;C-Right&gt;'</span>, <span class="hljs-string">':vertical resize +2&lt;CR&gt;'</span>, opts)
+
+<span class="hljs-comment">-- NvimTree</span>
+vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;C-n&gt;'</span>, <span class="hljs-string">':NvimTreeToggle&lt;CR&gt;'</span>, {})
+vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;A-n&gt;'</span>, <span class="hljs-string">':NvimTreeFindFile&lt;CR&gt;'</span>, {})
+vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'-'</span>, <span class="hljs-string">':NvimTreeCollapse&lt;CR&gt;'</span>, {})
+
+<span class="hljs-comment">-- buffer</span>
+vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;leader&gt;bp'</span>, <span class="hljs-string">':bp&lt;CR&gt;'</span>)
+vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;leader&gt;bn'</span>, <span class="hljs-string">':bn&lt;CR&gt;'</span>)
+
+<span class="hljs-comment">-- vscode 专用设置</span>
+<span class="hljs-keyword">if</span> vim.g.vscode <span class="hljs-keyword">then</span>
+    <span class="hljs-keyword">local</span> fold = {
+        unfoldAll = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>
+            vim.fn.VSCodeNotify(<span class="hljs-string">"editor.unfoldAll"</span>)
+        <span class="hljs-keyword">end</span>,
+        foldAll = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>
+            vim.fn.VSCodeNotify(<span class="hljs-string">"editor.foldAll"</span>)
+        <span class="hljs-keyword">end</span>,
+        fold = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>
+            vim.fn.VSCodeNotify(<span class="hljs-string">"editor.fold"</span>)
+        <span class="hljs-keyword">end</span>,
+        unfold = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>
+            vim.fn.VSCodeNotify(<span class="hljs-string">"editor.unfold"</span>)
+        <span class="hljs-keyword">end</span>,
+    }
+
+    <span class="hljs-comment">-- 需要安装 bookmarks 插件使用</span>
+    <span class="hljs-keyword">local</span> bookmarks = {
+        jumpToPrevious = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>
+            vim.fn.VSCodeNotify(<span class="hljs-string">"bookmarks.jumpToPrevious"</span>)
+        <span class="hljs-keyword">end</span>,
+        jumpToNext = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>
+            vim.fn.VSCodeNotify(<span class="hljs-string">"bookmarks.jumpToNext"</span>)
+        <span class="hljs-keyword">end</span>,
+        toggle = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>
+            vim.fn.VSCodeNotify(<span class="hljs-string">"bookmarks.toggle"</span>)
+        <span class="hljs-keyword">end</span>,
+        clear = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>
+            vim.fun.VSCodeNotify(<span class="hljs-string">"bookmarks.clearFromAllFiles"</span>)
+        <span class="hljs-keyword">end</span>,
+    }
+    
+    <span class="hljs-keyword">local</span> codeReader = {
+        quickInfo = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>
+            vim.fn.VSCodeNotify(<span class="hljs-string">"editor.action.showHover"</span>)
+        <span class="hljs-keyword">end</span>,
+    }
+
+    vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'zR'</span>, fold.unfoldAll)
+    vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'zM'</span>, fold.foldAll)
+    vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'zo'</span>, fold.unfold)
+    vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'zc'</span>, fold.fold)
+
+    vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;leader&gt;bb'</span>, bookmarks.toggle)
+    vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;leader&gt;bc'</span>, bookmarks.clear)
+    vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;leader&gt;bp'</span>, bookmarks.jumpToPrevious)
+    vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;leader&gt;bn'</span>, bookmarks.jumpToNext)
+
+    vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;c-h&gt;'</span>, codeReader.quickInfo)
+<span class="hljs-keyword">else</span>
+     <span class="hljs-comment">-- ordinary Neovim</span>
+<span class="hljs-keyword">end</span>
 </code></pre><blockquote><p>你也可以在这里获取我的 vscode 配置：<a href="https://pengfeixc.com/blogs/developer-handbook/vscode-configurations">自用 vscode 配置</a></p></blockquote><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/computer-graphics/constructive-solid-geometry">上一篇：构造立体几何法（Constructive Solid Geometry） —— 计算机几何</a></span><span class="next-article"><a href="/blogs/developer-handbook/bash-shortcuts">下一篇：Bash 行操作</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#Vscode Neovim" style="padding-left:15px">Vscode Neovim</a></div><div class="toc-item"><a class="toc-item-link" href="#Vscode-Neovim Vs Vscode-Vim" style="padding-left:30px">Vscode-Neovim Vs Vscode-Vim</a></div><div class="toc-item"><a class="toc-item-link" href="#vscode 与 neovim 协作" style="padding-left:30px">vscode 与 neovim 协作</a></div><div class="toc-item"><a class="toc-item-link" href="#安装" style="padding-left:30px">安装</a></div><div class="toc-item"><a class="toc-item-link" href="#我的配置" style="padding-left:30px">我的配置</a></div></div></div></div></body></html>
