@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Fri, 13 Sep 2024 08:23:39 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 20 Oct 2024 10:30:24 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Fri, 13 Sep 2024 08:23:28 GMT</pubDate>
+        <pubDate>Sun, 20 Oct 2024 10:30:14 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2024, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[UML]]></title>
+            <description><![CDATA[UML 统一建模语言]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/uml.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/uml.html</guid>
+            <pubDate>Sun, 20 Oct 2024 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[VsVim]]></title>
             <description><![CDATA[使用 vsvim 插件在 visual studio 中实现 vim 操作]]></description>
@@ -252,12 +259,6 @@
             <pubDate>Fri, 17 Feb 2023 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[image.png]]></title>
-            <link>https://pengfeixc.com/blogs/clang/undefined.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/clang/undefined.html</guid>
-            <pubDate>Invalid Date</pubDate>
-        </item>
-        <item>
             <title><![CDATA[计算机如何用二进制计数]]></title>
             <description><![CDATA[全加器和多位加法器的原理，以及计算机是如何用二进制计数的]]></description>
             <link>https://pengfeixc.com/blogs/developer-handbook/full-adder.html</link>
@@ -414,8 +415,8 @@
         <item>
             <title><![CDATA[UML 类图]]></title>
             <description><![CDATA[面向对象之 UML 类图图示笔记]]></description>
-            <link>https://pengfeixc.com/blogs/developer-handbook/uml.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/uml.html</guid>
+            <link>https://pengfeixc.com/blogs/developer-handbook/uml-class-diagram.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/uml-class-diagram.html</guid>
             <pubDate>Fri, 06 May 2022 00:00:00 GMT</pubDate>
         </item>
         <item>
