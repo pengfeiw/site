@@ -153,6 +153,16 @@ vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'
         <span class="hljs-keyword">end</span>,
     }
 
+    <span class="hljs-keyword">local</span> navigator = {
+        forward = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>
+            vim.fn.VSCodeNotify(<span class="hljs-string">"workbench.action.navigateForward"</span>)
+        <span class="hljs-keyword">end</span>,
+        backward = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>
+            vim.fn.VSCodeNotify(<span class="hljs-string">"workbench.action.navigateBack"</span>)
+        <span class="hljs-keyword">end</span>,
+    }
+
+
     <span class="hljs-comment">-- 折叠代码</span>
     vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'zR'</span>, fold.unfoldAll)
     vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'zM'</span>, fold.foldAll)
@@ -172,6 +182,10 @@ vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'
 
     <span class="hljs-comment">-- Refactor</span>
     vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;leader&gt;r'</span>, refactor.<span class="hljs-built_in">rename</span>)
+
+    <span class="hljs-comment">-- Navigator</span>
+    vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'gf'</span>, navigator.forward)
+    vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'gb'</span>, navigator.backward)
 <span class="hljs-keyword">else</span>
      <span class="hljs-comment">-- ordinary Neovim</span>
 <span class="hljs-keyword">end</span>
