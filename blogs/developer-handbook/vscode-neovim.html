@@ -128,24 +128,41 @@ vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'
             vim.fn.VSCodeNotify(<span class="hljs-string">"bookmarks.clearFromAllFiles"</span>)
         <span class="hljs-keyword">end</span>,
     }
-    
+
+    <span class="hljs-keyword">local</span> tab = {
+        closeCurrentTab = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>
+            vim.fn.VSCodeNotify(<span class="hljs-string">"workbench.action.closeActiveEditor"</span>)
+        <span class="hljs-keyword">end</span>,
+        closeOtherTab = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>
+            vim.fn.VSCodeNotify(<span class="hljs-string">"workbench.action.closeOtherEditors"</span>)
+        <span class="hljs-keyword">end</span>,
+        closeAllTab = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>
+            vim.fn.VSCodeNotify(<span class="hljs-string">"workbench.action.closeAllEditors"</span>)
+        <span class="hljs-keyword">end</span>,
+    }
+
     <span class="hljs-keyword">local</span> codeReader = {
         quickInfo = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>
             vim.fn.VSCodeNotify(<span class="hljs-string">"editor.action.showHover"</span>)
         <span class="hljs-keyword">end</span>,
     }
 
+    <span class="hljs-comment">-- 折叠代码</span>
     vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'zR'</span>, fold.unfoldAll)
     vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'zM'</span>, fold.foldAll)
     vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'zo'</span>, fold.unfold)
     vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'zc'</span>, fold.fold)
 
+    <span class="hljs-comment">-- 书签</span>
     vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;leader&gt;bb'</span>, bookmarks.toggle)
     vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;leader&gt;bc'</span>, bookmarks.clear)
     vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;leader&gt;bp'</span>, bookmarks.jumpToPrevious)
     vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;leader&gt;bn'</span>, bookmarks.jumpToNext)
 
-    vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;c-h&gt;'</span>, codeReader.quickInfo)
+    <span class="hljs-comment">-- 窗口</span>
+    vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;leader&gt;wc'</span>, tab.closeCurrentTab)
+    vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;leader&gt;wo'</span>, tab.closeOtherTab)
+    vim.keymap.set(<span class="hljs-string">'n'</span>, <span class="hljs-string">'&lt;leader&gt;wa'</span>, tab.closeAllTab)
 <span class="hljs-keyword">else</span>
      <span class="hljs-comment">-- ordinary Neovim</span>
 <span class="hljs-keyword">end</span>
