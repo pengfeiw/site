@@ -27,11 +27,12 @@ nnoremap &lt;leader&gt;bc :vsc Edit.ClearBookmarks&lt;CR&gt;
 nnoremap &lt;leader&gt;bn :vsc Edit.NextBookmark&lt;CR&gt;
 nnoremap &lt;leader&gt;bp :vsc Edit.PreviousBookmark&lt;CR&gt;
 
+" Refactor
+nnoremap &lt;leader&gt;r :vsc Refactor.Rename&lt;CR&gt;
+
 " 相对行号，当前行显示绝对行号
 set number
 set relativenumber
-" 匹配括号高亮
-set showmatch
 " 高亮显示搜索结果
 set hlsearch
 " 输入搜索模式时，每输入一个字符，自动跳转到第一个匹配的结果
