@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Wed, 28 May 2025 08:52:06 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 31 May 2025 13:17:42 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Wed, 28 May 2025 08:51:55 GMT</pubDate>
+        <pubDate>Sat, 31 May 2025 13:17:31 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2025, Ibas]]></copyright>
         <item>
             <title><![CDATA[FreeCAD 编译]]></title>
@@ -210,7 +210,7 @@
             <pubDate>Thu, 21 Sep 2023 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[网站加载慢，怎么解决?]]></title>
+            <title><![CDATA[提升网站加载速度]]></title>
             <description><![CDATA[网页有大量的图片展示时，网页打开速度慢，作为开发者应该从哪些方向解决优化。]]></description>
             <link>https://pengfeixc.com/blogs/site/site-load-slowy.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/site/site-load-slowy.html</guid>
@@ -399,7 +399,7 @@
             <pubDate>Sat, 02 Jul 2022 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[去大公司还是小公司]]></title>
+            <title><![CDATA[大公司 or 小公司]]></title>
             <description><![CDATA[毕业了，该去大公司还是小公司呢？]]></description>
             <link>https://pengfeixc.com/blogs/site/big-company-vs-small-company.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/site/big-company-vs-small-company.html</guid>
@@ -574,13 +574,6 @@
             <pubDate>Sat, 06 Nov 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[计划写一本几何与线性代数的教程]]></title>
-            <description><![CDATA[打算写一本与线性代数相关的教程。]]></description>
-            <link>https://pengfeixc.com/blogs/site/20211025plan.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/site/20211025plan.html</guid>
-            <pubDate>Mon, 25 Oct 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
             <title><![CDATA[css transition属性]]></title>
             <description><![CDATA[CSS transitions 提供了一种在更改CSS属性时控制动画速度的方法。其可以让属性变化成为一个持续一段时间的过程，而不是立即生效的。比如，将一个元素的颜色从白色改为黑色，通常这个改变是立即生效的，使用 CSS transitions 后该元素的颜色将逐渐从白色变为黑色，按照一定的曲线速率变化。这个过程可以自定义。]]></description>
             <link>https://pengfeixc.com/blogs/css/css-transition.html</link>
@@ -672,7 +665,7 @@
             <pubDate>Tue, 10 Aug 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[网站更新（2021年）]]></title>
+            <title><![CDATA[网站更新_2021年]]></title>
             <description><![CDATA[我的网站更新了一些内容，主要是界面和使用的技术框架的变化。]]></description>
             <link>https://pengfeixc.com/blogs/site/website-update-2021.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/site/website-update-2021.html</guid>
@@ -880,13 +873,6 @@
             <link>https://pengfeixc.com/blogs/algorithm-math/singleLinkedList.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/algorithm-math/singleLinkedList.html</guid>
             <pubDate>Thu, 01 Apr 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[关于我的个人网站]]></title>
-            <description><![CDATA[我建站的目的和建站用到了哪些技术。]]></description>
-            <link>https://pengfeixc.com/blogs/site/website-infomation.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/site/website-infomation.html</guid>
-            <pubDate>Sat, 27 Mar 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[useEffect和useLayoutEffect的区别]]></title>
