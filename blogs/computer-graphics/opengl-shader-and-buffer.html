@@ -175,4 +175,32 @@ void drawMesh(Mesh[] meshes){
     // the second triangle
     0, 1, 3
 }
-</code></pre><p>结合 verticesIndex 和 去重后的 vertices，gpu 仍然能够绘制出一个矩形。</p><h2 id="Reference">Reference <a href="#Reference">#</a></h2><ul><li><a href="https://learnopengl.com/">https://learnopengl.com/</a></li><li><a href="https://medium.com/@steve.morales22001/what-youll-learn-7ae886b54599">https://medium.com/@steve.morales22001/what-youll-learn-7ae886b54599</a></li></ul></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/clang/visual-studio-with-qt">上一篇：visual studio 配置 qt 开发环境</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#Opengl shaders and buffer" style="padding-left:15px">Opengl shaders and buffer</a></div><div class="toc-item"><a class="toc-item-link" href="#NDC（Normalized Device Coordinates）" style="padding-left:30px">NDC（Normalized Device Coordinates）</a></div><div class="toc-item"><a class="toc-item-link" href="#Vertices 和 VBO" style="padding-left:30px">Vertices 和 VBO</a></div><div class="toc-item"><a class="toc-item-link" href="#Vertex Shader" style="padding-left:30px">Vertex Shader</a></div><div class="toc-item"><a class="toc-item-link" href="#Fragment Shader" style="padding-left:30px">Fragment Shader</a></div><div class="toc-item"><a class="toc-item-link" href="#Shader Program" style="padding-left:30px">Shader Program</a></div><div class="toc-item"><a class="toc-item-link" href="#VAO" style="padding-left:30px">VAO</a></div><div class="toc-item"><a class="toc-item-link" href="#EBO" style="padding-left:30px">EBO</a></div><div class="toc-item"><a class="toc-item-link" href="#Reference" style="padding-left:30px">Reference</a></div></div></div></div></body></html>
+</code></pre><p>结合 verticesIndex 和 去重后的 vertices，gpu 仍然能够绘制出一个矩形。</p><h2 id="多 shader 绘制">多 shader 绘制 <a href="#多 shader 绘制">#</a></h2><p>如果有两个 mesh 需要绘制，两个 mesh 使用的是不同的 shader，在绘制过程中需要使用 <code>glUseProgram</code> 切换 mesh 绘制。</p><p>需要注意的点有：</p><ul><li>每个 shader 程序（program）只能一次激活使用一个，绘制不同对象时需要切换 glUseProgram。</li><li>每个对象绑定自己的顶点数据（VAO/VBO）和 shader 程序。</li><li>先激活对应 shader，绑定对应 VAO，调用绘制指令；然后切换另一个shader，绑定另一个VAO，再调用绘制指令。</li><li>多数情况下，为了代码整洁，会为每个对象分别创建VAO和Program。</li></ul><p>可能的伪代码：</p><pre><code class="hljs language-c++"><span class="hljs-comment">// prepare shader program</span>
+GLuint programTriangle = <span class="hljs-built_in">createShaderProgram</span>(vertexShaderSrc1, fragmentShaderSrc1);
+GLuint programSquare = <span class="hljs-built_in">createShaderProgram</span>(vertexShaderSrc2, fragmentShaderSrc2);
+
+<span class="hljs-comment">// prepare VAO / VBO</span>
+GLuint vaoTriangle = <span class="hljs-built_in">createTriangleVAO</span>();
+GLuint vaoSquare = <span class="hljs-built_in">createSquareVAO</span>();
+
+<span class="hljs-keyword">while</span> (!windowShouldClose) {
+    <span class="hljs-built_in">glClear</span>(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    <span class="hljs-comment">// 1. draw triangle</span>
+    <span class="hljs-built_in">glUseProgram</span>(programTriangle);
+    <span class="hljs-built_in">glBindVertexArray</span>(vaoTriangle);
+    <span class="hljs-comment">// set uniform</span>
+    <span class="hljs-comment">// glUniform*(...)</span>
+    <span class="hljs-built_in">glDrawArrays</span>(GL_TRIANGLES, <span class="hljs-number">0</span>, <span class="hljs-number">3</span>);
+
+    <span class="hljs-comment">// 2. draw texture</span>
+    <span class="hljs-built_in">glUseProgram</span>(programSquare);
+    <span class="hljs-built_in">glBindVertexArray</span>(vaoSquare);
+    <span class="hljs-comment">// set uniform</span>
+    <span class="hljs-comment">// glUniform*(...)</span>
+    <span class="hljs-built_in">glDrawArrays</span>(GL_TRIANGLE_STRIP, <span class="hljs-number">0</span>, <span class="hljs-number">4</span>);
+
+    <span class="hljs-built_in">glfwSwapBuffers</span>(window);
+    <span class="hljs-built_in">glfwPollEvents</span>();
+}
+</code></pre><h2 id="Reference">Reference <a href="#Reference">#</a></h2><ul><li><a href="https://learnopengl.com/">https://learnopengl.com/</a></li><li><a href="https://medium.com/@steve.morales22001/what-youll-learn-7ae886b54599">https://medium.com/@steve.morales22001/what-youll-learn-7ae886b54599</a></li></ul></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/clang/visual-studio-with-qt">上一篇：visual studio 配置 qt 开发环境</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#Opengl shaders and buffer" style="padding-left:15px">Opengl shaders and buffer</a></div><div class="toc-item"><a class="toc-item-link" href="#NDC（Normalized Device Coordinates）" style="padding-left:30px">NDC（Normalized Device Coordinates）</a></div><div class="toc-item"><a class="toc-item-link" href="#Vertices 和 VBO" style="padding-left:30px">Vertices 和 VBO</a></div><div class="toc-item"><a class="toc-item-link" href="#Vertex Shader" style="padding-left:30px">Vertex Shader</a></div><div class="toc-item"><a class="toc-item-link" href="#Fragment Shader" style="padding-left:30px">Fragment Shader</a></div><div class="toc-item"><a class="toc-item-link" href="#Shader Program" style="padding-left:30px">Shader Program</a></div><div class="toc-item"><a class="toc-item-link" href="#VAO" style="padding-left:30px">VAO</a></div><div class="toc-item"><a class="toc-item-link" href="#EBO" style="padding-left:30px">EBO</a></div><div class="toc-item"><a class="toc-item-link" href="#多 shader 绘制" style="padding-left:30px">多 shader 绘制</a></div><div class="toc-item"><a class="toc-item-link" href="#Reference" style="padding-left:30px">Reference</a></div></div></div></div></body></html>
