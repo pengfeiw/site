@@ -1,16 +1,16 @@
-<html lang="zh_cn"><head><title>opengl shader 和 buffer | 王鹏飞</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="opengl,webgl,shader,buffer,vao,vbo,ebo,ibo,着色器,数组缓冲对象,索引缓冲对象"><meta name="description" content="对 opengl 渲染管线中的一些重要概念的解释，包括 shader、vao、vbo、ebo 等。"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous"><link rel="icon" href="/blogs/assests/images/icon.jpg"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="home"><a href="/blogs">Home</a></div><div class="email"><a href="mailto:pengfeixc@sina.com">Email</a></div><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.svg" alt="rss"></a></div></div></div></div><div class="body"><div class="nothing"></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2025年6月18日</span><span class="category"><a href="/blogs/computer-graphics">标签：ComputerGraphics</a></span></div><div class="markdown-body"><h1 id="Opengl shaders and buffer">Opengl shaders and buffer <a href="#Opengl shaders and buffer">#</a></h1><p>对 opengl 中 shader 和 buffer 的一些理解。</p><h2 id="NDC（Normalized Device Coordinates）">NDC（Normalized Device Coordinates） <a href="#NDC（Normalized Device Coordinates）">#</a></h2><p>在 OpenGL 的渲染管线中，模型空间的顶点经过一系列变换（模型变换、视图变换、投影变换）后，会被转换到一个统一的坐标系统，这个坐标系统就是<strong>规范化设备坐标系</strong>（Normalized Device Coordinates）。它是一个三维的坐标系统，x、y、z 的范围是 <code>[-1, +1]</code>。</p><p>只有在 NDC 范围内的坐标才会最终被显示在屏幕上，这个过程通常由 opengl 自动进行的，开发者只需要调用 <code>glViewPort()</code> 方法即可。</p><h2 id="Vertices 和 VBO">Vertices 和 VBO <a href="#Vertices 和 VBO">#</a></h2><p>顶点着色器输出的坐标是基于 NDC 的，在 <code>[-1, +1]</code> 之外的坐标会被裁剪掉，最终也不会显示在屏幕上。</p><p>我们首先准备一份顶点数据（在 xy 平面上的等边三角形）：</p><pre><code>float verticies[] = 
+<html lang="zh_cn"><head><title>opengl shader 和 buffer | 王鹏飞</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="opengl,webgl,shader,buffer,vao,vbo,ebo,ibo,着色器,数组缓冲对象,索引缓冲对象"><meta name="description" content="对 opengl 渲染管线中的一些重要概念的解释，包括 shader、vao、vbo、ebo 等。"><link rel="stylesheet" href="/blogs/assests/code_github.css"><link rel="stylesheet" href="/blogs/assests/github_markdown.css"><link rel="stylesheet" href="/blogs/assests/article.css"><link rel="stylesheet" href="/blogs/assests/navigator.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous"><link rel="icon" href="/blogs/assests/images/icon.jpg"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){document.getElementById("search-input").addEventListener("search",e=>{e.target.value&&window.open(`https://bing.com/search?q=${e.target.value}%20site%3A+pengfeixc.com`,"_blank")})})</script></head><body><div class="header"><div class="navigator"><div class="links"><div class="home"><a href="/blogs">Home</a></div><div class="email"><a href="mailto:pengfeixc@sina.com">Email</a></div><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div clss="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="search"><input id="search-input" type="search" placeholder="search"></div><div class="rss"><a href="/blogs/rss.xml"><img src="/blogs/assests/images/rss.svg" alt="rss"></a></div></div></div></div><div class="body"><div class="nothing"></div><div class="markdown"><div class="markdown-header"><span class="date">日期：2025年6月18日</span><span class="category"><a href="/blogs/computer-graphics">标签：ComputerGraphics</a></span></div><div class="markdown-body"><h1 id="Opengl shaders and buffer">Opengl shaders and buffer <a href="#Opengl shaders and buffer">#</a></h1><p>对 opengl 中 shader 和 buffer 的一些理解。</p><h2 id="NDC（Normalized Device Coordinates）">NDC（Normalized Device Coordinates） <a href="#NDC（Normalized Device Coordinates）">#</a></h2><p>在 OpenGL 的渲染管线中，模型空间的顶点经过一系列变换（模型变换、视图变换、投影变换）后，会被转换到一个统一的坐标系统，这个坐标系统就是<strong>规范化设备坐标系</strong>（Normalized Device Coordinates）。它是一个三维的坐标系统，x、y、z 的范围是 <code>[-1, +1]</code>。</p><p>只有在 NDC 范围内的坐标才会最终被显示在屏幕上，这个过程通常由 opengl 自动进行的，开发者只需要调用 <code>glViewPort()</code> 方法即可。</p><h2 id="Vertices 和 VBO">Vertices 和 VBO <a href="#Vertices 和 VBO">#</a></h2><p>顶点着色器输出的坐标是基于 NDC 的，在 <code>[-1, +1]</code> 之外的坐标会被裁剪掉，最终也不会显示在屏幕上。</p><p>我们首先准备一份顶点数据（在 xy 平面上的等边三角形）：</p><pre><code class="hljs language-c++"><span class="hljs-type">float</span> verticies[] = 
 {
-    -0.5f, -0.5f, 0.0f, // (x, y, z)
-     0.5f, -0.5f, 0.0f,
-     0.0f,  0.5f, 0.0f
+    <span class="hljs-number">-0.5f</span>, <span class="hljs-number">-0.5f</span>, <span class="hljs-number">0.0f</span>, <span class="hljs-comment">// (x, y, z)</span>
+     <span class="hljs-number">0.5f</span>, <span class="hljs-number">-0.5f</span>, <span class="hljs-number">0.0f</span>,
+     <span class="hljs-number">0.0f</span>,  <span class="hljs-number">0.5f</span>, <span class="hljs-number">0.0f</span>
 }
-</code></pre><p>有了数据，我们需要创建一个内存存储这些数据，并将这些数据发送到 GPU。这就是 VBO（Vertex Buffer Object）存在的意义，VBO 主要是用于在 GPU 上创建存储形状或顶点数据的内存。通过使用 VBO，可以一次性将大量顶点数据发送到 GPU，避免了逐个发送所带来的等待时间，提高了效率。它的作用类似于一次性将12块饼干放入烤箱烘烤，而不是每次只放一块，等待烘烤完成后再放下一块，从而加快整体处理速度。</p><p>下面的代码演示了如何创建一个 VBO 存储顶点数据，并发送给 GPU。</p><pre><code>unsigned int VBO;      // decalre buffer
-glGenBuffers(1, &amp;VBO); // OpenGL function, Generate Buffers
-            // --- PARAMETERS ---
-            // assign a unique ID number 1 to VBO
-            // VBO refrence (location in memory -- C++ term) 
+</code></pre><p>有了数据，我们需要创建一个内存存储这些数据，并将这些数据发送到 GPU。这就是 VBO（Vertex Buffer Object）存在的意义，<strong>VBO 主要是用于在 GPU 上创建存储形状或顶点数据的内存</strong>。通过使用 VBO，可以一次性将大量顶点数据发送到 GPU，避免了逐个发送所带来的等待时间，提高了效率。它的作用类似于一次性将12块饼干放入烤箱烘烤，而不是每次只放一块，等待烘烤完成后再放下一块，从而加快整体处理速度。</p><p>下面的代码演示了如何创建一个 VBO 存储顶点数据，并发送给 GPU。</p><pre><code class="hljs language-c++"><span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> VBO;      <span class="hljs-comment">// decalre buffer</span>
+<span class="hljs-built_in">glGenBuffers</span>(<span class="hljs-number">1</span>, &amp;VBO); <span class="hljs-comment">// OpenGL function, Generate Buffers</span>
+            <span class="hljs-comment">// --- PARAMETERS ---</span>
+            <span class="hljs-comment">// assign a unique ID number 1 to VBO</span>
+            <span class="hljs-comment">// VBO refrence (location in memory -- C++ term) </span>
 
-/*
+<span class="hljs-comment">/*
 NOTES: There are many types of buffer objects which can be found here
     https://www.khronos.org/opengl/wiki/Buffer_Object
     OpenGL allows for several buffers at the same time, but
@@ -18,13 +18,13 @@ NOTES: There are many types of buffer objects which can be found here
     For clarity you have multiple buffers of the same type 
     declared and defined, but you would have to switch between them
     in order to use them.
-*/
-glBindBuffer(GL_ARRAY_BUFFER, VBO); // OpenGL function, Bind Buffer
-                  // --- PARAMETERS --- 
-                  // Array Buffer type
-                  // assign to buffer object VBO
+*/</span>
+<span class="hljs-built_in">glBindBuffer</span>(GL_ARRAY_BUFFER, VBO); <span class="hljs-comment">// OpenGL function, Bind Buffer</span>
+                  <span class="hljs-comment">// --- PARAMETERS --- </span>
+                  <span class="hljs-comment">// Array Buffer type</span>
+                  <span class="hljs-comment">// assign to buffer object VBO</span>
 
-/*
+<span class="hljs-comment">/*
 NOTES: There are a few types of "usage", but more often than not,
     these three are the most common: GL_STREAM_DRAW, GL_STATIC_DRAW,
     GL_DYNAMIC_DRAW. As to what each of them mean (in respective order):
@@ -34,146 +34,146 @@ NOTES: There are a few types of "usage", but more often than not,
     
     All other "usage" types and meaning can be found here
     https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBufferData.xhtml
-*/
-// OpenGL function, Buffer Data                  
-glBufferData( GL_ARRAY_BUFFER,      // using the VBO with Array Buffer type
-       sizeof(verticies),    // bytes of memory, array of verticies
-       vertices,             // data to send to GPU, array of verticies 
-       GL_STATIC_DRAW        // usage, tell GPU data doesn't change often
+*/</span>
+<span class="hljs-comment">// OpenGL function, Buffer Data                  </span>
+<span class="hljs-built_in">glBufferData</span>( GL_ARRAY_BUFFER,      <span class="hljs-comment">// using the VBO with Array Buffer type</span>
+       <span class="hljs-built_in">sizeof</span>(verticies),    <span class="hljs-comment">// bytes of memory, array of verticies</span>
+       vertices,             <span class="hljs-comment">// data to send to GPU, array of verticies </span>
+       GL_STATIC_DRAW        <span class="hljs-comment">// usage, tell GPU data doesn't change often</span>
       );
-</code></pre><h2 id="Vertex Shader">Vertex Shader <a href="#Vertex Shader">#</a></h2><p>显卡都有成千上万的小处理核心，它们在GPU上为每一个（渲染管线）阶段运行各自的小程序，从而在图形渲染管线中快速处理你的数据。这些小程序叫做<strong>着色器(Shader)</strong>。现代 opengl 要求开发至少设置一个顶点着色器和片段着色器。</p><p>顶点着色器的作用是对 vbo 中的每个顶点数据进行<strong>变换（transform）</strong>，转换成 NDC 坐标系中的坐标。</p><blockquote><p>在顶点着色器中经常用到的变换有：模型变换、视口变换、透视变换和标准化，关于坐标系统以及变换的了解，可以阅读<a href="https://pengfeixc.com/blogs/computer-graphics/coordinate-system-and-glm.html#%E4%B8%80.%20%E4%BA%94%E4%B8%AA%E5%9D%90%E6%A0%87%E7%B3%BB%E5%92%8C%E5%9B%9B%E4%B8%AA%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5">这篇文章</a>。</p></blockquote><p>shader 使用一种类 C 语言编写，即 GLSL。</p><p>如何创建链接着色器，以及编写 GLSL，可以看这篇文章教学：<a href="https://learnopengl.com/Getting-started/Shaders">shaders</a>。</p><p>下面的代码演示了创建编译一个顶点着色器：</p><pre><code>// shaders must be loaded as code strings
-// NOTE: it is possible to load it in from a different file 
-const char *vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-" gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
+</code></pre><h2 id="Vertex Shader">Vertex Shader <a href="#Vertex Shader">#</a></h2><p>显卡都有成千上万的小处理核心，它们在GPU上为每一个（渲染管线）阶段运行各自的小程序，从而在图形渲染管线中快速处理你的数据。这些小程序叫做<strong>着色器(Shader)</strong>。现代 opengl 要求开发至少设置一个顶点着色器和片段着色器。</p><p>顶点着色器的作用是对 vbo 中的每个顶点数据进行<strong>变换（transform）</strong>，转换成 NDC 坐标系中的坐标。</p><blockquote><p>在顶点着色器中经常用到的变换有：模型变换、视口变换、透视变换和标准化，关于坐标系统以及变换的了解，可以阅读<a href="https://pengfeixc.com/blogs/computer-graphics/coordinate-system-and-glm.html#%E4%B8%80.%20%E4%BA%94%E4%B8%AA%E5%9D%90%E6%A0%87%E7%B3%BB%E5%92%8C%E5%9B%9B%E4%B8%AA%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5">这篇文章</a>。</p></blockquote><p>shader 使用一种类 C 语言编写，即 GLSL。</p><p>如何创建链接着色器，以及编写 GLSL，可以看这篇文章教学：<a href="https://learnopengl.com/Getting-started/Shaders">shaders</a>。</p><p>下面的代码演示了创建编译一个顶点着色器：</p><pre><code class="hljs language-c++"><span class="hljs-comment">// shaders must be loaded as code strings</span>
+<span class="hljs-comment">// <span class="hljs-doctag">NOTE:</span> it is possible to load it in from a different file </span>
+<span class="hljs-type">const</span> <span class="hljs-type">char</span> *vertexShaderSource = <span class="hljs-string">"#version 330 core\n"</span>
+<span class="hljs-string">"layout (location = 0) in vec3 aPos;\n"</span>
+<span class="hljs-string">"void main()\n"</span>
+<span class="hljs-string">"{\n"</span>
+<span class="hljs-string">" gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"</span>
+<span class="hljs-string">"}\0"</span>;
 
-unsigned int vertexShader; // vertex shader ID holder
-vertexShader = glCreateShader(GL_VERTEX_SHADER); // assign/get ID
-glShaderSource(vertexShader, 1, &amp;vertexShaderSource, NULL); // set shader object
-glCompileShader(vertexShader); // compile shader
+<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> vertexShader; <span class="hljs-comment">// vertex shader ID holder</span>
+vertexShader = <span class="hljs-built_in">glCreateShader</span>(GL_VERTEX_SHADER); <span class="hljs-comment">// assign/get ID</span>
+<span class="hljs-built_in">glShaderSource</span>(vertexShader, <span class="hljs-number">1</span>, &amp;vertexShaderSource, <span class="hljs-literal">NULL</span>); <span class="hljs-comment">// set shader object</span>
+<span class="hljs-built_in">glCompileShader</span>(vertexShader); <span class="hljs-comment">// compile shader</span>
 
-/* VERTEX SHADER COMPILER CHECKER */
-int success;
-char infoLog[512];
-glGetShaderiv(vertexShader, GL_COMPILE, STATUS, &amp;success);
+<span class="hljs-comment">/* VERTEX SHADER COMPILER CHECKER */</span>
+<span class="hljs-type">int</span> success;
+<span class="hljs-type">char</span> infoLog[<span class="hljs-number">512</span>];
+<span class="hljs-built_in">glGetShaderiv</span>(vertexShader, GL_COMPILE, STATUS, &amp;success);
 
-if(!success)
+<span class="hljs-keyword">if</span>(!success)
 {
- glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
- std::cout &lt;&lt; "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" 
+ <span class="hljs-built_in">glGetShaderInfoLog</span>(vertexShader, <span class="hljs-number">512</span>, <span class="hljs-literal">NULL</span>, infoLog);
+ std::cout &lt;&lt; <span class="hljs-string">"ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"</span> 
       &lt;&lt; infoLog 
       &lt;&lt; std::endl;
-} // else, was successful -- continue running code
-</code></pre><h2 id="Fragment Shader">Fragment Shader <a href="#Fragment Shader">#</a></h2><p>片段着色器的作用就是计算最终输出到屏幕上的每个像素的颜色。用 R、G、B、A 四个值代替颜色，每个值的范围为 <code>[0, 1]</code>，与通常使用的 <code>[0, 255]</code> 范围等比映射的，0 = 0，1 = 255。片段着色器也是用 glsl 编写，输出是 <code>FragColor</code> 变量。</p><pre><code># version 330 core  // version 3.3 core-profile
-out vec4 FragColor; // vec4 FragColor; // output
+} <span class="hljs-comment">// else, was successful -- continue running code</span>
+</code></pre><h2 id="Fragment Shader">Fragment Shader <a href="#Fragment Shader">#</a></h2><p>片段着色器的作用就是计算最终输出到屏幕上的每个像素的颜色。用 R、G、B、A 四个值代替颜色，每个值的范围为 <code>[0, 1]</code>，与通常使用的 <code>[0, 255]</code> 范围等比映射的，0 = 0，1 = 255。片段着色器也是用 glsl 编写，输出是 <code>FragColor</code> 变量。</p><pre><code class="hljs language-c++"><span class="hljs-meta"># version 330 core  <span class="hljs-comment">// version 3.3 core-profile</span></span>
+out vec4 FragColor; <span class="hljs-comment">// vec4 FragColor; // output</span>
 
-void main()
-{
- FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f); // RGBA = (1, .5, .2, 1) 
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">main</span><span class="hljs-params">()</span>
+</span>{
+ FragColor = <span class="hljs-built_in">vec4</span>(<span class="hljs-number">1.0f</span>, <span class="hljs-number">0.5f</span>, <span class="hljs-number">0.2f</span>, <span class="hljs-number">1.0f</span>); <span class="hljs-comment">// RGBA = (1, .5, .2, 1) </span>
 }
-</code></pre><p>创建编译一个片段着色器过程与顶点着色器类似：</p><pre><code>const char* fragmentShaderSource = "# version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-" FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-"}\0";
+</code></pre><p>创建编译一个片段着色器过程与顶点着色器类似：</p><pre><code class="hljs language-c++"><span class="hljs-type">const</span> <span class="hljs-type">char</span>* fragmentShaderSource = <span class="hljs-string">"# version 330 core\n"</span>
+<span class="hljs-string">"out vec4 FragColor;\n"</span>
+<span class="hljs-string">"void main()\n"</span>
+<span class="hljs-string">"{\n"</span>
+<span class="hljs-string">" FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"</span>
+<span class="hljs-string">"}\0"</span>;
 
-unsigned int fragmentShader; // fragment shader ID holder
-fragmentShader = glCreateShader(GL_FRAGMENT_SHADER); // assign ID
-glShaderSource(fragmentShader, 1, &amp;fragmentShaderSource, NULL); // set fragment
-glCompileShader(fragmentShader); // compile fragment shader
+<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> fragmentShader; <span class="hljs-comment">// fragment shader ID holder</span>
+fragmentShader = <span class="hljs-built_in">glCreateShader</span>(GL_FRAGMENT_SHADER); <span class="hljs-comment">// assign ID</span>
+<span class="hljs-built_in">glShaderSource</span>(fragmentShader, <span class="hljs-number">1</span>, &amp;fragmentShaderSource, <span class="hljs-literal">NULL</span>); <span class="hljs-comment">// set fragment</span>
+<span class="hljs-built_in">glCompileShader</span>(fragmentShader); <span class="hljs-comment">// compile fragment shader</span>
 
-/* FRAGMENT SHADER COMPILER CHECKER */
+<span class="hljs-comment">/* FRAGMENT SHADER COMPILER CHECKER */</span>
 GLint success;
-GLchar infoLog[512];
-glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &amp;success);
+GLchar infoLog[<span class="hljs-number">512</span>];
+<span class="hljs-built_in">glGetShaderiv</span>(fragmentShader, GL_COMPILE_STATUS, &amp;success);
 
-if (!success)
+<span class="hljs-keyword">if</span> (!success)
 {
-    glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-    std::cout &lt;&lt; "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
+    <span class="hljs-built_in">glGetShaderInfoLog</span>(fragmentShader, <span class="hljs-number">512</span>, <span class="hljs-literal">NULL</span>, infoLog);
+    std::cout &lt;&lt; <span class="hljs-string">"ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"</span>
               &lt;&lt; infoLog
               &lt;&lt; std::endl;
 }
-</code></pre><h2 id="Shader Program">Shader Program <a href="#Shader Program">#</a></h2><p>有了片段着色器和顶点着色器之后，需要创建着色器程序（Shader Program），着色器程序将所有着色器链接起来，将前一个着色器的输出作为下一个着色器的输入，按序执行。</p><pre><code>unsigned int shaderProgram; // shader ID holder
-shaderProgram = glCreateProgram(); // assign shader ID
-glAttatchShader(shaderProgram, vertexShader); // (1) vertex shader
-glAttatchShader(shaderProgram, framentShader);// (2) fragmentShader
-glLinkProgram(shaderProgram); // combine/link shaders
+</code></pre><h2 id="Shader Program">Shader Program <a href="#Shader Program">#</a></h2><p>有了片段着色器和顶点着色器之后，需要创建着色器程序（Shader Program），着色器程序将所有着色器链接起来，将前一个着色器的输出作为下一个着色器的输入，按序执行。</p><pre><code class="hljs language-c++"><span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> shaderProgram; <span class="hljs-comment">// shader ID holder</span>
+shaderProgram = <span class="hljs-built_in">glCreateProgram</span>(); <span class="hljs-comment">// assign shader ID</span>
+<span class="hljs-built_in">glAttatchShader</span>(shaderProgram, vertexShader); <span class="hljs-comment">// (1) vertex shader</span>
+<span class="hljs-built_in">glAttatchShader</span>(shaderProgram, framentShader);<span class="hljs-comment">// (2) fragmentShader</span>
+<span class="hljs-built_in">glLinkProgram</span>(shaderProgram); <span class="hljs-comment">// combine/link shaders</span>
 
-/* SHADER PROGRAM COMPILER CHECKER */
-glGetProgramiv(shaderProgram, GL_LINK_STATUS, &amp;success);
-if(!success)
+<span class="hljs-comment">/* SHADER PROGRAM COMPILER CHECKER */</span>
+<span class="hljs-built_in">glGetProgramiv</span>(shaderProgram, GL_LINK_STATUS, &amp;success);
+<span class="hljs-keyword">if</span>(!success)
 {
- glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
- std::cout &lt;&lt; "ERROR::SHADER PROGRAM::COMPILATION_FAILED\n"
+ <span class="hljs-built_in">glGetProgramInfoLog</span>(shaderProgram, <span class="hljs-number">512</span>, <span class="hljs-literal">NULL</span>, infoLog);
+ std::cout &lt;&lt; <span class="hljs-string">"ERROR::SHADER PROGRAM::COMPILATION_FAILED\n"</span>
               &lt;&lt; infoLog
               &lt;&lt; std::endl;
 }
 
-glUseProgram(shaderProgram); // every render now uses this shader object
+<span class="hljs-built_in">glUseProgram</span>(shaderProgram); <span class="hljs-comment">// every render now uses this shader object</span>
 
-// cleanup -- delete shader objects once linked (saves on memory)
-glDeleteShader(vertexShader);
-glDeleteShader(fragmentShader);
-</code></pre><h2 id="VAO">VAO <a href="#VAO">#</a></h2><p>一个 3D 场景通常会渲染很多（成千上万）个物体，所以程序中必然存在很多个不同的顶点数据，渲染一个 obj，我们需要告诉 gpu 如何解析这些顶点数据。代码会是下面这样：</p><pre><code>void drawMesh(Mesh[] meshes){
+<span class="hljs-comment">// cleanup -- delete shader objects once linked (saves on memory)</span>
+<span class="hljs-built_in">glDeleteShader</span>(vertexShader);
+<span class="hljs-built_in">glDeleteShader</span>(fragmentShader);
+</code></pre><h2 id="VAO">VAO <a href="#VAO">#</a></h2><p>一个 3D 场景通常会渲染很多（成千上万）个物体，所以程序中必然存在很多个不同的顶点数据，渲染一个 obj，我们需要告诉 gpu 如何解析这些顶点数据。代码会是下面这样：</p><pre><code class="hljs language-c++"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">drawMesh</span><span class="hljs-params">(Mesh[] meshes)</span></span>{
     foreach(mesh in meshes){        
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
-        glVertexAttribPointer(posAttrLoc, 3, GL_FLOAT, false, sizeof(Vertex), mesh.vboOffset + offsetof(Vertex, pos));
-        glVertexAttribPointer (normalAttrLoc, 3, GL_FLOAT, false, sizeof(Vertex), mesh.vboOffset + offsetof(Vertex, normal));
-        //...
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ebo);
+        <span class="hljs-built_in">glBindBuffer</span>(GL_ARRAY_BUFFER, mesh.vbo);
+        <span class="hljs-built_in">glVertexAttribPointer</span>(posAttrLoc, <span class="hljs-number">3</span>, GL_FLOAT, <span class="hljs-literal">false</span>, <span class="hljs-built_in">sizeof</span>(Vertex), mesh.vboOffset + <span class="hljs-built_in">offsetof</span>(Vertex, pos));
+        <span class="hljs-built_in">glVertexAttribPointer</span> (normalAttrLoc, <span class="hljs-number">3</span>, GL_FLOAT, <span class="hljs-literal">false</span>, <span class="hljs-built_in">sizeof</span>(Vertex), mesh.vboOffset + <span class="hljs-built_in">offsetof</span>(Vertex, normal));
+        <span class="hljs-comment">//...</span>
+        <span class="hljs-built_in">glBindBuffer</span>(GL_ELEMENT_ARRAY_BUFFER, mesh.ebo);
 
-        glDrawElements(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, mesh.indexOffset);
+        <span class="hljs-built_in">glDrawElements</span>(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, mesh.indexOffset);
     }
 }
-</code></pre><p>每个 mesh 的绘制，都需要告诉 opengl 如何解析顶点数据，以及 ebo（ibo, 索引缓冲对象）绑定。</p><p>有了 vao 后，绘制过程可以变成这样：</p><pre><code>//done once per mesh on load
-void prepareMeshForRender(Mesh mesh){
-    glBindVertexArray(mesh.vao);
-    glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
+</code></pre><p>每个 mesh 的绘制，都需要告诉 opengl 如何解析顶点数据，以及 ebo（ibo, 索引缓冲对象）绑定。</p><p>有了 vao 后，绘制过程可以变成这样：</p><pre><code class="hljs language-c++"><span class="hljs-comment">//done once per mesh on load</span>
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">prepareMeshForRender</span><span class="hljs-params">(Mesh mesh)</span></span>{
+    <span class="hljs-built_in">glBindVertexArray</span>(mesh.vao);
+    <span class="hljs-built_in">glBindBuffer</span>(GL_ARRAY_BUFFER, mesh.vbo);
 
-    glVertexAttribPointer (posAttrLoc, 3, GL_FLOAT, false, sizeof(Vertex), mesh.vboOffset + offsetof(Vertex, pos));//will associate mesh.vbo with the posAttrLoc
-    glEnableVertexAttribArray(posAttrLoc);
+    <span class="hljs-built_in">glVertexAttribPointer</span> (posAttrLoc, <span class="hljs-number">3</span>, GL_FLOAT, <span class="hljs-literal">false</span>, <span class="hljs-built_in">sizeof</span>(Vertex), mesh.vboOffset + <span class="hljs-built_in">offsetof</span>(Vertex, pos));<span class="hljs-comment">//will associate mesh.vbo with the posAttrLoc</span>
+    <span class="hljs-built_in">glEnableVertexAttribArray</span>(posAttrLoc);
 
-    glVertexAttribPointer (normalAttrLoc, 3, GL_FLOAT, false, sizeof(Vertex), mesh.vboOffset + offsetof(Vertex, normal));
-    glEnableVertexAttribArray(normalAttrLoc);
+    <span class="hljs-built_in">glVertexAttribPointer</span> (normalAttrLoc, <span class="hljs-number">3</span>, GL_FLOAT, <span class="hljs-literal">false</span>, <span class="hljs-built_in">sizeof</span>(Vertex), mesh.vboOffset + <span class="hljs-built_in">offsetof</span>(Vertex, normal));
+    <span class="hljs-built_in">glEnableVertexAttribArray</span>(normalAttrLoc);
 
-    //...
+    <span class="hljs-comment">//...</span>
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ebo); //this binding is also saved.
-    glBindVertexArray(0);
+    <span class="hljs-built_in">glBindBuffer</span>(GL_ELEMENT_ARRAY_BUFFER, mesh.ebo); <span class="hljs-comment">//this binding is also saved.</span>
+    <span class="hljs-built_in">glBindVertexArray</span>(<span class="hljs-number">0</span>);
 }
 
-void drawMesh(Mesh[] meshes){
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">drawMesh</span><span class="hljs-params">(Mesh[] meshes)</span></span>{
     foreach(mesh in meshes){        
-        glBindVertexArray(mesh.vao);
-        glDrawElements(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, mesh.indexOffset);
+        <span class="hljs-built_in">glBindVertexArray</span>(mesh.vao);
+        <span class="hljs-built_in">glDrawElements</span>(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, mesh.indexOffset);
     }
 }
-</code></pre><p>只需要在，绘制前调用 <code>glBindVertexArray</code>，切换绑定 vao 即可。</p><p>简而言之，<strong>vao 的作用就是缓存顶点数据的 vbo 配置和 ebo 配置，以便后续绘制时不需要重复进行配置</strong>。</p><blockquote><p>关于 vbo、ebo（ibo，下面会简单的介绍一下）的数据配置以及解析，可以阅读这篇教程：<a href="https://learnopengl.com/Getting-started/Hello-Triangle">learnopengl hello-triangle</a>。</p></blockquote><h2 id="EBO">EBO <a href="#EBO">#</a></h2><p>这里也简单介绍一下 EBO，它是为了减少顶点数据内存的一个重要手段。如果你要绘制一个矩形 ABCD（从左上角开始，顶点逆时针顺序为 ABCD），需要准备的顶点数据如下：</p><pre><code>float vertices = {
-    // the first triangle
+</code></pre><p>只需要在，绘制前调用 <code>glBindVertexArray</code>，切换绑定 vao 即可。</p><p>简而言之，<strong>vao 的作用就是缓存顶点数据的 vbo 配置和 ebo 配置，以便后续绘制时不需要重复进行配置</strong>。</p><blockquote><p>关于 vbo、ebo（ibo，下面会简单的介绍一下）的数据配置以及解析，可以阅读这篇教程：<a href="https://learnopengl.com/Getting-started/Hello-Triangle">learnopengl hello-triangle</a>。</p></blockquote><h2 id="EBO">EBO <a href="#EBO">#</a></h2><p>这里也简单介绍一下 EBO，它是为了减少顶点数据内存的一个重要手段。如果你要绘制一个矩形 ABCD（从左上角开始，顶点逆时针顺序为 ABCD），需要准备的顶点数据如下：</p><pre><code class="hljs language-c++"><span class="hljs-type">float</span> vertices = {
+    <span class="hljs-comment">// the first triangle</span>
     Ax, Ay, Az,
     Bx, By, Bz,
     Cx, Cy, Cz,
-    // the second triangle
+    <span class="hljs-comment">// the second triangle</span>
     Ax, Ay, Az,
     Cx, Cy, Cz,
     Dx, Dy, Dz,  
 }
-</code></pre><p>可以看到绘制两个三角形，数据中有两个顶点 A 和 C 的数据重复定义了，我们希望顶点数据可以尽量少：</p><pre><code>float vertices = {
+</code></pre><p>可以看到绘制两个三角形，数据中有两个顶点 A 和 C 的数据重复定义了，我们希望顶点数据可以尽量少：</p><pre><code class="hljs language-c++"><span class="hljs-type">float</span> vertices = {
     Ax, Ay, Az,
     Bx, By, Bz,
     Cx, Cy, Cz,
     Dx, Dy, Dz
 }
-</code></pre><p>这就是 EBO 的作用，EBO 存储了顶点的索引，告诉 gpu 绘制按照索引点顺序绘制：</p><pre><code>float verticesIndex = {
-    // the first triangle 
-    0, 1, 2,
-    // the second triangle
-    0, 1, 3
+</code></pre><p>这就是 EBO 的作用，EBO 存储了顶点的索引，告诉 gpu 绘制按照索引点顺序绘制：</p><pre><code class="hljs language-c++"><span class="hljs-type">float</span> verticesIndex = {
+    <span class="hljs-comment">// the first triangle </span>
+    <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>,
+    <span class="hljs-comment">// the second triangle</span>
+    <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>
 }
 </code></pre><p>结合 verticesIndex 和 去重后的 vertices，gpu 仍然能够绘制出一个矩形。</p><h2 id="多 shader 绘制">多 shader 绘制 <a href="#多 shader 绘制">#</a></h2><p>如果有两个 mesh 需要绘制，两个 mesh 使用的是不同的 shader，在绘制过程中需要使用 <code>glUseProgram</code> 切换 mesh 绘制。</p><p>需要注意的点有：</p><ul><li>每个 shader 程序（program）只能一次激活使用一个，绘制不同对象时需要切换 glUseProgram。</li><li>每个对象绑定自己的顶点数据（VAO/VBO）和 shader 程序。</li><li>先激活对应 shader，绑定对应 VAO，调用绘制指令；然后切换另一个shader，绑定另一个VAO，再调用绘制指令。</li><li>多数情况下，为了代码整洁，会为每个对象分别创建VAO和Program。</li></ul><p>可能的伪代码：</p><pre><code class="hljs language-c++"><span class="hljs-comment">// prepare shader program</span>
 GLuint programTriangle = <span class="hljs-built_in">createShaderProgram</span>(vertexShaderSrc1, fragmentShaderSrc1);
