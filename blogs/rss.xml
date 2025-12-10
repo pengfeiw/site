@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sun, 03 Aug 2025 02:12:06 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 10 Dec 2025 07:11:25 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sun, 03 Aug 2025 02:11:55 GMT</pubDate>
+        <pubDate>Wed, 10 Dec 2025 07:11:15 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2025, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[多个 Python 并存]]></title>
+            <description><![CDATA[windows 环境如何安装多个版本 python]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/python-install.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/python-install.html</guid>
+            <pubDate>Wed, 10 Dec 2025 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[opengl shader 和 buffer]]></title>
             <description><![CDATA[对 opengl 渲染管线中的一些重要概念的解释，包括 shader、vao、vbo、ebo 等。]]></description>
