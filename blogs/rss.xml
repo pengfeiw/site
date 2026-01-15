@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Wed, 10 Dec 2025 07:11:25 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 15 Jan 2026 10:18:42 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Wed, 10 Dec 2025 07:11:15 GMT</pubDate>
-        <copyright><![CDATA[All rights reserved 2025, Ibas]]></copyright>
+        <pubDate>Thu, 15 Jan 2026 10:18:32 GMT</pubDate>
+        <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[OCCT 的编译]]></title>
+            <description><![CDATA[记录 OCCT 的编译过程]]></description>
+            <link>https://pengfeixc.com/blogs/clang/build-occt.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/clang/build-occt.html</guid>
+            <pubDate>Thu, 15 Jan 2026 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[多个 Python 并存]]></title>
             <description><![CDATA[windows 环境如何安装多个版本 python]]></description>
