@@ -2,117 +2,209 @@
 <html lang="zh_cn" xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh_cn">
 
 <head>
-    <title>
-        王鹏飞的个人网站
-    </title>
+    <title>王鹏飞的个人网站 | Pengfei Wang</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta property="author" content="王鹏飞" />
     <link rel="icon" href="https://pengfeixc.com/blogs/assests/images/icon.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
-        *,
-        :before,
-        :after {
-            box-sizing: border-box;
+        :root {
+            --bg-color: #dcd8c0;
+            --container-bg: #d4d0b8;
+            --text-color: #4e4b42;
+            --accent-color: #bab5a1;
+            --highlight: #c13d3d;
+            --border-color: #5c594d;
         }
+
+        *, :before, :after { box-sizing: border-box; }
 
         body {
-            --gary-2: #D3D9DF; 
-            --gray-5: #8A939B;
-            --gray-7: #5E666E;
-            --gray-8: #495057;
-            display: flex;
-            align-items: center;
-            background: var(--gray-1);
-            min-width: 275px;
-            height: 100vh;
-            margin: 0 10vw;
-            overflow: hidden;
-            color: var(--gray-7);
-            font-family: Roboto;
-        }
-
-        .wrapper {
-            flex-grow: 2;
-            width: 40vw;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        h1 {
             margin: 0;
-            font-size: 6em;
-            font-weight: 100;
-        }
-
-        p {
-            width: 95%;
-            font-size: 1.5em;
-            line-height: 1.4;
-        }
-
-        .buttons {
-            white-space: nowrap;
-            display: inline-block;
-        }
-
-        span {
-            display: block;
-            text-transform: uppercase;
-            color: var(--gray-5);
-            letter-spacing: 1.5px;
-            text-align: center;
-        }
-
-        a {
-            display: inline-block;
-            padding: .8em 1em;
-            margin-right: 1em;
-            margin-bottom: 1em;
-            border: 3px solid var(--gray-5);
-            color: var(--gray-8);
-            font-weight: 500;
-            text-transform: uppercase;
-            text-decoration: none;
-            letter-spacing: .2em;
-            position: relative;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle, #cdc9b2 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: var(--text-color);
+            font-family: 'VT323', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             overflow: hidden;
-            transition: .3s;
+        }
 
-            &:hover {
-                color: #E3F2FD;
+        .crt-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.02) 50%);
+            z-index: 1000;
+            background-size: 100% 2px;
+            pointer-events: none;
+            opacity: 0.5;
+        }
 
-                &:before {
-                    top: 0;
-                }
-            }
+        .nier-frame {
+            position: relative;
+            background: var(--container-bg);
+            border: 2px solid var(--border-color);
+            width: 90%;
+            max-width: 700px;
+            padding: 40px;
+            box-shadow: 0 0 0 4px var(--bg-color), 0 0 0 6px var(--border-color);
+        }
 
-            &:before {
-                content: '';
-                background: var(--gray-8);
-                height: 100%;
-                width: 100%;
-                position: absolute;
-                top: -100%;
-                left: 0;
-                transition: .3s;
-                z-index: -1;
-            }
+        .nier-frame::before {
+            content: "";
+            position: absolute;
+            top: 10px; left: -15px;
+            width: 5px; height: 60%;
+            background: var(--border-color);
+        }
+
+        .nier-frame::after {
+            content: "SYSTEM_STATUS_STABLE";
+            position: absolute;
+            bottom: -25px; right: 0;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            opacity: 0.6;
+        }
+
+        .glitch-header {
+            font-size: 3rem;
+            margin: 0 0 1.5rem 0;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            border-bottom: 1px solid var(--border-color);
+            display: block;
+            position: relative;
+        }
+
+        .glitch-header::after {
+            content: "";
+            position: absolute;
+            bottom: -5px; right: 0;
+            width: 40px; height: 10px;
+            background: var(--highlight);
+        }
+
+        .typing-text {
+            font-size: 1.6rem;
+            line-height: 1.4;
+            min-height: 5.6rem;
+            margin-bottom: 2rem;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+        }
+
+        .nier-btn {
+            display: block;
+            text-decoration: none;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            font-size: 1.4rem;
+            transition: all 0.2s;
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nier-btn::before {
+            content: ">";
+            margin-right: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .nier-btn:hover {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            padding-left: 20px;
+        }
+
+        .nier-btn:hover::before {
+            opacity: 1;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background-color: var(--highlight);
+            animation: blink 0.8s step-end infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .ui-decoration {
+            position: absolute;
+            font-size: 0.7rem;
+            opacity: 0.4;
+        }
+
+        @media (max-width: 480px) {
+            .nier-frame { padding: 20px; }
+            .glitch-header { font-size: 2rem; }
+            .typing-text { font-size: 1.2rem; }
         }
     </style>
 </head>
 
 <body>
-    <div class="wrapper">
-        <h1>Hello.</h1>
-        <p>This is Wang Pengfei. A developer. Welcome to my web world. </p>
-        <div class="buttons">
-            <a href="https://pengfeixc.com/blogs">Blog</a>
-            <a href="https://pengfeiw.github.io/minicode">MiniCode</a>
-            <a href="https://github.com/pengfeiw">Github</a>
-            <br />
+    <div class="crt-overlay"></div>
+    
+    <div class="nier-frame">
+        <div class="ui-decoration" style="top:5px; left:10px;">LAT: 35.6895 / LONG: 139.6917</div>
+        <div class="ui-decoration" style="top:5px; right:12px;">OS_VER_1.4.2</div>
+        
+        <h1 class="glitch-header">WANG_PF.OS</h1>
+        
+        <div class="typing-text" id="type-target"></div>
+
+        <div class="nav-grid">
+            <a href="/blogs" class="nier-btn">ACCESS_BLOG</a>
+            <a href="https://github.com/pengfeiw" class="nier-btn" target="_blank">SYNC_GITHUB</a>
+            <a href="https://pengfeiw.github.io/minicode" class="nier-btn">RUN_PROJECTS</a>
         </div>
     </div>
-</body>
 
+    <script>
+        const textArray = [
+            "Initializing neural link...",
+            "Loading personality matrix: WANG_PENGFEI",
+            "Status: Searching for truth in code.",
+            "Welcome to the YoRHa network terminal."
+        ];
+        const target = document.getElementById('type-target');
+        let line = 0;
+        let char = 0;
+
+        function type() {
+            if (line < textArray.length) {
+                if (char < textArray[line].length) {
+                    target.innerHTML = textArray.slice(0, line).join('<br>') + 
+                                     (line > 0 ? '<br>' : '') + 
+                                     textArray[line].substring(0, char + 1) + 
+                                     '<span class="cursor"></span>';
+                    char++;
+                    setTimeout(type, 30);
+                } else {
+                    line++;
+                    char = 0;
+                    setTimeout(type, 400);
+                }
+            }
+        }
+
+        window.onload = type;
+    </script>
+</body>
 </html>
