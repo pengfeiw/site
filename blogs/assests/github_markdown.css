@@ -1,98 +1,66 @@
-@media (prefers-color-scheme: dark) {
-    .markdown-body {
-        color-scheme: dark;
-        --color-prettylights-syntax-comment: #8b949e;
-        --color-prettylights-syntax-constant: #79c0ff;
-        --color-prettylights-syntax-entity: #d2a8ff;
-        --color-prettylights-syntax-storage-modifier-import: #c9d1d9;
-        --color-prettylights-syntax-entity-tag: #7ee787;
-        --color-prettylights-syntax-keyword: #ff7b72;
-        --color-prettylights-syntax-string: #a5d6ff;
-        --color-prettylights-syntax-variable: #ffa657;
-        --color-prettylights-syntax-brackethighlighter-unmatched: #f85149;
-        --color-prettylights-syntax-invalid-illegal-text: #f0f6fc;
-        --color-prettylights-syntax-invalid-illegal-bg: #8e1519;
-        --color-prettylights-syntax-carriage-return-text: #f0f6fc;
-        --color-prettylights-syntax-carriage-return-bg: #b62324;
-        --color-prettylights-syntax-string-regexp: #7ee787;
-        --color-prettylights-syntax-markup-list: #f2cc60;
-        --color-prettylights-syntax-markup-heading: #1f6feb;
-        --color-prettylights-syntax-markup-italic: #c9d1d9;
-        --color-prettylights-syntax-markup-bold: #c9d1d9;
-        --color-prettylights-syntax-markup-deleted-text: #ffdcd7;
-        --color-prettylights-syntax-markup-deleted-bg: #67060c;
-        --color-prettylights-syntax-markup-inserted-text: #aff5b4;
-        --color-prettylights-syntax-markup-inserted-bg: #033a16;
-        --color-prettylights-syntax-markup-changed-text: #ffdfb6;
-        --color-prettylights-syntax-markup-changed-bg: #5a1e02;
-        --color-prettylights-syntax-markup-ignored-text: #c9d1d9;
-        --color-prettylights-syntax-markup-ignored-bg: #1158c7;
-        --color-prettylights-syntax-meta-diff-range: #d2a8ff;
-        --color-prettylights-syntax-brackethighlighter-angle: #8b949e;
-        --color-prettylights-syntax-sublimelinter-gutter-mark: #484f58;
-        --color-prettylights-syntax-constant-other-reference-link: #a5d6ff;
-        --color-fg-default: #c9d1d9;
-        --color-fg-muted: #8b949e;
-        --color-fg-subtle: #6e7681;
-        --color-canvas-default: #0d1117;
-        --color-canvas-subtle: #161b22;
-        --color-border-default: #30363d;
-        --color-border-muted: #21262d;
-        --color-neutral-muted: rgba(110, 118, 129, 0.4);
-        --color-accent-fg: #58a6ff;
-        --color-accent-emphasis: #1f6feb;
-        --color-attention-subtle: rgba(187, 128, 9, 0.15);
-        --color-danger-fg: #f85149;
-    }
+/* Nier: Automata Theme - Markdown Content */
+
+:root {
+    /* Nier Theme Colors */
+    --nier-bg: #dcd8c0;
+    --nier-container-bg: #d4d0b8;
+    --nier-text: #4e4b42;
+    --nier-text-muted: #6e6a5e;
+    --nier-accent: #c13d3d;
+    --nier-border: #5c594d;
+    --nier-border-light: #8a8578;
+    --nier-highlight: #bab5a1;
+    --nier-hover: #c9c5b0;
+    --nier-code-bg: #3a3833;
+    
+    /* Override GitHub colors */
+    --color-fg-default: #4e4b42;
+    --color-fg-muted: #6e6a5e;
+    --color-fg-subtle: #8a8578;
+    --color-canvas-default: #d4d0b8;
+    --color-canvas-subtle: #dcd8c0;
+    --color-border-default: #5c594d;
+    --color-border-muted: #8a8578;
+    --color-neutral-muted: rgba(94, 90, 78, 0.2);
+    --color-accent-fg: #c13d3d;
+    --color-accent-emphasis: #c13d3d;
+    --color-attention-subtle: rgba(193, 61, 61, 0.1);
+    --color-danger-fg: #c13d3d;
+    
+    /* Syntax highlighting - adjusted for Nier theme */
+    --color-prettylights-syntax-comment: #6e6a5e;
+    --color-prettylights-syntax-constant: #8b4513;
+    --color-prettylights-syntax-entity: #5c594d;
+    --color-prettylights-syntax-storage-modifier-import: #4e4b42;
+    --color-prettylights-syntax-entity-tag: #556b2f;
+    --color-prettylights-syntax-keyword: #c13d3d;
+    --color-prettylights-syntax-string: #8b4513;
+    --color-prettylights-syntax-variable: #6e6a5e;
+    --color-prettylights-syntax-brackethighlighter-unmatched: #c13d3d;
+    --color-prettylights-syntax-invalid-illegal-text: #f0f6fc;
+    --color-prettylights-syntax-invalid-illegal-bg: #8e1519;
+    --color-prettylights-syntax-carriage-return-text: #f0f6fc;
+    --color-prettylights-syntax-carriage-return-bg: #b62324;
+    --color-prettylights-syntax-string-regexp: #556b2f;
+    --color-prettylights-syntax-markup-list: #735c0f;
+    --color-prettylights-syntax-markup-heading: #4e4b42;
+    --color-prettylights-syntax-markup-italic: #4e4b42;
+    --color-prettylights-syntax-markup-bold: #4e4b42;
+    --color-prettylights-syntax-markup-deleted-text: #8b4513;
+    --color-prettylights-syntax-markup-deleted-bg: #f5e6d3;
+    --color-prettylights-syntax-markup-inserted-text: #556b2f;
+    --color-prettylights-syntax-markup-inserted-bg: #e8f0d8;
+    --color-prettylights-syntax-markup-changed-text: #735c0f;
+    --color-prettylights-syntax-markup-changed-bg: #f5e6d3;
+    --color-prettylights-syntax-markup-ignored-text: #dcd8c0;
+    --color-prettylights-syntax-markup-ignored-bg: #4e4b42;
+    --color-prettylights-syntax-meta-diff-range: #5c594d;
+    --color-prettylights-syntax-brackethighlighter-angle: #6e6a5e;
+    --color-prettylights-syntax-sublimelinter-gutter-mark: #8a8578;
+    --color-prettylights-syntax-constant-other-reference-link: #8b4513;
 }
 
-@media (prefers-color-scheme: light) {
-    .markdown-body {
-        color-scheme: light;
-        --color-prettylights-syntax-comment: #6e7781;
-        --color-prettylights-syntax-constant: #0550ae;
-        --color-prettylights-syntax-entity: #8250df;
-        --color-prettylights-syntax-storage-modifier-import: #24292f;
-        --color-prettylights-syntax-entity-tag: #116329;
-        --color-prettylights-syntax-keyword: #cf222e;
-        --color-prettylights-syntax-string: #0a3069;
-        --color-prettylights-syntax-variable: #953800;
-        --color-prettylights-syntax-brackethighlighter-unmatched: #82071e;
-        --color-prettylights-syntax-invalid-illegal-text: #f6f8fa;
-        --color-prettylights-syntax-invalid-illegal-bg: #82071e;
-        --color-prettylights-syntax-carriage-return-text: #f6f8fa;
-        --color-prettylights-syntax-carriage-return-bg: #cf222e;
-        --color-prettylights-syntax-string-regexp: #116329;
-        --color-prettylights-syntax-markup-list: #3b2300;
-        --color-prettylights-syntax-markup-heading: #0550ae;
-        --color-prettylights-syntax-markup-italic: #24292f;
-        --color-prettylights-syntax-markup-bold: #24292f;
-        --color-prettylights-syntax-markup-deleted-text: #82071e;
-        --color-prettylights-syntax-markup-deleted-bg: #ffebe9;
-        --color-prettylights-syntax-markup-inserted-text: #116329;
-        --color-prettylights-syntax-markup-inserted-bg: #dafbe1;
-        --color-prettylights-syntax-markup-changed-text: #953800;
-        --color-prettylights-syntax-markup-changed-bg: #ffd8b5;
-        --color-prettylights-syntax-markup-ignored-text: #eaeef2;
-        --color-prettylights-syntax-markup-ignored-bg: #0550ae;
-        --color-prettylights-syntax-meta-diff-range: #8250df;
-        --color-prettylights-syntax-brackethighlighter-angle: #57606a;
-        --color-prettylights-syntax-sublimelinter-gutter-mark: #8c959f;
-        --color-prettylights-syntax-constant-other-reference-link: #0a3069;
-        --color-fg-default: #24292f;
-        --color-fg-muted: #57606a;
-        --color-fg-subtle: #6e7781;
-        --color-canvas-default: #ffffff;
-        --color-canvas-subtle: #f6f8fa;
-        --color-border-default: #d0d7de;
-        --color-border-muted: hsla(210, 18%, 87%, 1);
-        --color-neutral-muted: rgba(175, 184, 193, 0.2);
-        --color-accent-fg: #0969da;
-        --color-accent-emphasis: #0969da;
-        --color-attention-subtle: #fff8c5;
-        --color-danger-fg: #cf222e;
-    }
-}
+/* Nier Theme - Light mode (default) - already defined in :root */
 
 .markdown-body {
     -ms-text-size-adjust: 100%;
@@ -100,9 +68,9 @@
     color: var(--color-fg-default);
     background-color: var(--color-canvas-default);
     word-wrap: break-word;
-    line-height: 180%;
-    font-size: 16px;
-    font-family: Times New Roman,Times,Georgia,"DejaVu Serif",serif;
+    line-height: 1.8;
+    font-size: 0.9rem;
+    font-family: 'Noto Serif SC', 'Source Han Serif CN', 'SimSun', 'Times New Roman', serif;
 }
 
 .markdown-body .octicon {
@@ -142,8 +110,21 @@
 
 .markdown-body a {
     background-color: transparent;
-    color: var(--color-accent-fg);
+    color: #c13d3d;
     text-decoration: none;
+    border-bottom: 1px solid #c13d3d;
+    transition: all 0.2s;
+}
+
+.markdown-body a:hover {
+    background-color: #c13d3d;
+    color: #f5f3e8;
+    border-bottom-color: transparent;
+    padding: 0 4px;
+}
+
+.markdown-body a:visited {
+    color: #a03030;
 }
 
 .markdown-body abbr[title] {
@@ -153,8 +134,8 @@
 
 .markdown-body b,
 .markdown-body strong {
-    font-weight: var(--base-text-weight-semibold, 600);
-    color: #ff5722b5;
+    font-weight: 600;
+    color: var(--nier-accent);
 }
 
 .markdown-body dfn {
@@ -162,11 +143,22 @@
 }
 
 .markdown-body h1 {
-    margin: .67em 0;
-    font-weight: var(--base-text-weight-semibold, 600);
-    padding-bottom: .3em;
-    font-size: 2em;
-    border-bottom: 1px solid var(--color-border-muted);
+    margin: 0.67em 0;
+    font-weight: 700;
+    padding-bottom: 0.3em;
+    font-size: 1.8em;
+    border-bottom: 2px solid var(--nier-border);
+    position: relative;
+}
+
+.markdown-body h1::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    right: 0;
+    width: 40px;
+    height: 10px;
+    background: var(--nier-accent);
 }
 
 .markdown-body mark {
@@ -217,12 +209,24 @@
     box-sizing: content-box;
     overflow: hidden;
     background: transparent;
-    border-bottom: 1px solid var(--color-border-muted);
-    height: .25em;
+    border: 0;
+    height: 4px;
     padding: 0;
     margin: 24px 0;
-    background-color: var(--color-border-default);
-    border: 0;
+    background-color: var(--nier-border);
+    position: relative;
+}
+
+.markdown-body hr::after {
+    content: "//";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'VT323', monospace;
+    font-size: 0.8rem;
+    color: var(--nier-bg);
+    letter-spacing: 2px;
 }
 
 .markdown-body input {
@@ -344,16 +348,16 @@
 
 .markdown-body kbd {
     display: inline-block;
-    padding: 3px 5px;
-    font: 11px ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
-    line-height: 10px;
-    color: var(--color-fg-default);
+    padding: 4px 8px;
+    font: 14px 'VT323', ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+    line-height: 1;
+    color: var(--nier-bg);
     vertical-align: middle;
-    background-color: var(--color-canvas-subtle);
-    border: solid 1px var(--color-neutral-muted);
-    border-bottom-color: var(--color-neutral-muted);
-    border-radius: 6px;
-    box-shadow: inset 0 -1px 0 var(--color-neutral-muted);
+    background-color: var(--nier-text);
+    border: solid 1px var(--nier-border);
+    border-radius: 0;
+    box-shadow: none;
+    letter-spacing: 1px;
 }
 
 .markdown-body h1,
@@ -362,38 +366,39 @@
 .markdown-body h4,
 .markdown-body h5,
 .markdown-body h6 {
-    margin-top: 24px;
+    margin-top: 32px;
     margin-bottom: 16px;
-    font-weight: var(--base-text-weight-semibold, 600);
-    line-height: 1.25;
-}
-
-.markdown-body h2 {
-    font-weight: var(--base-text-weight-semibold, 600);
-    padding-bottom: .3em;
-    font-size: 1.5em;
-    border-bottom: 1px solid var(--color-border-muted);
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--nier-text);
 }
 
 .markdown-body h3 {
-    font-weight: var(--base-text-weight-semibold, 600);
-    font-size: 1.25em;
+    font-size: 1.15em;
+    font-weight: 600;
 }
 
 .markdown-body h4 {
-    font-weight: var(--base-text-weight-semibold, 600);
     font-size: 1em;
+    font-weight: 600;
 }
 
 .markdown-body h5 {
-    font-weight: var(--base-text-weight-semibold, 600);
-    font-size: .875em;
+    font-size: 0.875em;
+    font-weight: 600;
 }
 
 .markdown-body h6 {
-    font-weight: var(--base-text-weight-semibold, 600);
-    font-size: .85em;
-    color: var(--color-fg-muted);
+    font-size: 0.85em;
+    font-weight: 600;
+    color: var(--nier-text-muted);
+}
+
+.markdown-body h2 {
+    font-weight: 600;
+    padding-bottom: 0.3em;
+    font-size: 1.35em;
+    border-bottom: 1px solid var(--nier-border);
 }
 
 .markdown-body p {
@@ -403,9 +408,10 @@
 
 .markdown-body blockquote {
     margin: 0;
-    padding: 0 1em;
-    color: var(--color-fg-muted);
-    border-left: .25em solid var(--color-border-default);
+    padding: 0.5em 1em;
+    color: var(--nier-text-muted);
+    border-left: 4px solid var(--nier-accent);
+    background: rgba(193, 61, 61, 0.05);
 }
 
 .markdown-body ul,
@@ -434,15 +440,15 @@
 .markdown-body tt,
 .markdown-body code,
 .markdown-body samp {
-    font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
-    font-size: 12px;
+    font-family: 'VT323', ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+    font-size: 14px;
 }
 
 .markdown-body pre {
     margin-top: 0;
     margin-bottom: 0;
-    font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
-    font-size: 12px;
+    font-family: 'VT323', ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+    font-size: 14px;
     word-wrap: normal;
 }
 
@@ -657,17 +663,17 @@
 
 .markdown-body table th,
 .markdown-body table td {
-    padding: 6px 13px;
-    border: 1px solid var(--color-border-default);
+    padding: 8px 12px;
+    border: 1px solid var(--nier-border);
 }
 
 .markdown-body table tr {
-    background-color: var(--color-canvas-default);
-    border-top: 1px solid var(--color-border-muted);
+    background-color: var(--nier-container-bg);
+    border-top: 1px solid var(--nier-border);
 }
 
 .markdown-body table tr:nth-child(2n) {
-    background-color: var(--color-canvas-subtle);
+    background-color: var(--nier-bg);
 }
 
 .markdown-body table img {
@@ -778,12 +784,15 @@
 
 .markdown-body code,
 .markdown-body tt {
-    padding: .2em .4em;
+    padding: 0.2em 0.4em;
     margin: 0;
     font-size: 85%;
     white-space: break-spaces;
-    background-color: var(--color-neutral-muted);
-    border-radius: 6px;
+    background-color: #f5f3e8;
+    color: #4e4b42;
+    border: 1px solid #d4d0b8;
+    border-radius: 0;
+    font-family: 'VT323', ui-monospace, monospace;
 }
 
 .markdown-body code br,
@@ -800,7 +809,7 @@
 }
 
 .markdown-body pre code {
-    font-size: 100%;
+    font-size: 1.2rem;
 }
 
 .markdown-body pre>code {
@@ -810,6 +819,7 @@
     white-space: pre;
     background: transparent;
     border: 0;
+    color: inherit;
 }
 
 .markdown-body .highlight {
@@ -827,8 +837,15 @@
     overflow: auto;
     font-size: 85%;
     line-height: 1.45;
-    background-color: var(--color-canvas-subtle);
-    border-radius: 6px;
+    background-color: #f5f3e8;
+    border-radius: 0;
+    border: 1px solid #5c594d;
+}
+
+.markdown-body pre code {
+    color: #4e4b42;
+    background: transparent;
+    border: none;
 }
 
 .markdown-body pre code,
@@ -880,9 +897,9 @@
 }
 
 .markdown-body .footnotes {
-    font-size: 12px;
-    color: var(--color-fg-muted);
-    border-top: 1px solid var(--color-border-default);
+    font-size: 14px;
+    color: var(--nier-text-muted);
+    border-top: 2px solid var(--nier-border);
 }
 
 .markdown-body .footnotes ol {
@@ -907,12 +924,12 @@
     left: -24px;
     pointer-events: none;
     content: "";
-    border: 2px solid var(--color-accent-emphasis);
-    border-radius: 6px;
+    border: 2px solid var(--nier-accent);
+    border-radius: 0;
 }
 
 .markdown-body .footnotes li:target {
-    color: var(--color-fg-default);
+    color: var(--nier-text);
 }
 
 .markdown-body .footnotes .data-footnote-backref g-emoji {
@@ -1099,4 +1116,8 @@
 
 .markdown-body ::-webkit-calendar-picker-indicator {
     filter: invert(50%);
+}
+
+.markdown-body p code {
+    font-size: 0.9rem;
 }

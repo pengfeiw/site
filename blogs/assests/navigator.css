@@ -1,80 +1,176 @@
-body {
-    --tag-bg: #c6f6d5;
-    --tag-radius: 8px;
-    --tag-padding: 5px 15px;
-    --border-color-default: rgb(208, 215, 222);
-    --border-color-focus: rgb(9, 105, 218);
-    --foter-text-color: rgba(0, 0, 0, .4);
+/* Nier: Automata Theme - Navigator */
 
-    margin: 0px;
-    padding: 45px;
+/* Header Container - Unified width */
+.header {
+    max-width: 1200px;
+    margin: 0 auto var(--spacing-lg);
+    padding: var(--spacing-md);
+    border: 1px solid var(--nier-border);
+    background: var(--nier-container-bg);
+    position: relative;
+}
+
+.header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--nier-accent);
 }
 
 @media (max-width: 767px) {
-    body {
-        padding: 45px 15px;
+    .header {
+        padding: var(--spacing-sm);
     }
 }
 
+/* Navigation */
 .header .navigator {
     width: 100%;
     display: flex;
     justify-content: flex-end;
-    column-gap: 15px;
+    column-gap: var(--spacing-sm);
     flex-wrap: wrap;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--nier-border-light);
 }
 
+@media (max-width: 767px) {
+    .header .navigator {
+        justify-content: center;
+        row-gap: var(--spacing-sm);
+    }
+}
+
+/* Links Container */
 .header .navigator .links {
     display: flex;
-    column-gap: 15px;
+    column-gap: var(--spacing-sm);
     align-items: center;
     flex-wrap: wrap;
     justify-content: center;
-    row-gap: 10px;
+    row-gap: var(--spacing-sm);
 }
 
+/* Navigation Links - Button Style */
 .header .navigator .links a {
+    font-family: var(--font-terminal);
     text-decoration: none;
-    color: black;
+    color: var(--nier-text);
+    border: 1px solid var(--nier-border);
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    background: rgba(255, 255, 255, 0.1);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .header .navigator .links a:hover {
-    color: var(--border-color-focus);
+    background-color: var(--nier-text);
+    color: var(--nier-bg);
 }
 
-.header .navigator .search input {
-    height: 30px;
-    border: 1px solid var(--border-color-default);
-    padding: 8px;
-    font-size: 15px;
-    transition: width 0.2s;
-    border-radius: 6px;
-    transition: 0.5s;
-    width: 80px;
-}
-
-.header .navigator .search input:focus-visible {
-    border: 1px solid var(--border-color-focus);
-    outline: 1px solid var(--border-color-focus);
-    width: 256px;
-}
-
-.header .navigator .rss img {
-    width: 25px;
-    height: 25px;
-}
-
-.header .navigator .rss img:hover {
-    filter: drop-shadow(0px 0px 10px #f24914) drop-shadow(10px 10px 20px rgba(0 0 0 / 30%));
-}
-
+/* Home Button - Override for active state */
 .header .navigator .home {
-    background: #FF5722;
-    padding: 4px 10px;
-    border-radius: 4px;
-    transition: 0.5s;
+    background: var(--nier-container-bg);
 }
 
 .header .navigator .home a {
-    color: white !important;
+    color: var(--nier-text) !important;
+}
+
+.header .navigator .home a:hover {
+    color: var(--nier-bg) !important;
+}
+
+/* Search Input - Different style from buttons */
+.header .navigator .search input {
+    height: 38px;
+    border: none;
+    border-bottom: 2px solid var(--nier-border);
+    padding: 8px 4px;
+    font-family: var(--font-terminal);
+    font-size: 0.85rem;
+    background: transparent;
+    color: var(--nier-text);
+    width: 100px;
+    transition: all 0.3s;
+}
+
+.header .navigator .search input::placeholder {
+    color: var(--nier-text-muted);
+    font-family: var(--font-terminal);
+    text-transform: uppercase;
+}
+
+.header .navigator .search input:focus-visible {
+    border-bottom-color: var(--nier-accent);
+    outline: none;
+    width: 180px;
+}
+
+@media (max-width: 767px) {
+    .header .navigator .search input:focus-visible {
+        width: 140px;
+    }
+}
+
+/* RSS Icon - Centered */
+.header .navigator .rss {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header .navigator .rss a {
+    border: none;
+    background: transparent;
+}
+
+.header .navigator .rss img {
+    width: 22px;
+    height: 22px;
+    filter: sepia(100%) hue-rotate(-50deg) saturate(300%) contrast(0.8);
+    transition: filter 0.3s;
+    display: block;
+}
+
+.header .navigator .rss img:hover {
+    filter: sepia(100%) hue-rotate(-50deg) saturate(500%) contrast(1.2) drop-shadow(0 0 5px var(--nier-accent));
+}
+
+/* Site Icon and Title */
+.header h1 {
+    text-align: center;
+    margin: var(--spacing-md) 0 var(--spacing-xs);
+}
+
+.header h1 a {
+    text-decoration: none;
+}
+
+/* Icon with subtle shadow instead of heavy border */
+.header h1 img {
+    width: 80px;
+    background: var(--nier-container-bg);
+    box-shadow: 2px 2px 0 rgba(94, 90, 78, 0.3);
+    transition: box-shadow 0.2s;
+    border-radius: 5px;
+}
+
+.header h1 img:hover {
+    box-shadow: 3px 3px 0 rgba(94, 90, 78, 0.5);
+}
+
+.header h2 {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--nier-text-muted);
+    margin: 0;
+    font-weight: normal;
+    letter-spacing: 1px;
 }
