@@ -97,7 +97,12 @@
 }
 
 .markdown-body img {
-    box-shadow: 0 0 0 1px var(--nier-border-light);
+    border: 1px solid #5c594d;
+    box-shadow: 
+        inset -1px -1px 0 #8a8578,
+        inset 1px 1px 0 #dcd8c0,
+        2px 2px 0 #5c594d,
+        3px 3px 0 rgba(94, 90, 78, 0.3);
     max-width: 100%;
     height: auto;
 }
@@ -209,5 +214,41 @@
 
 .prev-next a:last-child::after {
     content: " >>";
+    opacity: 0.6;
+}
+
+.markdown-header .category a {
+    text-decoration: none;
+    color: var(--nier-text-muted);
+}
+
+/* Article Footer Navigation - 上一篇/下一篇 */
+.markdown-footer .pre-article a,
+.markdown-footer .next-article a {
+    font-family: var(--font-terminal);
+    color: var(--nier-text);
+    text-decoration: none;
+    border: 1px solid var(--nier-border);
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.2s;
+    display: inline-block;
+}
+
+.markdown-footer .pre-article a:hover,
+.markdown-footer .next-article a:hover {
+    background: var(--nier-text);
+    color: var(--nier-bg);
+}
+
+/* 上一篇/下一篇前缀样式 */
+.markdown-footer .pre-article a::before {
+    content: "<< ";
+    opacity: 0.6;
+}
+
+.markdown-footer .next-article a::after {
+    content: ">> ";
     opacity: 0.6;
 }
