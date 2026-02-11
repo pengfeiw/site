@@ -23,39 +23,51 @@
     padding: var(--spacing-md);
 }
 
-/* Markdown Container */
+/* Markdown Container - Terminal Style with Double Border */
 .markdown {
     border: 2px solid var(--nier-border);
+    outline: 1px solid var(--nier-border);
+    outline-offset: 2px;
     background: var(--nier-container-bg);
     margin: 0 auto;
     margin-bottom: var(--spacing-xl);
     min-width: 200px;
     max-width: 100%;
     overflow: hidden;
+    position: relative;
 }
 
-/* Markdown Header */
+/* Markdown Header - Simple Info Bar Style */
 .markdown-header,
 .markdown-footer {
-    background-color: var(--nier-highlight);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-bottom: 1px solid var(--nier-border);
+    background: transparent;
+    padding: 30px var(--spacing-md) var(--spacing-sm);
     font-family: var(--font-terminal);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     color: var(--nier-text);
+    position: relative;
+    border-bottom: 1px solid var(--nier-border-light);
 }
 
 .markdown-footer {
     border-bottom: none;
-    border-top: 1px solid var(--nier-border);
+    border-top: 1px solid var(--nier-border-light);
+    margin-top: 0;
+    padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.markdown-footer::before {
+    content: none;
 }
 
 .markdown-header .date {
     color: var(--nier-text-muted);
+    font-size: 0.8rem;
+    letter-spacing: 1px;
 }
 
 .markdown-header .tags {
@@ -66,18 +78,21 @@
 
 .markdown-header .tags a {
     font-family: var(--font-terminal);
-    color: #c13d3d;
+    color: var(--nier-accent);
     text-decoration: none;
-    border: 1px solid #c13d3d;
+    border: 1px solid var(--nier-accent);
     padding: 4px 10px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     background: rgba(193, 61, 61, 0.1);
-    transition: all 0.2s;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .markdown-header .tags a:hover {
-    background: #c13d3d;
-    color: #f5f3e8;
+    background: var(--nier-accent);
+    color: var(--nier-bg);
+    text-shadow: 0 0 8px rgba(193, 61, 61, 0.5);
 }
 
 /* Markdown Body */
@@ -107,7 +122,7 @@
     height: auto;
 }
 
-/* Table of Contents - Simplified */
+/* Table of Contents - Simple Style */
 .toc {
     max-height: calc(100vh - 30px);
     position: sticky;
@@ -116,8 +131,8 @@
     display: flex;
     flex-wrap: nowrap;
     flex-direction: column;
-    border: 1px solid var(--nier-border);
-    background: var(--nier-container-bg);
+    background: transparent;
+    padding: 25px var(--spacing-sm) var(--spacing-sm);
 }
 
 @media (max-width: 1200px) {
@@ -128,15 +143,28 @@
     }
 }
 
-.toc .toc-header {
-    background-color: var(--nier-highlight);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-bottom: 1px solid var(--nier-border);
+/* TOC Header Bar */
+.toc::before {
+    content: "TOC_NAV :: INDEX";
+    position: absolute;
+    top: 0;
+    left: var(--spacing-sm);
     font-family: var(--font-terminal);
-    font-size: 0.9rem;
+    font-size: 0.6rem;
+    color: var(--nier-text-muted);
     text-transform: uppercase;
     letter-spacing: 1px;
+}
+
+.toc .toc-header {
+    font-family: var(--font-terminal);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
     color: var(--nier-text);
+    border-bottom: 1px solid var(--nier-border-light);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
 }
 
 .toc .toc-body {
@@ -155,27 +183,44 @@
     font-size: 0.85rem;
     padding: 6px var(--spacing-sm);
     width: 100%;
-    border-left: 3px solid transparent;
+    border-left: none;
+    position: relative;
 }
 
 .toc .toc-item:hover {
-    background-color: var(--nier-hover);
-    border-left-color: var(--nier-accent);
+    background-color: rgba(193, 61, 61, 0.05);
 }
 
 .toc .toc-item a {
+    font-family: var(--font-terminal);
     color: var(--nier-text);
     text-decoration: none;
     white-space: nowrap;
     display: block;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding: 4px 8px;
+    padding: 4px 8px 4px 20px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* :: Line Header Marker */
+.toc .toc-item a::before {
+    content: "::";
+    position: absolute;
+    left: 0;
+    color: var(--nier-text-muted);
+    transition: all 0.3s ease;
 }
 
 .toc .toc-item a:hover {
-    text-decoration: none;
-    color: #c13d3d;
+    color: var(--nier-accent);
+    text-shadow: 0 0 8px rgba(193, 61, 61, 0.3);
+}
+
+.toc .toc-item a:hover::before {
+    color: var(--nier-accent);
+    text-shadow: 0 0 8px rgba(193, 61, 61, 0.5);
 }
 
 /* Previous/Next Navigation */

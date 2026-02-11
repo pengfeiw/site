@@ -1,0 +1,82 @@
+/* Nier: Automata Theme - Category Page Navigator */
+/* 引入公共导航样式 */
+@import url('navigator-common.css');
+
+/* ============================================
+   Category 页面专属样式
+   ============================================ */
+
+/* Terminal 顶部状态栏 */
+.terminal-top-bar {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    right: 12px;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-terminal);
+    font-size: 0.65rem;
+    color: var(--nier-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Terminal 底部状态栏 */
+.terminal-status {
+    position: absolute;
+    bottom: 10px;
+    right: 12px;
+    font-family: var(--font-terminal);
+    font-size: 0.65rem;
+    color: var(--nier-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Logo 样式 */
+.header .navigator .logo img {
+    width: 80px;
+    background: var(--nier-container-bg);
+    box-shadow: 2px 2px 0 rgba(94, 90, 78, 0.3);
+    transition: box-shadow 0.2s;
+    border-radius: 5px;
+}
+
+.header .navigator .logo img:hover {
+    box-shadow: 3px 3px 0 rgba(94, 90, 78, 0.5);
+}
+
+/* 移动端适配调整 */
+@media (max-width: 767px) {
+    .header {
+        padding: 50px var(--spacing-md) var(--spacing-md);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .header .navigator {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    
+    .nav-sections {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        align-items: center;
+    }
+    
+    .nav-sections > div {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+    }
+    
+    .terminal-status {
+        position: relative;
+        bottom: auto;
+        right: auto;
+        margin-top: var(--spacing-sm);
+        text-align: center;
+    }
+}

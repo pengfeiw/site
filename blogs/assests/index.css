@@ -19,22 +19,40 @@
     background: var(--nier-container-bg);
 }
 
-/* Category Items - Simple Style */
+/* Category Items - Simple Style with Tech Arrow */
 .category-list .category-item,
 .category-list .active-category-item {
     font-family: var(--font-terminal);
     text-decoration: none;
     color: var(--nier-text);
     border: 1px solid var(--nier-border);
-    padding: 6px 8px;
+    padding: 6px 30px;
     font-size: 0.85rem;
     transition: all 0.2s;
     background: rgba(255, 255, 255, 0.1);
     text-transform: uppercase;
     letter-spacing: 1px;
     min-width: 80px;
-    display: inline-block;
-    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.category-list .category-item::before,
+.category-list .active-category-item::before {
+    content: ">";
+    position: absolute;
+    left: 15px;
+    font-family: var(--font-terminal);
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.category-list .category-item:hover::before,
+.category-list .active-category-item:hover::before {
+    opacity: 1;
 }
 
 .category-list .category-item:hover {
@@ -48,80 +66,190 @@
     color: var(--nier-bg);
 }
 
-/* Article List Container - Simplified */
+/* Category List - Inline Style (inside article-list) */
+.category-list.category-list-inline {
+    border: none;
+    background: transparent;
+    margin-bottom: 0;
+    padding: var(--spacing-sm) 0;
+    justify-content: flex-start;
+}
+
+.category-list-inline .category-item,
+.category-list-inline .active-category-item {
+    border: none;
+    background: transparent;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    min-width: auto;
+}
+
+.category-list-inline .category-item::before,
+.category-list-inline .active-category-item::before {
+    content: none;
+}
+
+.category-list-inline .category-item:hover {
+    background: transparent;
+    color: var(--nier-accent);
+    text-shadow: 0 0 8px rgba(193, 61, 61, 0.5);
+}
+
+.category-list-inline .active-category-item {
+    background: var(--nier-accent);
+    color: var(--nier-bg);
+}
+
+.category-list-inline .active-category-item:hover {
+    background: var(--nier-accent);
+    color: var(--nier-bg);
+    text-shadow: none;
+}
+
+/* Article List Divider */
+.article-list-divider {
+    height: 1px;
+    background: var(--nier-border-light);
+    margin: var(--spacing-sm) 0;
+}
+
+/* Article List Container - Terminal Style */
 .article-list {
     display: flex;
     flex-direction: column;
-    border: 1px solid var(--nier-border);
+    border: 2px solid var(--nier-border);
+    outline: 1px solid var(--nier-border);
+    outline-offset: 2px;
     background: var(--nier-container-bg);
-    padding: var(--spacing-sm);
+    padding: 40px var(--spacing-md) var(--spacing-md);
+    position: relative;
 }
 
-/* Article Items */
+/* Terminal Header Bar */
+.article-list::before {
+    content: "FILE_LIST :: v2.4.1";
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    font-family: var(--font-terminal);
+    font-size: 0.65rem;
+    color: var(--nier-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Terminal Corner Decorations */
+.article-list::after {
+    content: "◆";
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-family: var(--font-terminal);
+    font-size: 0.6rem;
+    color: var(--nier-text-muted);
+}
+
+
+
+/* Article Items - Terminal Style */
 .article-list>.article-item {
-    border-bottom: 1px solid var(--nier-border-light);
-}
-
-.article-list>.article-item:last-child {
-    border-bottom: none;
+    position: relative;
 }
 
 .article-list>.article-item>a {
+    font-family: var(--font-terminal);
     text-decoration: none;
     color: var(--nier-text);
     padding: 12px var(--spacing-sm);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     line-height: 1.6;
-    transition: all 0.2s;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid var(--nier-border-light);
 }
 
-.article-list>.article-item:last-child>a {
-    border-bottom: none;
+/* :: Line Header Marker */
+.article-list>.article-item>a::before {
+    content: "::";
+    color: var(--nier-text-muted);
+    margin-right: 12px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
 }
 
-.article-list>.article-item>a:hover {
-    background-color: var(--nier-hover);
-    color: var(--nier-text);
+/* Hover Effects */
+.article-list>.article-item:hover {
+    background: rgba(193, 61, 61, 0.05);
+}
+
+.article-list>.article-item:hover>a {
+    color: var(--nier-accent);
+    text-shadow: 0 0 8px rgba(193, 61, 61, 0.3);
+}
+
+.article-list>.article-item:hover>a::before {
+    color: var(--nier-accent);
+    text-shadow: 0 0 8px rgba(193, 61, 61, 0.5);
 }
 
 .article-list>.article-item>a>.article-item-title {
     flex: 1;
 }
 
+/* Terminal Date Format */
 .article-list>.article-item>a>.article-item-date {
     font-family: var(--font-terminal);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: var(--nier-text-muted);
     white-space: nowrap;
     margin-left: var(--spacing-sm);
+    letter-spacing: 1px;
 }
 
-.article-list>.article-item>a:hover>.article-item-date {
-    color: var(--nier-bg);
+.article-list>.article-item:hover>a>.article-item-date {
+    color: var(--nier-accent);
 }
 
-/* Empty State */
+/* Empty State - Terminal Style */
 .article-list>.article-item>a:empty::after {
     content: "[NO_DATA]";
     font-family: var(--font-terminal);
     color: var(--nier-text-muted);
 }
 
+/* Terminal Status Bar at Bottom */
+.article-list-footer {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--nier-border-light);
+    font-family: var(--font-terminal);
+    font-size: 0.65rem;
+    color: var(--nier-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: right;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 767px) {
     .article-list>.article-item>a {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
+        flex-direction: row;
+        align-items: center;
+        gap: 0;
+    }
+    
+    .article-list>.article-item>a>.article-item-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: calc(100% - 100px);
     }
     
     .article-list>.article-item>a>.article-item-date {
-        margin-left: 0;
-        font-size: 0.8rem;
+        margin-left: var(--spacing-sm);
+        font-size: 0.75rem;
     }
     
     .category-list {

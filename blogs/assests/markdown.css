@@ -842,6 +842,34 @@
     border: 1px solid #5c594d;
 }
 
+/* Code Block Scrollbar - Terminal Style */
+.markdown-body pre::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+
+.markdown-body pre::-webkit-scrollbar-track {
+    background: #e8e4d0;
+    border-top: 1px solid #5c594d;
+}
+
+.markdown-body pre::-webkit-scrollbar-thumb {
+    background: #5c594d;
+    border-radius: 0;
+    border: 1px solid #5c594d;
+}
+
+.markdown-body pre::-webkit-scrollbar-thumb:hover {
+    background: #c13d3d;
+    border-color: #c13d3d;
+}
+
+/* Firefox Support */
+.markdown-body pre {
+    scrollbar-width: thin;
+    scrollbar-color: #5c594d #e8e4d0;
+}
+
 .markdown-body pre code {
     color: #4e4b42;
     background: transparent;

@@ -80,3 +80,35 @@ body {
     z-index: 9999;
     opacity: 0.3;
 }
+
+/* ============================================
+   Global Scrollbar - Terminal Style
+   ============================================ */
+
+/* Webkit Browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--nier-container-bg);
+    border: 1px solid var(--nier-border);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--nier-border);
+    border-radius: 0;
+    border: 1px solid var(--nier-border);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--nier-accent);
+    border-color: var(--nier-accent);
+}
+
+/* Firefox */
+html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--nier-border) var(--nier-container-bg);
+}
