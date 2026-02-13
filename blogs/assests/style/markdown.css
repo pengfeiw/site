@@ -1,66 +1,4 @@
-/* Nier: Automata Theme - Markdown Content */
-
-:root {
-    /* Nier Theme Colors */
-    --nier-bg: #dcd8c0;
-    --nier-container-bg: #d4d0b8;
-    --nier-text: #4e4b42;
-    --nier-text-muted: #6e6a5e;
-    --nier-accent: #c13d3d;
-    --nier-border: #5c594d;
-    --nier-border-light: #8a8578;
-    --nier-highlight: #bab5a1;
-    --nier-hover: #c9c5b0;
-    --nier-code-bg: #3a3833;
-    
-    /* Override GitHub colors */
-    --color-fg-default: #4e4b42;
-    --color-fg-muted: #6e6a5e;
-    --color-fg-subtle: #8a8578;
-    --color-canvas-default: #d4d0b8;
-    --color-canvas-subtle: #dcd8c0;
-    --color-border-default: #5c594d;
-    --color-border-muted: #8a8578;
-    --color-neutral-muted: rgba(94, 90, 78, 0.2);
-    --color-accent-fg: #c13d3d;
-    --color-accent-emphasis: #c13d3d;
-    --color-attention-subtle: rgba(193, 61, 61, 0.1);
-    --color-danger-fg: #c13d3d;
-    
-    /* Syntax highlighting - adjusted for Nier theme */
-    --color-prettylights-syntax-comment: #6e6a5e;
-    --color-prettylights-syntax-constant: #8b4513;
-    --color-prettylights-syntax-entity: #5c594d;
-    --color-prettylights-syntax-storage-modifier-import: #4e4b42;
-    --color-prettylights-syntax-entity-tag: #556b2f;
-    --color-prettylights-syntax-keyword: #c13d3d;
-    --color-prettylights-syntax-string: #8b4513;
-    --color-prettylights-syntax-variable: #6e6a5e;
-    --color-prettylights-syntax-brackethighlighter-unmatched: #c13d3d;
-    --color-prettylights-syntax-invalid-illegal-text: #f0f6fc;
-    --color-prettylights-syntax-invalid-illegal-bg: #8e1519;
-    --color-prettylights-syntax-carriage-return-text: #f0f6fc;
-    --color-prettylights-syntax-carriage-return-bg: #b62324;
-    --color-prettylights-syntax-string-regexp: #556b2f;
-    --color-prettylights-syntax-markup-list: #735c0f;
-    --color-prettylights-syntax-markup-heading: #4e4b42;
-    --color-prettylights-syntax-markup-italic: #4e4b42;
-    --color-prettylights-syntax-markup-bold: #4e4b42;
-    --color-prettylights-syntax-markup-deleted-text: #8b4513;
-    --color-prettylights-syntax-markup-deleted-bg: #f5e6d3;
-    --color-prettylights-syntax-markup-inserted-text: #556b2f;
-    --color-prettylights-syntax-markup-inserted-bg: #e8f0d8;
-    --color-prettylights-syntax-markup-changed-text: #735c0f;
-    --color-prettylights-syntax-markup-changed-bg: #f5e6d3;
-    --color-prettylights-syntax-markup-ignored-text: #dcd8c0;
-    --color-prettylights-syntax-markup-ignored-bg: #4e4b42;
-    --color-prettylights-syntax-meta-diff-range: #5c594d;
-    --color-prettylights-syntax-brackethighlighter-angle: #6e6a5e;
-    --color-prettylights-syntax-sublimelinter-gutter-mark: #8a8578;
-    --color-prettylights-syntax-constant-other-reference-link: #8b4513;
-}
-
-/* Nier Theme - Light mode (default) - already defined in :root */
+@import url('./theme/theme.css');
 
 .markdown-body {
     -ms-text-size-adjust: 100%;
@@ -68,9 +6,9 @@
     color: var(--color-fg-default);
     background-color: var(--color-canvas-default);
     word-wrap: break-word;
-    line-height: 1.8;
+    line-height: var(--line-height-relaxed);
     font-size: 0.9rem;
-    font-family: 'Noto Serif SC', 'Source Han Serif CN', 'SimSun', 'Times New Roman', serif;
+    font-family: var(--font-primary);
 }
 
 .markdown-body .octicon {
@@ -110,21 +48,21 @@
 
 .markdown-body a {
     background-color: transparent;
-    color: #c13d3d;
+    color: var(--color-primary);
     text-decoration: none;
-    border-bottom: 1px solid #c13d3d;
-    transition: all 0.2s;
+    border-bottom: 1px solid var(--color-primary);
+    transition: var(--transition-fast);
 }
 
 .markdown-body a:hover {
-    background-color: #c13d3d;
-    color: #f5f3e8;
+    background-color: var(--color-primary);
+    color: var(--color-bg);
     border-bottom-color: transparent;
     padding: 0 4px;
 }
 
 .markdown-body a:visited {
-    color: #a03030;
+    color: var(--color-primary-hover);
 }
 
 .markdown-body abbr[title] {
@@ -134,8 +72,8 @@
 
 .markdown-body b,
 .markdown-body strong {
-    font-weight: 600;
-    color: var(--nier-accent);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary);
 }
 
 .markdown-body dfn {
@@ -144,10 +82,10 @@
 
 .markdown-body h1 {
     margin: 0.67em 0;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     padding-bottom: 0.3em;
     font-size: 1.8em;
-    border-bottom: 2px solid var(--nier-border);
+    border-bottom: 2px solid var(--color-border);
     position: relative;
 }
 
@@ -158,7 +96,7 @@
     right: 0;
     width: 40px;
     height: 10px;
-    background: var(--nier-accent);
+    background: var(--color-primary);
 }
 
 .markdown-body mark {
@@ -197,7 +135,7 @@
 .markdown-body kbd,
 .markdown-body pre,
 .markdown-body samp {
-    font-family: monospace;
+    font-family: var(--font-mono);
     font-size: 1em;
 }
 
@@ -213,7 +151,7 @@
     height: 4px;
     padding: 0;
     margin: 24px 0;
-    background-color: var(--nier-border);
+    background-color: var(--color-border);
     position: relative;
 }
 
@@ -223,9 +161,9 @@
     right: 10px;
     top: 50%;
     transform: translateY(-50%);
-    font-family: 'VT323', monospace;
+    font-family: var(--font-mono);
     font-size: 0.8rem;
-    color: var(--nier-bg);
+    color: var(--color-bg);
     letter-spacing: 2px;
 }
 
@@ -349,13 +287,13 @@
 .markdown-body kbd {
     display: inline-block;
     padding: 4px 8px;
-    font: 14px 'VT323', ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+    font: 14px var(--font-mono);
     line-height: 1;
-    color: var(--nier-bg);
+    color: var(--color-bg);
     vertical-align: middle;
-    background-color: var(--nier-text);
-    border: solid 1px var(--nier-border);
-    border-radius: 0;
+    background-color: var(--color-text);
+    border: solid 1px var(--color-border);
+    border-radius: var(--radius-none);
     box-shadow: none;
     letter-spacing: 1px;
 }
@@ -368,37 +306,37 @@
 .markdown-body h6 {
     margin-top: 32px;
     margin-bottom: 16px;
-    font-weight: 600;
-    line-height: 1.4;
-    color: var(--nier-text);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+    color: var(--color-text);
 }
 
 .markdown-body h3 {
     font-size: 1.15em;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
 
 .markdown-body h4 {
     font-size: 1em;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
 
 .markdown-body h5 {
     font-size: 0.875em;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
 
 .markdown-body h6 {
     font-size: 0.85em;
-    font-weight: 600;
-    color: var(--nier-text-muted);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-muted);
 }
 
 .markdown-body h2 {
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     padding-bottom: 0.3em;
     font-size: 1.35em;
-    border-bottom: 1px solid var(--nier-border);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .markdown-body p {
@@ -409,9 +347,9 @@
 .markdown-body blockquote {
     margin: 0;
     padding: 0.5em 1em;
-    color: var(--nier-text-muted);
-    border-left: 4px solid var(--nier-accent);
-    background: rgba(193, 61, 61, 0.05);
+    color: var(--color-text-muted);
+    border-left: 4px solid var(--color-primary);
+    background: var(--color-primary-subtle);
 }
 
 .markdown-body ul,
@@ -440,14 +378,14 @@
 .markdown-body tt,
 .markdown-body code,
 .markdown-body samp {
-    font-family: 'VT323', ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+    font-family: var(--font-mono);
     font-size: 14px;
 }
 
 .markdown-body pre {
     margin-top: 0;
     margin-bottom: 0;
-    font-family: 'VT323', ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+    font-family: var(--font-mono);
     font-size: 14px;
     word-wrap: normal;
 }
@@ -664,16 +602,16 @@
 .markdown-body table th,
 .markdown-body table td {
     padding: 8px 12px;
-    border: 1px solid var(--nier-border);
+    border: 1px solid var(--color-border);
 }
 
 .markdown-body table tr {
-    background-color: var(--nier-container-bg);
-    border-top: 1px solid var(--nier-border);
+    background-color: var(--color-bg-secondary);
+    border-top: 1px solid var(--color-border);
 }
 
 .markdown-body table tr:nth-child(2n) {
-    background-color: var(--nier-bg);
+    background-color: var(--color-bg);
 }
 
 .markdown-body table img {
@@ -788,11 +726,11 @@
     margin: 0;
     font-size: 85%;
     white-space: break-spaces;
-    background-color: #f5f3e8;
-    color: #4e4b42;
-    border: 1px solid #d4d0b8;
-    border-radius: 0;
-    font-family: 'VT323', ui-monospace, monospace;
+    background-color: var(--color-bg-code);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-none);
+    font-family: var(--font-mono);
 }
 
 .markdown-body code br,
@@ -837,9 +775,9 @@
     overflow: auto;
     font-size: 85%;
     line-height: 1.45;
-    background-color: #f5f3e8;
-    border-radius: 0;
-    border: 1px solid #5c594d;
+    background-color: var(--color-bg-code);
+    border-radius: var(--radius-none);
+    border: 1px solid var(--color-border);
 }
 
 /* Code Block Scrollbar - Terminal Style */
@@ -849,29 +787,70 @@
 }
 
 .markdown-body pre::-webkit-scrollbar-track {
-    background: #e8e4d0;
-    border-top: 1px solid #5c594d;
+    background: var(--color-bg-tertiary);
+    border-top: 1px solid var(--color-border);
 }
 
 .markdown-body pre::-webkit-scrollbar-thumb {
-    background: #5c594d;
-    border-radius: 0;
-    border: 1px solid #5c594d;
+    background: var(--color-border);
+    border-radius: var(--radius-none);
+    border: 1px solid var(--color-border);
 }
 
 .markdown-body pre::-webkit-scrollbar-thumb:hover {
-    background: #c13d3d;
-    border-color: #c13d3d;
+    background: var(--color-primary);
+    border-color: var(--color-primary);
 }
 
 /* Firefox Support */
 .markdown-body pre {
     scrollbar-width: thin;
-    scrollbar-color: #5c594d #e8e4d0;
+    scrollbar-color: var(--color-border) var(--color-bg-tertiary);
+}
+
+/* Code Block Copy Button */
+.code-block-wrapper {
+    position: relative;
+}
+
+.code-copy-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    line-height: 1;
+    color: var(--color-border-light);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: var(--transition-fast);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.code-copy-btn::before {
+    content: "⧉";
+}
+
+.code-copy-btn:hover {
+    opacity: 1;
+    color: var(--color-primary);
+}
+
+.code-copy-btn.copied::before {
+    content: "✓";
+    color: var(--color-success);
 }
 
 .markdown-body pre code {
-    color: #4e4b42;
+    color: var(--color-text);
     background: transparent;
     border: none;
 }
@@ -926,8 +905,8 @@
 
 .markdown-body .footnotes {
     font-size: 14px;
-    color: var(--nier-text-muted);
-    border-top: 2px solid var(--nier-border);
+    color: var(--color-text-muted);
+    border-top: 2px solid var(--color-border);
 }
 
 .markdown-body .footnotes ol {
@@ -952,12 +931,12 @@
     left: -24px;
     pointer-events: none;
     content: "";
-    border: 2px solid var(--nier-accent);
-    border-radius: 0;
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-none);
 }
 
 .markdown-body .footnotes li:target {
-    color: var(--nier-text);
+    color: var(--color-text);
 }
 
 .markdown-body .footnotes .data-footnote-backref g-emoji {

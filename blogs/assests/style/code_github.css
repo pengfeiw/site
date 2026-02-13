@@ -2,11 +2,12 @@
     Theme: Nier: Automata (Light)
     Description: Nier: Automata inspired theme for code highlighting - Light version for better readability
 */
+@import url('./theme/theme.css');
 
 .hljs {
-    color: #4e4b42;
-    background: #f5f3e8;
-    border: 1px solid #5c594d;
+    color: var(--color-text);
+    background: var(--color-bg-code);
+    border: 1px solid var(--color-border);
 }
 
 .hljs-doctag,
@@ -16,7 +17,7 @@
 .hljs-template-variable,
 .hljs-type,
 .hljs-variable.language_ {
-    color: #c13d3d;
+    color: var(--code-keyword);
     font-weight: bold;
 }
 
@@ -24,7 +25,7 @@
 .hljs-title.class_,
 .hljs-title.class_.inherited__,
 .hljs-title.function_ {
-    color: #5c594d;
+    color: var(--code-function);
     font-weight: bold;
 }
 
@@ -38,13 +39,13 @@
 .hljs-selector-attr,
 .hljs-selector-class,
 .hljs-selector-id {
-    color: #8b7355;
+    color: var(--code-number);
 }
 
 .hljs-regexp,
 .hljs-string,
 .hljs-meta .hljs-string {
-    color: #6b8e6b;
+    color: var(--code-string);
 }
 
 .hljs-built_in,
@@ -55,7 +56,7 @@
 .hljs-comment,
 .hljs-code,
 .hljs-formula {
-    color: #8a8578;
+    color: var(--code-comment);
     font-style: italic;
 }
 
@@ -63,40 +64,40 @@
 .hljs-quote,
 .hljs-selector-tag,
 .hljs-selector-pseudo {
-    color: #5c594d;
+    color: var(--code-class);
 }
 
 .hljs-subst {
-    color: #4e4b42;
+    color: var(--color-text);
 }
 
 .hljs-section {
-    color: #c13d3d;
+    color: var(--code-keyword);
     font-weight: bold;
 }
 
 .hljs-bullet {
-    color: #8b7355;
+    color: var(--code-number);
 }
 
 .hljs-emphasis {
-    color: #4e4b42;
+    color: var(--color-text);
     font-style: italic;
 }
 
 .hljs-strong {
-    color: #4e4b42;
+    color: var(--color-text);
     font-weight: bold;
 }
 
 .hljs-addition {
-    color: #5c8a5c;
-    background-color: rgba(92, 138, 92, 0.1);
+    color: var(--color-success);
+    background-color: var(--color-success-subtle);
 }
 
 .hljs-deletion {
-    color: #c13d3d;
-    background-color: rgba(193, 61, 61, 0.1);
+    color: var(--color-danger);
+    background-color: var(--color-danger-subtle);
 }
 
 .hljs-char.escape_,
@@ -105,5 +106,5 @@
 .hljs-property,
 .hljs-punctuation,
 .hljs-tag {
-    color: #6e6a5e;
+    color: var(--code-punctuation);
 }

@@ -1,0 +1,214 @@
+/* ============================================================
+   Theme: Nier - Nier: Automata Inspired Theme
+   Nier 主题样式变量定义
+   ============================================================ */
+
+:root {
+    /* ==========================================================
+       颜色系统 - Color System
+       ========================================================== */
+    
+    /* 主色调 */
+    --color-primary: #c13d3d;
+    --color-primary-hover: #a03030;
+    --color-primary-subtle: rgba(193, 61, 61, 0.1);
+    
+    /* 背景色 */
+    --color-bg: #dcd8c0;
+    --color-bg-secondary: #d4d0b8;
+    --color-bg-tertiary: #e8e4d0;
+    --color-bg-code: #f5f3e8;
+    
+    /* 文字色 */
+    --color-text: #4e4b42;
+    --color-text-secondary: #5c594d;
+    --color-text-muted: #6e6a5e;
+    --color-text-inverse: #dcd8c0;
+    
+    /* 边框色 */
+    --color-border: #5c594d;
+    --color-border-light: #8a8578;
+    --color-border-hover: #c13d3d;
+    
+    /* 功能色 */
+    --color-success: #5c8a5c;
+    --color-success-subtle: rgba(92, 138, 92, 0.1);
+    --color-warning: #8b7355;
+    --color-warning-subtle: rgba(139, 115, 85, 0.1);
+    --color-danger: #c13d3d;
+    --color-danger-subtle: rgba(193, 61, 61, 0.1);
+    --color-info: #6b8e6b;
+    --color-info-subtle: rgba(107, 142, 107, 0.1);
+    
+    /* 交互色 */
+    --color-hover: #c9c5b0;
+    --color-highlight: #bab5a1;
+    --color-focus: #c13d3d;
+    
+    /* 阴影色 */
+    --color-shadow: rgba(94, 90, 78, 0.3);
+    --color-shadow-subtle: rgba(94, 90, 78, 0.15);
+    
+    /* ==========================================================
+       字体系统 - Typography System
+       ========================================================== */
+    
+    /* 字体族 */
+    --font-primary: 'Noto Serif SC', 'Source Han Serif CN', 'SimSun', serif;
+    --font-secondary: 'Courier Prime', 'Source Code Pro', 'Fira Code', 'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+    --font-mono: 'Courier Prime', 'Source Code Pro', 'Fira Code', 'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+    
+    /* 字体大小 */
+    --font-size-xs: 12px;
+    --font-size-sm: 14px;
+    --font-size-base: 16px;
+    --font-size-md: 18px;
+    --font-size-lg: 20px;
+    --font-size-xl: 24px;
+    
+    /* 行高 */
+    --line-height-tight: 1.4;
+    --line-height-normal: 1.7;
+    --line-height-relaxed: 1.8;
+    
+    /* 字重 */
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    
+    /* ==========================================================
+       间距系统 - Spacing System
+       ========================================================== */
+    
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    --spacing-2xl: 4rem;
+    
+    /* ==========================================================
+       圆角系统 - Border Radius System
+       ========================================================== */
+    
+    --radius-none: 0;
+    --radius-sm: 2px;
+    --radius-md: 4px;
+    --radius-lg: 8px;
+    --radius-full: 9999px;
+    
+    /* ==========================================================
+       阴影系统 - Shadow System
+       ========================================================== */
+    
+    --shadow-sm: 2px 2px 0 var(--color-shadow);
+    --shadow-md: 3px 3px 0 var(--color-shadow);
+    --shadow-lg: 4px 4px 0 var(--color-shadow);
+    
+    /* ==========================================================
+       代码高亮 - Syntax Highlighting
+       ========================================================== */
+    
+    --code-comment: #8a8578;
+    --code-keyword: #c13d3d;
+    --code-string: #6b8e6b;
+    --code-number: #8b7355;
+    --code-function: #5c594d;
+    --code-class: #5c594d;
+    --code-variable: #8b7355;
+    --code-operator: #8b7355;
+    --code-punctuation: #6e6a5e;
+    
+    /* ==========================================================
+       过渡动画 - Transitions
+       ========================================================== */
+    
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    
+    /* ==========================================================
+       Z-Index 层级
+       ========================================================== */
+    
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-modal: 300;
+    --z-popover: 400;
+    --z-tooltip: 500;
+    --z-overlay: 9999;
+    
+    /* ==========================================================
+       兼容性变量 - 保持与旧变量的兼容
+       后续可以逐步移除
+       ========================================================== */
+    
+    /* 旧版颜色变量映射 */
+    --nier-bg: var(--color-bg);
+    --nier-container-bg: var(--color-bg-secondary);
+    --nier-text: var(--color-text);
+    --nier-text-muted: var(--color-text-muted);
+    --nier-accent: var(--color-primary);
+    --nier-border: var(--color-border);
+    --nier-border-light: var(--color-border-light);
+    --nier-highlight: var(--color-highlight);
+    --nier-hover: var(--color-hover);
+    --nier-code-bg: var(--color-bg-code);
+    
+    /* 旧版间距变量映射 */
+    --font-terminal: var(--font-secondary);
+    --font-body: var(--font-primary);
+    
+    /* GitHub Markdown 颜色覆盖 */
+    --color-fg-default: var(--color-text);
+    --color-fg-muted: var(--color-text-muted);
+    --color-fg-subtle: var(--color-border-light);
+    --color-canvas-default: var(--color-bg-secondary);
+    --color-canvas-subtle: var(--color-bg);
+    --color-border-default: var(--color-border);
+    --color-border-muted: var(--color-border-light);
+    --color-neutral-muted: var(--color-shadow-subtle);
+    --color-accent-fg: var(--color-primary);
+    --color-accent-emphasis: var(--color-primary);
+    --color-attention-subtle: var(--color-primary-subtle);
+    --color-danger-fg: var(--color-danger);
+    
+    /* GitHub 语法高亮映射 */
+    --color-prettylights-syntax-comment: var(--code-comment);
+    --color-prettylights-syntax-constant: var(--code-number);
+    --color-prettylights-syntax-entity: var(--color-text-secondary);
+    --color-prettylights-syntax-storage-modifier-import: var(--color-text);
+    --color-prettylights-syntax-entity-tag: var(--color-success);
+    --color-prettylights-syntax-keyword: var(--code-keyword);
+    --color-prettylights-syntax-string: var(--code-string);
+    --color-prettylights-syntax-variable: var(--color-text-muted);
+    --color-prettylights-syntax-brackethighlighter-unmatched: var(--color-danger);
+    --color-prettylights-syntax-invalid-illegal-text: #f0f6fc;
+    --color-prettylights-syntax-invalid-illegal-bg: #8e1519;
+    --color-prettylights-syntax-carriage-return-text: #f0f6fc;
+    --color-prettylights-syntax-carriage-return-bg: #b62324;
+    --color-prettylights-syntax-string-regexp: var(--color-success);
+    --color-prettylights-syntax-markup-list: var(--color-warning);
+    --color-prettylights-syntax-markup-heading: var(--color-text);
+    --color-prettylights-syntax-markup-italic: var(--color-text);
+    --color-prettylights-syntax-markup-bold: var(--color-text);
+    --color-prettylights-syntax-markup-deleted-text: var(--code-string);
+    --color-prettylights-syntax-markup-deleted-bg: #f5e6d3;
+    --color-prettylights-syntax-markup-inserted-text: var(--color-success);
+    --color-prettylights-syntax-markup-inserted-bg: #e8f0d8;
+    --color-prettylights-syntax-markup-changed-text: var(--color-warning);
+    --color-prettylights-syntax-markup-changed-bg: #f5e6d3;
+    --color-prettylights-syntax-markup-ignored-text: var(--color-bg);
+    --color-prettylights-syntax-markup-ignored-bg: var(--color-text);
+    --color-prettylights-syntax-meta-diff-range: var(--color-text-secondary);
+    --color-prettylights-syntax-brackethighlighter-angle: var(--color-text-muted);
+    --color-prettylights-syntax-sublimelinter-gutter-mark: var(--color-border-light);
+    --color-prettylights-syntax-constant-other-reference-link: var(--code-string);
+}
+
+/* ============================================================
+   Google Fonts 导入
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime&family=Source+Code+Pro:wght@400;500;600&family=Fira+Code:wght@400;500&family=VT323&family=Noto+Serif+SC:wght@400;600;700&display=swap');

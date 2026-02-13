@@ -1,5 +1,4 @@
-/* Nier: Automata Theme - Common Navigator Styles */
-/* 公共导航样式，可被 category 和 article 页面复用 */
+@import url('./theme/theme.css');
 
 /* ============================================
    基础头部容器样式（双边框 + 装饰线）
@@ -9,10 +8,10 @@
     max-width: 1200px;
     margin: 0 auto var(--spacing-lg);
     padding: 50px var(--spacing-md);
-    border: 2px solid var(--nier-border);
-    background: var(--nier-container-bg);
+    border: 2px solid var(--color-border);
+    background: var(--color-bg-secondary);
     position: relative;
-    outline: 1px solid var(--nier-border);
+    outline: 1px solid var(--color-border);
     outline-offset: 2px;
     user-select: none;
 }
@@ -24,7 +23,7 @@
     left: -10px;
     width: 3px;
     height: 60px;
-    background: var(--nier-border);
+    background: var(--color-border);
 }
 
 @media (max-width: 767px) {
@@ -76,13 +75,13 @@
    ============================================ */
 
 .nav-sections > div > a {
-    font-family: var(--font-terminal);
+    font-family: var(--font-secondary);
     text-decoration: none;
-    color: var(--nier-text);
+    color: var(--color-text);
     border: none;
     padding: 0;
     font-size: 0.85rem;
-    transition: all 0.3s ease;
+    transition: var(--transition-normal);
     background: transparent;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -92,20 +91,20 @@
 .nav-sections > div > a::after {
     content: ">";
     margin-left: 12px;
-    color: var(--nier-text-muted);
+    color: var(--color-text-muted);
     opacity: 0.6;
-    transition: all 0.3s ease;
+    transition: var(--transition-normal);
 }
 
 .nav-sections > div > a:hover {
-    color: var(--nier-accent);
-    text-shadow: 0 0 8px rgba(193, 61, 61, 0.6);
+    color: var(--color-primary);
+    text-shadow: 0 0 8px var(--color-shadow);
 }
 
 .nav-sections > div > a:hover::after {
-    color: var(--nier-accent);
+    color: var(--color-primary);
     opacity: 1;
-    text-shadow: 0 0 8px rgba(193, 61, 61, 0.8);
+    text-shadow: 0 0 8px var(--color-shadow);
 }
 
 @media (max-width: 1024px) {
@@ -122,20 +121,20 @@
 .nav-sections .search-wrapper input {
     width: 60px;
     border: none;
-    border-bottom: 1px solid var(--nier-border);
+    border-bottom: 1px solid var(--color-border);
     padding: 4px 2px;
-    font-family: var(--font-terminal);
+    font-family: var(--font-secondary);
     font-size: 0.8rem;
     background: transparent;
-    color: var(--nier-text);
+    color: var(--color-text);
     text-align: center;
     letter-spacing: 1px;
-    transition: all 0.3s ease;
+    transition: var(--transition-normal);
 }
 
 .nav-sections .search-wrapper input::placeholder {
-    color: var(--nier-text-muted);
-    font-family: var(--font-terminal);
+    color: var(--color-text-muted);
+    font-family: var(--font-secondary);
     text-transform: uppercase;
     font-size: 0.75rem;
     letter-spacing: 1px;
@@ -143,8 +142,8 @@
 
 .nav-sections .search-wrapper input:focus {
     width: 120px;
-    border-bottom-color: var(--nier-accent);
-    box-shadow: 0 1px 0 0 var(--nier-accent);
+    border-bottom-color: var(--color-primary);
+    box-shadow: 0 1px 0 0 var(--color-primary);
     outline: none;
 }
 

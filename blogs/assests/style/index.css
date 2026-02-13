@@ -1,4 +1,4 @@
-/* Nier: Automata Theme - Blog Index */
+@import url('./theme/theme-nier.css');
 
 .body {
     max-width: 1200px;
@@ -15,20 +15,20 @@
     row-gap: var(--spacing-sm);
     margin-bottom: var(--spacing-lg);
     padding: var(--spacing-md);
-    border: 1px solid var(--nier-border);
-    background: var(--nier-container-bg);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-secondary);
 }
 
 /* Category Items - Simple Style with Tech Arrow */
 .category-list .category-item,
 .category-list .active-category-item {
-    font-family: var(--font-terminal);
+    font-family: var(--font-secondary);
     text-decoration: none;
-    color: var(--nier-text);
-    border: 1px solid var(--nier-border);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
     padding: 6px 30px;
     font-size: 0.85rem;
-    transition: all 0.2s;
+    transition: var(--transition-fast);
     background: rgba(255, 255, 255, 0.1);
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -44,10 +44,10 @@
     content: ">";
     position: absolute;
     left: 15px;
-    font-family: var(--font-terminal);
+    font-family: var(--font-secondary);
     font-size: 0.9rem;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: opacity var(--transition-fast);
 }
 
 .category-list .category-item:hover::before,
@@ -56,14 +56,14 @@
 }
 
 .category-list .category-item:hover {
-    background-color: var(--nier-text);
-    color: var(--nier-bg);
+    background-color: var(--color-text);
+    color: var(--color-bg);
 }
 
 .category-list .active-category-item {
-    background-color: var(--nier-accent);
-    border-color: var(--nier-accent);
-    color: var(--nier-bg);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-bg);
 }
 
 /* Category List - Inline Style (inside article-list) */
@@ -91,25 +91,25 @@
 
 .category-list-inline .category-item:hover {
     background: transparent;
-    color: var(--nier-accent);
-    text-shadow: 0 0 8px rgba(193, 61, 61, 0.5);
+    color: var(--color-primary);
+    text-shadow: 0 0 8px var(--color-shadow);
 }
 
 .category-list-inline .active-category-item {
-    background: var(--nier-accent);
-    color: var(--nier-bg);
+    background: var(--color-primary);
+    color: var(--color-bg);
 }
 
 .category-list-inline .active-category-item:hover {
-    background: var(--nier-accent);
-    color: var(--nier-bg);
+    background: var(--color-primary);
+    color: var(--color-bg);
     text-shadow: none;
 }
 
 /* Article List Divider */
 .article-list-divider {
     height: 1px;
-    background: var(--nier-border-light);
+    background: var(--color-border-light);
     margin: var(--spacing-sm) 0;
 }
 
@@ -117,10 +117,10 @@
 .article-list {
     display: flex;
     flex-direction: column;
-    border: 2px solid var(--nier-border);
-    outline: 1px solid var(--nier-border);
+    border: 2px solid var(--color-border);
+    outline: 1px solid var(--color-border);
     outline-offset: 2px;
-    background: var(--nier-container-bg);
+    background: var(--color-bg-secondary);
     padding: 40px var(--spacing-md) var(--spacing-md);
     position: relative;
 }
@@ -131,9 +131,9 @@
     position: absolute;
     top: 10px;
     left: 12px;
-    font-family: var(--font-terminal);
+    font-family: var(--font-secondary);
     font-size: 0.65rem;
-    color: var(--nier-text-muted);
+    color: var(--color-text-muted);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -144,12 +144,10 @@
     position: absolute;
     top: 10px;
     right: 12px;
-    font-family: var(--font-terminal);
+    font-family: var(--font-secondary);
     font-size: 0.6rem;
-    color: var(--nier-text-muted);
+    color: var(--color-text-muted);
 }
-
-
 
 /* Article Items - Terminal Style */
 .article-list>.article-item {
@@ -157,14 +155,14 @@
 }
 
 .article-list>.article-item>a {
-    font-family: var(--font-terminal);
+    font-family: var(--font-secondary);
     text-decoration: none;
-    color: var(--nier-text);
+    color: var(--color-text);
     padding: 12px var(--spacing-sm);
     font-size: 0.85rem;
     line-height: 1.6;
     letter-spacing: 0.5px;
-    transition: all 0.3s ease;
+    transition: var(--transition-normal);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -173,25 +171,25 @@
 /* :: Line Header Marker */
 .article-list>.article-item>a::before {
     content: "::";
-    color: var(--nier-text-muted);
+    color: var(--color-text-muted);
     margin-right: 12px;
-    transition: all 0.3s ease;
+    transition: var(--transition-normal);
     flex-shrink: 0;
 }
 
 /* Hover Effects */
 .article-list>.article-item:hover {
-    background: rgba(193, 61, 61, 0.05);
+    background: var(--color-primary-subtle);
 }
 
 .article-list>.article-item:hover>a {
-    color: var(--nier-accent);
-    text-shadow: 0 0 8px rgba(193, 61, 61, 0.3);
+    color: var(--color-primary);
+    text-shadow: 0 0 8px var(--color-shadow);
 }
 
 .article-list>.article-item:hover>a::before {
-    color: var(--nier-accent);
-    text-shadow: 0 0 8px rgba(193, 61, 61, 0.5);
+    color: var(--color-primary);
+    text-shadow: 0 0 8px var(--color-shadow);
 }
 
 .article-list>.article-item>a>.article-item-title {
@@ -200,33 +198,33 @@
 
 /* Terminal Date Format */
 .article-list>.article-item>a>.article-item-date {
-    font-family: var(--font-terminal);
+    font-family: var(--font-secondary);
     font-size: 0.8rem;
-    color: var(--nier-text-muted);
+    color: var(--color-text-muted);
     white-space: nowrap;
     margin-left: var(--spacing-sm);
     letter-spacing: 1px;
 }
 
 .article-list>.article-item:hover>a>.article-item-date {
-    color: var(--nier-accent);
+    color: var(--color-primary);
 }
 
 /* Empty State - Terminal Style */
 .article-list>.article-item>a:empty::after {
     content: "[NO_DATA]";
-    font-family: var(--font-terminal);
-    color: var(--nier-text-muted);
+    font-family: var(--font-secondary);
+    color: var(--color-text-muted);
 }
 
 /* Terminal Status Bar at Bottom */
 .article-list-footer {
     margin-top: var(--spacing-md);
     padding-top: var(--spacing-sm);
-    border-top: 1px solid var(--nier-border-light);
-    font-family: var(--font-terminal);
+    border-top: 1px solid var(--color-border-light);
+    font-family: var(--font-secondary);
     font-size: 0.65rem;
-    color: var(--nier-text-muted);
+    color: var(--color-text-muted);
     text-transform: uppercase;
     letter-spacing: 1px;
     text-align: right;

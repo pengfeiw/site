@@ -1,5 +1,6 @@
 /* Nier: Automata Theme - Category Page Navigator */
 /* 引入公共导航样式 */
+@import url('./theme/theme.css');
 @import url('navigator-common.css');
 
 /* ============================================
@@ -14,9 +15,9 @@
     right: 12px;
     display: flex;
     justify-content: space-between;
-    font-family: var(--font-terminal);
+    font-family: var(--font-secondary);
     font-size: 0.65rem;
-    color: var(--nier-text-muted);
+    color: var(--color-text-muted);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -26,9 +27,9 @@
     position: absolute;
     bottom: 10px;
     right: 12px;
-    font-family: var(--font-terminal);
+    font-family: var(--font-secondary);
     font-size: 0.65rem;
-    color: var(--nier-text-muted);
+    color: var(--color-text-muted);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -36,14 +37,14 @@
 /* Logo 样式 */
 .header .navigator .logo img {
     width: 80px;
-    background: var(--nier-container-bg);
-    box-shadow: 2px 2px 0 rgba(94, 90, 78, 0.3);
-    transition: box-shadow 0.2s;
-    border-radius: 5px;
+    background: var(--color-bg-secondary);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--transition-fast);
+    border-radius: var(--radius-md);
 }
 
 .header .navigator .logo img:hover {
-    box-shadow: 3px 3px 0 rgba(94, 90, 78, 0.5);
+    box-shadow: var(--shadow-md);
 }
 
 /* 移动端适配调整 */

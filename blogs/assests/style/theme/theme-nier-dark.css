@@ -1,0 +1,225 @@
+/* ============================================================
+   Theme: Nier Dark - Nier: Automata Inspired Dark Theme
+   尼尔 Dark 主题样式变量定义
+   ============================================================ */
+
+@import url('variables.css');
+
+:root {
+    /* ==========================================================
+       颜色系统 - Color System
+       ========================================================== */
+    
+    /* 主色调 - 柔和的蓝绿色 */
+    --color-primary: #5db3ad;
+    --color-primary-hover: #4a9a94;
+    --color-primary-subtle: rgba(93, 179, 173, 0.15);
+    
+    /* 背景色 - 柔和的深灰色系（护眼） */
+    --color-bg: #2d2d2d;
+    --color-bg-secondary: #383838;
+    --color-bg-tertiary: #424242;
+    --color-bg-code: #353535;
+    
+    /* 文字色 - 柔和的灰白色（降低对比度） */
+    --color-text: #c8c8c8;
+    --color-text-secondary: #a8a8a8;
+    --color-text-muted: #808080;
+    --color-text-inverse: #2d2d2d;
+    
+    /* 边框色 - 柔和的灰色 */
+    --color-border: #505050;
+    --color-border-light: #606060;
+    --color-border-hover: #5db3ad;
+    
+    /* 功能色 */
+    --color-success: #5cb85c;
+    --color-success-subtle: rgba(92, 184, 92, 0.15);
+    --color-warning: #f0ad4e;
+    --color-warning-subtle: rgba(240, 173, 78, 0.15);
+    --color-danger: #d9534f;
+    --color-danger-subtle: rgba(217, 83, 79, 0.15);
+    --color-info: #5bc0de;
+    --color-info-subtle: rgba(91, 192, 222, 0.15);
+    
+    /* 交互色 */
+    --color-hover: #333333;
+    --color-highlight: #404040;
+    --color-focus: #4ecdc4;
+    
+    /* 阴影色 */
+    --color-shadow: rgba(0, 0, 0, 0.5);
+    --color-shadow-subtle: rgba(0, 0, 0, 0.3);
+    
+    /* ==========================================================
+       字体系统 - Typography System
+       ========================================================== */
+    
+    /* 字体族 */
+    --font-primary: 'Noto Serif SC', 'Source Han Serif CN', 'SimSun', serif;
+    --font-secondary: 'Courier Prime', 'Source Code Pro', 'Fira Code', 'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+    --font-mono: 'Courier Prime', 'Source Code Pro', 'Fira Code', 'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+    
+    /* 字体大小 */
+    --font-size-xs: 12px;
+    --font-size-sm: 14px;
+    --font-size-base: 16px;
+    --font-size-md: 18px;
+    --font-size-lg: 20px;
+    --font-size-xl: 24px;
+    
+    /* 行高 */
+    --line-height-tight: 1.4;
+    --line-height-normal: 1.7;
+    --line-height-relaxed: 1.8;
+    
+    /* 字重 */
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    
+    /* ==========================================================
+       间距系统 - Spacing System
+       ========================================================== */
+    
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    --spacing-2xl: 4rem;
+    
+    /* ==========================================================
+       圆角系统 - Border Radius System
+       ========================================================== */
+    
+    --radius-none: 0;
+    --radius-sm: 2px;
+    --radius-md: 4px;
+    --radius-lg: 8px;
+    --radius-full: 9999px;
+    
+    /* ==========================================================
+       阴影系统 - Shadow System
+       ========================================================== */
+    
+    --shadow-sm: 2px 2px 0 var(--color-shadow);
+    --shadow-md: 3px 3px 0 var(--color-shadow);
+    --shadow-lg: 4px 4px 0 var(--color-shadow);
+    
+    /* ==========================================================
+       代码高亮 - Syntax Highlighting
+       ========================================================== */
+    
+    --code-comment: #6b6b6b;
+    --code-keyword: #6ab4ae;
+    --code-string: #88b584;
+    --code-number: #c4956a;
+    --code-function: #7aa8d4;
+    --code-class: #c9b070;
+    --code-variable: #9a9a9a;
+    --code-operator: #6ba8a3;
+    --code-punctuation: #999999;
+    
+    /* ==========================================================
+       过渡动画 - Transitions
+       ========================================================== */
+    
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    
+    /* ==========================================================
+       Z-Index 层级
+       ========================================================== */
+    
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-modal: 300;
+    --z-popover: 400;
+    --z-tooltip: 500;
+    --z-overlay: 9999;
+    
+    /* ==========================================================
+       兼容性变量 - 保持与旧变量的兼容
+       后续可以逐步移除
+       ========================================================== */
+    
+    /* 旧版颜色变量映射 */
+    --nier-bg: var(--color-bg);
+    --nier-container-bg: var(--color-bg-secondary);
+    --nier-text: var(--color-text);
+    --nier-text-muted: var(--color-text-muted);
+    --nier-accent: var(--color-primary);
+    --nier-border: var(--color-border);
+    --nier-border-light: var(--color-border-light);
+    --nier-highlight: var(--color-highlight);
+    --nier-hover: var(--color-hover);
+    --nier-code-bg: var(--color-bg-code);
+    
+    /* 旧版间距变量映射 */
+    --font-terminal: var(--font-secondary);
+    --font-body: var(--font-primary);
+    
+    /* GitHub Markdown 颜色覆盖 */
+    --color-fg-default: var(--color-text);
+    --color-fg-muted: var(--color-text-muted);
+    --color-fg-subtle: var(--color-border-light);
+    --color-canvas-default: var(--color-bg-secondary);
+    --color-canvas-subtle: var(--color-bg);
+    --color-border-default: var(--color-border);
+    --color-border-muted: var(--color-border-light);
+    --color-neutral-muted: var(--color-shadow-subtle);
+    --color-accent-fg: var(--color-primary);
+    --color-accent-emphasis: var(--color-primary);
+    --color-attention-subtle: var(--color-primary-subtle);
+    --color-danger-fg: var(--color-danger);
+    
+    /* GitHub 语法高亮映射 */
+    --color-prettylights-syntax-comment: var(--code-comment);
+    --color-prettylights-syntax-constant: var(--code-number);
+    --color-prettylights-syntax-entity: var(--color-text-secondary);
+    --color-prettylights-syntax-storage-modifier-import: var(--color-text);
+    --color-prettylights-syntax-entity-tag: var(--color-success);
+    --color-prettylights-syntax-keyword: var(--code-keyword);
+    --color-prettylights-syntax-string: var(--code-string);
+    --color-prettylights-syntax-variable: var(--color-text-muted);
+    --color-prettylights-syntax-brackethighlighter-unmatched: var(--color-danger);
+    --color-prettylights-syntax-invalid-illegal-text: #f0f6fc;
+    --color-prettylights-syntax-invalid-illegal-bg: #8e1519;
+    --color-prettylights-syntax-carriage-return-text: #f0f6fc;
+    --color-prettylights-syntax-carriage-return-bg: #b62324;
+    --color-prettylights-syntax-string-regexp: var(--color-success);
+    --color-prettylights-syntax-markup-list: var(--color-warning);
+    --color-prettylights-syntax-markup-heading: var(--color-text);
+    --color-prettylights-syntax-markup-italic: var(--color-text);
+    --color-prettylights-syntax-markup-bold: var(--color-text);
+    --color-prettylights-syntax-markup-deleted-text: var(--code-string);
+    --color-prettylights-syntax-markup-deleted-bg: #3d2b1f;
+    --color-prettylights-syntax-markup-inserted-text: var(--color-success);
+    --color-prettylights-syntax-markup-inserted-bg: #1e3d1e;
+    --color-prettylights-syntax-markup-changed-text: var(--color-warning);
+    --color-prettylights-syntax-markup-changed-bg: #3d2b1f;
+    --color-prettylights-syntax-markup-ignored-text: var(--color-bg);
+    --color-prettylights-syntax-markup-ignored-bg: var(--color-text);
+    --color-prettylights-syntax-meta-diff-range: var(--color-text-secondary);
+    --color-prettylights-syntax-brackethighlighter-angle: var(--color-text-muted);
+    --color-prettylights-syntax-sublimelinter-gutter-mark: var(--color-border-light);
+    --color-prettylights-syntax-constant-other-reference-link: var(--code-string);
+}
+
+/* ============================================================
+   Dark Theme Body Background Pattern
+   ============================================================ */
+
+body {
+    background-image: radial-gradient(circle, #3d3d3d 1px, transparent 1px) !important;
+    background-size: 30px 30px !important;
+}
+
+@media (max-width: 767px) {
+    body {
+        background-size: 20px 20px !important;
+    }
+}

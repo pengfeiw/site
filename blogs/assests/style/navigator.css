@@ -1,5 +1,5 @@
-/* Nier: Automata Theme - Article Page Navigator */
 /* 引入公共导航样式 */
+@import url('./theme/theme.css');
 @import url('navigator-common.css');
 
 /* Article 页面无额外专属样式，全部复用公共样式 */

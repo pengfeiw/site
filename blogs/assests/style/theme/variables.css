@@ -1,0 +1,142 @@
+/* ============================================================
+   CSS Variables - Theme System
+   通用变量定义文件
+   所有主题相关的变量名称在此定义，具体值在 theme-*.css 中设置
+   ============================================================ */
+
+:root {
+    /* ==========================================================
+       颜色系统 - Color System
+       ========================================================== */
+    
+    /* 主色调 */
+    --color-primary: ;
+    --color-primary-hover: ;
+    --color-primary-subtle: ;
+    
+    /* 背景色 */
+    --color-bg: ;
+    --color-bg-secondary: ;
+    --color-bg-tertiary: ;
+    --color-bg-code: ;
+    
+    /* 文字色 */
+    --color-text: ;
+    --color-text-secondary: ;
+    --color-text-muted: ;
+    --color-text-inverse: ;
+    
+    /* 边框色 */
+    --color-border: ;
+    --color-border-light: ;
+    --color-border-hover: ;
+    
+    /* 功能色 */
+    --color-success: ;
+    --color-success-subtle: ;
+    --color-warning: ;
+    --color-warning-subtle: ;
+    --color-danger: ;
+    --color-danger-subtle: ;
+    --color-info: ;
+    --color-info-subtle: ;
+    
+    /* 交互色 */
+    --color-hover: ;
+    --color-highlight: ;
+    --color-focus: ;
+    
+    /* 阴影色 */
+    --color-shadow: ;
+    --color-shadow-subtle: ;
+    
+    /* ==========================================================
+       字体系统 - Typography System
+       ========================================================== */
+    
+    /* 字体族 */
+    --font-primary: ;
+    --font-secondary: ;
+    --font-mono: ;
+    
+    /* 字体大小 */
+    --font-size-xs: ;
+    --font-size-sm: ;
+    --font-size-base: ;
+    --font-size-md: ;
+    --font-size-lg: ;
+    --font-size-xl: ;
+    
+    /* 行高 */
+    --line-height-tight: ;
+    --line-height-normal: ;
+    --line-height-relaxed: ;
+    
+    /* 字重 */
+    --font-weight-normal: ;
+    --font-weight-medium: ;
+    --font-weight-semibold: ;
+    --font-weight-bold: ;
+    
+    /* ==========================================================
+       间距系统 - Spacing System
+       ========================================================== */
+    
+    --spacing-xs: ;
+    --spacing-sm: ;
+    --spacing-md: ;
+    --spacing-lg: ;
+    --spacing-xl: ;
+    --spacing-2xl: ;
+    
+    /* ==========================================================
+       圆角系统 - Border Radius System
+       ========================================================== */
+    
+    --radius-none: ;
+    --radius-sm: ;
+    --radius-md: ;
+    --radius-lg: ;
+    --radius-full: ;
+    
+    /* ==========================================================
+       阴影系统 - Shadow System
+       ========================================================== */
+    
+    --shadow-sm: ;
+    --shadow-md: ;
+    --shadow-lg: ;
+    
+    /* ==========================================================
+       代码高亮 - Syntax Highlighting
+       ========================================================== */
+    
+    --code-comment: ;
+    --code-keyword: ;
+    --code-string: ;
+    --code-number: ;
+    --code-function: ;
+    --code-class: ;
+    --code-variable: ;
+    --code-operator: ;
+    --code-punctuation: ;
+    
+    /* ==========================================================
+       过渡动画 - Transitions
+       ========================================================== */
+    
+    --transition-fast: ;
+    --transition-normal: ;
+    --transition-slow: ;
+    
+    /* ==========================================================
+       Z-Index 层级
+       ========================================================== */
+    
+    --z-dropdown: ;
+    --z-sticky: ;
+    --z-modal: ;
+    --z-popover: ;
+    --z-tooltip: ;
+    --z-overlay: ;
+}
