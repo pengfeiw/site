@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sat, 28 Feb 2026 05:31:07 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 28 Feb 2026 07:48:04 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sat, 28 Feb 2026 05:30:53 GMT</pubDate>
+        <pubDate>Sat, 28 Feb 2026 07:47:49 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[OpenCode 快速入门]]></title>
+            <description><![CDATA[用 OpenCode 优化你的工作流]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/opencode.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/opencode.html</guid>
+            <pubDate>Sat, 28 Feb 2026 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[OCCT 的编译]]></title>
             <description><![CDATA[记录 OCCT 的编译过程]]></description>
