@@ -63,67 +63,63 @@ $ opencode -c
     <span class="hljs-string">"https://raw.githubusercontent.com/my-org/shared-rules/main/style.md"</span>
   <span class="hljs-punctuation">]</span>
 <span class="hljs-punctuation">}</span>
-</code></pre><h2 id="扩展">扩展 <a href="#扩展">#</a></h2><p>opencode 有三种扩展机制：commands, skills, agents。</p><blockquote><p>Commands are what to do. Skills are how to do it. Agents are who does it.</p></blockquote><h3 id="Commands">Commands <a href="#Commands">#</a></h3><p>命令就是预先定义好的一段提示语，你用 <code>/</code> 来触发它。这样你就不用每次都重复输入同样的说明，而是创建一次命令，以后反复调用就行。</p><h4 id="创建 command">创建 command <a href="#创建 command">#</a></h4><h2 id="commands%20%E5%AD%98%E5%82%A8%E5%9C%A8%20%3Ccode%3E.opencode/commands%3C/code%3E%20%E7%9B%AE%E5%BD%95%E4%B8%AD%EF%BC%8C%E4%BE%8B%E5%A6%82%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%20test%20command%EF%BC%8C%E5%88%9B%E5%BB%BA%20%3Ccode%3E.opencode/commands/test.md%3C/code%3E%EF%BC%9A%0A%60%60%60">commands 存储在 <code>.opencode/commands</code> 目录中，例如创建一个 test command，创建 <code>.opencode/commands/test.md</code>： ``` <a href="#commands%20%E5%AD%98%E5%82%A8%E5%9C%A8%20%3Ccode%3E.opencode/commands%3C/code%3E%20%E7%9B%AE%E5%BD%95%E4%B8%AD%EF%BC%8C%E4%BE%8B%E5%A6%82%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%20test%20command%EF%BC%8C%E5%88%9B%E5%BB%BA%20%3Ccode%3E.opencode/commands/test.md%3C/code%3E%EF%BC%9A%0A%60%60%60">#</a></h2><h2 id="description: Run tests with coverage
-agent: build">description: Run tests with coverage agent: build <a href="#description: Run tests with coverage
-agent: build">#</a></h2><p>Run the full test suite with coverage report. Focus on failing tests and suggest fixes.</p><pre><code>
-command 是一个包含 YAML 头的 markdown 文件。description 用于说明这个 command 是干什么的，agent 指定这个命令将会在哪种模式（agent）下执行，YAML 头下方文字用于指示 AI 工作。
-
-创建完成后，可以在 TUI 输入 `/test` 执行这个命令。
-
-#### command 参数
-
-支持 `$ARGUMENTS` 和占位符（`$1,$2`）指定参数
-
-例如：
-```markdown
+</code></pre><h2 id="扩展">扩展 <a href="#扩展">#</a></h2><p>opencode 有三种扩展机制：commands, skills, agents。</p><blockquote><p>Commands are what to do. Skills are how to do it. Agents are who does it.</p></blockquote><h3 id="Commands">Commands <a href="#Commands">#</a></h3><p>命令就是预先定义好的一段提示语，你用 <code>/</code> 来触发它。这样你就不用每次都重复输入同样的说明，而是创建一次命令，以后反复调用就行。</p><h4 id="创建 command">创建 command <a href="#创建 command">#</a></h4><p>commands 存储在 <code>.opencode/commands</code> 目录中，例如创建一个 test command，创建 <code>.opencode/commands/test.md</code>：</p><pre><code>---
+description: Run tests with coverage
+agent: build
 ---
+
+Run the full test suite with coverage report.
+Focus on failing tests and suggest fixes.
+</code></pre><p>command 是一个包含 YAML 头的 markdown 文件。description 用于说明这个 command 是干什么的，agent 指定这个命令将会在哪种模式（agent）下执行，YAML 头下方文字用于指示 AI 工作。</p><p>创建完成后，可以在 TUI 输入 <code>/test</code> 执行这个命令。</p><h4 id="command 参数">command 参数 <a href="#command 参数">#</a></h4><p>支持 <code>$ARGUMENTS</code> 和占位符（<code>$1,$2</code>）指定参数</p><p>例如：</p><pre><code>---
 description: Create a new component
 ---
 
 Create a new React component named $ARGUMENTS with TypeScript.
 Include proper typing and basic structure.
-</code></pre><p>执行命令：<code>/component Button</code>。</p><h4 id="执行 shell 命令">执行 shell 命令 <a href="#执行 shell 命令">#</a></h4><pre><code class="hljs language-md">---
-<span class="hljs-section">description: Review recent changes
----</span>
+</code></pre><p>执行命令：<code>/component Button</code>。</p><h4 id="执行 shell 命令">执行 shell 命令 <a href="#执行 shell 命令">#</a></h4><pre><code>---
+description: Review recent changes
+---
 
 Recent git commits:
-!<span class="hljs-code">`git log --oneline -10`</span>
+!`git log --oneline -10`
 Review these changes and suggest improvements.
-</code></pre><h4 id="引用文件">引用文件 <a href="#引用文件">#</a></h4><pre><code class="hljs language-md">---
-<span class="hljs-section">description: Review this file
----</span>
+</code></pre><h4 id="引用文件">引用文件 <a href="#引用文件">#</a></h4><pre><code>---
+description: Review this file
+---
 
 Review the code in @src/components/Button.tsx.
 Check for performance issues.
-</code></pre><h3 id="Skills">Skills <a href="#Skills">#</a></h3><p>skills 可以看作是给 AI 的 wiki，指导 AI 怎么做。opencode 会在需要的时候按需加载这些 skills，而不是每次手动执行这些 skills。</p><p>哪些东西可以作为 skills：</p><ul><li>用来记录编码规范。</li><li>用来沉淀业务 / 领域知识。</li><li>用来定义某类任务的操作流程。</li><li>以及任何你本来会写进团队 wiki 里的东西。</li></ul><h4 id="创建 Skills">创建 Skills <a href="#创建 Skills">#</a></h4><h2 id="%E5%88%9B%E5%BB%BA%20%3Ccode%3E.opencode/skills/git-release/SKILL.md%3C/code%3E:%0A%60%60%60md">创建 <code>.opencode/skills/git-release/SKILL.md</code>: ```md <a href="#%E5%88%9B%E5%BB%BA%20%3Ccode%3E.opencode/skills/git-release/SKILL.md%3C/code%3E:%0A%60%60%60md">#</a></h2><h2 id="name: git-release
-description: Create consistent releases and changelogs">name: git-release description: Create consistent releases and changelogs <a href="#name: git-release
-description: Create consistent releases and changelogs">#</a></h2><h2 id="What I do">What I do <a href="#What I do">#</a></h2><ul><li>Draft release notes from merged PRs</li><li>Propose a version bump</li><li>Provide a copy-pasteable <code>gh release create</code> command</li></ul><h2 id="When to use me">When to use me <a href="#When to use me">#</a></h2><p>Use this when preparing a tagged release. Ask clarifying questions if versioning scheme is unclear.</p><h2 id="Process">Process <a href="#Process">#</a></h2><ol><li>Run <code>git log --oneline $(git describe --tags --abbrev=0)..HEAD</code></li><li>Categorise commits (features, fixes, chores)</li><li>Determine version bump (major/minor/patch)</li><li>Generate changelog entry</li><li>Output the release command</li></ol><pre><code>
-`/skills` 会显示当前可用的 skills，opencode 会在需要的时候自动加载这些 skills。
-
-#### skills 权限
-
-在配置文件中，可以设置 agent 可以使用的 skills。
-</code></pre><p>{ [...] "permission": { "skill": { "<em>": "allow", "internal-</em>": "deny", "experimental-*": "ask" } } }</p><pre><code>
-### Agents
-
-Agents 是可配置的 AI 助手。它们可以拥有不同的 models、permissions、prompts 和 tool。例如 Build Agent 和 Plan Agent。
-
-什么时候使用 Agent：
-- 创建针对特定角色的助手（比如代码审查员、文档撰写者、安全审计员）。
-- 出于安全考虑，对它们的能力做限制。
-- 不同任务使用不同的模型。
-
-内置的 agents:
-- Build（primary）：拥有完整访问权限，是默认的工作模式。
-- Plan（primary）：只读，用于分析和规划。
-- General（subagent）：用于复杂的多步骤研究。
-- Explore（subagent）：用于快速的、只读的代码库探索。
-
-#### 创建 Agents
-
-创建 `.opencode/agents/reviewer.md`:
-```md
+</code></pre><h3 id="Skills">Skills <a href="#Skills">#</a></h3><p>skills 可以看作是给 AI 的 wiki，指导 AI 怎么做。opencode 会在需要的时候按需加载这些 skills，而不是每次手动执行这些 skills。</p><p>哪些东西可以作为 skills：</p><ul><li>用来记录编码规范。</li><li>用来沉淀业务 / 领域知识。</li><li>用来定义某类任务的操作流程。</li><li>以及任何你本来会写进团队 wiki 里的东西。</li></ul><h4 id="创建 Skills">创建 Skills <a href="#创建 Skills">#</a></h4><p>创建 <code>.opencode/skills/git-release/SKILL.md</code>:</p><pre><code>---
+name: git-release
+description: Create consistent releases and changelogs
 ---
+
+## What I do
+- Draft release notes from merged PRs
+- Propose a version bump
+- Provide a copy-pasteable `gh release create` command
+
+## When to use me
+Use this when preparing a tagged release.
+Ask clarifying questions if versioning scheme is unclear.
+
+## Process
+1. Run `git log --oneline $(git describe --tags --abbrev=0)..HEAD`
+2. Categorise commits (features, fixes, chores)
+3. Determine version bump (major/minor/patch)
+4. Generate changelog entry
+5. Output the release command
+</code></pre><p><code>/skills</code> 会显示当前可用的 skills，opencode 会在需要的时候自动加载这些 skills。</p><h4 id="skills 权限">skills 权限 <a href="#skills 权限">#</a></h4><p>在配置文件中，可以设置 agent 可以使用的 skills。</p><pre><code>{
+  [...]
+  "permission": {
+    "skill": {
+      "*": "allow",
+      "internal-*": "deny",
+      "experimental-*": "ask"
+    }
+  }
+}
+</code></pre><h3 id="Agents">Agents <a href="#Agents">#</a></h3><p>Agents 是可配置的 AI 助手。它们可以拥有不同的 models、permissions、prompts 和 tool。例如 Build Agent 和 Plan Agent。</p><p>什么时候使用 Agent：</p><ul><li>创建针对特定角色的助手（比如代码审查员、文档撰写者、安全审计员）。</li><li>出于安全考虑，对它们的能力做限制。</li><li>不同任务使用不同的模型。</li></ul><p>内置的 agents:</p><ul><li>Build（primary）：拥有完整访问权限，是默认的工作模式。</li><li>Plan（primary）：只读，用于分析和规划。</li><li>General（subagent）：用于复杂的多步骤研究。</li><li>Explore（subagent）：用于快速的、只读的代码库探索。</li></ul><h4 id="创建 Agents">创建 Agents <a href="#创建 Agents">#</a></h4><p>创建 <code>.opencode/agents/reviewer.md</code>:</p><pre><code>---
 description: Reviews code for quality and security
 mode: subagent
 temperature: 0.1
@@ -140,6 +136,4 @@ You are a code reviewer. Focus on:
 - Test coverage gaps
 Provide constructive feedback without making changes.
 </code></pre><h3 id="Primary agents 和 Subagents">Primary agents 和 Subagents <a href="#Primary agents 和 Subagents">#</a></h3><p>通过 <code>Tab</code> 可以切换 Primary agents。通过输入 <code>@</code> 可以使用 subagents，例如：</p><pre><code>@reviewer Check the authentication module
-</code></pre><h2 id="Plugins 和 automation">Plugins 和 automation <a href="#Plugins 和 automation">#</a></h2><p>// ...未完，待更新</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/clang/build-occt">上一篇：OCCT 的编译</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#OpenCode 快速入门" style="padding-left:15px">OpenCode 快速入门</a></div><div class="toc-item"><a class="toc-item-link" href="#概述" style="padding-left:30px">概述</a></div><div class="toc-item"><a class="toc-item-link" href="#安装" style="padding-left:30px">安装</a></div><div class="toc-item"><a class="toc-item-link" href="#配置 LLM" style="padding-left:30px">配置 LLM</a></div><div class="toc-item"><a class="toc-item-link" href="#基本操作" style="padding-left:30px">基本操作</a></div><div class="toc-item"><a class="toc-item-link" href="#%3Ccode%3E/init%3C/code%3E" style="padding-left:45px">/init</a></div><div class="toc-item"><a class="toc-item-link" href="#Build 和 Plan Agent" style="padding-left:45px">Build 和 Plan Agent</a></div><div class="toc-item"><a class="toc-item-link" href="#引用文件" style="padding-left:45px">引用文件</a></div><div class="toc-item"><a class="toc-item-link" href="#拖拽图片" style="padding-left:45px">拖拽图片</a></div><div class="toc-item"><a class="toc-item-link" href="#%3Ccode%3E/undo%3C/code%3E%20%E5%92%8C%20%3Ccode%3E/redo%3C/code%3E" style="padding-left:45px">/undo 和 /redo</a></div><div class="toc-item"><a class="toc-item-link" href="#%3Ccode%3E/share%3C/code%3E" style="padding-left:45px">/share</a></div><div class="toc-item"><a class="toc-item-link" href="#%3Ccode%3E/sessions%3C/code%3E" style="padding-left:45px">/sessions</a></div><div class="toc-item"><a class="toc-item-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%20%3Ccode%3Eopencode.json%3C/code%3E" style="padding-left:30px">配置文件 opencode.json</a></div><div class="toc-item"><a class="toc-item-link" href="#设置 model" style="padding-left:45px">设置 model</a></div><div class="toc-item"><a class="toc-item-link" href="#权限配置" style="padding-left:45px">权限配置</a></div><div class="toc-item"><a class="toc-item-link" href="#自定义说明" style="padding-left:45px">自定义说明</a></div><div class="toc-item"><a class="toc-item-link" href="#扩展" style="padding-left:30px">扩展</a></div><div class="toc-item"><a class="toc-item-link" href="#Commands" style="padding-left:45px">Commands</a></div><div class="toc-item"><a class="toc-item-link" href="#创建 command" style="padding-left:60px">创建 command</a></div><div class="toc-item"><a class="toc-item-link" href="#commands%20%E5%AD%98%E5%82%A8%E5%9C%A8%20%3Ccode%3E.opencode/commands%3C/code%3E%20%E7%9B%AE%E5%BD%95%E4%B8%AD%EF%BC%8C%E4%BE%8B%E5%A6%82%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%20test%20command%EF%BC%8C%E5%88%9B%E5%BB%BA%20%3Ccode%3E.opencode/commands/test.md%3C/code%3E%EF%BC%9A%0A%60%60%60" style="padding-left:30px">commands 存储在 .opencode/commands 目录中，例如创建一个 test command，创建 .opencode/commands/test.md： ```</a></div><div class="toc-item"><a class="toc-item-link" href="#description: Run tests with coverage
-agent: build" style="padding-left:30px">description: Run tests with coverage agent: build</a></div><div class="toc-item"><a class="toc-item-link" href="#执行 shell 命令" style="padding-left:60px">执行 shell 命令</a></div><div class="toc-item"><a class="toc-item-link" href="#引用文件" style="padding-left:60px">引用文件</a></div><div class="toc-item"><a class="toc-item-link" href="#Skills" style="padding-left:45px">Skills</a></div><div class="toc-item"><a class="toc-item-link" href="#创建 Skills" style="padding-left:60px">创建 Skills</a></div><div class="toc-item"><a class="toc-item-link" href="#%E5%88%9B%E5%BB%BA%20%3Ccode%3E.opencode/skills/git-release/SKILL.md%3C/code%3E:%0A%60%60%60md" style="padding-left:30px">创建 .opencode/skills/git-release/SKILL.md: ```md</a></div><div class="toc-item"><a class="toc-item-link" href="#name: git-release
-description: Create consistent releases and changelogs" style="padding-left:30px">name: git-release description: Create consistent releases and changelogs</a></div><div class="toc-item"><a class="toc-item-link" href="#What I do" style="padding-left:30px">What I do</a></div><div class="toc-item"><a class="toc-item-link" href="#When to use me" style="padding-left:30px">When to use me</a></div><div class="toc-item"><a class="toc-item-link" href="#Process" style="padding-left:30px">Process</a></div><div class="toc-item"><a class="toc-item-link" href="#Primary agents 和 Subagents" style="padding-left:45px">Primary agents 和 Subagents</a></div><div class="toc-item"><a class="toc-item-link" href="#Plugins 和 automation" style="padding-left:30px">Plugins 和 automation</a></div></div></div></div></body></html>
+</code></pre><h2 id="Plugins 和 automation">Plugins 和 automation <a href="#Plugins 和 automation">#</a></h2><p>// ...未完，待更新</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/clang/build-occt">上一篇：OCCT 的编译</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#OpenCode 快速入门" style="padding-left:15px">OpenCode 快速入门</a></div><div class="toc-item"><a class="toc-item-link" href="#概述" style="padding-left:30px">概述</a></div><div class="toc-item"><a class="toc-item-link" href="#安装" style="padding-left:30px">安装</a></div><div class="toc-item"><a class="toc-item-link" href="#配置 LLM" style="padding-left:30px">配置 LLM</a></div><div class="toc-item"><a class="toc-item-link" href="#基本操作" style="padding-left:30px">基本操作</a></div><div class="toc-item"><a class="toc-item-link" href="#%3Ccode%3E/init%3C/code%3E" style="padding-left:45px">/init</a></div><div class="toc-item"><a class="toc-item-link" href="#Build 和 Plan Agent" style="padding-left:45px">Build 和 Plan Agent</a></div><div class="toc-item"><a class="toc-item-link" href="#引用文件" style="padding-left:45px">引用文件</a></div><div class="toc-item"><a class="toc-item-link" href="#拖拽图片" style="padding-left:45px">拖拽图片</a></div><div class="toc-item"><a class="toc-item-link" href="#%3Ccode%3E/undo%3C/code%3E%20%E5%92%8C%20%3Ccode%3E/redo%3C/code%3E" style="padding-left:45px">/undo 和 /redo</a></div><div class="toc-item"><a class="toc-item-link" href="#%3Ccode%3E/share%3C/code%3E" style="padding-left:45px">/share</a></div><div class="toc-item"><a class="toc-item-link" href="#%3Ccode%3E/sessions%3C/code%3E" style="padding-left:45px">/sessions</a></div><div class="toc-item"><a class="toc-item-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%20%3Ccode%3Eopencode.json%3C/code%3E" style="padding-left:30px">配置文件 opencode.json</a></div><div class="toc-item"><a class="toc-item-link" href="#设置 model" style="padding-left:45px">设置 model</a></div><div class="toc-item"><a class="toc-item-link" href="#权限配置" style="padding-left:45px">权限配置</a></div><div class="toc-item"><a class="toc-item-link" href="#自定义说明" style="padding-left:45px">自定义说明</a></div><div class="toc-item"><a class="toc-item-link" href="#扩展" style="padding-left:30px">扩展</a></div><div class="toc-item"><a class="toc-item-link" href="#Commands" style="padding-left:45px">Commands</a></div><div class="toc-item"><a class="toc-item-link" href="#创建 command" style="padding-left:60px">创建 command</a></div><div class="toc-item"><a class="toc-item-link" href="#command 参数" style="padding-left:60px">command 参数</a></div><div class="toc-item"><a class="toc-item-link" href="#执行 shell 命令" style="padding-left:60px">执行 shell 命令</a></div><div class="toc-item"><a class="toc-item-link" href="#引用文件" style="padding-left:60px">引用文件</a></div><div class="toc-item"><a class="toc-item-link" href="#Skills" style="padding-left:45px">Skills</a></div><div class="toc-item"><a class="toc-item-link" href="#创建 Skills" style="padding-left:60px">创建 Skills</a></div><div class="toc-item"><a class="toc-item-link" href="#skills 权限" style="padding-left:60px">skills 权限</a></div><div class="toc-item"><a class="toc-item-link" href="#Agents" style="padding-left:45px">Agents</a></div><div class="toc-item"><a class="toc-item-link" href="#创建 Agents" style="padding-left:60px">创建 Agents</a></div><div class="toc-item"><a class="toc-item-link" href="#Primary agents 和 Subagents" style="padding-left:45px">Primary agents 和 Subagents</a></div><div class="toc-item"><a class="toc-item-link" href="#Plugins 和 automation" style="padding-left:30px">Plugins 和 automation</a></div></div></div></div></body></html>
