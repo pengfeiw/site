@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sat, 28 Feb 2026 09:39:32 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 06 Mar 2026 06:31:57 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sat, 28 Feb 2026 09:39:17 GMT</pubDate>
+        <pubDate>Fri, 06 Mar 2026 06:31:43 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[MCP]]></title>
+            <description><![CDATA[MCP 介绍]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/mcp.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/mcp.html</guid>
+            <pubDate>Fri, 06 Mar 2026 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[OpenCode 快速入门]]></title>
             <description><![CDATA[用 OpenCode 优化你的工作流]]></description>
