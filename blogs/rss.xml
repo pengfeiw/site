@@ -9,12 +9,12 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Mon, 16 Mar 2026 07:19:56 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 16 Mar 2026 11:52:32 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Mon, 16 Mar 2026 07:19:41 GMT</pubDate>
+        <pubDate>Mon, 16 Mar 2026 11:52:17 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
-            <title><![CDATA[Reactive Native 和 Expo 初体验 1]]></title>
+            <title><![CDATA[React Native 和 Expo 初体验（一）]]></title>
             <description><![CDATA[Reactive Native 和 expo 初次使用的一些笔记]]></description>
             <link>https://pengfeixc.com/blogs/react/rn-expo-1.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/react/rn-expo-1.html</guid>
