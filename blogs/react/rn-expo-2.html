@@ -1,0 +1,46 @@
+<html lang="zh_cn"><head><title>React Native 和 Expo 初体验（二） | WANG_PF.OS.BLOGS</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="expo,reactive native,expo go,development build,mobile development"><meta name="description" content="Reactive Native 和 expo 初次使用的一些笔记"><link rel="stylesheet" href="/blogs/assests/style/code_github.css"><link rel="stylesheet" href="/blogs/assests/style/markdown.css"><link rel="stylesheet" href="/blogs/assests/style/article.css"><link rel="stylesheet" href="/blogs/assests/style/navigator.css"><link rel="stylesheet" href="/blogs/assests/style/global.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous"><link rel="icon" href="/blogs/assests/images/icon.jpg"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){const t=document.getElementById("search-input");t.addEventListener("keydown",function(e){"Enter"===e.key&&t.value&&window.open(`https://bing.com/search?q=${t.value}%20site%3A+pengfeixc.com`,"_blank")});document.querySelectorAll(".markdown-body pre").forEach(function(t){var e=document.createElement("div");e.className="code-block-wrapper",t.parentNode.insertBefore(e,t),e.appendChild(t);const n=document.createElement("button");n.className="code-copy-btn",e.appendChild(n),n.addEventListener("click",async function(){var e=t.querySelector("code");if(e)try{await navigator.clipboard.writeText(e.textContent),n.classList.add("copied"),setTimeout(function(){n.classList.remove("copied")},2e3)}catch(e){console.error("Failed to copy:",e)}})});var e=document.querySelectorAll(".markdown-body img");let n=0,o=[];e.forEach(function(e,t){e.classList.contains("emoji")||(e.style.cursor="zoom-in",e.addEventListener("click",function(){var e;e=t,n=e,u(),c.classList.add("active"),document.body.style.overflow="hidden"}),o.push(e))});const c=document.createElement("div");c.className="image-lightbox",c.innerHTML=`
+        <div class="lightbox-overlay"></div>
+        <div class="lightbox-container">
+            <img class="lightbox-image" src="" alt="">
+            <div class="lightbox-counter"></div>
+        </div>
+        <button class="lightbox-close" title="关闭 (ESC)"></button>
+        <button class="lightbox-prev" title="上一张 (←)"></button>
+        <button class="lightbox-next" title="下一张 (→)"></button>
+    `,document.body.appendChild(c);e=c.querySelector(".lightbox-overlay");const i=c.querySelector(".lightbox-image"),l=c.querySelector(".lightbox-counter");var a=c.querySelector(".lightbox-close");const s=c.querySelector(".lightbox-prev"),r=c.querySelector(".lightbox-next");function d(){c.classList.remove("active"),document.body.style.overflow=""}function u(){var e=o[n];i.src=e.src,i.alt=e.alt||"",1<o.length?(l.textContent=n+1+" / "+o.length,l.style.display="block"):l.style.display="none",s.style.display=1<o.length?"flex":"none",r.style.display=1<o.length?"flex":"none"}function v(){o.length<=1||(n=(n-1+o.length)%o.length,u())}function h(){o.length<=1||(n=(n+1)%o.length,u())}e.addEventListener("click",d),a.addEventListener("click",d),s.addEventListener("click",function(e){e.stopPropagation(),v()}),r.addEventListener("click",function(e){e.stopPropagation(),h()}),document.addEventListener("keydown",function(e){if(c.classList.contains("active"))switch(e.key){case"Escape":d();break;case"ArrowLeft":v();break;case"ArrowRight":h()}})})</script></head><body><div class="header"><div class="navigator"><div class="nav-sections"><div class="home"><a href="/blogs">Home</a></div><div class="email"><a href="mailto:pengfeixc@sina.com">Email</a></div><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div class="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="rss"><a href="/blogs/rss.xml">RSS</a></div><div class="search-wrapper"><input id="search-input" type="search" placeholder="search"></div></div></div></div><div class="body"><div class="markdown"><div class="markdown-header"><span class="date">日期：2026年3月17日</span><span class="category"><a href="/blogs/react">标签：React</a></span></div><div class="markdown-body"><h1 id="Reactive Native 和 Expo 初体验（二）">Reactive Native 和 Expo 初体验（二） <a href="#Reactive Native 和 Expo 初体验（二）">#</a></h1><h2 id="启动 App">启动 App <a href="#启动 App">#</a></h2><p>在用脚手架搭建了一个新的 Expo 项目后，执行 <code>npx expo start</code> 命令，会出现以下内容：</p><pre><code>▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+█ ▄▄▄▄▄ █▀ ▄▄  ▀▀█▄█▄█▀▀▄▀█ ▄▄▄▄▄ █
+█ █   █ █▀▄█▀▄▀█ ▀▀█▀▄▄ █▄█ █   █ █
+█ █▄▄▄█ █▀▀▄▄▄▀▄▀▀▄ ▄▄ ▀▄██ █▄▄▄█ █
+█▄▄▄▄▄▄▄█▄▀▄█ █▄▀▄█ ▀▄▀ ▀▄█▄▄▄▄▄▄▄█
+█▄  ▄ █▄▄▄▀▀█▄▄▀▄▄▄█▀ █▄ ▄▄▀▄█ █▄▀█
+██▀ ▀ ▄▄   ▀▀▀██▄▀█▀█ ▀▄█▄ ██  ▀ ▀█
+█▄▄ ███▄▄▄▄█▀▀ ▀ ▀▄█▀ ▀  ▄ ▀ ▄▀██ █
+█▄██  ▄▄ █  ███▀▄██▀▀  ▄███▄█ ▀▀███
+█▀▀ █▀ ▄█▀█▀▀  █▄▄▄█ ▄██▀▄ ▀ ▄▄▀▀▀█
+█▄█▄▀ ▀▄█▀ ▄▀█▄▄  █ ▀   ▀▄██   ▀▄██
+█ ▀█▄█▄▄ ▄█▀▀▀▄▀▄█▄  █▀▄▀█▄▀▀▄██▀ █
+█ █▄▀█▀▄▄  █▀██▀▄▀███▀▀▀██   ▀ ▀ ██
+█▄█▄█▄█▄█▀▀▀▀▀▄▀ ▀▄▄▀ █▄█ ▄▄▄ ▀▀▄▀█
+█ ▄▄▄▄▄ █▄▄ █▀█▄▄█▄▄▀▀ ▄  █▄█   ▄▀█
+█ █   █ █ ▀ ▀▀▄▀▄▄█▀ ▀█▄█ ▄▄   ▀▄▄█
+█ █▄▄▄█ █ ▄▄▀▄█▄  █▄█  ▀▄▄▀ █▀▀ ▄██
+█▄▄▄▄▄▄▄█▄▄▄▄▄▄█▄█▄▄███▄▄▄▄█▄███▄██
+
+› Scan the QR code above to open in a development build. (Learn more: https://expo.fyi/start)
+› Metro: exp+onsketch://expo-development-client/?url=http%3A%2F%2F10.209.144.177%3A8081      
+› Web: http://localhost:8081
+
+› Using development build
+› Press s │ switch to Expo Go
+
+› Press a │ open Android
+› Press w │ open web
+
+› Press j │ open debugger
+› Press r │ reload app
+› Press m │ toggle menu
+› shift+m │ more tools
+› Press o │ open project code in your editor
+
+› Press ? │ show all commands
+</code></pre><p>一个二维码后面打印了一系列可以在当前 CLI 使用的命令（快捷键）。</p><p><code>Using development build</code> 这句话表示当前是 development build 模式，紧随着下面一句话 <code>Press s | switch to Expo Go</code>，表示我们可以通过 <code>s</code> 切换到 Expo Go 模式，此时二维码会变成 Expo go 模式的二维码。</p><h2 id="Expo Go 和 Development build">Expo Go 和 Development build <a href="#Expo Go 和 Development build">#</a></h2><p>我用 web 开发来类比说明 Expo Go 和 Development Build 的区别。</p><h3 id="Expo Go：就像是一个“通用的浏览器”">Expo Go：就像是一个“通用的浏览器” <a href="#Expo Go：就像是一个“通用的浏览器”">#</a></h3><p>想象一下，你写了一个网页，你不需要自己去开发一个 Chrome 浏览器，你只需要把代码放到服务器上，然后让用户用他们手机里现成的 Chrome 打开就行了。</p><p>Expo Go 就是那个现成的“Chrome 浏览器”。它是一个已经在 App Store / Google Play 上架的 App。它里面预装了 Expo 官方提供的所有标准功能（比如相机、地图、定位、通知等 SDK）。开发体验：你写的 <strong>JS/React 代码，通过 Wi-Fi 传输给 Expo Go，它立马就能运行渲染，就像 Web 的热更新（HMR）一样快</strong>。</p><p>✅ 适用场景：</p><ul><li>项目初期，快速验证想法。</li><li>你只使用了 Expo SDK 提供的标准库（绝大多数通用功能都有）。</li><li>你不需要修改 Android 或 iOS 的底层原生配置（比如 AndroidManifest.xml 或 Info.plist）</li></ul><p>❌ 局限性：</p><ul><li>如果你想接一个非常冷门的第三方 SDK（比如某个特定厂商的蓝牙打印机 SDK，且没有 Expo 插件），Expo Go 里没有预装这个原生代码，你就跑不起来。</li></ul><h3 id="Development Build：就像是“你自己定制的浏览器”">Development Build：就像是“你自己定制的浏览器” <a href="#Development Build：就像是“你自己定制的浏览器”">#</a></h3><p>假设你的网页用到了一个极其特殊的黑科技，Chrome 浏览器本身不支持，你需要修改 Chrome 的源码，给它加个补丁，重新编译一个专属的“MyChrome”浏览器才能跑你的网页。</p><p>Development Build 就是那个你编译出来的“MyChrome”。它是一个你自己构建的、安装在手机上的 .apk (Android) 或 .ipa (iOS) 开发包。它包含了你项目所需的特定原生代码依赖。</p><p>✅ 适合场景：</p><ul><li>当安装了一个库，而这个库在其文档里说：“需要运行 npx pod-install” 或者 “需要链接原生模块” 时。</li><li>你需要用到 Expo Go 标准版里没有包含的第三方原生 SDK（比如微信登录 SDK、极光推送、某些特殊的蓝牙硬件库）。</li><li>你需要深度修改原生配置。</li></ul><p>❌ 缺点：</p><ul><li>需要配置原生开发环境（Android Studio / Xcode），或者使用云构建（EAS Build）。</li><li>每次添加新的原生库，都需要重新构建一遍 App 并重新安装到手机上（不像 Expo Go 那样随时扫码就能跑）。</li></ul><blockquote><p>什么时候会启用 Development Build 模式呢？</p><p>当项目中安装了 <code>expo-dev-client</code> 这个库时，expo cli 会默认以为我们要搞高端操作，会自动启动 development build 模式。如果启动了 Development build 模式，通过 <code>s</code> 可以切换到 Expo Go 模式。</p></blockquote><hr><p>总结：</p><ul><li>阶段一（90% 的时间）：坚持使用 Expo Go</li><li>阶段二（遇到瓶颈）：切换到 Development Build，只有当发现：“完了，这个功能（比如微信支付）Expo Go 支持不了，我必须引入原生库”时。才需要去折腾 Development Build。</li></ul><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/react/rn-expo-1">上一篇：React Native 和 Expo 初体验（一）</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#Reactive Native 和 Expo 初体验（二）" style="padding-left:15px">Reactive Native 和 Expo 初体验（二）</a></div><div class="toc-item"><a class="toc-item-link" href="#启动 App" style="padding-left:30px">启动 App</a></div><div class="toc-item"><a class="toc-item-link" href="#Expo Go 和 Development build" style="padding-left:30px">Expo Go 和 Development build</a></div><div class="toc-item"><a class="toc-item-link" href="#Expo Go：就像是一个“通用的浏览器”" style="padding-left:45px">Expo Go：就像是一个“通用的浏览器”</a></div><div class="toc-item"><a class="toc-item-link" href="#Development Build：就像是“你自己定制的浏览器”" style="padding-left:45px">Development Build：就像是“你自己定制的浏览器”</a></div></div></div></div></body></html>
