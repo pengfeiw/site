@@ -1,0 +1,277 @@
+<html lang="zh_cn"><head><title>CMakePresets | WANG_PF.OS.BLOGS</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="cmake,CMakeLists.txt,CMakePresets.json,visual studio cmake"><meta name="description" content="cmake preset 是什么"><link rel="stylesheet" href="/blogs/assests/style/code_github.css"><link rel="stylesheet" href="/blogs/assests/style/markdown.css"><link rel="stylesheet" href="/blogs/assests/style/article.css"><link rel="stylesheet" href="/blogs/assests/style/navigator.css"><link rel="stylesheet" href="/blogs/assests/style/global.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous"><link rel="icon" href="/blogs/assests/images/icon.jpg"><meta property="author" content="王鹏飞"><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){const t=document.getElementById("search-input");t.addEventListener("keydown",function(e){"Enter"===e.key&&t.value&&window.open(`https://bing.com/search?q=${t.value}%20site%3A+pengfeixc.com`,"_blank")});document.querySelectorAll(".markdown-body pre").forEach(function(t){var e=document.createElement("div");e.className="code-block-wrapper",t.parentNode.insertBefore(e,t),e.appendChild(t);const n=document.createElement("button");n.className="code-copy-btn",e.appendChild(n),n.addEventListener("click",async function(){var e=t.querySelector("code");if(e)try{await navigator.clipboard.writeText(e.textContent),n.classList.add("copied"),setTimeout(function(){n.classList.remove("copied")},2e3)}catch(e){console.error("Failed to copy:",e)}})});var e=document.querySelectorAll(".markdown-body img");let n=0,o=[];e.forEach(function(e,t){e.classList.contains("emoji")||(e.style.cursor="zoom-in",e.addEventListener("click",function(){var e;e=t,n=e,u(),c.classList.add("active"),document.body.style.overflow="hidden"}),o.push(e))});const c=document.createElement("div");c.className="image-lightbox",c.innerHTML=`
+        <div class="lightbox-overlay"></div>
+        <div class="lightbox-container">
+            <img class="lightbox-image" src="" alt="">
+            <div class="lightbox-counter"></div>
+        </div>
+        <button class="lightbox-close" title="关闭 (ESC)"></button>
+        <button class="lightbox-prev" title="上一张 (←)"></button>
+        <button class="lightbox-next" title="下一张 (→)"></button>
+    `,document.body.appendChild(c);e=c.querySelector(".lightbox-overlay");const i=c.querySelector(".lightbox-image"),l=c.querySelector(".lightbox-counter");var a=c.querySelector(".lightbox-close");const s=c.querySelector(".lightbox-prev"),r=c.querySelector(".lightbox-next");function d(){c.classList.remove("active"),document.body.style.overflow=""}function u(){var e=o[n];i.src=e.src,i.alt=e.alt||"",1<o.length?(l.textContent=n+1+" / "+o.length,l.style.display="block"):l.style.display="none",s.style.display=1<o.length?"flex":"none",r.style.display=1<o.length?"flex":"none"}function v(){o.length<=1||(n=(n-1+o.length)%o.length,u())}function h(){o.length<=1||(n=(n+1)%o.length,u())}e.addEventListener("click",d),a.addEventListener("click",d),s.addEventListener("click",function(e){e.stopPropagation(),v()}),r.addEventListener("click",function(e){e.stopPropagation(),h()}),document.addEventListener("keydown",function(e){if(c.classList.contains("active"))switch(e.key){case"Escape":d();break;case"ArrowLeft":v();break;case"ArrowRight":h()}})})</script></head><body><div class="header"><div class="navigator"><div class="nav-sections"><div class="home"><a href="/blogs">Home</a></div><div class="email"><a href="mailto:pengfeixc@sina.com">Email</a></div><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div class="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="rss"><a href="/blogs/rss.xml">RSS</a></div><div class="search-wrapper"><input id="search-input" type="search" placeholder="search"></div></div></div></div><div class="body"><div class="markdown"><div class="markdown-header"><span class="date">日期：2026年3月24日</span><span class="category"><a href="/blogs/clang">标签：C/C++</a></span></div><div class="markdown-body"><h1 id="CMakePresets">CMakePresets <a href="#CMakePresets">#</a></h1><p><em>由于我是用的是 vs2019 版本，它仅支持 version 3 preset，所以这里的一些配置可能仅在 version 3 起作用。</em></p><blockquote><p>导航：<a href="http://pengfeixc.com/blogs/clang/cmake-tutorial.html">cmake tutorial</a></p></blockquote><h2 id="CMake 的几个阶段">CMake 的几个阶段 <a href="#CMake 的几个阶段">#</a></h2><h3 id="configure 阶段">configure 阶段 <a href="#configure 阶段">#</a></h3><p>大致等价于：</p><pre><code class="hljs language-bash">cmake -S . -B build_dir ...
+</code></pre><p>这个阶段的主要工作：</p><ul><li>选择 generator</li><li>选择 toolchain / 编译器</li><li>计算 cache</li><li>生成构建系统文件（如 .sln、vcxproj、build.ninja 等）</li></ul><p>它决定“怎么生成工程”。configurePresets 里的字段基本都在这里起作用。</p><h3 id="build 阶段">build 阶段 <a href="#build 阶段">#</a></h3><p>大致等价于：</p><pre><code class="hljs language-bash">cmake --build build_dir ...
+</code></pre><p>这个阶段的主要工作：</p><ul><li>调用前面 configure 生成好的底层构建工具</li><li>真正编译、链接、产出可执行文件/库</li></ul><p>它决定“怎么编译”。buildPresets 里的字段基本都在这里起作用。</p><h3 id="test 阶段">test 阶段 <a href="#test 阶段">#</a></h3><p>大致等价于：</p><pre><code class="hljs language-bash">ctest --preset ...
+</code></pre><p>如果只关心 VS 里开发/调试，先把重点放在 configure 和 build 即可。</p><h2 id="CMakePresets 配置">CMakePresets 配置 <a href="#CMakePresets 配置">#</a></h2><h3 id="配置说明">配置说明 <a href="#配置说明">#</a></h3><p>直接以一个 json 模板说明 CMakePreset 有哪些配置，每个配置的作用是什么？</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"version"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// preset 文件格式版本。</span>
+    <span class="hljs-comment">// 对 VS2019 来说，3 是兼容且常用的版本。</span>
+    <span class="hljs-comment">// 这不是 CMakeLists.txt 里的 cmake_minimum_required 版本。</span>
+    <span class="hljs-attr">"cmakeMinimumRequired"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">"major"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"minor"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">20</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">"patch"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-comment">// 表示“使用这份 preset 文件，建议的最低 CMake 版本”。</span>
+    <span class="hljs-comment">// 它约束的是 preset 机制，不等于项目本身最低 cmake 版本。</span>
+    <span class="hljs-comment">// 命令行用 --preset 时，官方建议 3.20+。</span>
+    <span class="hljs-attr">"configurePresets"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"base"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"hidden"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+            <span class="hljs-comment">// hidden=true 表示这是“基类 preset”，用于被继承，不直接显示给用户。</span>
+            <span class="hljs-attr">"generator"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Ninja"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-comment">// configure 阶段：决定底层生成器。</span>
+            <span class="hljs-comment">// 这里选 Ninja，适合统一 CI/命令行/VS 使用体验。</span>
+            <span class="hljs-comment">// 如果改成 "Visual Studio 16 2019"，就会变成 VS 多配置生成器。</span>
+            <span class="hljs-attr">"binaryDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"${sourceDir}/out/build/${presetName}"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-comment">// configure 阶段：等价于 cmake -B</span>
+            <span class="hljs-comment">// 决定 build tree 放哪。</span>
+            <span class="hljs-comment">// ${sourceDir} 是源码根目录，${presetName} 是当前 preset 名字。</span>
+            <span class="hljs-attr">"cacheVariables"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"CMAKE_EXPORT_COMPILE_COMMANDS"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ON"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-comment">// configure 阶段：导出 compile_commands.json</span>
+                <span class="hljs-comment">// 对 clangd、静态分析、代码工具链很有帮助。</span>
+                <span class="hljs-attr">"CMAKE_INSTALL_PREFIX"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"${sourceDir}/out/install/${presetName}"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-comment">// configure 阶段：安装目录</span>
+                <span class="hljs-comment">// 配合 cmake --install 使用。</span>
+                <span class="hljs-attr">"BUILD_TESTING"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ON"</span>
+                <span class="hljs-comment">// 项目常见开关。CTest/单元测试项目常用。</span>
+            <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"environment"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"MY_COMPANY_BUILD_ENV"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dev"</span>
+            <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-comment">// configure 阶段环境变量。</span>
+            <span class="hljs-comment">// 会影响编译器探测、find_package、工具链发现等。</span>
+            <span class="hljs-attr">"vendor"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"microsoft.com/VisualStudioSettings/CMake/1.0"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                    <span class="hljs-attr">"hostOS"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+                        <span class="hljs-string">"Windows"</span>
+                    <span class="hljs-punctuation">]</span>
+                <span class="hljs-punctuation">}</span>
+            <span class="hljs-punctuation">}</span>
+            <span class="hljs-comment">// vendor 字段供 IDE 厂商扩展使用，CMake 本体不会解释其内容。</span>
+            <span class="hljs-comment">// 这里是微软的 vendor map，常用于 VS 中控制显示/行为。</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"windows-x64-debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"displayName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Windows x64 Debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"description"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Ninja + MSVC, x64, Debug build for local development"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"inherits"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"base"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-comment">// inherits：继承 base preset 的公共配置。</span>
+            <span class="hljs-attr">"condition"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"equals"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-attr">"lhs"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"${hostSystemName}"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-attr">"rhs"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Windows"</span>
+            <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-comment">// version 3 开始可用。</span>
+            <span class="hljs-comment">// 只有当前主机系统是 Windows 时，这个 preset 才启用。</span>
+            <span class="hljs-attr">"architecture"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"value"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"x64"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-attr">"strategy"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"external"</span>
+            <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-comment">// configure 阶段的架构信息。</span>
+            <span class="hljs-comment">// 对 VS / IDE 特别有用。</span>
+            <span class="hljs-comment">// strategy=external 常见于 Ninja + MSVC 环境准备场景：</span>
+            <span class="hljs-comment">// IDE 可以用它来准备 x64 编译环境，而不是把 -A 直接传给 Ninja。</span>
+            <span class="hljs-attr">"cacheVariables"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"CMAKE_BUILD_TYPE"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Debug"</span>
+            <span class="hljs-punctuation">}</span>
+            <span class="hljs-comment">// 对 Ninja 这种单配置生成器非常重要。</span>
+            <span class="hljs-comment">// 如果你换成 VS generator，这个变量通常不是主要开关。</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"windows-x64-release"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"displayName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Windows x64 Release"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"description"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Ninja + MSVC, x64, Release build"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"inherits"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"base"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"condition"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"equals"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-attr">"lhs"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"${hostSystemName}"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-attr">"rhs"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Windows"</span>
+            <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"architecture"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"value"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"x64"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-attr">"strategy"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"external"</span>
+            <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"cacheVariables"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"CMAKE_BUILD_TYPE"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Release"</span>
+            <span class="hljs-punctuation">}</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vs2019-x64-debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"displayName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"VS2019 x64 Debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"description"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Visual Studio 2019 generator, x64, Debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"hidden"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"generator"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Visual Studio 16 2019"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-comment">// configure 阶段：切换到 VS2019 generator。</span>
+            <span class="hljs-comment">// 这是多配置 generator。</span>
+            <span class="hljs-attr">"architecture"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"x64"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-comment">// 对 Visual Studio generator，官方建议用 architecture 表示平台，</span>
+            <span class="hljs-comment">// 而不是把平台信息塞进 generator 字符串。</span>
+            <span class="hljs-attr">"binaryDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"${sourceDir}/out/build/${presetName}"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"cacheVariables"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"CMAKE_INSTALL_PREFIX"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"${sourceDir}/out/install/${presetName}"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-attr">"BUILD_TESTING"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ON"</span>
+            <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"vendor"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"microsoft.com/VisualStudioSettings/CMake/1.0"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                    <span class="hljs-attr">"hostOS"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+                        <span class="hljs-string">"Windows"</span>
+                    <span class="hljs-punctuation">]</span>
+                <span class="hljs-punctuation">}</span>
+            <span class="hljs-punctuation">}</span>
+            <span class="hljs-comment">// 注意：这里没写 CMAKE_BUILD_TYPE=Debug，</span>
+            <span class="hljs-comment">// 因为 VS generator 是多配置，通常应该在 buildPreset 里用 configuration=Debug。</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vs2019-x64-release"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"displayName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"VS2019 x64 Release"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"description"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Visual Studio 2019 generator, x64, Release"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"generator"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Visual Studio 16 2019"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"architecture"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"x64"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"binaryDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"${sourceDir}/out/build/${presetName}"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"cacheVariables"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"CMAKE_INSTALL_PREFIX"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"${sourceDir}/out/install/${presetName}"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-attr">"BUILD_TESTING"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ON"</span>
+            <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"vendor"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"microsoft.com/VisualStudioSettings/CMake/1.0"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                    <span class="hljs-attr">"hostOS"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+                        <span class="hljs-string">"Windows"</span>
+                    <span class="hljs-punctuation">]</span>
+                <span class="hljs-punctuation">}</span>
+            <span class="hljs-punctuation">}</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"clang-cl-debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"displayName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Windows clang-cl Debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"description"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Ninja + clang-cl toolchain on Windows"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"inherits"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"base"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"condition"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"equals"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-attr">"lhs"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"${hostSystemName}"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-attr">"rhs"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Windows"</span>
+            <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"architecture"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"value"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"x64"</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-attr">"strategy"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"external"</span>
+            <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"toolchainFile"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"${sourceDir}/cmake/toolchains/clang-cl.cmake"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-comment">// version 3 常用字段。</span>
+            <span class="hljs-comment">// configure 阶段：指定工具链文件。</span>
+            <span class="hljs-comment">// 对交叉编译、切换编译器、vcpkg 等很重要。</span>
+            <span class="hljs-attr">"cacheVariables"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"CMAKE_BUILD_TYPE"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Debug"</span>
+            <span class="hljs-punctuation">}</span>
+        <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"buildPresets"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"build-windows-debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"displayName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Build Windows Debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"configurePreset"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"windows-x64-debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-comment">// build 阶段：关联到哪个 configure preset。</span>
+            <span class="hljs-comment">// build 目录会从这个 configure preset 的 binaryDir 推导出来。</span>
+            <span class="hljs-attr">"jobs"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">16</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-comment">// 等价于 cmake --build --parallel 16</span>
+            <span class="hljs-comment">// 控制并行构建数量。</span>
+            <span class="hljs-attr">"cleanFirst"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span>
+            <span class="hljs-comment">// build 前是否先清理。</span>
+            <span class="hljs-comment">// true 接近“rebuild”。</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"build-windows-release"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"displayName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Build Windows Release"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"configurePreset"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"windows-x64-release"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"jobs"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">16</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"cleanFirst"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"build-vs2019-debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"displayName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Build VS2019 Debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"configurePreset"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vs2019-x64-debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"configuration"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-comment">// 多配置 generator（Visual Studio / Ninja Multi-Config）常用字段。</span>
+            <span class="hljs-comment">// 等价于 cmake --build --config Debug</span>
+            <span class="hljs-attr">"jobs"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">16</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"cleanFirst"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"build-vs2019-release"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"displayName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Build VS2019 Release"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"configurePreset"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vs2019-x64-release"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"configuration"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Release"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"jobs"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">16</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"cleanFirst"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"rebuild-vs2019-debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"displayName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Rebuild VS2019 Debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"configurePreset"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vs2019-x64-debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"configuration"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"jobs"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">16</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"cleanFirst"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span>
+            <span class="hljs-comment">// 先 clean 再 build，适合“强制全量重编”。</span>
+        <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"testPresets"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"test-windows-debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"displayName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Run unit tests for Windows Debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"configurePreset"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"windows-x64-debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-comment">// test preset 也绑定 configure preset</span>
+            <span class="hljs-attr">"output"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"outputOnFailure"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span>
+            <span class="hljs-punctuation">}</span>
+            <span class="hljs-comment">// 测试失败时显示详细输出。</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"test-vs2019-debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"displayName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Run unit tests for VS2019 Debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"configurePreset"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vs2019-x64-debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"configuration"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"output"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+                <span class="hljs-attr">"outputOnFailure"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span>
+            <span class="hljs-punctuation">}</span>
+        <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><h3 id="和 CMakeLists.txt 的区别">和 CMakeLists.txt 的区别 <a href="#和 CMakeLists.txt 的区别">#</a></h3><p><code>CMakeLists.txt</code> 负责描述项目本身怎么构建。</p><blockquote><p>CMakeLists.txt 描述“项目要构建什么、构建规则是什么”。</p></blockquote><p>它主要回答这些问题：</p><ul><li>这个项目有哪些目标（exe、lib）</li><li>源文件有哪些</li><li>依赖哪些库</li><li>包含目录、编译选项、宏定义是什么</li><li>安装、测试、子目录怎么组织</li></ul><p><code>CMakePresets.json</code> 负责描述这次用什么方式去配置、构建这个项目。</p><blockquote><p>CMakePresets.json 描述“这次怎么调用 CMake、用什么参数和环境去构建”。</p></blockquote><p>它主要回答这些问题：</p><ul><li>用哪个 generator（Ninja / VS2019）</li><li>build 目录放哪</li><li>Debug 还是 Release</li><li>用哪个 toolchain / 编译器环境</li><li>build/test 命令怎么统一</li></ul><h2 id="visual studio 打开 cmake 项目">visual studio 打开 cmake 项目 <a href="#visual studio 打开 cmake 项目">#</a></h2><p>visual studio 会自动检测目录下放的 CMakePresets.json 文件，读取构建配置。</p><p>这是一个简单的 CmakePreset.json:</p><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">"version"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"configurePresets"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vs2019-debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"displayName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"VS2019 Debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"generator"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Visual Studio 16 2019"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"binaryDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"${sourceDir}/build/debug"</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vs2019-release"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"displayName"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"VS2019 Release"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"generator"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Visual Studio 16 2019"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"binaryDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"${sourceDir}/build/release"</span>
+        <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">"buildPresets"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"build-debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"configurePreset"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vs2019-debug"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"configuration"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Debug"</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"build-release"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"configurePreset"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"vs2019-release"</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">"configuration"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Release"</span>
+        <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>使用 vs 打开包含 preset 的目录（项目）后，顶部栏会自动识别 config、build 配置。</p><p><img src="../static/images/117.jpg" alt="cmake preset"></p><p>点击生成，就可以选择 cmake_hello.exe 进行运行或者调试了。</p><p><img src="../static/images/118.jpg" alt="cmake preset with visual studio"></p><p>通过这种方式运行 cmake 项目的好处是，vs 能够自动监听并且识别 CMakeLists.txt 的变化，自动 configure、generate、build，比较方便。</p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/react/rn-expo-3">上一篇：React Native 和 Expo 初体验（三）</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#CMakePresets" style="padding-left:15px">CMakePresets</a></div><div class="toc-item"><a class="toc-item-link" href="#CMake 的几个阶段" style="padding-left:30px">CMake 的几个阶段</a></div><div class="toc-item"><a class="toc-item-link" href="#configure 阶段" style="padding-left:45px">configure 阶段</a></div><div class="toc-item"><a class="toc-item-link" href="#build 阶段" style="padding-left:45px">build 阶段</a></div><div class="toc-item"><a class="toc-item-link" href="#test 阶段" style="padding-left:45px">test 阶段</a></div><div class="toc-item"><a class="toc-item-link" href="#CMakePresets 配置" style="padding-left:30px">CMakePresets 配置</a></div><div class="toc-item"><a class="toc-item-link" href="#配置说明" style="padding-left:45px">配置说明</a></div><div class="toc-item"><a class="toc-item-link" href="#和 CMakeLists.txt 的区别" style="padding-left:45px">和 CMakeLists.txt 的区别</a></div><div class="toc-item"><a class="toc-item-link" href="#visual studio 打开 cmake 项目" style="padding-left:30px">visual studio 打开 cmake 项目</a></div></div></div></div></body></html>
