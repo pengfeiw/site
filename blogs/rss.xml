@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Tue, 24 Mar 2026 09:11:01 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 25 Mar 2026 09:47:38 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Tue, 24 Mar 2026 09:10:46 GMT</pubDate>
+        <pubDate>Wed, 25 Mar 2026 09:47:19 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[CMakePresets]]></title>
@@ -957,6 +957,12 @@
             <link>https://pengfeixc.com/blogs/react/react-ref.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/react/react-ref.html</guid>
             <pubDate>Wed, 24 Mar 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[如何优化渲染引擎的性能]]></title>
+            <link>https://pengfeixc.com/blogs/computer-graphics/undefined.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/undefined.html</guid>
+            <pubDate>Invalid Date</pubDate>
         </item>
     </channel>
 </rss>
