@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Wed, 25 Mar 2026 09:47:38 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 25 Mar 2026 10:00:42 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Wed, 25 Mar 2026 09:47:19 GMT</pubDate>
+        <pubDate>Wed, 25 Mar 2026 10:00:25 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[如何优化渲染引擎的性能]]></title>
+            <description><![CDATA[如何优化渲染引擎的性能：从全量重绘到分块缓存]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/rendering-optimization.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/rendering-optimization.html</guid>
+            <pubDate>Wed, 25 Mar 2026 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[CMakePresets]]></title>
             <description><![CDATA[cmake preset 是什么]]></description>
@@ -957,12 +964,6 @@
             <link>https://pengfeixc.com/blogs/react/react-ref.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/react/react-ref.html</guid>
             <pubDate>Wed, 24 Mar 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[如何优化渲染引擎的性能]]></title>
-            <link>https://pengfeixc.com/blogs/computer-graphics/undefined.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/undefined.html</guid>
-            <pubDate>Invalid Date</pubDate>
         </item>
     </channel>
 </rss>
