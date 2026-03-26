@@ -48,15 +48,15 @@ a:visited {
     letter-spacing: 0.08em;
 }
 
-/* Text Selection - Use current text color as highlight */
+/* Text Selection - Theme-controlled high contrast */
 *::selection {
-    background: currentColor;
+    background: var(--color-selection-bg, #e4e3e3);
     color: var(--color-selection-text, #0a0a0a);
     text-shadow: none;
 }
 
 *::-moz-selection {
-    background: currentColor;
+    background: var(--color-selection-bg, #e4e3e3);
     color: var(--color-selection-text, #0a0a0a);
     text-shadow: none;
 }

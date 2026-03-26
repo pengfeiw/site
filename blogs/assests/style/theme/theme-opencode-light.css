@@ -53,6 +53,7 @@
     --color-link-hover-fill: rgba(75, 70, 70, 0.14);
     --link-hover-thickness: 3px;
     --link-hover-height: 0.72em;
+    --color-selection-bg: #211e1e;
     --color-selection-text: #f1ecec;
 
     /* 阴影色 */
