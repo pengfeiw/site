@@ -11,14 +11,23 @@ html {
 
 body {
     font-family: var(--font-primary);
+    font-weight: var(--font-weight-normal);
     color: var(--color-text);
     background-color: var(--color-bg);
-    background-image: radial-gradient(circle, #cdc9b2 1px, transparent 1px);
-    background-size: 30px 30px;
+    background-image: none;
     line-height: var(--line-height-normal);
     margin: 0;
-    padding: 20px 15px;
+    padding: 16px 14px;
     min-height: 100vh;
+}
+
+a,
+a:hover,
+a:focus,
+a:active,
+a:visited {
+    text-decoration: none;
+    transition: none !important;
 }
 
 /* Responsive Typography */
@@ -28,7 +37,7 @@ body {
     }
     
     body {
-        background-size: 20px 20px;
+        padding: 12px 10px;
     }
 }
 
@@ -36,7 +45,20 @@ body {
 .terminal-text {
     font-family: var(--font-secondary);
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 0.08em;
+}
+
+/* Text Selection - Use current text color as highlight */
+*::selection {
+    background: currentColor;
+    color: var(--color-selection-text, #0a0a0a);
+    text-shadow: none;
+}
+
+*::-moz-selection {
+    background: currentColor;
+    color: var(--color-selection-text, #0a0a0a);
+    text-shadow: none;
 }
 
 /* CRT Overlay Effect - Optional */

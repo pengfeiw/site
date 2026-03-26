@@ -51,6 +51,9 @@
     --color-hover: #e8e4d8;
     --color-highlight: #e5ddc8;
     --color-focus: #4391c1;
+    --color-link-hover-fill: rgba(230, 184, 64, 0.38);
+    --link-hover-thickness: 3px;
+    --link-hover-height: 0.72em;
     
     /* 阴影色 - 温暖的棕色阴影 */
     --color-shadow: rgba(139, 125, 107, 0.15);

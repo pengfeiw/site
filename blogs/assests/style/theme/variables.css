@@ -13,6 +13,9 @@
     --color-primary: ;
     --color-primary-hover: ;
     --color-primary-subtle: ;
+    --color-secondary: ;
+    --color-secondary-hover: ;
+    --color-secondary-subtle: ;
     
     /* 背景色 */
     --color-bg: ;
@@ -45,6 +48,10 @@
     --color-hover: ;
     --color-highlight: ;
     --color-focus: ;
+    --color-link-hover-fill: ;
+    --link-hover-thickness: ;
+    --link-hover-height: ;
+    --color-selection-text: ;
     
     /* 阴影色 */
     --color-shadow: ;

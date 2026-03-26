@@ -1,4 +1,4 @@
-@import url('./theme/theme-nier.css');
+@import url('./theme/theme.css');
 
 .body {
     max-width: 1200px;
@@ -29,9 +29,9 @@
     padding: 6px 30px;
     font-size: 0.85rem;
     transition: var(--transition-fast);
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--color-bg-tertiary);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.05em;
     min-width: 80px;
     display: inline-flex;
     align-items: center;
@@ -92,7 +92,7 @@
 .category-list-inline .category-item:hover {
     background: transparent;
     color: var(--color-primary);
-    text-shadow: 0 0 8px var(--color-shadow);
+    text-shadow: none;
 }
 
 .category-list-inline .active-category-item {
@@ -117,35 +117,33 @@
 .article-list {
     display: flex;
     flex-direction: column;
-    border: 2px solid var(--color-border);
-    outline: 1px solid var(--color-border);
-    outline-offset: 2px;
+    border: 1px solid var(--color-border);
     background: var(--color-bg-secondary);
-    padding: 40px var(--spacing-md) var(--spacing-md);
+    padding: 14px var(--spacing-md) var(--spacing-md);
     position: relative;
 }
 
-/* Terminal Header Bar */
+/* List Header */
 .article-list::before {
-    content: "FILE_LIST :: v2.4.1";
+    content: "articles";
     position: absolute;
-    top: 10px;
+    top: 8px;
     left: 12px;
     font-family: var(--font-secondary);
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    text-transform: lowercase;
+    letter-spacing: 0.5px;
 }
 
-/* Terminal Corner Decorations */
+/* Top right marker */
 .article-list::after {
-    content: "◆";
+    content: "•";
     position: absolute;
-    top: 10px;
+    top: 8px;
     right: 12px;
     font-family: var(--font-secondary);
-    font-size: 0.6rem;
+    font-size: 0.75rem;
     color: var(--color-text-muted);
 }
 
@@ -161,7 +159,7 @@
     padding: 12px var(--spacing-sm);
     font-size: 0.85rem;
     line-height: 1.6;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.015em;
     transition: var(--transition-normal);
     display: flex;
     justify-content: space-between;
@@ -184,12 +182,12 @@
 
 .article-list>.article-item:hover>a {
     color: var(--color-primary);
-    text-shadow: 0 0 8px var(--color-shadow);
+    text-shadow: none;
 }
 
 .article-list>.article-item:hover>a::before {
     color: var(--color-primary);
-    text-shadow: 0 0 8px var(--color-shadow);
+    text-shadow: none;
 }
 
 .article-list>.article-item>a>.article-item-title {
@@ -203,7 +201,7 @@
     color: var(--color-text-muted);
     white-space: nowrap;
     margin-left: var(--spacing-sm);
-    letter-spacing: 1px;
+    letter-spacing: 0.04em;
 }
 
 .article-list>.article-item:hover>a>.article-item-date {
@@ -226,7 +224,7 @@
     font-size: 0.65rem;
     color: var(--color-text-muted);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.05em;
     text-align: right;
 }
 

@@ -9,6 +9,7 @@
     line-height: var(--line-height-relaxed);
     font-size: 0.9rem;
     font-family: var(--font-primary);
+    font-weight: var(--font-weight-normal);
 }
 
 .markdown-body .octicon {
@@ -51,23 +52,14 @@
     color: var(--color-primary);
     text-decoration: none;
     border-bottom: none;
-    position: relative;
-    transition: var(--transition-fast);
+    padding: 0;
+    margin: 0;
+    background-image: none;
+    transition: none;
 }
 
-.markdown-body a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -2px;
-    left: 0;
-    background-color: var(--color-secondary);
-    transition: width 0.3s ease;
-}
-
-.markdown-body a:hover::after {
-    width: 100%;
+.markdown-body a:hover {
+    text-decoration: none;
 }
 
 .markdown-body a:visited {
@@ -82,7 +74,7 @@
 .markdown-body b,
 .markdown-body strong {
     font-weight: var(--font-weight-semibold);
-    color: var(--color-primary);
+    color: var(--color-heading, var(--color-warning));
 }
 
 .markdown-body dfn {
@@ -105,7 +97,7 @@
     right: 0;
     width: 40px;
     height: 10px;
-    background: var(--color-primary);
+    background: var(--color-heading, var(--color-warning));
 }
 
 .markdown-body mark {
@@ -173,7 +165,7 @@
     font-family: var(--font-mono);
     font-size: 0.8rem;
     color: var(--color-bg);
-    letter-spacing: 2px;
+    letter-spacing: 0.06em;
 }
 
 .markdown-body input {
@@ -302,7 +294,7 @@
     border: solid 1px var(--color-border);
     border-radius: var(--radius-none);
     box-shadow: none;
-    letter-spacing: 1px;
+    letter-spacing: 0.04em;
 }
 
 .markdown-body h1,
@@ -315,7 +307,7 @@
     margin-bottom: 16px;
     font-weight: var(--font-weight-semibold);
     line-height: var(--line-height-tight);
-    color: var(--color-text);
+    color: var(--color-heading, var(--color-warning));
 }
 
 .markdown-body h3 {
@@ -336,7 +328,7 @@
 .markdown-body h6 {
     font-size: 0.85em;
     font-weight: var(--font-weight-semibold);
-    color: var(--color-text-muted);
+    color: var(--color-heading, var(--color-warning));
 }
 
 .markdown-body h2 {
@@ -354,9 +346,9 @@
 .markdown-body blockquote {
     margin: 0;
     padding: 0.5em 1em;
-    color: var(--color-text-muted);
-    border-left: 4px solid var(--color-primary);
-    background: var(--color-primary-subtle);
+    color: var(--color-text);
+    border-left: 4px solid var(--color-info);
+    background: var(--color-info-subtle);
 }
 
 .markdown-body ul,
@@ -364,6 +356,11 @@
     margin-top: 0;
     margin-bottom: 0;
     padding-left: 2em;
+}
+
+.markdown-body ul li::marker,
+.markdown-body ol li::marker {
+    color: var(--color-list-marker, #c58d68);
 }
 
 .markdown-body ol ol,
@@ -733,11 +730,34 @@
     margin: 0;
     font-size: 85%;
     white-space: break-spaces;
-    background-color: var(--color-bg-code);
-    color: var(--color-text);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-none);
+    background-color: transparent;
+    color: var(--color-inline-code, var(--color-primary));
     font-family: var(--font-mono);
+}
+
+.markdown-body em,
+.markdown-body i {
+    color: var(--color-italic, #9a9a9a);
+    font-style: italic;
+}
+
+.markdown-body strong em,
+.markdown-body strong i,
+.markdown-body b em,
+.markdown-body b i,
+.markdown-body h1 em,
+.markdown-body h2 em,
+.markdown-body h3 em,
+.markdown-body h4 em,
+.markdown-body h5 em,
+.markdown-body h6 em,
+.markdown-body h1 i,
+.markdown-body h2 i,
+.markdown-body h3 i,
+.markdown-body h4 i,
+.markdown-body h5 i,
+.markdown-body h6 i {
+    color: var(--color-italic-strong, #947d51);
 }
 
 .markdown-body code br,
@@ -754,7 +774,7 @@
 }
 
 .markdown-body pre code {
-    font-size: 1.2rem;
+    font-size: inherit;
 }
 
 .markdown-body pre>code {
@@ -780,7 +800,7 @@
 .markdown-body pre {
     padding: 16px;
     overflow: auto;
-    font-size: 85%;
+    font-size: 1em;
     line-height: 1.45;
     background-color: var(--color-bg-code);
     border-radius: var(--radius-none);

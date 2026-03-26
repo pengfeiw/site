@@ -50,7 +50,7 @@
 
 .hljs-built_in,
 .hljs-symbol {
-    color: #a08060;
+    color: var(--code-number);
 }
 
 .hljs-comment,

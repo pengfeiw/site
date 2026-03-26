@@ -26,9 +26,7 @@
 
 /* Markdown Container - Terminal Style with Double Border */
 .markdown {
-    border: 2px solid var(--color-border);
-    outline: 1px solid var(--color-border);
-    outline-offset: 2px;
+    border: 1px solid var(--color-border);
     background: var(--color-bg-secondary);
     margin: 0 auto;
     margin-bottom: var(--spacing-xl);
@@ -42,7 +40,7 @@
 .markdown-header,
 .markdown-footer {
     background: transparent;
-    padding: 30px var(--spacing-md) var(--spacing-sm);
+    padding: 10px var(--spacing-md);
     font-family: var(--font-secondary);
     font-size: 0.85rem;
     display: flex;
@@ -68,7 +66,7 @@
 .markdown-header .date {
     color: var(--color-text-muted);
     font-size: 0.8rem;
-    letter-spacing: 1px;
+    letter-spacing: 0.04em;
 }
 
 .markdown-header .tags {
@@ -87,13 +85,13 @@
     background: var(--color-primary-subtle);
     transition: var(--transition-normal);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.05em;
 }
 
 .markdown-header .tags a:hover {
     background: var(--color-primary);
     color: var(--color-bg);
-    text-shadow: 0 0 8px var(--color-shadow);
+    text-shadow: none;
 }
 
 /* Markdown Body */
@@ -114,11 +112,7 @@
 
 .markdown-body img {
     border: 1px solid var(--color-border);
-    box-shadow: 
-        inset -1px -1px 0 var(--color-border-light),
-        inset 1px 1px 0 var(--color-bg),
-        2px 2px 0 var(--color-border),
-        3px 3px 0 var(--color-shadow);
+    box-shadow: 0 6px 20px var(--color-shadow-subtle);
     max-width: 100%;
     height: auto;
 }
@@ -147,22 +141,22 @@
 
 /* TOC Header Bar */
 .toc::before {
-    content: "TOC_NAV :: INDEX";
+    content: "index";
     position: absolute;
     top: 0;
     left: var(--spacing-sm);
     font-family: var(--font-secondary);
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    text-transform: lowercase;
+    letter-spacing: 0.5px;
 }
 
 .toc .toc-header {
     font-family: var(--font-secondary);
     font-size: 0.8rem;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 0.08em;
     color: var(--color-text);
     border-bottom: 1px solid var(--color-border-light);
     padding-bottom: var(--spacing-sm);
@@ -217,12 +211,12 @@
 
 .toc .toc-item a:hover {
     color: var(--color-primary);
-    text-shadow: 0 0 8px var(--color-shadow);
+    text-shadow: none;
 }
 
 .toc .toc-item a:hover::before {
     color: var(--color-primary);
-    text-shadow: 0 0 8px var(--color-shadow);
+    text-shadow: none;
 }
 
 /* Previous/Next Navigation */
@@ -246,8 +240,8 @@
 }
 
 .prev-next a:hover {
-    background: var(--color-text);
-    color: var(--color-bg);
+    background: var(--color-hover);
+    color: var(--color-primary);
 }
 
 .prev-next a::before {
@@ -278,15 +272,15 @@
     border: 1px solid var(--color-border);
     padding: 6px 12px;
     font-size: 0.85rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--color-bg-tertiary);
     transition: var(--transition-fast);
     display: inline-block;
 }
 
 .markdown-footer .pre-article a:hover,
 .markdown-footer .next-article a:hover {
-    background: var(--color-text);
-    color: var(--color-bg);
+    background: var(--color-hover);
+    color: var(--color-primary);
 }
 
 /* Previous/Next prefix styles */
@@ -367,7 +361,7 @@
     font-family: var(--font-secondary);
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.9);
-    letter-spacing: 2px;
+    letter-spacing: 0.08em;
     backdrop-filter: blur(10px);
     text-transform: uppercase;
 }
