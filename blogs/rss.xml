@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Thu, 26 Mar 2026 05:25:25 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 17 Apr 2026 02:19:05 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Thu, 26 Mar 2026 05:25:08 GMT</pubDate>
+        <pubDate>Fri, 17 Apr 2026 02:18:48 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[maven]]></title>
+            <description><![CDATA[从 c++/js 的构建体系，理解 Maven]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/maven.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/maven.html</guid>
+            <pubDate>Fri, 17 Apr 2026 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[如何优化渲染引擎的性能]]></title>
             <description><![CDATA[如何优化渲染引擎的性能：从全量重绘到分块缓存]]></description>
