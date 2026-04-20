@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Fri, 17 Apr 2026 02:19:05 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 20 Apr 2026 08:45:17 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Fri, 17 Apr 2026 02:18:48 GMT</pubDate>
+        <pubDate>Mon, 20 Apr 2026 08:44:59 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[ideavimrc]]></title>
+            <description><![CDATA[idea 的 vim 插件配置]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/ideavimrc.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/ideavimrc.html</guid>
+            <pubDate>Mon, 20 Apr 2026 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[maven]]></title>
             <description><![CDATA[从 c++/js 的构建体系，理解 Maven]]></description>
