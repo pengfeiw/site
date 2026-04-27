@@ -13,6 +13,10 @@ set incsearch
 set ignorecase
 set hlsearch
 
+" Normal 模式：相对行号
+set number
+set relativenumber
+
 let mapleader = " "
 
 nnoremap gd :action GotoDeclaration&lt;CR&gt;
@@ -26,6 +30,9 @@ nnoremap &lt;leader&gt;bn :action GotoNextBookmark&lt;CR&gt;
 nnoremap &lt;leader&gt;bp :action GotoPreviousBookmark&lt;CR&gt;
 nnoremap &lt;leader&gt;bs :action ShowBookmarks&lt;CR&gt;
 nnoremap &lt;leader&gt;nf :NERDTreeFind&lt;CR&gt;
+nnoremap gcc :action CommentByLineComment&lt;CR&gt;
+
+vnoremap gc :action CommentByLineComment&lt;CR&gt;
 </code></pre><p>ideavim 通过映射 idea action 达到快捷键的配置。可以通过 <code>:actionlist &lt;patten&gt;</code> 查看 idea 支持哪些 action。</p><p>例如输入 <code>actionlist bookmark</code> 可以查看所有与 bookmark 相关的 action。</p><pre><code>--- Actions ---
 ActivateBookmarksToolWindow                        &lt;A-2&gt;
 AddAnotherBookmark
