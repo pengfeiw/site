@@ -216,3 +216,39 @@
     --color-italic: #9a9a9a;
     --color-italic-strong: #947d51;
 }
+
+:root .markdown-body a[href]:not(.anchor),
+:root[data-theme="opencode-dark"] .markdown-body a[href]:not(.anchor) {
+    color: var(--color-info);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-warning);
+    background-image: linear-gradient(
+        transparent 58%,
+        var(--color-warning-subtle) 58%
+    );
+    background-repeat: no-repeat;
+    transition: color var(--transition-fast),
+        border-color var(--transition-fast),
+        background-image var(--transition-fast);
+}
+
+:root .markdown-body a[href]:not(.anchor):hover,
+:root[data-theme="opencode-dark"] .markdown-body a[href]:not(.anchor):hover {
+    color: var(--color-info);
+    border-bottom-color: var(--color-secondary-hover);
+    background-image: linear-gradient(
+        transparent 36%,
+        var(--color-warning-subtle) 36%
+    );
+}
+
+:root .markdown-body a[href]:not(.anchor):visited,
+:root[data-theme="opencode-dark"] .markdown-body a[href]:not(.anchor):visited {
+    color: var(--color-info);
+}
+
+:root .markdown-body a[href]:not(.anchor):focus-visible,
+:root[data-theme="opencode-dark"] .markdown-body a[href]:not(.anchor):focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+}

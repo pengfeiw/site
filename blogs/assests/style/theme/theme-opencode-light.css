@@ -209,3 +209,35 @@
     --base-text-weight-normal: var(--font-weight-normal);
     --base-text-weight-semibold: var(--font-weight-semibold);
 }
+
+:root[data-theme="opencode-light"] .markdown-body a[href]:not(.anchor) {
+    color: var(--color-primary-hover);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-warning);
+    background-image: linear-gradient(
+        transparent 58%,
+        var(--color-warning-subtle) 58%
+    );
+    background-repeat: no-repeat;
+    transition: color var(--transition-fast),
+        border-color var(--transition-fast),
+        background-image var(--transition-fast);
+}
+
+:root[data-theme="opencode-light"] .markdown-body a[href]:not(.anchor):hover {
+    color: var(--color-primary-hover);
+    border-bottom-color: var(--color-secondary);
+    background-image: linear-gradient(
+        transparent 36%,
+        var(--color-warning-subtle) 36%
+    );
+}
+
+:root[data-theme="opencode-light"] .markdown-body a[href]:not(.anchor):visited {
+    color: var(--color-primary-hover);
+}
+
+:root[data-theme="opencode-light"] .markdown-body a[href]:not(.anchor):focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+}
