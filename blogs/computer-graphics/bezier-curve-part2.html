@@ -1,0 +1,165 @@
+<html lang="zh_cn"><head><title>贝塞尔曲线（二） | WANG_PF.OS.BLOGS</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords"><meta name="description" content="De Casteljau 算法对贝塞尔曲线求点、分割"><link rel="stylesheet" href="/blogs/assests/style/code_github.css"><link rel="stylesheet" href="/blogs/assests/style/markdown.css"><link rel="stylesheet" href="/blogs/assests/style/article.css"><link rel="stylesheet" href="/blogs/assests/style/navigator.css"><link rel="stylesheet" href="/blogs/assests/style/global.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous"><link rel="icon" href="/blogs/assests/images/icon.jpg"><meta property="author" content="王鹏飞"><script type="text/javascript">const THEME_KEY="site-theme",THEME_DARK="opencode-dark",THEME_LIGHT="opencode-light";function applyTheme(e){var t,e=e===THEME_LIGHT?THEME_LIGHT:THEME_DARK,o=(document.documentElement.setAttribute("data-theme",e),document.getElementById("theme-toggle"));o&&(t=e===THEME_DARK,o.setAttribute("aria-label",t?"Switch to light theme":"Switch to dark theme"),o.setAttribute("title",t?"Switch to light theme":"Switch to dark theme"),o.setAttribute("aria-pressed",String(!t)),o.setAttribute("data-current-theme",e))}applyTheme(localStorage.getItem(THEME_KEY)||THEME_DARK),window.addEventListener("DOMContentLoaded",function(){applyTheme(localStorage.getItem(THEME_KEY)||THEME_DARK);const t=document.getElementById("search-input");var e=document.getElementById("theme-toggle");t.addEventListener("keydown",function(e){"Enter"===e.key&&t.value&&window.open(`https://bing.com/search?q=${t.value}%20site%3A+pengfeixc.com`,"_blank")}),e&&e.addEventListener("click",function(){var e=(document.documentElement.getAttribute("data-theme")===THEME_LIGHT?THEME_LIGHT:THEME_DARK)===THEME_DARK?THEME_LIGHT:THEME_DARK;applyTheme(e),localStorage.setItem(THEME_KEY,e)});document.querySelectorAll(".markdown-body pre").forEach(function(t){var e=document.createElement("div");e.className="code-block-wrapper",t.parentNode.insertBefore(e,t),e.appendChild(t);const o=document.createElement("button");o.className="code-copy-btn",e.appendChild(o),o.addEventListener("click",async function(){var e=t.querySelector("code");if(e)try{await navigator.clipboard.writeText(e.textContent),o.classList.add("copied"),setTimeout(function(){o.classList.remove("copied")},2e3)}catch(e){console.error("Failed to copy:",e)}})});e=document.querySelectorAll(".markdown-body img");let o=0,n=[];e.forEach(function(e,t){e.classList.contains("emoji")||(e.style.cursor="zoom-in",e.addEventListener("click",function(){var e;e=t,o=e,u(),c.classList.add("active"),document.body.style.overflow="hidden"}),n.push(e))});const c=document.createElement("div");c.className="image-lightbox",c.innerHTML=`
+        <div class="lightbox-overlay"></div>
+        <div class="lightbox-container">
+            <img class="lightbox-image" src="" alt="">
+            <div class="lightbox-counter"></div>
+        </div>
+        <button class="lightbox-close" title="关闭 (ESC)"></button>
+        <button class="lightbox-prev" title="上一张 (←)"></button>
+        <button class="lightbox-next" title="下一张 (→)"></button>
+    `,document.body.appendChild(c);e=c.querySelector(".lightbox-overlay");const i=c.querySelector(".lightbox-image"),l=c.querySelector(".lightbox-counter");var a=c.querySelector(".lightbox-close");const r=c.querySelector(".lightbox-prev"),s=c.querySelector(".lightbox-next");function d(){c.classList.remove("active"),document.body.style.overflow=""}function u(){var e=n[o];i.src=e.src,i.alt=e.alt||"",1<n.length?(l.textContent=o+1+" / "+n.length,l.style.display="block"):l.style.display="none",r.style.display=1<n.length?"flex":"none",s.style.display=1<n.length?"flex":"none"}function E(){n.length<=1||(o=(o-1+n.length)%n.length,u())}function m(){n.length<=1||(o=(o+1)%n.length,u())}e.addEventListener("click",d),a.addEventListener("click",d),r.addEventListener("click",function(e){e.stopPropagation(),E()}),s.addEventListener("click",function(e){e.stopPropagation(),m()}),document.addEventListener("keydown",function(e){if(c.classList.contains("active"))switch(e.key){case"Escape":d();break;case"ArrowLeft":E();break;case"ArrowRight":m()}})})</script></head><body><div class="header"><div class="navigator"><div class="nav-sections"><div class="home"><a href="/blogs">Home</a></div><div class="email"><a href="mailto:pengfeixc@sina.com">Email</a></div><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div class="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="rss"><a href="/blogs/rss.xml">RSS</a></div><div class="theme-toggle-wrapper"><button class="theme-toggle-btn" id="theme-toggle" type="button" aria-label="Switch to light theme" aria-pressed="false"></button></div><div class="search-wrapper"><input id="search-input" type="search" placeholder="search"></div></div></div></div><div class="body"><div class="markdown"><div class="markdown-header"><span class="date">日期：2021年12月2日</span><span class="category"><a href="/blogs/computer-graphics">标签：Computer Graphics</a></span></div><div class="markdown-body"><h1 id="Bézier 曲线求点、分割与绘制">Bézier 曲线求点、分割与绘制 <a href="#Bézier 曲线求点、分割与绘制">#</a></h1><p>在学习 Bézier 曲线时，De Casteljau 算法是一个非常重要的算法。它的核心思想并不复杂：<strong>通过不断对相邻控制点做线性插值，最终得到曲线上的点</strong>。</p><p>它不仅可以用来计算 Bézier 曲线在某个参数 <code>t</code> 处的位置，还可以顺便把一条 Bézier 曲线分割成两条新的 Bézier 曲线。在计算机图形学中，它还可以用于曲线绘制和自适应细分。</p><p>本文分成三部分：</p><ol><li>如何求参数 <code>t</code> 位置上的点</li><li>如何把曲线分割成两个 Bézier 曲线</li><li>计算机是怎么绘制 Bézier 曲线的</li></ol><hr><h2 id="1. 求参数 t 位置上的点">1. 求参数 t 位置上的点 <a href="#1. 求参数 t 位置上的点">#</a></h2><p>假设我们有一条三次 Bézier 曲线，它有 4 个控制点：</p><pre><code class="hljs language-text">P0, P1, P2, P3
+</code></pre><p>我们想要求曲线在某个参数 <code>t</code> 处的点。</p><p>这里的 <code>t</code> 通常在 <code>[0, 1]</code> 之间：</p><pre><code class="hljs language-text">t = 0   表示曲线起点
+t = 1   表示曲线终点
+t = 0.5 表示曲线中间某个位置
+</code></pre><p>De Casteljau 算法的做法是：不断在相邻控制点之间做<strong>线性插值</strong>。</p><p>线性插值公式是：</p><pre><code class="hljs language-text">lerp(A, B, t) = (1 - t)A + tB
+</code></pre><p>lerp 是 linear interpolation 的缩写，即线性插值。意思是：在点 <code>A</code> 和点 <code>B</code> 之间，按照比例 <code>t</code> 取一个新点。</p><p>当：</p><pre><code class="hljs language-text">t = 0   -&gt; 得到 A
+t = 1   -&gt; 得到 B
+t = 0.5 -&gt; 得到 A 和 B 的中点
+</code></pre><hr><h3 id="三次 Bézier 的计算过程">三次 Bézier 的计算过程 <a href="#三次 Bézier 的计算过程">#</a></h3><p>对于三次 Bézier：</p><pre><code class="hljs language-text">P0, P1, P2, P3
+</code></pre><p>第一层插值：</p><pre><code class="hljs language-text">Q0 = lerp(P0, P1, t)
+Q1 = lerp(P1, P2, t)
+Q2 = lerp(P2, P3, t)
+</code></pre><p>第二层插值：</p><pre><code class="hljs language-text">R0 = lerp(Q0, Q1, t)
+R1 = lerp(Q1, Q2, t)
+</code></pre><p>第三层插值：</p><pre><code class="hljs language-text">S0 = lerp(R0, R1, t)
+</code></pre><p>最后得到的 <code>S0</code>，就是 Bézier 曲线在参数 <code>t</code> 处的点。</p><p>也就是说：</p><pre><code class="hljs language-text">Bezier(t) = S0
+</code></pre><p>整个过程可以想象成这样：</p><pre><code class="hljs language-text">P0 -------- P1 -------- P2 -------- P3
+ |           |           |
+ Q0 -------- Q1 -------- Q2
+  |           |
+  R0 -------- R1
+   |
+   S0
+</code></pre><p>其中 <code>S0</code> 就是曲线上的点。</p><hr><h3 id="伪代码实现">伪代码实现 <a href="#伪代码实现">#</a></h3><pre><code class="hljs language-cpp"><span class="hljs-function">Point <span class="hljs-title">lerp</span><span class="hljs-params">(Point a, Point b, <span class="hljs-type">double</span> t)</span> </span>{
+    <span class="hljs-keyword">return</span> a * (<span class="hljs-number">1.0</span> - t) + b * t;
+}
+
+<span class="hljs-function">Point <span class="hljs-title">deCasteljau</span><span class="hljs-params">(std::vector&lt;Point&gt; points, <span class="hljs-type">double</span> t)</span> </span>{
+    <span class="hljs-keyword">while</span> (points.<span class="hljs-built_in">size</span>() &gt; <span class="hljs-number">1</span>) {
+        std::vector&lt;Point&gt; next;
+
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; points.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>; ++i) {
+            next.<span class="hljs-built_in">push_back</span>(<span class="hljs-built_in">lerp</span>(points[i], points[i + <span class="hljs-number">1</span>], t));
+        }
+
+        points = next;
+    }
+
+    <span class="hljs-keyword">return</span> points[<span class="hljs-number">0</span>];
+}
+</code></pre><p>这个函数可以处理任意阶数的 Bézier 曲线。</p><p>如果有 2 个控制点，它就是一次 Bézier，也就是线段。</p><p>如果有 3 个控制点，它就是二次 Bézier。</p><p>如果有 4 个控制点，它就是三次 Bézier。</p><p>控制点数量和曲线次数的关系是：</p><pre><code class="hljs language-text">曲线次数 n = 控制点数量 - 1
+</code></pre><p>例如：</p><pre><code class="hljs language-text">2 个控制点 -&gt; 1 次 Bézier
+3 个控制点 -&gt; 2 次 Bézier
+4 个控制点 -&gt; 3 次 Bézier
+</code></pre><hr><h2 id="2. 曲线分割成两个 Bézier 曲线">2. 曲线分割成两个 Bézier 曲线 <a href="#2. 曲线分割成两个 Bézier 曲线">#</a></h2><p>De Casteljau 算法除了能求出曲线在 <code>t</code> 处的点，还能顺便把原曲线分成左右两段。</p><p>假设一条三次 Bézier 曲线的控制点是：</p><pre><code class="hljs language-text">P0, P1, P2, P3
+</code></pre><p>我们在参数 <code>t</code> 处把它切开。</p><p>De Casteljau 算法会生成这些中间点：</p><p>第一层：</p><pre><code class="hljs language-text">Q0 = lerp(P0, P1, t)
+Q1 = lerp(P1, P2, t)
+Q2 = lerp(P2, P3, t)
+</code></pre><p>第二层：</p><pre><code class="hljs language-text">R0 = lerp(Q0, Q1, t)
+R1 = lerp(Q1, Q2, t)
+</code></pre><p>第三层：</p><pre><code class="hljs language-text">S0 = lerp(R0, R1, t)
+</code></pre><p>其中 <code>S0</code> 是曲线在 <code>t</code> 位置上的点，也就是分割点。</p><hr><h3 id="左半段曲线的控制点">左半段曲线的控制点 <a href="#左半段曲线的控制点">#</a></h3><p>左半段曲线由每一层最左边的点组成：</p><pre><code class="hljs language-text">P0, Q0, R0, S0
+</code></pre><p>这 4 个点重新定义了一条三次 Bézier 曲线。</p><p>这条新曲线表示原曲线从 <code>0</code> 到 <code>t</code> 的部分。</p><p>可以理解为：</p><pre><code class="hljs language-text">LeftCurve = Bezier(P0, Q0, R0, S0)
+</code></pre><hr><h3 id="右半段曲线的控制点">右半段曲线的控制点 <a href="#右半段曲线的控制点">#</a></h3><p>右半段曲线由每一层最右边的点组成，但顺序需要反过来：</p><pre><code class="hljs language-text">S0, R1, Q2, P3
+</code></pre><p>这 4 个点也重新定义了一条三次 Bézier 曲线。</p><p>它表示原曲线从 <code>t</code> 到 <code>1</code> 的部分。</p><p>可以理解为：</p><pre><code class="hljs language-text">RightCurve = Bezier(S0, R1, Q2, P3)
+</code></pre><hr><h3 id="为什么分割后还是 Bézier 曲线？">为什么分割后还是 Bézier 曲线？ <a href="#为什么分割后还是 Bézier 曲线？">#</a></h3><p>这是 De Casteljau 算法非常重要的性质。</p><p>一条 Bézier 曲线在某个参数 <code>t</code> 处分割后，得到的左右两段仍然都是 Bézier 曲线，并且它们合起来和原曲线完全一样。</p><p>不是近似一样，而是数学上完全一致。</p><p>也就是说：</p><pre><code class="hljs language-text">原曲线 [0, 1]
+=
+左曲线 [0, 1] + 右曲线 [0, 1]
+</code></pre><p>其中：</p><pre><code class="hljs language-text">左曲线 [0, 1] 对应原曲线 [0, t]
+右曲线 [0, 1] 对应原曲线 [t, 1]
+</code></pre><hr><h3 id="曲线分割的用途">曲线分割的用途 <a href="#曲线分割的用途">#</a></h3><p>曲线分割在几何建模和计算机图形学中非常重要。</p><p>常见用途包括：</p><pre><code class="hljs language-text">1. 裁剪曲线
+2. 局部编辑曲线
+3. 曲线绘制
+4. 曲线求交
+5. 曲线细分
+6. 碰撞检测
+7. 生成显示用折线
+</code></pre><p>例如，如果我们只想保留一条 Bézier 曲线的前 40%，就可以在 <code>t = 0.4</code> 的位置分割，然后取左半段曲线。</p><p>如果我们只想保留中间一段，比如 <code>[0.2, 0.7]</code>，也可以通过多次分割得到。</p><hr><h3 id="分割伪代码">分割伪代码 <a href="#分割伪代码">#</a></h3><pre><code class="hljs language-cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">BezierSplitResult</span> {
+    std::vector&lt;Point&gt; left;
+    std::vector&lt;Point&gt; right;
+};
+
+<span class="hljs-function">BezierSplitResult <span class="hljs-title">splitBezier</span><span class="hljs-params">(std::vector&lt;Point&gt; points, <span class="hljs-type">double</span> t)</span> </span>{
+    std::vector&lt;Point&gt; left;
+    std::vector&lt;Point&gt; right;
+
+    <span class="hljs-keyword">while</span> (!points.<span class="hljs-built_in">empty</span>()) {
+        left.<span class="hljs-built_in">push_back</span>(points.<span class="hljs-built_in">front</span>());
+        right.<span class="hljs-built_in">insert</span>(right.<span class="hljs-built_in">begin</span>(), points.<span class="hljs-built_in">back</span>());
+
+        std::vector&lt;Point&gt; next;
+
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; points.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>; ++i) {
+            next.<span class="hljs-built_in">push_back</span>(<span class="hljs-built_in">lerp</span>(points[i], points[i + <span class="hljs-number">1</span>], t));
+        }
+
+        points = next;
+    }
+
+    <span class="hljs-keyword">return</span> { left, right };
+}
+</code></pre><p>对于三次 Bézier，这个函数返回：</p><pre><code class="hljs language-text">left  = P0, Q0, R0, S0
+right = S0, R1, Q2, P3
+</code></pre><p>这样我们就得到了两条新的 Bézier 曲线。</p><hr><h2 id="3. 计算机是怎么绘制 Bézier 曲线的">3. 计算机是怎么绘制 Bézier 曲线的 <a href="#3. 计算机是怎么绘制 Bézier 曲线的">#</a></h2><p>Bézier 曲线本质上是连续的数学曲线。</p><p>例如：</p><pre><code class="hljs language-text">B(t), t ∈ [0, 1]
+</code></pre><p>但是计算机屏幕最终显示的是像素，图形 API 通常也更擅长绘制点、线段和三角形。</p><p>因此，在绘制 Bézier 曲线时，通常需要把连续曲线离散化成很多小线段。</p><hr><h3 id="方法一：均匀采样，然后连线">方法一：均匀采样，然后连线 <a href="#方法一：均匀采样，然后连线">#</a></h3><p>最容易理解的绘制方法是：</p><ol><li>从 <code>t = 0</code> 到 <code>t = 1</code> 取很多个参数值</li><li>对每个参数值计算曲线点</li><li>把相邻点用线段连接起来</li></ol><p>代码大概是：</p><pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">drawBezierBySampling</span><span class="hljs-params">(<span class="hljs-type">int</span> segments)</span> </span>{
+    Point prev = <span class="hljs-built_in">getBezierPoint</span>(<span class="hljs-number">0.0</span>);
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">1</span>; i &lt;= segments; ++i) {
+        <span class="hljs-type">double</span> t = <span class="hljs-built_in">double</span>(i) / segments;
+        Point curr = <span class="hljs-built_in">getBezierPoint</span>(t);
+
+        <span class="hljs-built_in">drawLine</span>(prev, curr);
+
+        prev = curr;
+    }
+}
+</code></pre><p>例如：</p><pre><code class="hljs language-text">segments = 10   -&gt; 用 10 条线段近似曲线
+segments = 100  -&gt; 用 100 条线段近似曲线
+segments = 300  -&gt; 用 300 条线段近似曲线
+</code></pre><p>线段越多，曲线看起来越平滑。</p><p>但本质上，屏幕上显示的仍然是一条折线，只是线段足够短时，人眼会觉得它是平滑曲线。</p><hr><h3 id="为什么不是只画点？">为什么不是只画点？ <a href="#为什么不是只画点？">#</a></h3><p>如果写成：</p><pre><code class="hljs language-cpp"><span class="hljs-type">double</span> step = <span class="hljs-number">0.0001</span>;
+<span class="hljs-type">double</span> t = <span class="hljs-number">0.0</span>;
+
+<span class="hljs-keyword">while</span> (t &lt;= <span class="hljs-number">1.0</span>) {
+    Point p = <span class="hljs-built_in">getBezierPoint</span>(t);
+    <span class="hljs-built_in">drawPoint</span>(p);
+    t += step;
+}
+</code></pre><p>这也能看到很多点组成的曲线。</p><p>但是实际绘制时更常用的是画线段：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">drawLine</span>(prev, curr);
+</code></pre><p>而不是只画点。</p><p>因为只画点会得到一串离散点；连线后才更像连续曲线。</p><hr><h3 id="固定步长采样的问题">固定步长采样的问题 <a href="#固定步长采样的问题">#</a></h3><p>均匀采样虽然简单，但有两个问题。</p><p>第一个问题是：<code>t</code> 均匀不代表曲线长度均匀。</p><p>也就是说：</p><pre><code class="hljs language-text">t = 0.0, 0.1, 0.2, ..., 1.0
+</code></pre><p>这些点在参数上是均匀的，但在曲线上的距离不一定均匀。</p><p>有的地方点很密，有的地方点很稀。</p><p>第二个问题是：曲线不同位置的弯曲程度不同。</p><p>有些地方几乎是直线，只需要很少线段就能近似。</p><p>有些地方弯得很厉害，需要更多线段才能画得平滑。</p><p>如果固定使用 100 段，可能会出现：</p><pre><code class="hljs language-text">直的地方浪费线段
+弯的地方仍然不够平滑
+</code></pre><hr><h3 id="方法二：使用 De Casteljau 做自适应细分">方法二：使用 De Casteljau 做自适应细分 <a href="#方法二：使用 De Casteljau 做自适应细分">#</a></h3><p>更好的绘制方式是自适应细分。</p><p>基本思想是：</p><pre><code class="hljs language-text">如果一段 Bézier 曲线足够接近直线，就直接画起点到终点的线段。
+如果还不够接近直线，就把它分割成左右两段，再分别处理。
+</code></pre><p>伪代码如下：</p><pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">drawBezierAdaptive</span><span class="hljs-params">(BezierCurve curve, <span class="hljs-type">double</span> tolerance)</span> </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">isFlatEnough</span>(curve, tolerance)) {
+        <span class="hljs-built_in">drawLine</span>(curve.<span class="hljs-built_in">startPoint</span>(), curve.<span class="hljs-built_in">endPoint</span>());
+        <span class="hljs-keyword">return</span>;
+    }
+
+    <span class="hljs-keyword">auto</span> [left, right] = <span class="hljs-built_in">splitBezier</span>(curve.<span class="hljs-built_in">controlPoints</span>(), <span class="hljs-number">0.5</span>);
+
+    <span class="hljs-built_in">drawBezierAdaptive</span>(left, tolerance);
+    <span class="hljs-built_in">drawBezierAdaptive</span>(right, tolerance);
+}
+</code></pre><p>这里的 <code>splitBezier(curve, 0.5)</code> 就可以用 De Casteljau 算法实现。</p><hr><h3 id="什么叫足够接近直线？">什么叫足够接近直线？ <a href="#什么叫足够接近直线？">#</a></h3><p>对于三次 Bézier：</p><pre><code class="hljs language-text">P0, P1, P2, P3
+</code></pre><p>可以用一个简单标准判断：</p><pre><code class="hljs language-text">P1 到直线 P0-P3 的距离是否足够小
+P2 到直线 P0-P3 的距离是否足够小
+</code></pre><p>如果中间控制点离起点终点连成的直线很近，那么这段 Bézier 曲线就很接近直线，可以直接画：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">drawLine</span>(P0, P3);
+</code></pre><p>否则继续分割。</p><p>这种方法的优点是：</p><pre><code class="hljs language-text">弯曲大的地方自动多分割
+比较直的地方自动少分割
+绘制效率更高
+曲线显示更稳定
+</code></pre><hr><h3 id="几何内核和显示系统的区别">几何内核和显示系统的区别 <a href="#几何内核和显示系统的区别">#</a></h3><p>在 CAD 或几何建模系统中，曲线通常不是以点的形式保存的。</p><p>例如在 OCCT 中，一条曲线可能是：</p><pre><code class="hljs language-text">Geom_BezierCurve
+Geom_BSplineCurve
+Geom_Circle
+Geom_Line
+</code></pre><p>这些都是数学对象。</p><p>几何内核里保存的是精确曲线，而不是一堆离散点。</p><p>但是当曲线要显示到屏幕上时，还是需要把它离散化成图形系统可以绘制的元素，例如折线。</p><p>所以可以这样理解：</p><pre><code class="hljs language-text">几何内核中：曲线是精确的参数方程
+显示系统中：曲线被离散成很多小线段
+</code></pre><p>这也是为什么 CAD 软件可以在放大视图时重新生成更精细的显示结果。</p><p>它不是只保存了一堆固定点，而是保存了曲线本身的数学定义。</p><hr><h2 id="总结">总结 <a href="#总结">#</a></h2><p>De Casteljau 算法的核心是线性插值。</p><p>它可以完成三件重要的事情：</p><p>第一，求 Bézier 曲线在参数 <code>t</code> 处的点：</p><pre><code class="hljs language-text">不断对相邻控制点做 lerp，直到只剩一个点。
+</code></pre><p>第二，把 Bézier 曲线分割成左右两段：</p><pre><code class="hljs language-text">左边界点组成左曲线控制点。
+右边界点组成右曲线控制点。
+</code></pre><p>第三，用于曲线绘制：</p><pre><code class="hljs language-text">通过递归分割，把曲线细分成足够接近直线的小段，
+然后用线段绘制。
+</code></pre><p>从学习 Bézier 曲线的角度看，De Casteljau 算法比直接背公式更重要。</p><p>因为它让我们从几何上理解 Bézier 曲线：</p><pre><code class="hljs language-text">Bézier 曲线不是神秘公式，
+而是反复线性插值得到的轨迹。
+</code></pre><p>这个理解对后续学习 B-Spline、NURBS、曲线裁剪、曲线求交以及几何建模都非常有帮助。</p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/javascript/web-workers-simple-introduction">上一篇：Web Workers的简单介绍</a></span><span class="next-article"><a href="/blogs/developer-handbook/study-dot-pixel-dpi-ppi-in-ten-minutes">下一篇：十分钟了解Dot、Pixel、DPI、PPI</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#Bézier 曲线求点、分割与绘制" style="padding-left:15px">Bézier 曲线求点、分割与绘制</a></div><div class="toc-item"><a class="toc-item-link" href="#1. 求参数 t 位置上的点" style="padding-left:30px">1. 求参数 t 位置上的点</a></div><div class="toc-item"><a class="toc-item-link" href="#三次 Bézier 的计算过程" style="padding-left:45px">三次 Bézier 的计算过程</a></div><div class="toc-item"><a class="toc-item-link" href="#伪代码实现" style="padding-left:45px">伪代码实现</a></div><div class="toc-item"><a class="toc-item-link" href="#2. 曲线分割成两个 Bézier 曲线" style="padding-left:30px">2. 曲线分割成两个 Bézier 曲线</a></div><div class="toc-item"><a class="toc-item-link" href="#左半段曲线的控制点" style="padding-left:45px">左半段曲线的控制点</a></div><div class="toc-item"><a class="toc-item-link" href="#右半段曲线的控制点" style="padding-left:45px">右半段曲线的控制点</a></div><div class="toc-item"><a class="toc-item-link" href="#为什么分割后还是 Bézier 曲线？" style="padding-left:45px">为什么分割后还是 Bézier 曲线？</a></div><div class="toc-item"><a class="toc-item-link" href="#曲线分割的用途" style="padding-left:45px">曲线分割的用途</a></div><div class="toc-item"><a class="toc-item-link" href="#分割伪代码" style="padding-left:45px">分割伪代码</a></div><div class="toc-item"><a class="toc-item-link" href="#3. 计算机是怎么绘制 Bézier 曲线的" style="padding-left:30px">3. 计算机是怎么绘制 Bézier 曲线的</a></div><div class="toc-item"><a class="toc-item-link" href="#方法一：均匀采样，然后连线" style="padding-left:45px">方法一：均匀采样，然后连线</a></div><div class="toc-item"><a class="toc-item-link" href="#为什么不是只画点？" style="padding-left:45px">为什么不是只画点？</a></div><div class="toc-item"><a class="toc-item-link" href="#固定步长采样的问题" style="padding-left:45px">固定步长采样的问题</a></div><div class="toc-item"><a class="toc-item-link" href="#方法二：使用 De Casteljau 做自适应细分" style="padding-left:45px">方法二：使用 De Casteljau 做自适应细分</a></div><div class="toc-item"><a class="toc-item-link" href="#什么叫足够接近直线？" style="padding-left:45px">什么叫足够接近直线？</a></div><div class="toc-item"><a class="toc-item-link" href="#几何内核和显示系统的区别" style="padding-left:45px">几何内核和显示系统的区别</a></div><div class="toc-item"><a class="toc-item-link" href="#总结" style="padding-left:30px">总结</a></div></div></div></div></body></html>
