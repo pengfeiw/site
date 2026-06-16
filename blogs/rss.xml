@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Tue, 09 Jun 2026 06:04:33 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 16 Jun 2026 07:24:29 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Tue, 09 Jun 2026 06:04:16 GMT</pubDate>
+        <pubDate>Tue, 16 Jun 2026 07:24:11 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[ideavimrc]]></title>
@@ -613,6 +613,12 @@
             <description><![CDATA[当被询问到Dot、Pixel、DPI、PPI等这些常用词时，你能讲清楚它们之间的关系吗？]]></description>
             <link>https://pengfeixc.com/blogs/developer-handbook/study-dot-pixel-dpi-ppi-in-ten-minutes.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/study-dot-pixel-dpi-ppi-in-ten-minutes.html</guid>
+            <pubDate>Thu, 02 Dec 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[贝塞尔曲线（三）]]></title>
+            <link>https://pengfeixc.com/blogs/computer-graphics/bezier-curve-part3.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/bezier-curve-part3.html</guid>
             <pubDate>Thu, 02 Dec 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
