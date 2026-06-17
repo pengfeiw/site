@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Wed, 17 Jun 2026 03:16:34 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 17 Jun 2026 05:39:50 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Wed, 17 Jun 2026 03:16:17 GMT</pubDate>
+        <pubDate>Wed, 17 Jun 2026 05:39:32 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[ideavimrc]]></title>
@@ -68,6 +68,13 @@
             <link>https://pengfeixc.com/blogs/computer-graphics/b-spline-definition.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/b-spline-definition.html</guid>
             <pubDate>Sat, 14 Mar 2026 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[曲线拼接的连续性]]></title>
+            <description><![CDATA[曲线拼接中的连续性]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/curve-join-continuous.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/curve-join-continuous.html</guid>
+            <pubDate>Fri, 13 Mar 2026 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[MCP]]></title>
