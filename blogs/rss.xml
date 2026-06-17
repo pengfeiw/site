@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Wed, 17 Jun 2026 06:04:40 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 17 Jun 2026 07:26:06 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Wed, 17 Jun 2026 06:04:23 GMT</pubDate>
+        <pubDate>Wed, 17 Jun 2026 07:25:50 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[ideavimrc]]></title>
@@ -1005,6 +1005,12 @@
             <link>https://pengfeixc.com/blogs/react/react-ref.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/react/react-ref.html</guid>
             <pubDate>Wed, 24 Mar 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[B样条曲线的性质]]></title>
+            <link>https://pengfeixc.com/blogs/computer-graphics/undefined.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/undefined.html</guid>
+            <pubDate>Invalid Date</pubDate>
         </item>
     </channel>
 </rss>
