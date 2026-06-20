@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sat, 20 Jun 2026 08:44:17 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 20 Jun 2026 09:46:53 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sat, 20 Jun 2026 08:43:59 GMT</pubDate>
+        <pubDate>Sat, 20 Jun 2026 09:46:34 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[ideavimrc]]></title>
@@ -74,6 +74,13 @@
             <description><![CDATA[B 样条曲线的重要性质]]></description>
             <link>https://pengfeixc.com/blogs/computer-graphics/b-spline-properties.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/b-spline-properties.html</guid>
+            <pubDate>Sat, 14 Mar 2026 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[occt bspline 的 order]]></title>
+            <description><![CDATA[occt Geom_BSplineCurve 的 order 是什么，与曲线次数有什么关系]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/Geom_BSplineCurve_order.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/Geom_BSplineCurve_order.html</guid>
             <pubDate>Sat, 14 Mar 2026 00:00:00 GMT</pubDate>
         </item>
         <item>
