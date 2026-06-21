@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sun, 21 Jun 2026 02:31:33 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 21 Jun 2026 02:34:13 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sun, 21 Jun 2026 02:31:14 GMT</pubDate>
+        <pubDate>Sun, 21 Jun 2026 02:33:54 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[ideavimrc]]></title>
@@ -78,7 +78,7 @@
         </item>
         <item>
             <title><![CDATA[occt bspline Multiplicity]]></title>
-            <description><![CDATA[occt Geom_BSplineCurve 的 order 是什么，与曲线次数有什么关系]]></description>
+            <description><![CDATA[occt Geom_BSplineCurve 的 multiplicity 是什么，与曲线次数有什么关系]]></description>
             <link>https://pengfeixc.com/blogs/computer-graphics/Geom_BSplineCurve_multiplicity.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/Geom_BSplineCurve_multiplicity.html</guid>
             <pubDate>Sat, 14 Mar 2026 00:00:00 GMT</pubDate>
