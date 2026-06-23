@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Mon, 22 Jun 2026 02:40:16 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 23 Jun 2026 06:35:40 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Mon, 22 Jun 2026 02:39:57 GMT</pubDate>
+        <pubDate>Tue, 23 Jun 2026 06:35:21 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[ideavimrc]]></title>
@@ -61,6 +61,13 @@
             <link>https://pengfeixc.com/blogs/react/rn-expo-1.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/react/rn-expo-1.html</guid>
             <pubDate>Mon, 16 Mar 2026 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[B-Spline 有效区间]]></title>
+            <description><![CDATA[b样条曲线定义的有效区间]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/Geom_BSplineCurve_interval.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/Geom_BSplineCurve_interval.html</guid>
+            <pubDate>Sat, 14 Mar 2026 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[B样条曲线定义]]></title>
