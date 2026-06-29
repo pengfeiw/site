@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Tue, 23 Jun 2026 06:35:40 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 29 Jun 2026 11:26:53 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Tue, 23 Jun 2026 06:35:21 GMT</pubDate>
+        <pubDate>Mon, 29 Jun 2026 11:26:32 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[ideavimrc]]></title>
@@ -61,6 +61,13 @@
             <link>https://pengfeixc.com/blogs/react/rn-expo-1.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/react/rn-expo-1.html</guid>
             <pubDate>Mon, 16 Mar 2026 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[b 样条曲面]]></title>
+            <description><![CDATA[b 样条曲面的定义和性质]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/bspline-surface.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/bspline-surface.html</guid>
+            <pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[B-Spline 有效区间]]></title>
@@ -257,6 +264,13 @@
             <link>https://pengfeixc.com/blogs/computer-graphics/parametric-curve-review.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/parametric-curve-review.html</guid>
             <pubDate>Sun, 24 Mar 2024 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[仿射变换]]></title>
+            <description><![CDATA[仿射变换的几何性质]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/affine-transform.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/affine-transform.html</guid>
+            <pubDate>Thu, 14 Mar 2024 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[常量指针 or 指针常量]]></title>
