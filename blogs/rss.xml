@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Mon, 29 Jun 2026 11:26:53 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 01 Jul 2026 06:50:43 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Mon, 29 Jun 2026 11:26:32 GMT</pubDate>
+        <pubDate>Wed, 01 Jul 2026 06:50:28 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[ideavimrc]]></title>
@@ -26,13 +26,6 @@
             <link>https://pengfeixc.com/blogs/developer-handbook/maven.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/maven.html</guid>
             <pubDate>Fri, 17 Apr 2026 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[如何优化渲染引擎的性能]]></title>
-            <description><![CDATA[如何优化渲染引擎的性能：从全量重绘到分块缓存]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/rendering-optimization.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/rendering-optimization.html</guid>
-            <pubDate>Wed, 25 Mar 2026 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[CMakePresets]]></title>
@@ -63,13 +56,6 @@
             <pubDate>Mon, 16 Mar 2026 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[b 样条曲面]]></title>
-            <description><![CDATA[b 样条曲面的定义和性质]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/bspline-surface.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/bspline-surface.html</guid>
-            <pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate>
-        </item>
-        <item>
             <title><![CDATA[B-Spline 有效区间]]></title>
             <description><![CDATA[b样条曲线定义的有效区间]]></description>
             <link>https://pengfeixc.com/blogs/computer-graphics/Geom_BSplineCurve_interval.html</link>
@@ -89,27 +75,6 @@
             <link>https://pengfeixc.com/blogs/computer-graphics/b-spline-properties.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/b-spline-properties.html</guid>
             <pubDate>Sat, 14 Mar 2026 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[occt bspline Multiplicity]]></title>
-            <description><![CDATA[occt Geom_BSplineCurve 的 multiplicity 是什么，与曲线次数有什么关系]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/Geom_BSplineCurve_multiplicity.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/Geom_BSplineCurve_multiplicity.html</guid>
-            <pubDate>Sat, 14 Mar 2026 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[occt bspline 的 order]]></title>
-            <description><![CDATA[occt Geom_BSplineCurve 的 order 是什么，与曲线次数有什么关系]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/Geom_BSplineCurve_order.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/Geom_BSplineCurve_order.html</guid>
-            <pubDate>Sat, 14 Mar 2026 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[曲线拼接的连续性]]></title>
-            <description><![CDATA[曲线拼接中的连续性]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/curve-join-continuous.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/curve-join-continuous.html</guid>
-            <pubDate>Fri, 13 Mar 2026 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[MCP]]></title>
@@ -138,13 +103,6 @@
             <link>https://pengfeixc.com/blogs/developer-handbook/python-install.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/python-install.html</guid>
             <pubDate>Wed, 10 Dec 2025 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[opengl shader 和 buffer]]></title>
-            <description><![CDATA[对 opengl 渲染管线中的一些重要概念的解释，包括 shader、vao、vbo、ebo 等。]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/opengl-shader-and-buffer.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/opengl-shader-and-buffer.html</guid>
-            <pubDate>Wed, 18 Jun 2025 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[visual studio 配置 qt 开发环境]]></title>
@@ -203,20 +161,6 @@
             <pubDate>Sun, 19 May 2024 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[四元数]]></title>
-            <description><![CDATA[四元数的基本思想，何为四元数，如何用四元数表示方位。]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/Quaternion.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/Quaternion.html</guid>
-            <pubDate>Sat, 18 May 2024 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[欧拉角]]></title>
-            <description><![CDATA[欧拉角的基本思想，如何用欧拉角描述物体的方位。]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/euler-angles.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/euler-angles.html</guid>
-            <pubDate>Tue, 14 May 2024 00:00:00 GMT</pubDate>
-        </item>
-        <item>
             <title><![CDATA[线性系统]]></title>
             <description><![CDATA[线性系统与矩阵。]]></description>
             <link>https://pengfeixc.com/blogs/algorithm-math/linear-spaces.html</link>
@@ -259,20 +203,6 @@
             <pubDate>Mon, 01 Apr 2024 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[参数化曲线]]></title>
-            <description><![CDATA[参数化曲线的概念以及如何计算切向量和切线]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/parametric-curve-review.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/parametric-curve-review.html</guid>
-            <pubDate>Sun, 24 Mar 2024 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[仿射变换]]></title>
-            <description><![CDATA[仿射变换的几何性质]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/affine-transform.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/affine-transform.html</guid>
-            <pubDate>Thu, 14 Mar 2024 00:00:00 GMT</pubDate>
-        </item>
-        <item>
             <title><![CDATA[常量指针 or 指针常量]]></title>
             <description><![CDATA[如何记忆指针常量和常量指针]]></description>
             <link>https://pengfeixc.com/blogs/clang/const-pointer-and-pointer-to-const.html</link>
@@ -308,55 +238,6 @@
             <pubDate>Fri, 03 Nov 2023 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[构造立体几何法（Constructive Solid Geometry） —— 计算机几何]]></title>
-            <description><![CDATA[Constructive solid geometry，中文名为构造立体几何法，是另一种实体模型表示方法，通过布尔运算将简单的基本实体拼合成复杂实体的描述方法]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/constructive-solid-geometry.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/constructive-solid-geometry.html</guid>
-            <pubDate>Thu, 05 Oct 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[欧拉泊松公式 —— 计算机几何]]></title>
-            <description><![CDATA[介绍欧拉泊松公式的相关概念]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/euler-poincare-Formula.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/euler-poincare-Formula.html</guid>
-            <pubDate>Wed, 27 Sep 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[翼边结构 —— 计算机几何]]></title>
-            <description><![CDATA[翼边结构是 B-rep 结构中的一种古老的几何体数据结构，如何用它描述一个几何体呢？]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/winged-edge-data-structure.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/winged-edge-data-structure.html</guid>
-            <pubDate>Tue, 26 Sep 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[流形 —— 计算机几何]]></title>
-            <description><![CDATA[流形（manifolds）是什么？]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/manifolds.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/manifolds.html</guid>
-            <pubDate>Mon, 25 Sep 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[Wireframe Model —— 计算机几何]]></title>
-            <description><![CDATA[本文介绍了一种再 CAD 中表示几何模型的方法，即 Wireframe Model]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/wireframe-models.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/wireframe-models.html</guid>
-            <pubDate>Sat, 23 Sep 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[齐次坐标 —— 计算机几何]]></title>
-            <description><![CDATA[何为齐次坐标，为什么要引入齐次坐标，它解决了什么问题？]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/homogeneous-coordinates.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/homogeneous-coordinates.html</guid>
-            <pubDate>Fri, 22 Sep 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[坐标系、点、线、面 —— 计算机几何]]></title>
-            <description><![CDATA[计算机图形几何中关于坐标系、点、线面的概念]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/coordinatesystems-points-lines-planes.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/coordinatesystems-points-lines-planes.html</guid>
-            <pubDate>Thu, 21 Sep 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
             <title><![CDATA[提升网站加载速度]]></title>
             <description><![CDATA[网页有大量的图片展示时，网页打开速度慢，作为开发者应该从哪些方向解决优化。]]></description>
             <link>https://pengfeixc.com/blogs/site/site-load-slowy.html</link>
@@ -376,13 +257,6 @@
             <link>https://pengfeixc.com/blogs/developer-handbook/tmux.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/tmux.html</guid>
             <pubDate>Sat, 17 Jun 2023 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[坐标系、点和向量的矩阵表示]]></title>
-            <description><![CDATA[如何用矩阵表示点、向量以及坐标系]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/matrix-stand-for-vectors-points.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/matrix-stand-for-vectors-points.html</guid>
-            <pubDate>Sun, 28 May 2023 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[Linux Shell 命令速查表]]></title>
@@ -658,13 +532,6 @@
             <pubDate>Fri, 17 Dec 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[Threejs 分屏绘制]]></title>
-            <description><![CDATA[使用 Threejs 进行分屏渲染场景，讲述 viewport 和 scissor 的区别和作用。]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/threejs-split-screen-render.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/threejs-split-screen-render.html</guid>
-            <pubDate>Thu, 09 Dec 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
             <title><![CDATA[十分钟了解Dot、Pixel、DPI、PPI]]></title>
             <description><![CDATA[当被询问到Dot、Pixel、DPI、PPI等这些常用词时，你能讲清楚它们之间的关系吗？]]></description>
             <link>https://pengfeixc.com/blogs/developer-handbook/study-dot-pixel-dpi-ppi-in-ten-minutes.html</link>
@@ -672,30 +539,10 @@
             <pubDate>Thu, 02 Dec 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[贝塞尔曲线（三）]]></title>
-            <link>https://pengfeixc.com/blogs/computer-graphics/bezier-curve-part3.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/bezier-curve-part3.html</guid>
-            <pubDate>Thu, 02 Dec 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[贝塞尔曲线（二）]]></title>
-            <description><![CDATA[De Casteljau 算法对贝塞尔曲线求点、分割]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/bezier-curve-part2.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/bezier-curve-part2.html</guid>
-            <pubDate>Thu, 02 Dec 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
             <title><![CDATA[Web Workers的简单介绍]]></title>
             <description><![CDATA["JavaScript是单线程的"，Js的开发这们一直这样认为。但是今天要介绍的是JavaScript中的多线程编程，你没有听错，我说的就是多线程编程——Web Workers。]]></description>
             <link>https://pengfeixc.com/blogs/javascript/web-workers-simple-introduction.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/web-workers-simple-introduction.html</guid>
-            <pubDate>Wed, 01 Dec 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[贝塞尔曲线]]></title>
-            <description><![CDATA[用简洁易懂的方式，讲述贝塞尔曲线。]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/bezier-curve.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/bezier-curve.html</guid>
             <pubDate>Wed, 01 Dec 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
@@ -846,32 +693,11 @@
             <pubDate>Tue, 03 Aug 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[【光照理论】（二）材质]]></title>
-            <description><![CDATA[现实世界中，不同物体材质不一样，对光照产生的反应也不同，文章讲述了如何基于冯氏光照理论去定义物体和光照的材质。]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/graphics-material.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/graphics-material.html</guid>
-            <pubDate>Thu, 15 Jul 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
             <title><![CDATA[webgl模拟太阳系动画]]></title>
             <description><![CDATA[使用webgl，模拟绘制太阳系行星天体图。]]></description>
             <link>https://pengfeixc.com/blogs/minicode/webgl-solar-system.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/minicode/webgl-solar-system.html</guid>
             <pubDate>Wed, 14 Jul 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[【光照理论】（一）颜色与冯氏光照模型]]></title>
-            <description><![CDATA[研究颜色与基础光照，介绍冯氏光照理论。在计算机中，如何利用冯氏光照理论模拟现实世界的颜色。]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/color-and-feng-illumination-model.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/color-and-feng-illumination-model.html</guid>
-            <pubDate>Mon, 12 Jul 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[【WebGL】模拟摄像机]]></title>
-            <description><![CDATA[WebGL/OpenGL本身没有摄像机(Camera)的概念，这篇文章模拟一个摄像机，实现通过键盘鼠标移动场景的功能。]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/webgl-camera.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/webgl-camera.html</guid>
-            <pubDate>Fri, 09 Jul 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[MTL图形文件格式解析]]></title>
@@ -881,25 +707,11 @@
             <pubDate>Thu, 08 Jul 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[OBJ图形文件格式解析]]></title>
-            <description><![CDATA[讲述OBJ(.obj)文件中一些比较基础的字段的含义。]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/obj-graphic-file-parse.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/obj-graphic-file-parse.html</guid>
-            <pubDate>Thu, 08 Jul 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
             <title><![CDATA[React组件何时重渲染]]></title>
             <description><![CDATA[译文：主要从原理上讲述React重渲染机制，说明virtual dom和native dom等相关概念，并描述了render函数何时执行。]]></description>
             <link>https://pengfeixc.com/blogs/react/when-does-react-render.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/react/when-does-react-render.html</guid>
             <pubDate>Fri, 02 Jul 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[坐标系统和glMatrix(GLM)]]></title>
-            <description><![CDATA[使用webgl/opengl如何去构建一个三维场景，使用了哪些坐标系统，坐标系之间是如何转换的。]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/coordinate-system-and-glm.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/coordinate-system-and-glm.html</guid>
-            <pubDate>Sun, 27 Jun 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[webgl实现3D俄罗斯方块]]></title>
@@ -916,25 +728,11 @@
             <pubDate>Mon, 21 Jun 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[高效率种子填充算法]]></title>
-            <description><![CDATA[高效率种子填充算法的实现]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/efficent-SeedFilling-algorithm.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/efficent-SeedFilling-algorithm.html</guid>
-            <pubDate>Mon, 21 Jun 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
             <title><![CDATA[MINICODE]]></title>
             <description><![CDATA[minicode平台介绍]]></description>
             <link>https://pengfeixc.com/blogs/minicode/minicode-introduction.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/minicode/minicode-introduction.html</guid>
             <pubDate>Sat, 19 Jun 2021 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[【webgl】绘制一个三角形]]></title>
-            <description><![CDATA[本篇文章讲解如何用webgl绘制一个三角形，描述了webgl绘制的完整过程和一些相关的基础概念。]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/webgl-draw-triangle.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/webgl-draw-triangle.html</guid>
-            <pubDate>Fri, 11 Jun 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[3D图形学中的矩阵变换（三）]]></title>
