@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Wed, 01 Jul 2026 06:50:43 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 01 Jul 2026 07:04:17 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Wed, 01 Jul 2026 06:50:28 GMT</pubDate>
+        <pubDate>Wed, 01 Jul 2026 07:04:02 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[ideavimrc]]></title>
@@ -56,24 +56,24 @@
             <pubDate>Mon, 16 Mar 2026 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[B-Spline 有效区间]]></title>
-            <description><![CDATA[b样条曲线定义的有效区间]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/Geom_BSplineCurve_interval.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/Geom_BSplineCurve_interval.html</guid>
-            <pubDate>Sat, 14 Mar 2026 00:00:00 GMT</pubDate>
-        </item>
-        <item>
-            <title><![CDATA[B样条曲线定义]]></title>
+            <title><![CDATA[B 样条曲线定义]]></title>
             <description><![CDATA[B样条曲线解决了什么问题，如何定义的]]></description>
             <link>https://pengfeixc.com/blogs/computer-graphics/b-spline-definition.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/b-spline-definition.html</guid>
             <pubDate>Sat, 14 Mar 2026 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[B样条曲线的性质]]></title>
+            <title><![CDATA[B 样条曲线的性质]]></title>
             <description><![CDATA[B 样条曲线的重要性质]]></description>
             <link>https://pengfeixc.com/blogs/computer-graphics/b-spline-properties.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/b-spline-properties.html</guid>
+            <pubDate>Sat, 14 Mar 2026 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[B 样条曲线的有效区间]]></title>
+            <description><![CDATA[b样条曲线定义的有效区间]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/Geom_BSplineCurve_interval.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/Geom_BSplineCurve_interval.html</guid>
             <pubDate>Sat, 14 Mar 2026 00:00:00 GMT</pubDate>
         </item>
         <item>
