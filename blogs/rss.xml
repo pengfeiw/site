@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Tue, 07 Jul 2026 06:22:36 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 07 Jul 2026 09:20:18 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Tue, 07 Jul 2026 06:22:14 GMT</pubDate>
+        <pubDate>Tue, 07 Jul 2026 09:19:55 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[NURBS 曲线]]></title>
@@ -907,6 +907,12 @@
             <link>https://pengfeixc.com/blogs/react/when-does-react-render.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/react/when-does-react-render.html</guid>
             <pubDate>Fri, 02 Jul 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[occt 的几何干扰 interference 和容差]]></title>
+            <link>https://pengfeixc.com/blogs/computer-graphics/undefined.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/undefined.html</guid>
+            <pubDate>Invalid Date</pubDate>
         </item>
         <item>
             <title><![CDATA[坐标系统和glMatrix(GLM)]]></title>
