@@ -1,0 +1,332 @@
+<html lang="zh_cn"><head><title>OCCT 架构、Modeling Data、BRep、拓扑结构 | WANG_PF.OS.BLOGS</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="occt,modeling data,brep,拓扑结构,topology"><meta name="description" content="occt 入门知识"><link rel="stylesheet" href="/blogs/assests/style/code_github.css"><link rel="stylesheet" href="/blogs/assests/style/markdown.css"><link rel="stylesheet" href="/blogs/assests/style/article.css"><link rel="stylesheet" href="/blogs/assests/style/navigator.css"><link rel="stylesheet" href="/blogs/assests/style/global.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous"><link rel="icon" href="/blogs/assests/images/icon.jpg"><meta property="author" content="王鹏飞"><script type="text/javascript">const THEME_KEY="site-theme",THEME_DARK="opencode-dark",THEME_LIGHT="opencode-light";function applyTheme(e){var t,e=e===THEME_LIGHT?THEME_LIGHT:THEME_DARK,o=(document.documentElement.setAttribute("data-theme",e),document.getElementById("theme-toggle"));o&&(t=e===THEME_DARK,o.setAttribute("aria-label",t?"Switch to light theme":"Switch to dark theme"),o.setAttribute("title",t?"Switch to light theme":"Switch to dark theme"),o.setAttribute("aria-pressed",String(!t)),o.setAttribute("data-current-theme",e))}applyTheme(localStorage.getItem(THEME_KEY)||THEME_DARK),window.addEventListener("DOMContentLoaded",function(){applyTheme(localStorage.getItem(THEME_KEY)||THEME_DARK);const t=document.getElementById("search-input");var e=document.getElementById("theme-toggle");t.addEventListener("keydown",function(e){"Enter"===e.key&&t.value&&window.open(`https://bing.com/search?q=${t.value}%20site%3A+pengfeixc.com`,"_blank")}),e&&e.addEventListener("click",function(){var e=(document.documentElement.getAttribute("data-theme")===THEME_LIGHT?THEME_LIGHT:THEME_DARK)===THEME_DARK?THEME_LIGHT:THEME_DARK;applyTheme(e),localStorage.setItem(THEME_KEY,e)});document.querySelectorAll(".markdown-body pre").forEach(function(t){var e=document.createElement("div");e.className="code-block-wrapper",t.parentNode.insertBefore(e,t),e.appendChild(t);const o=document.createElement("button");o.className="code-copy-btn",e.appendChild(o),o.addEventListener("click",async function(){var e=t.querySelector("code");if(e)try{await navigator.clipboard.writeText(e.textContent),o.classList.add("copied"),setTimeout(function(){o.classList.remove("copied")},2e3)}catch(e){console.error("Failed to copy:",e)}})});e=document.querySelectorAll(".markdown-body img");let o=0,n=[];e.forEach(function(e,t){e.classList.contains("emoji")||(e.style.cursor="zoom-in",e.addEventListener("click",function(){var e;e=t,o=e,u(),c.classList.add("active"),document.body.style.overflow="hidden"}),n.push(e))});const c=document.createElement("div");c.className="image-lightbox",c.innerHTML=`
+        <div class="lightbox-overlay"></div>
+        <div class="lightbox-container">
+            <img class="lightbox-image" src="" alt="">
+            <div class="lightbox-counter"></div>
+        </div>
+        <button class="lightbox-close" title="关闭 (ESC)"></button>
+        <button class="lightbox-prev" title="上一张 (←)"></button>
+        <button class="lightbox-next" title="下一张 (→)"></button>
+    `,document.body.appendChild(c);e=c.querySelector(".lightbox-overlay");const i=c.querySelector(".lightbox-image"),l=c.querySelector(".lightbox-counter");var a=c.querySelector(".lightbox-close");const r=c.querySelector(".lightbox-prev"),s=c.querySelector(".lightbox-next");function d(){c.classList.remove("active"),document.body.style.overflow=""}function u(){var e=n[o];i.src=e.src,i.alt=e.alt||"",1<n.length?(l.textContent=o+1+" / "+n.length,l.style.display="block"):l.style.display="none",r.style.display=1<n.length?"flex":"none",s.style.display=1<n.length?"flex":"none"}function E(){n.length<=1||(o=(o-1+n.length)%n.length,u())}function m(){n.length<=1||(o=(o+1)%n.length,u())}e.addEventListener("click",d),a.addEventListener("click",d),r.addEventListener("click",function(e){e.stopPropagation(),E()}),s.addEventListener("click",function(e){e.stopPropagation(),m()}),document.addEventListener("keydown",function(e){if(c.classList.contains("active"))switch(e.key){case"Escape":d();break;case"ArrowLeft":E();break;case"ArrowRight":m()}})})</script></head><body><div class="header"><div class="navigator"><div class="nav-sections"><div class="home"><a href="/blogs">Home</a></div><div class="email"><a href="mailto:pengfeixc@sina.com">Email</a></div><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div class="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="rss"><a href="/blogs/rss.xml">RSS</a></div><div class="theme-toggle-wrapper"><button class="theme-toggle-btn" id="theme-toggle" type="button" aria-label="Switch to light theme" aria-pressed="false"></button></div><div class="search-wrapper"><input id="search-input" type="search" placeholder="search"></div></div></div></div><div class="body"><div class="markdown"><div class="markdown-header"><span class="date">日期：2026年3月13日</span><span class="category"><a href="/blogs/computer-graphics">标签：Computer Graphics</a></span></div><div class="markdown-body"><h1 id="从架构、Modeling Data 到 B-Rep 拓扑结构">从架构、Modeling Data 到 B-Rep 拓扑结构 <a href="#从架构、Modeling Data 到 B-Rep 拓扑结构">#</a></h1><h2 id="1. 为什么学习 OCCT 要先理解 Modeling Data？">1. 为什么学习 OCCT 要先理解 Modeling Data？ <a href="#1. 为什么学习 OCCT 要先理解 Modeling Data？">#</a></h2><p>Open CASCADE Technology，简称 OCCT，是一个开源的几何建模内核。它不仅能创建点、线、面、体，还提供了拓扑结构、B-Rep 表达、几何算法、布尔运算、文件读写、可视化等一系列能力。</p><p>如果刚开始学习 OCCT，最容易犯的错误是直接去看建模算法，比如拉伸、倒角、布尔、STEP 读写。但这些算法背后都依赖同一套核心数据结构：<strong>Modeling Data</strong>。</p><p>Modeling Data 可以理解为 OCCT 的建模数据基础层。它回答几个最核心的问题：</p><ul><li>几何对象怎么表示？</li><li>拓扑对象怎么表示？</li><li>一个实体是如何由 Vertex、Edge、Wire、Face、Shell、Solid 组成的？</li><li>几何和拓扑如何绑定？</li><li>一个 Shape 为什么可以被共享？</li><li>同一个 Edge 为什么可以在不同 Face 中以不同方向使用？</li></ul><p>在继续学习 OCCT 的建模算法之前，先理解 Modeling Data，是非常必要的。</p><hr><h2 id="2. OCCT 的大体架构">2. OCCT 的大体架构 <a href="#2. OCCT 的大体架构">#</a></h2><p>从学习角度，可以先把 OCCT 分成几层：</p><pre><code class="hljs language-text">Foundation Classes
+    ↓
+Modeling Data
+    ↓
+Modeling Algorithms
+    ↓
+Data Exchange / Visualization / Application Framework
+</code></pre><h3 id="2.1 Foundation Classes">2.1 Foundation Classes <a href="#2.1 Foundation Classes">#</a></h3><p>这一层提供基础设施，比如：</p><pre><code class="hljs language-cpp"><span class="hljs-function">Standard_Transient
+<span class="hljs-title">Handle</span><span class="hljs-params">(...)</span>
+NCollection_*
+TCollection_*</span>
+</code></pre><p>其中最重要的是 <code>Handle</code> 和 <code>Standard_Transient</code>。</p><p>OCCT 中很多几何对象不是直接按值复制，而是通过 <code>Handle</code> 引用管理。可以把 <code>Handle(Geom_Curve)</code> 理解成类似 <code>std::shared_ptr&lt;Geom_Curve&gt;</code> 的引用计数智能指针。</p><p>例如：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">Handle</span>(Geom_Curve) curve;
+<span class="hljs-built_in">Handle</span>(Geom_Surface) surface;
+</code></pre><p>它们背后的对象通常继承自 <code>Standard_Transient</code>，由 <code>Handle</code> 负责生命周期管理。</p><hr><h3 id="2.2 Modeling Data">2.2 Modeling Data <a href="#2.2 Modeling Data">#</a></h3><p>这一层是 Day1 / Day2 的重点。</p><p>它主要包括：</p><pre><code class="hljs language-text">gp       基础几何数学对象
+Geom     3D 几何对象
+Geom2d   2D 几何对象
+TopAbs   拓扑枚举
+TopLoc   拓扑位置
+TopoDS   拓扑数据结构
+TopExp   拓扑遍历工具
+TopTools 拓扑容器工具
+BRep     geometry + topology 的结合
+</code></pre><p>Modeling Data 的核心思想是：</p><pre><code class="hljs language-text">Geometry 描述数学形状；
+Topology 描述这些形状如何被使用、连接、限制和组织。
+</code></pre><hr><h3 id="2.3 Modeling Algorithms">2.3 Modeling Algorithms <a href="#2.3 Modeling Algorithms">#</a></h3><p>这一层负责真正的建模操作，比如：</p><pre><code class="hljs language-text">创建基本体
+拉伸
+旋转
+布尔运算
+倒角
+圆角
+偏移
+曲线曲面构造
+</code></pre><p>常见包包括：</p><pre><code class="hljs language-cpp">BRepPrimAPI
+BRepBuilderAPI
+BRepAlgoAPI
+BRepFilletAPI
+BRepOffsetAPI
+</code></pre><p>例如：</p><pre><code class="hljs language-cpp">BRepPrimAPI_MakeBox
+BRepBuilderAPI_MakeEdge
+BRepBuilderAPI_MakeFace
+BRepAlgoAPI_Cut
+</code></pre><hr><h3 id="2.4 Data Exchange">2.4 Data Exchange <a href="#2.4 Data Exchange">#</a></h3><p>这一层负责文件交换，例如：</p><pre><code class="hljs language-text">STEP
+IGES
+BREP
+STL
+OBJ
+</code></pre><p>常见包包括：</p><pre><code class="hljs language-cpp">STEPControl
+IGESControl
+BRepTools
+StlAPI
+</code></pre><p>其中 <code>.brep</code> 是 OCCT 自己的 B-Rep 文件格式，适合保存 OCCT 内部的拓扑和几何结构。</p><hr><h2 id="3. OCCT 中的主要 Package">3. OCCT 中的主要 Package <a href="#3. OCCT 中的主要 Package">#</a></h2><h3 id="3.1%20%3Ccode%3Egp%3C/code%3E%EF%BC%9A%E5%9F%BA%E7%A1%80%E5%87%A0%E4%BD%95%E6%95%B0%E5%AD%A6%E5%AF%B9%E8%B1%A1">3.1 <code>gp</code>：基础几何数学对象 <a href="#3.1%20%3Ccode%3Egp%3C/code%3E%EF%BC%9A%E5%9F%BA%E7%A1%80%E5%87%A0%E4%BD%95%E6%95%B0%E5%AD%A6%E5%AF%B9%E8%B1%A1">#</a></h3><p><code>gp</code> 可以理解为 geometry primitives，也就是基础几何对象。</p><p>常见类型有：</p><pre><code class="hljs language-cpp">gp_Pnt      <span class="hljs-comment">// 3D 点</span>
+gp_Pnt2d    <span class="hljs-comment">// 2D 点</span>
+gp_Vec      <span class="hljs-comment">// 3D 向量</span>
+gp_Dir      <span class="hljs-comment">// 3D 方向</span>
+gp_Lin      <span class="hljs-comment">// 直线</span>
+gp_Circ     <span class="hljs-comment">// 圆</span>
+gp_Ax1      <span class="hljs-comment">// 轴</span>
+gp_Ax2      <span class="hljs-comment">// 坐标系</span>
+gp_Trsf     <span class="hljs-comment">// 变换</span>
+</code></pre><p><code>gp</code> 对象通常是轻量值对象。</p><p>例如：</p><pre><code class="hljs language-cpp"><span class="hljs-function">gp_Pnt <span class="hljs-title">p</span><span class="hljs-params">(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>)</span></span>;
+<span class="hljs-function">gp_Vec <span class="hljs-title">v</span><span class="hljs-params">(<span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>)</span></span>;
+<span class="hljs-function">gp_Dir <span class="hljs-title">d</span><span class="hljs-params">(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>)</span></span>;
+</code></pre><p>它们通常直接按值创建、复制和传递。</p><hr><h3 id="3.2%20%3Ccode%3EGeom%3C/code%3E%20/%20%3Ccode%3EGeom2d%3C/code%3E%EF%BC%9A%E5%AE%8C%E6%95%B4%E5%87%A0%E4%BD%95%E5%AF%B9%E8%B1%A1">3.2 <code>Geom</code> / <code>Geom2d</code>：完整几何对象 <a href="#3.2%20%3Ccode%3EGeom%3C/code%3E%20/%20%3Ccode%3EGeom2d%3C/code%3E%EF%BC%9A%E5%AE%8C%E6%95%B4%E5%87%A0%E4%BD%95%E5%AF%B9%E8%B1%A1">#</a></h3><p><code>Geom</code> 表示 3D 几何对象，<code>Geom2d</code> 表示 2D 几何对象。</p><p>例如：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">Handle</span>(Geom_Curve)
+<span class="hljs-built_in">Handle</span>(Geom_Line)
+<span class="hljs-built_in">Handle</span>(Geom_Circle)
+<span class="hljs-built_in">Handle</span>(Geom_BSplineCurve)
+
+<span class="hljs-built_in">Handle</span>(Geom_Surface)
+<span class="hljs-built_in">Handle</span>(Geom_Plane)
+<span class="hljs-built_in">Handle</span>(Geom_CylindricalSurface)
+<span class="hljs-built_in">Handle</span>(Geom_BSplineSurface)
+</code></pre><p>和 <code>gp</code> 不同，<code>Geom</code> / <code>Geom2d</code> 对象通常通过 <code>Handle</code> 管理。</p><p>可以这样理解：</p><pre><code class="hljs language-text">gp_xxx       小型数学对象，通常按值使用
+Geom_xxx     完整几何对象，通常用 Handle 引用
+TopoDS_xxx   拓扑对象，通常按值传递，但内部共享 TShape
+</code></pre><hr><h3 id="3.3%20%3Ccode%3ETopAbs%3C/code%3E%EF%BC%9A%E6%8B%93%E6%89%91%E6%8A%BD%E8%B1%A1%E6%9E%9A%E4%B8%BE">3.3 <code>TopAbs</code>：拓扑抽象枚举 <a href="#3.3%20%3Ccode%3ETopAbs%3C/code%3E%EF%BC%9A%E6%8B%93%E6%89%91%E6%8A%BD%E8%B1%A1%E6%9E%9A%E4%B8%BE">#</a></h3><p><code>TopAbs</code> 中的 <code>Abs</code> 可以理解为 Abstract。</p><p>它提供拓扑相关的枚举，比如：</p><pre><code class="hljs language-cpp">TopAbs_ShapeEnum
+TopAbs_Orientation
+TopAbs_State
+</code></pre><p>其中最常见的是 <code>TopAbs_ShapeEnum</code>：</p><pre><code class="hljs language-cpp">TopAbs_COMPOUND
+TopAbs_COMPSOLID
+TopAbs_SOLID
+TopAbs_SHELL
+TopAbs_FACE
+TopAbs_WIRE
+TopAbs_EDGE
+TopAbs_VERTEX
+TopAbs_SHAPE
+</code></pre><p>它们表示拓扑对象的类型。</p><p>例如：</p><pre><code class="hljs language-cpp"><span class="hljs-keyword">if</span> (shape.<span class="hljs-built_in">ShapeType</span>() == TopAbs_FACE)
+{
+    std::cout &lt;&lt; <span class="hljs-string">"This is a face"</span> &lt;&lt; std::endl;
+}
+</code></pre><p><code>TopAbs</code> 不是具体拓扑对象，而是拓扑系统里的“概念词典”。</p><hr><h3 id="3.4%20%3Ccode%3ETopLoc%3C/code%3E%EF%BC%9A%E6%8B%93%E6%89%91%E4%BD%8D%E7%BD%AE">3.4 <code>TopLoc</code>：拓扑位置 <a href="#3.4%20%3Ccode%3ETopLoc%3C/code%3E%EF%BC%9A%E6%8B%93%E6%89%91%E4%BD%8D%E7%BD%AE">#</a></h3><p><code>TopLoc</code> 用来描述 Shape 的位置变换。</p><p>最重要的是：</p><pre><code class="hljs language-cpp">TopLoc_Location
+TopLoc_Datum3D
+</code></pre><p><code>TopLoc_Datum3D</code> 可以理解为一个基础 3D 位置基准，内部对应一个基础变换。</p><p><code>TopLoc_Location</code> 则是多个基础变换组合出来的复合位置。</p><p>一个 <code>TopoDS_Shape</code> 不一定真的修改自己的几何坐标。它可以通过 <code>TopLoc_Location</code> 表示：</p><pre><code class="hljs language-text">这个 shape 被放到了某个位置。
+</code></pre><p>这在装配体中非常重要。</p><p>比如同一个螺丝模型可以被放到多个位置：</p><pre><code class="hljs language-text">same screw TShape
+    + Location A
+    + Location B
+    + Location C
+</code></pre><p>这样不需要复制多份几何和拓扑数据。</p><hr><h3 id="3.5%20%3Ccode%3ETopoDS%3C/code%3E%EF%BC%9A%E6%8B%93%E6%89%91%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">3.5 <code>TopoDS</code>：拓扑数据结构 <a href="#3.5%20%3Ccode%3ETopoDS%3C/code%3E%EF%BC%9A%E6%8B%93%E6%89%91%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">#</a></h3><p><code>TopoDS</code> 可以理解为 Topological Data Structure。</p><p>它是 OCCT 拓扑系统的核心。</p><p>常见类包括：</p><pre><code class="hljs language-cpp">TopoDS_Shape
+TopoDS_Vertex
+TopoDS_Edge
+TopoDS_Wire
+TopoDS_Face
+TopoDS_Shell
+TopoDS_Solid
+TopoDS_Compound
+</code></pre><p>其中 <code>TopoDS_Shape</code> 是所有拓扑对象的通用基类。</p><p>可以把 <code>TopoDS_Shape</code> 简化理解为：</p><pre><code class="hljs language-cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">TopoDS_Shape</span>
+{
+    <span class="hljs-built_in">Handle</span>(TopoDS_TShape) myTShape;
+    TopLoc_Location       myLocation;
+    TopAbs_Orientation    myOrientation;
+};
+</code></pre><p>也就是说：</p><pre><code class="hljs language-text">TopoDS_Shape = 指向底层 TShape 的引用 + Location + Orientation
+</code></pre><p>这也是 OCCT 拓扑结构最关键的设计之一。</p><hr><h2 id="4. Geometry 和 Topology 的区别">4. Geometry 和 Topology 的区别 <a href="#4. Geometry 和 Topology 的区别">#</a></h2><p>OCCT 中一定要区分 Geometry 和 Topology。</p><h3 id="4.1 Geometry 描述数学对象">4.1 Geometry 描述数学对象 <a href="#4.1 Geometry 描述数学对象">#</a></h3><p>例如：</p><pre><code class="hljs language-text">一条无限直线
+一个圆
+一个无限平面
+一个圆柱面
+一个 B-Spline 曲面
+</code></pre><p>这些属于几何。</p><p>例如：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">Handle</span>(Geom_Curve) curve;
+<span class="hljs-built_in">Handle</span>(Geom_Surface) surface;
+</code></pre><p>几何对象回答的问题是：</p><pre><code class="hljs language-text">这个东西在数学上是什么？
+它的参数方程是什么？
+它的坐标如何计算？
+</code></pre><hr><h3 id="4.2 Topology 描述几何对象如何被使用">4.2 Topology 描述几何对象如何被使用 <a href="#4.2 Topology 描述几何对象如何被使用">#</a></h3><p>拓扑对象回答的问题是：</p><pre><code class="hljs language-text">我用了这条曲线的哪一段？
+我用了这个曲面的哪一块？
+这些 Edge 如何组成 Wire？
+这些 Wire 如何限制 Face？
+这些 Face 如何组成 Shell？
+这些 Shell 如何包围 Solid？
+</code></pre><p>例如：</p><pre><code class="hljs language-text">Geom_Line    = 一条无限直线
+TopoDS_Edge  = 这条直线上的一段
+</code></pre><p>再比如：</p><pre><code class="hljs language-text">Geom_Plane   = 一个无限平面
+TopoDS_Face  = 这个平面上被 Wire 限制出来的一块区域
+</code></pre><p>所以可以记成：</p><pre><code class="hljs language-text">Geometry 负责“数学上是什么”；
+Topology 负责“模型里怎么用它”。
+</code></pre><hr><h2 id="5. OCCT 的拓扑层级">5. OCCT 的拓扑层级 <a href="#5. OCCT 的拓扑层级">#</a></h2><p>OCCT 中常见的拓扑层级是：</p><pre><code class="hljs language-text">Compound
+  CompSolid
+    Solid
+      Shell
+        Face
+          Wire
+            Edge
+              Vertex
+</code></pre><p>更常用的理解是：</p><pre><code class="hljs language-text">Solid
+└── Shell
+    └── Face
+        └── Wire
+            └── Edge
+                └── Vertex
+</code></pre><h3 id="5.1 Vertex">5.1 Vertex <a href="#5.1 Vertex">#</a></h3><p><code>Vertex</code> 是零维拓扑对象，对应几何中的点。</p><pre><code class="hljs language-text">Vertex = 拓扑点
+</code></pre><p>它可以限制一条 Edge 的端点。</p><hr><h3 id="5.2 Edge">5.2 Edge <a href="#5.2 Edge">#</a></h3><p><code>Edge</code> 是一维拓扑对象，对应几何中的曲线的一段。</p><pre><code class="hljs language-text">Edge = 曲线的一段 + 端点 + 参数范围 + 方向 + 容差
+</code></pre><p>注意：</p><pre><code class="hljs language-text">Edge 不是 Geom_Curve；
+Edge 是对 Geom_Curve 的拓扑使用。
+</code></pre><hr><h3 id="5.3 Wire">5.3 Wire <a href="#5.3 Wire">#</a></h3><p><code>Wire</code> 是一组连接起来的 Edge。</p><pre><code class="hljs language-text">Wire = connected edges
+</code></pre><p>Wire 可以是开放的，也可以是闭合的。</p><p>Face 的边界通常由一个或多个 Wire 组成：</p><pre><code class="hljs language-text">outer wire
+inner wire for holes
+</code></pre><hr><h3 id="5.4 Face">5.4 Face <a href="#5.4 Face">#</a></h3><p><code>Face</code> 是二维拓扑对象，对应一个曲面上的一块区域。</p><pre><code class="hljs language-text">Face = Surface 的一块被 Wire 限制出来的区域
+</code></pre><p>例如，一个平面 Face 可能只是无限平面上的一个矩形区域。</p><p>一个带孔 Face 可能有：</p><pre><code class="hljs language-text">一个外边界 Wire
+一个或多个内孔 Wire
+</code></pre><hr><h3 id="5.5 Shell">5.5 Shell <a href="#5.5 Shell">#</a></h3><p><code>Shell</code> 是一组连接起来的 Face。</p><p>它表示一个壳，也就是一些面组成的边界。</p><pre><code class="hljs language-text">Shell = 一组 Face 组成的表皮
+</code></pre><p>Shell 可以是开放的，也可以是闭合的。</p><p>例如，没有盖子的盒子就是一个 open shell，但它不是普通意义上的 solid。</p><hr><h3 id="5.6 Solid">5.6 Solid <a href="#5.6 Solid">#</a></h3><p><code>Solid</code> 表示三维空间中的一个区域。</p><pre><code class="hljs language-text">Solid = 被 Shell 限制出来的三维区域
+</code></pre><p>Shell 和 Solid 很容易混淆。</p><p>可以这样记：</p><pre><code class="hljs language-text">Shell = 边界壳
+Solid = 壳包围出的体积区域
+</code></pre><p>如果只是显示，Shell 看起来确实像 Solid；但如果要做布尔运算、体积计算、inside/outside 判断，就必须有 Solid 的语义。</p><hr><h2 id="6. Orientation 的作用">6. Orientation 的作用 <a href="#6. Orientation 的作用">#</a></h2><p><code>TopAbs_Orientation</code> 用来表示一个拓扑对象作为边界时的使用方向。</p><p>常见值有：</p><pre><code class="hljs language-cpp">TopAbs_FORWARD
+TopAbs_REVERSED
+TopAbs_INTERNAL
+TopAbs_EXTERNAL
+</code></pre><p>其中最常用的是：</p><pre><code class="hljs language-text">FORWARD
+REVERSED
+</code></pre><p>Orientation 的核心作用是：</p><pre><code class="hljs language-text">说明这个边界对象的哪一侧是 interior。
+</code></pre><p>OCCT 先定义一个 default region，然后 orientation 决定真正的 interior 和 default region 的关系：</p><pre><code class="hljs language-text">FORWARD   interior = default region
+REVERSED  interior = default region 的相反侧
+INTERNAL  两侧都是 interior
+EXTERNAL  两侧都不是 interior
+</code></pre><h3 id="6.1 Edge 在 Wire / Face 中的方向">6.1 Edge 在 Wire / Face 中的方向 <a href="#6.1 Edge 在 Wire / Face 中的方向">#</a></h3><p>同一条 Edge 在不同 Face 中可能方向不同。</p><p>例如两个相邻 Face 共享一条 Edge：</p><pre><code class="hljs language-text">Face A 使用 Edge：FORWARD
+Face B 使用 Edge：REVERSED
+</code></pre><p>底层 Edge 可以是同一个，但它在不同上下文中的 Orientation 不同。</p><p>这就是为什么 Orientation 存在 <code>TopoDS_Shape</code> wrapper 上，而不是存在底层 <code>TopoDS_TShape</code> 中。</p><hr><h2 id="7. Location 的作用">7. Location 的作用 <a href="#7. Location 的作用">#</a></h2><p><code>TopLoc_Location</code> 表示一个 Shape 的位置变换。</p><p>一个 Shape 可以共享同一个底层 TShape，但有不同的位置：</p><pre><code class="hljs language-text">same TShape
+    + Location A
+    + Location B
+    + Location C
+</code></pre><p>这在装配体中非常常见。</p><p>例如多个相同螺丝放在不同位置，如果每个都复制完整几何，会非常浪费。更好的方式是：</p><pre><code class="hljs language-text">共享同一个底层拓扑和几何
+每个实例带一个不同的 Location
+</code></pre><p>所以：</p><pre><code class="hljs language-text">Location 解决“同一个 shape 放在哪里”的问题；
+Orientation 解决“同一个 shape 怎么被使用”的问题。
+</code></pre><hr><h2 id="8. TopoDS_Shape 与 TopoDS_TShape">8. TopoDS_Shape 与 TopoDS_TShape <a href="#8. TopoDS_Shape 与 TopoDS_TShape">#</a></h2><p>这是 Day2 最重要的知识点之一。</p><p><code>TopoDS_Shape</code> 和 <code>TopoDS_TShape</code> 的关系可以这样理解：</p><pre><code class="hljs language-text">TopoDS_TShape = 真实拓扑数据本体
+TopoDS_Shape  = 指向 TShape 的轻量引用，并带有 Location 和 Orientation
+</code></pre><p>也就是说：</p><pre><code class="hljs language-cpp">TopoDS_Edge e1 = edge;
+TopoDS_Edge e2 = edge;
+</code></pre><p>这里并不会深拷贝底层 Edge 数据。</p><p>它只是复制了：</p><pre><code class="hljs language-text">TShape 引用
+Location
+Orientation
+</code></pre><p>所以可以说：</p><pre><code class="hljs language-text">TopoDS_Shape 按值传递；
+TopoDS_TShape 通过引用共享。
+</code></pre><p>这和 <code>Geom_Curve</code> 这种几何对象通常通过 <code>Handle</code> 引用传递并不矛盾。</p><p>更准确地说：</p><pre><code class="hljs language-text">Geometry 对象本身常用 Handle 管理；
+Topology 的外层 Shape 是值对象；
+Topology 的底层 TShape 也是共享引用。
+</code></pre><hr><h2 id="9. 为什么需要 TopoDS_TShape 这一层？">9. 为什么需要 TopoDS_TShape 这一层？ <a href="#9. 为什么需要 TopoDS_TShape 这一层？">#</a></h2><p>如果没有 <code>TopoDS_TShape</code>，<code>TopoDS_Edge</code> 就必须直接保存全部底层数据。</p><p>这样会有几个问题：</p><h3 id="9.1 难以共享">9.1 难以共享 <a href="#9.1 难以共享">#</a></h3><p>两个 Face 共享同一条 Edge 时，如果没有共享层，可能就要复制两份 Edge。</p><p>这样它们在拓扑意义上就不是同一条边了。</p><h3 id="9.2 难以表达不同 Orientation">9.2 难以表达不同 Orientation <a href="#9.2 难以表达不同 Orientation">#</a></h3><p>同一条 Edge 在 Face A 中可能是 <code>FORWARD</code>，在 Face B 中可能是 <code>REVERSED</code>。</p><p>如果 Orientation 存在底层 Edge 中，就只能有一个方向。</p><p>所以 OCCT 把 Orientation 放在外层 <code>TopoDS_Shape</code> 上：</p><pre><code class="hljs language-text">same TShape
+    + TopoDS_Edge FORWARD
+    + TopoDS_Edge REVERSED
+</code></pre><h3 id="9.3 难以表达不同 Location">9.3 难以表达不同 Location <a href="#9.3 难以表达不同 Location">#</a></h3><p>装配体中同一个零件可能出现多次，每次位置不同。</p><p>如果没有 <code>Location</code> wrapper，就需要复制多份底层数据。</p><h3 id="9.4 不利于局部修改和版本共享">9.4 不利于局部修改和版本共享 <a href="#9.4 不利于局部修改和版本共享">#</a></h3><p>当一个 solid 修改后，很多未变化的 Face / Edge 可以继续共享旧的 TShape，只有变化部分创建新的 TShape。</p><p>这让 OCCT 的拓扑结构更像一张可共享的图，而不是一棵必须完整复制的树。</p><hr><h2 id="10. TopExp_Explorer：拓扑遍历工具">10. TopExp_Explorer：拓扑遍历工具 <a href="#10. TopExp_Explorer：拓扑遍历工具">#</a></h2><p><code>TopExp_Explorer</code> 是 Day2 最常用的工具。</p><p>它可以从一个 <code>TopoDS_Shape</code> 中递归查找指定类型的 sub-shape。</p><p>例如查找所有 Face：</p><pre><code class="hljs language-cpp"><span class="hljs-keyword">for</span> (TopExp_Explorer <span class="hljs-built_in">exp</span>(shape, TopAbs_FACE); exp.<span class="hljs-built_in">More</span>(); exp.<span class="hljs-built_in">Next</span>())
+{
+    TopoDS_Face face = TopoDS::<span class="hljs-built_in">Face</span>(exp.<span class="hljs-built_in">Current</span>());
+}
+</code></pre><p>查找所有 Edge：</p><pre><code class="hljs language-cpp"><span class="hljs-keyword">for</span> (TopExp_Explorer <span class="hljs-built_in">exp</span>(shape, TopAbs_EDGE); exp.<span class="hljs-built_in">More</span>(); exp.<span class="hljs-built_in">Next</span>())
+{
+    TopoDS_Edge edge = TopoDS::<span class="hljs-built_in">Edge</span>(exp.<span class="hljs-built_in">Current</span>());
+}
+</code></pre><p>注意：</p><pre><code class="hljs language-text">TopExp_Explorer 不是只遍历下一层；
+它会递归查找指定类型。
+</code></pre><p>例如从 <code>Solid</code> 查 <code>Vertex</code>，它会沿着：</p><pre><code class="hljs language-text">Solid -&gt; Shell -&gt; Face -&gt; Wire -&gt; Edge -&gt; Vertex
+</code></pre><p>递归找到所有 Vertex。</p><p>如果只想遍历直接子节点，可以使用：</p><pre><code class="hljs language-cpp">TopoDS_Iterator
+</code></pre><p>区别是：</p><pre><code class="hljs language-text">TopExp_Explorer = 递归查找某种类型
+TopoDS_Iterator = 只遍历直接子节点
+</code></pre><hr><h2 id="11. TopTools：拓扑容器与去重">11. TopTools：拓扑容器与去重 <a href="#11. TopTools：拓扑容器与去重">#</a></h2><p>用 <code>TopExp_Explorer</code> 遍历 Edge 或 Vertex 时，常常会遇到重复。</p><p>例如一个 box 直觉上只有 8 个 Vertex，但直接遍历 Vertex 时可能会得到更多，因为同一个 Vertex 可能被多个 Edge 引用。</p><p>这时可以用：</p><pre><code class="hljs language-cpp">TopTools_MapOfShape
+</code></pre><p>它可以保存一组 Shape，并自动去重。</p><p>示例：</p><pre><code class="hljs language-cpp">TopTools_MapOfShape map;
+
+<span class="hljs-keyword">for</span> (TopExp_Explorer <span class="hljs-built_in">exp</span>(shape, TopAbs_VERTEX); exp.<span class="hljs-built_in">More</span>(); exp.<span class="hljs-built_in">Next</span>())
+{
+    map.<span class="hljs-built_in">Add</span>(exp.<span class="hljs-built_in">Current</span>());
+}
+
+std::cout &lt;&lt; <span class="hljs-string">"Unique vertices: "</span> &lt;&lt; map.<span class="hljs-built_in">Extent</span>() &lt;&lt; std::endl;
+</code></pre><p>常见容器还有：</p><pre><code class="hljs language-cpp">TopTools_MapOfShape
+TopTools_IndexedMapOfShape
+TopTools_DataMapOfShapeShape
+TopTools_IndexedDataMapOfShapeShape
+</code></pre><p>可以简单理解为 OCCT 为 <code>TopoDS_Shape</code> 准备的专用 set / map。</p><hr><h2 id="12. OCCT 的 B-Rep 是什么？">12. OCCT 的 B-Rep 是什么？ <a href="#12. OCCT 的 B-Rep 是什么？">#</a></h2><p>B-Rep 是 Boundary Representation，也就是边界表示。</p><p>它的核心思想是：</p><pre><code class="hljs language-text">一个实体不是直接用体素表示；
+而是用边界来表示。
+</code></pre><p>例如一个 box：</p><pre><code class="hljs language-text">Solid
+  Shell
+    6 个 Face
+      每个 Face 有 Wire
+        Wire 由 Edge 组成
+          Edge 由 Vertex 限定
+</code></pre><p>B-Rep 中同时包含：</p><pre><code class="hljs language-text">Geometry
+Topology
+</code></pre><p>Geometry 描述数学形状：</p><pre><code class="hljs language-text">点、曲线、曲面
+</code></pre><p>Topology 描述连接关系和边界关系：</p><pre><code class="hljs language-text">Vertex、Edge、Wire、Face、Shell、Solid
+</code></pre><p>所以 OCCT 的 B-Rep 可以理解成：</p><pre><code class="hljs language-text">B-Rep = Geometry + Topology + Location + Orientation + Tolerance
+</code></pre><p>其中：</p><pre><code class="hljs language-text">Geometry 负责精确数学描述
+Topology 负责组织结构和边界关系
+Location 负责位置实例化
+Orientation 负责边界使用方向
+Tolerance 负责处理 CAD 中不可避免的数值误差
+</code></pre><hr><h2 id="13. OCCT B-Rep 和其他几何内核 B-Rep 的差别">13. OCCT B-Rep 和其他几何内核 B-Rep 的差别 <a href="#13. OCCT B-Rep 和其他几何内核 B-Rep 的差别">#</a></h2><p>市面上的几何内核很多，比如：</p><pre><code class="hljs language-text">Parasolid
+ACIS
+CGAL
+OpenNURBS
+OCCT
+</code></pre><p>它们都可能支持某种形式的 B-Rep，但侧重点不同。</p><h3 id="13.1 OCCT 的特点">13.1 OCCT 的特点 <a href="#13.1 OCCT 的特点">#</a></h3><p>OCCT 的特点是：</p><pre><code class="hljs language-text">开源
+C++ 实现
+B-Rep 数据结构相对透明
+TopoDS / BRep / Geom 等层次比较清楚
+可以直接访问底层拓扑结构
+适合学习、研究、自研 CAD / CAM / CAE 工具
+</code></pre><p>你可以直接看到并操作：</p><pre><code class="hljs language-cpp">TopoDS_Shape
+TopoDS_Face
+TopoDS_Edge
+TopExp_Explorer
+TopTools_MapOfShape
+BRep_Tool::Curve
+BRep_Tool::Surface
+</code></pre><p>这对学习几何内核非常有帮助。</p><hr><h3 id="13.2 Parasolid / ACIS 的特点">13.2 Parasolid / ACIS 的特点 <a href="#13.2 Parasolid / ACIS 的特点">#</a></h3><p>Parasolid 和 ACIS 是商业几何内核，通常用于成熟 CAD / CAM / CAE 软件中。</p><p>它们的优势通常在于：</p><pre><code class="hljs language-text">成熟度高
+鲁棒性强
+商业支持完善
+大量工业软件验证
+建模算法能力强
+</code></pre><p>但它们的内部实现通常不是公开的。</p><p>对于学习者来说，你很难像研究 OCCT 一样直接阅读其内部拓扑数据结构。</p><hr><h3 id="13.3 Mesh / Polyhedral B-Rep 与精确 B-Rep">13.3 Mesh / Polyhedral B-Rep 与精确 B-Rep <a href="#13.3 Mesh / Polyhedral B-Rep 与精确 B-Rep">#</a></h3><p>OCCT 的 Face 可以有精确曲面，也可以有用于显示或近似的三角网格。</p><p>例如：</p><pre><code class="hljs language-text">精确几何：
+Geom_Surface
+
+显示网格：
+Poly_Triangulation
+</code></pre><p>如果一个模型只有三角形，没有底层精确曲面，就更接近 polyhedral model。</p><p>这类模型类似 STL：</p><pre><code class="hljs language-text">只有三角面片
+没有精确圆柱面、球面、B-Spline 曲面
+</code></pre><p>而真正的 CAD B-Rep 通常需要精确曲线和曲面。</p><p>例如一个圆柱：</p><pre><code class="hljs language-text">精确 B-Rep：
+一个圆柱面 + 两个平面
+
+Mesh：
+很多三角形拼出来，看起来像圆柱
+</code></pre><p>从显示角度，两者可能看起来差不多；但从建模和加工角度，差别非常大。</p><hr><h2 id="14. Day1 / Day2 的最小实践目标">14. Day1 / Day2 的最小实践目标 <a href="#14. Day1 / Day2 的最小实践目标">#</a></h2><p>学习完这两天，最小目标是写一个拓扑统计工具：</p><pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">dumpShape</span><span class="hljs-params">(<span class="hljs-type">const</span> TopoDS_Shape&amp; shape)</span>
+</span>{
+    <span class="hljs-built_in">Count</span>(shape, TopAbs_SOLID);
+    <span class="hljs-built_in">Count</span>(shape, TopAbs_SHELL);
+    <span class="hljs-built_in">Count</span>(shape, TopAbs_FACE);
+    <span class="hljs-built_in">Count</span>(shape, TopAbs_WIRE);
+    <span class="hljs-built_in">Count</span>(shape, TopAbs_EDGE);
+    <span class="hljs-built_in">Count</span>(shape, TopAbs_VERTEX);
+}
+</code></pre><p>其中：</p><pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">Count</span><span class="hljs-params">(<span class="hljs-type">const</span> TopoDS_Shape&amp; shape, TopAbs_ShapeEnum type)</span>
+</span>{
+    <span class="hljs-type">int</span> count = <span class="hljs-number">0</span>;
+
+    <span class="hljs-keyword">for</span> (TopExp_Explorer <span class="hljs-built_in">exp</span>(shape, type); exp.<span class="hljs-built_in">More</span>(); exp.<span class="hljs-built_in">Next</span>())
+    {
+        ++count;
+    }
+
+    <span class="hljs-keyword">return</span> count;
+}
+</code></pre><p>如果想去重，可以用：</p><pre><code class="hljs language-cpp">TopTools_MapOfShape
+</code></pre><p>例如：</p><pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">CountUnique</span><span class="hljs-params">(<span class="hljs-type">const</span> TopoDS_Shape&amp; shape, TopAbs_ShapeEnum type)</span>
+</span>{
+    TopTools_MapOfShape map;
+
+    <span class="hljs-keyword">for</span> (TopExp_Explorer <span class="hljs-built_in">exp</span>(shape, type); exp.<span class="hljs-built_in">More</span>(); exp.<span class="hljs-built_in">Next</span>())
+    {
+        map.<span class="hljs-built_in">Add</span>(exp.<span class="hljs-built_in">Current</span>());
+    }
+
+    <span class="hljs-keyword">return</span> map.<span class="hljs-built_in">Extent</span>();
+}
+</code></pre><hr><h2 id="15. 最终总结">15. 最终总结 <a href="#15. 最终总结">#</a></h2><p>Day1 / Day2 的核心不是学会多少 API，而是建立 OCCT 的基本心智模型：</p><pre><code class="hljs language-text">gp 是基础数学几何对象；
+Geom / Geom2d 是完整几何对象，通常用 Handle 管理；
+TopoDS 是拓扑对象体系；
+TopAbs 定义拓扑枚举；
+TopLoc 定义位置；
+TopExp 用来遍历拓扑；
+TopTools 用来保存和去重拓扑对象；
+BRep 是几何与拓扑的结合。
+</code></pre><p>最关键的一句话是：</p><pre><code class="hljs language-text">Geometry 描述对象的数学形状；
+Topology 描述这些几何对象如何被连接、限制、共享和使用。
+</code></pre><p>再进一步：</p><pre><code class="hljs language-text">TopoDS_TShape 是真实拓扑数据；
+TopoDS_Shape 是带 Location 和 Orientation 的轻量引用。
+</code></pre><p>理解了这几个概念，后面学习建模算法、布尔运算、STEP 读写、曲面建模时，就不会只是机械调用 API，而是能理解 OCCT 背后的数据结构设计。</p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/computer-graphics/curve-join-continuous">上一篇：曲线拼接的连续性</a></span><span class="next-article"><a href="/blogs/computer-graphics/Geom_BSplineCurve_order">下一篇：occt bspline 的 order</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#从架构、Modeling Data 到 B-Rep 拓扑结构" style="padding-left:15px">从架构、Modeling Data 到 B-Rep 拓扑结构</a></div><div class="toc-item"><a class="toc-item-link" href="#1. 为什么学习 OCCT 要先理解 Modeling Data？" style="padding-left:30px">1. 为什么学习 OCCT 要先理解 Modeling Data？</a></div><div class="toc-item"><a class="toc-item-link" href="#2. OCCT 的大体架构" style="padding-left:30px">2. OCCT 的大体架构</a></div><div class="toc-item"><a class="toc-item-link" href="#2.1 Foundation Classes" style="padding-left:45px">2.1 Foundation Classes</a></div><div class="toc-item"><a class="toc-item-link" href="#2.2 Modeling Data" style="padding-left:45px">2.2 Modeling Data</a></div><div class="toc-item"><a class="toc-item-link" href="#2.3 Modeling Algorithms" style="padding-left:45px">2.3 Modeling Algorithms</a></div><div class="toc-item"><a class="toc-item-link" href="#2.4 Data Exchange" style="padding-left:45px">2.4 Data Exchange</a></div><div class="toc-item"><a class="toc-item-link" href="#3. OCCT 中的主要 Package" style="padding-left:30px">3. OCCT 中的主要 Package</a></div><div class="toc-item"><a class="toc-item-link" href="#3.1%20%3Ccode%3Egp%3C/code%3E%EF%BC%9A%E5%9F%BA%E7%A1%80%E5%87%A0%E4%BD%95%E6%95%B0%E5%AD%A6%E5%AF%B9%E8%B1%A1" style="padding-left:45px">3.1 gp：基础几何数学对象</a></div><div class="toc-item"><a class="toc-item-link" href="#3.2%20%3Ccode%3EGeom%3C/code%3E%20/%20%3Ccode%3EGeom2d%3C/code%3E%EF%BC%9A%E5%AE%8C%E6%95%B4%E5%87%A0%E4%BD%95%E5%AF%B9%E8%B1%A1" style="padding-left:45px">3.2 Geom / Geom2d：完整几何对象</a></div><div class="toc-item"><a class="toc-item-link" href="#3.3%20%3Ccode%3ETopAbs%3C/code%3E%EF%BC%9A%E6%8B%93%E6%89%91%E6%8A%BD%E8%B1%A1%E6%9E%9A%E4%B8%BE" style="padding-left:45px">3.3 TopAbs：拓扑抽象枚举</a></div><div class="toc-item"><a class="toc-item-link" href="#3.4%20%3Ccode%3ETopLoc%3C/code%3E%EF%BC%9A%E6%8B%93%E6%89%91%E4%BD%8D%E7%BD%AE" style="padding-left:45px">3.4 TopLoc：拓扑位置</a></div><div class="toc-item"><a class="toc-item-link" href="#3.5%20%3Ccode%3ETopoDS%3C/code%3E%EF%BC%9A%E6%8B%93%E6%89%91%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84" style="padding-left:45px">3.5 TopoDS：拓扑数据结构</a></div><div class="toc-item"><a class="toc-item-link" href="#4. Geometry 和 Topology 的区别" style="padding-left:30px">4. Geometry 和 Topology 的区别</a></div><div class="toc-item"><a class="toc-item-link" href="#4.1 Geometry 描述数学对象" style="padding-left:45px">4.1 Geometry 描述数学对象</a></div><div class="toc-item"><a class="toc-item-link" href="#4.2 Topology 描述几何对象如何被使用" style="padding-left:45px">4.2 Topology 描述几何对象如何被使用</a></div><div class="toc-item"><a class="toc-item-link" href="#5. OCCT 的拓扑层级" style="padding-left:30px">5. OCCT 的拓扑层级</a></div><div class="toc-item"><a class="toc-item-link" href="#5.1 Vertex" style="padding-left:45px">5.1 Vertex</a></div><div class="toc-item"><a class="toc-item-link" href="#5.2 Edge" style="padding-left:45px">5.2 Edge</a></div><div class="toc-item"><a class="toc-item-link" href="#5.3 Wire" style="padding-left:45px">5.3 Wire</a></div><div class="toc-item"><a class="toc-item-link" href="#5.4 Face" style="padding-left:45px">5.4 Face</a></div><div class="toc-item"><a class="toc-item-link" href="#5.5 Shell" style="padding-left:45px">5.5 Shell</a></div><div class="toc-item"><a class="toc-item-link" href="#5.6 Solid" style="padding-left:45px">5.6 Solid</a></div><div class="toc-item"><a class="toc-item-link" href="#6. Orientation 的作用" style="padding-left:30px">6. Orientation 的作用</a></div><div class="toc-item"><a class="toc-item-link" href="#6.1 Edge 在 Wire / Face 中的方向" style="padding-left:45px">6.1 Edge 在 Wire / Face 中的方向</a></div><div class="toc-item"><a class="toc-item-link" href="#7. Location 的作用" style="padding-left:30px">7. Location 的作用</a></div><div class="toc-item"><a class="toc-item-link" href="#8. TopoDS_Shape 与 TopoDS_TShape" style="padding-left:30px">8. TopoDS_Shape 与 TopoDS_TShape</a></div><div class="toc-item"><a class="toc-item-link" href="#9. 为什么需要 TopoDS_TShape 这一层？" style="padding-left:30px">9. 为什么需要 TopoDS_TShape 这一层？</a></div><div class="toc-item"><a class="toc-item-link" href="#9.1 难以共享" style="padding-left:45px">9.1 难以共享</a></div><div class="toc-item"><a class="toc-item-link" href="#9.2 难以表达不同 Orientation" style="padding-left:45px">9.2 难以表达不同 Orientation</a></div><div class="toc-item"><a class="toc-item-link" href="#9.3 难以表达不同 Location" style="padding-left:45px">9.3 难以表达不同 Location</a></div><div class="toc-item"><a class="toc-item-link" href="#9.4 不利于局部修改和版本共享" style="padding-left:45px">9.4 不利于局部修改和版本共享</a></div><div class="toc-item"><a class="toc-item-link" href="#10. TopExp_Explorer：拓扑遍历工具" style="padding-left:30px">10. TopExp_Explorer：拓扑遍历工具</a></div><div class="toc-item"><a class="toc-item-link" href="#11. TopTools：拓扑容器与去重" style="padding-left:30px">11. TopTools：拓扑容器与去重</a></div><div class="toc-item"><a class="toc-item-link" href="#12. OCCT 的 B-Rep 是什么？" style="padding-left:30px">12. OCCT 的 B-Rep 是什么？</a></div><div class="toc-item"><a class="toc-item-link" href="#13. OCCT B-Rep 和其他几何内核 B-Rep 的差别" style="padding-left:30px">13. OCCT B-Rep 和其他几何内核 B-Rep 的差别</a></div><div class="toc-item"><a class="toc-item-link" href="#13.1 OCCT 的特点" style="padding-left:45px">13.1 OCCT 的特点</a></div><div class="toc-item"><a class="toc-item-link" href="#13.2 Parasolid / ACIS 的特点" style="padding-left:45px">13.2 Parasolid / ACIS 的特点</a></div><div class="toc-item"><a class="toc-item-link" href="#13.3 Mesh / Polyhedral B-Rep 与精确 B-Rep" style="padding-left:45px">13.3 Mesh / Polyhedral B-Rep 与精确 B-Rep</a></div><div class="toc-item"><a class="toc-item-link" href="#14. Day1 / Day2 的最小实践目标" style="padding-left:30px">14. Day1 / Day2 的最小实践目标</a></div><div class="toc-item"><a class="toc-item-link" href="#15. 最终总结" style="padding-left:30px">15. 最终总结</a></div></div></div></div></body></html>

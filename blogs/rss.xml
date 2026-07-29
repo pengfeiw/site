@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Wed, 29 Jul 2026 07:40:09 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 29 Jul 2026 07:44:54 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Wed, 29 Jul 2026 07:39:45 GMT</pubDate>
+        <pubDate>Wed, 29 Jul 2026 07:44:35 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[NURBS 曲线]]></title>
@@ -117,6 +117,13 @@
             <link>https://pengfeixc.com/blogs/computer-graphics/Geom_BSplineCurve_order.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/Geom_BSplineCurve_order.html</guid>
             <pubDate>Sat, 14 Mar 2026 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[OCCT 架构、Modeling Data、BRep、拓扑结构]]></title>
+            <description><![CDATA[occt 入门知识]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/occt_modeling_data.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/occt_modeling_data.html</guid>
+            <pubDate>Fri, 13 Mar 2026 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[曲线拼接的连续性]]></title>
