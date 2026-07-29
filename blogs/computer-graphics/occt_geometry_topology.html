@@ -1,0 +1,424 @@
+<html lang="zh_cn"><head><title>OCCT 中的 Geometry 和 Topology | WANG_PF.OS.BLOGS</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="occt,topology,geometry,vertex,edge,face,location,orientation"><meta name="description" content="geometry and topology in occt"><link rel="stylesheet" href="/blogs/assests/style/code_github.css"><link rel="stylesheet" href="/blogs/assests/style/markdown.css"><link rel="stylesheet" href="/blogs/assests/style/article.css"><link rel="stylesheet" href="/blogs/assests/style/navigator.css"><link rel="stylesheet" href="/blogs/assests/style/global.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous"><link rel="icon" href="/blogs/assests/images/icon.jpg"><meta property="author" content="王鹏飞"><script type="text/javascript">const THEME_KEY="site-theme",THEME_DARK="opencode-dark",THEME_LIGHT="opencode-light";function applyTheme(e){var t,e=e===THEME_LIGHT?THEME_LIGHT:THEME_DARK,o=(document.documentElement.setAttribute("data-theme",e),document.getElementById("theme-toggle"));o&&(t=e===THEME_DARK,o.setAttribute("aria-label",t?"Switch to light theme":"Switch to dark theme"),o.setAttribute("title",t?"Switch to light theme":"Switch to dark theme"),o.setAttribute("aria-pressed",String(!t)),o.setAttribute("data-current-theme",e))}applyTheme(localStorage.getItem(THEME_KEY)||THEME_DARK),window.addEventListener("DOMContentLoaded",function(){applyTheme(localStorage.getItem(THEME_KEY)||THEME_DARK);const t=document.getElementById("search-input");var e=document.getElementById("theme-toggle");t.addEventListener("keydown",function(e){"Enter"===e.key&&t.value&&window.open(`https://bing.com/search?q=${t.value}%20site%3A+pengfeixc.com`,"_blank")}),e&&e.addEventListener("click",function(){var e=(document.documentElement.getAttribute("data-theme")===THEME_LIGHT?THEME_LIGHT:THEME_DARK)===THEME_DARK?THEME_LIGHT:THEME_DARK;applyTheme(e),localStorage.setItem(THEME_KEY,e)});document.querySelectorAll(".markdown-body pre").forEach(function(t){var e=document.createElement("div");e.className="code-block-wrapper",t.parentNode.insertBefore(e,t),e.appendChild(t);const o=document.createElement("button");o.className="code-copy-btn",e.appendChild(o),o.addEventListener("click",async function(){var e=t.querySelector("code");if(e)try{await navigator.clipboard.writeText(e.textContent),o.classList.add("copied"),setTimeout(function(){o.classList.remove("copied")},2e3)}catch(e){console.error("Failed to copy:",e)}})});e=document.querySelectorAll(".markdown-body img");let o=0,n=[];e.forEach(function(e,t){e.classList.contains("emoji")||(e.style.cursor="zoom-in",e.addEventListener("click",function(){var e;e=t,o=e,u(),c.classList.add("active"),document.body.style.overflow="hidden"}),n.push(e))});const c=document.createElement("div");c.className="image-lightbox",c.innerHTML=`
+        <div class="lightbox-overlay"></div>
+        <div class="lightbox-container">
+            <img class="lightbox-image" src="" alt="">
+            <div class="lightbox-counter"></div>
+        </div>
+        <button class="lightbox-close" title="关闭 (ESC)"></button>
+        <button class="lightbox-prev" title="上一张 (←)"></button>
+        <button class="lightbox-next" title="下一张 (→)"></button>
+    `,document.body.appendChild(c);e=c.querySelector(".lightbox-overlay");const i=c.querySelector(".lightbox-image"),l=c.querySelector(".lightbox-counter");var a=c.querySelector(".lightbox-close");const r=c.querySelector(".lightbox-prev"),s=c.querySelector(".lightbox-next");function d(){c.classList.remove("active"),document.body.style.overflow=""}function u(){var e=n[o];i.src=e.src,i.alt=e.alt||"",1<n.length?(l.textContent=o+1+" / "+n.length,l.style.display="block"):l.style.display="none",r.style.display=1<n.length?"flex":"none",s.style.display=1<n.length?"flex":"none"}function E(){n.length<=1||(o=(o-1+n.length)%n.length,u())}function m(){n.length<=1||(o=(o+1)%n.length,u())}e.addEventListener("click",d),a.addEventListener("click",d),r.addEventListener("click",function(e){e.stopPropagation(),E()}),s.addEventListener("click",function(e){e.stopPropagation(),m()}),document.addEventListener("keydown",function(e){if(c.classList.contains("active"))switch(e.key){case"Escape":d();break;case"ArrowLeft":E();break;case"ArrowRight":m()}})})</script></head><body><div class="header"><div class="navigator"><div class="nav-sections"><div class="home"><a href="/blogs">Home</a></div><div class="email"><a href="mailto:pengfeixc@sina.com">Email</a></div><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div class="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="rss"><a href="/blogs/rss.xml">RSS</a></div><div class="theme-toggle-wrapper"><button class="theme-toggle-btn" id="theme-toggle" type="button" aria-label="Switch to light theme" aria-pressed="false"></button></div><div class="search-wrapper"><input id="search-input" type="search" placeholder="search"></div></div></div></div><div class="body"><div class="markdown"><div class="markdown-header"><span class="date">日期：2026年3月15日</span><span class="category"><a href="/blogs/computer-graphics">标签：Computer Graphics</a></span></div><div class="markdown-body"><h1 id="OpenCASCADE 中的 Geometry 与 Topology：从 Vertex、Edge、Face 到 Location / Orientation">OpenCASCADE 中的 Geometry 与 Topology：从 Vertex、Edge、Face 到 Location / Orientation <a href="#OpenCASCADE 中的 Geometry 与 Topology：从 Vertex、Edge、Face 到 Location / Orientation">#</a></h1><p>学习 OCCT 建模时，最容易混淆的一组概念就是：</p><pre><code class="hljs language-text">Geometry 和 Topology 到底是什么关系？
+TopoDS_Edge 是不是一条 Geom_Curve？
+TopoDS_Face 是不是一个 Geom_Surface？
+Edge 上的 3D curve 和 p-curve 又是什么？
+Location 和 Orientation 为什么到处都有？
+</code></pre><p>如果这些概念没有想清楚，后面学 Boolean、Fillet、Offset、Sewing、STEP/IGES 导入修复时，很容易陷入 API 细节里。本文根据 Roman Lygin 的 <em>Topology and Geometry in Open CASCADE</em> Part 1–4，以及 OCCT 官方 Modeling Data User Guide，结合 OCCT 的类结构和源码设计，系统整理 Geometry 与 Topology 的关系。</p><hr><h2 id="1. 一句话区分 Geometry 和 Topology">1. 一句话区分 Geometry 和 Topology <a href="#1. 一句话区分 Geometry 和 Topology">#</a></h2><p>在 OCCT 中，可以先这样理解：</p><pre><code class="hljs language-text">Geometry：描述数学形状
+Topology：描述这些数学形状如何组成模型
+</code></pre><p>Geometry 关注的是：</p><pre><code class="hljs language-text">点在哪里？
+曲线方程是什么？
+曲面参数化是什么？
+</code></pre><p>例如：</p><pre><code class="hljs language-cpp">gp_Pnt
+Geom_Curve
+Geom_Surface
+Geom2d_Curve
+Geom_Line
+Geom_Circle
+Geom_Plane
+Geom_CylindricalSurface
+Geom_BSplineCurve
+Geom_BSplineSurface
+</code></pre><p>Topology 关注的是：</p><pre><code class="hljs language-text">哪些点构成边？
+哪些边构成 wire？
+哪些 wire 裁剪出 face？
+哪些 face 构成 shell？
+哪些 shell 围成 solid？
+</code></pre><p>对应 OCCT 中的拓扑类型：</p><pre><code class="hljs language-cpp">TopoDS_Vertex
+TopoDS_Edge
+TopoDS_Wire
+TopoDS_Face
+TopoDS_Shell
+TopoDS_Solid
+TopoDS_Compound
+</code></pre><p>因此，千万不要把它们混为一谈：</p><pre><code class="hljs language-text">TopoDS_Vertex 不是 gp_Pnt
+TopoDS_Edge   不是 Geom_Curve
+TopoDS_Face   不是 Geom_Surface
+</code></pre><p>更准确地说：</p><pre><code class="hljs language-text">TopoDS_Vertex 绑定 / 引用一个 3D 点
+TopoDS_Edge   绑定 / 引用一条或多条曲线
+TopoDS_Face   绑定 / 引用一个曲面，并用 wire 限定边界
+</code></pre><hr><h2 id="2. OCCT 的 Topology 是一个有向的一路图">2. OCCT 的 Topology 是一个有向的一路图 <a href="#2. OCCT 的 Topology 是一个有向的一路图">#</a></h2><p>Roman Lygin 在 Part 1 中强调，OCCT 的拓扑结构是一个 oriented one-way graph。</p><p>也就是说：</p><pre><code class="hljs language-text">父对象引用子对象
+子对象不直接反向引用父对象
+</code></pre><p>例如：</p><pre><code class="hljs language-text">Solid
+└── Shell
+    └── Face
+        └── Wire
+            └── Edge
+                └── Vertex
+</code></pre><p>Face 知道自己包含哪些 Wire / Edge / Vertex，但是 Edge 本身并不知道“我属于哪些 Face”。如果你想知道某条 Edge 被哪些 Face 使用，通常要从更大的 Shape 出发做映射，例如使用：</p><pre><code class="hljs language-cpp">TopExp::<span class="hljs-built_in">MapShapesAndAncestors</span>(...)
+</code></pre><p>这个设计有一个重要后果：</p><pre><code class="hljs language-text">拓扑对象可以被共享。
+</code></pre><p>例如一个盒子的某条 Edge 同时属于两个 Face。OCCT 不一定复制两份 Edge 的底层数据，而是可以让两个 Face 引用同一个底层 Edge，只是在不同上下文中带有不同的 Orientation。</p><hr><h2 id="3.%20%3Ccode%3ETopoDS_Shape%3C/code%3E%20%E7%9A%84%E6%BA%90%E7%A0%81%E7%BB%93%E6%9E%84%EF%BC%9ATShape%20+%20Location%20+%20Orientation">3. <code>TopoDS_Shape</code> 的源码结构：TShape + Location + Orientation <a href="#3.%20%3Ccode%3ETopoDS_Shape%3C/code%3E%20%E7%9A%84%E6%BA%90%E7%A0%81%E7%BB%93%E6%9E%84%EF%BC%9ATShape%20+%20Location%20+%20Orientation">#</a></h2><p>理解 OCCT 拓扑结构，必须先理解 <code>TopoDS_Shape</code>。</p><p>可以简化成下面这样：</p><pre><code class="hljs language-cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">TopoDS_Shape</span>
+{
+<span class="hljs-keyword">private</span>:
+    <span class="hljs-built_in">Handle</span>(TopoDS_TShape) myTShape;
+    TopLoc_Location       myLocation;
+    TopAbs_Orientation    myOrient;
+};
+</code></pre><p>也就是说，一个 <code>TopoDS_Shape</code> 并不是完整拥有所有拓扑数据的对象，它更像是一个“带 shape 的引用”：</p><pre><code class="hljs language-text">TopoDS_Shape
+├── myTShape      // 指向真正的底层拓扑数据
+├── myLocation    // 这个 shape 在空间中的位置变换
+└── myOrient      // 这个 shape 在当前上下文中的方向
+</code></pre><p>其中：</p><pre><code class="hljs language-text">TopoDS_TShape：
+    真正保存拓扑结构和底层几何数据的对象，由 handle 管理，可以共享。
+
+TopoDS_Shape：
+    按值传递的轻量对象，引用一个 TShape，并附带 Location 和 Orientation。
+</code></pre><p>这就是为什么 OCCT 中经常说：</p><pre><code class="hljs language-text">TopoDS_Shape is manipulated by value.
+TopoDS_TShape is manipulated by reference.
+</code></pre><p>可以把它想象成：</p><pre><code class="hljs language-text">TShape 是“定义”
+Shape 是“这个定义在某个位置、某个方向下的一次使用”
+</code></pre><p>类图可以简化为：</p><pre><code class="hljs language-text">TopoDS_Shape
+│
+├── TopoDS_Vertex
+├── TopoDS_Edge
+├── TopoDS_Wire
+├── TopoDS_Face
+├── TopoDS_Shell
+├── TopoDS_Solid
+├── TopoDS_CompSolid
+└── TopoDS_Compound
+</code></pre><p>而底层真正的数据结构是：</p><pre><code class="hljs language-text">TopoDS_TShape
+│
+├── BRep_TVertex
+├── BRep_TEdge
+├── BRep_TFace
+└── ...
+</code></pre><p>需要注意：</p><pre><code class="hljs language-text">TopoDS_Vertex / TopoDS_Edge / TopoDS_Face 是用户日常操作的对象；
+BRep_TVertex / BRep_TEdge / BRep_TFace 是底层数据承载者。
+</code></pre><hr><h2 id="4. 只有 Vertex、Edge、Face 直接绑定 Geometry">4. 只有 Vertex、Edge、Face 直接绑定 Geometry <a href="#4. 只有 Vertex、Edge、Face 直接绑定 Geometry">#</a></h2><p>在 OCCT 的 BRep 模型中，不是所有拓扑对象都有直接几何表示。</p><p>真正直接绑定几何的是：</p><pre><code class="hljs language-text">Vertex
+Edge
+Face
+</code></pre><p>其他对象主要是组织结构：</p><pre><code class="hljs language-text">Wire  = 一组 Edge
+Shell = 一组 Face
+Solid = 一组 Shell
+Compound = 一组 Shape
+</code></pre><p>可以画成：</p><pre><code class="hljs language-text">TopoDS_Vertex
+└── BRep_TVertex
+    ├── gp_Pnt
+    └── tolerance
+
+TopoDS_Edge
+└── BRep_TEdge
+    ├── Geom_Curve
+    ├── Geom2d_Curve on surface
+    ├── Poly_Polygon3D
+    ├── Poly_PolygonOnTriangulation
+    ├── tolerance
+    ├── SameRange flag
+    ├── SameParameter flag
+    └── Degenerated flag
+
+TopoDS_Face
+└── BRep_TFace
+    ├── Geom_Surface
+    ├── Wires
+    ├── Poly_Triangulation
+    ├── tolerance
+    └── location
+</code></pre><p>所以后面分析模型时，要始终记住：</p><pre><code class="hljs language-text">Wire 没有自己的几何曲线；
+Shell 没有自己的几何曲面；
+Solid 也没有自己的几何体方程。
+</code></pre><p>它们是拓扑组织层。</p><hr><h2 id="5. Vertex：拓扑点，不只是 gp_Pnt">5. Vertex：拓扑点，不只是 gp_Pnt <a href="#5. Vertex：拓扑点，不只是 gp_Pnt">#</a></h2><p><code>TopoDS_Vertex</code> 对应一个 0 维拓扑对象，它的主要几何表示是一个 3D 点：</p><pre><code class="hljs language-cpp">gp_Pnt p = BRep_Tool::<span class="hljs-built_in">Pnt</span>(vertex);
+</code></pre><p>底层可以理解为：</p><pre><code class="hljs language-text">BRep_TVertex
+├── gp_Pnt
+└── tolerance
+</code></pre><p>Vertex 的 tolerance 表示这个点位置的不确定范围。几何意义上，可以把它想象成以该点为中心、半径为 tolerance 的小球。所有连接到该 Vertex 的 Edge 曲线端点，都应该落在这个小球范围内。</p><p>也就是说，Vertex 不一定要求所有边的端点在数学上完全重合，而是在 tolerance 内认为它们连接。</p><h3 id="Vertex Orientation">Vertex Orientation <a href="#Vertex Orientation">#</a></h3><p>Vertex 也有 Orientation，但它没有直接的几何方向意义。</p><p>按照 OCCT 的约定：</p><pre><code class="hljs language-text">TopAbs_FORWARD  的 Vertex 对应 Edge 曲线参数较小的一端
+TopAbs_REVERSED 的 Vertex 对应 Edge 曲线参数较大的一端
+</code></pre><p>如果一条 Edge 的 3D curve 参数范围是：</p><pre><code class="hljs language-text">[first, last]
+</code></pre><p>那么：</p><pre><code class="hljs language-text">FORWARD vertex  ≈ curve-&gt;Value(first)
+REVERSED vertex ≈ curve-&gt;Value(last)
+</code></pre><p>注意，这个 Orientation 是在 Edge 上下文中的拓扑约定，不是说一个点本身真的有方向。</p><hr><h2 id="6. Edge：拓扑边，不等于 Geom_Curve">6. Edge：拓扑边，不等于 Geom_Curve <a href="#6. Edge：拓扑边，不等于 Geom_Curve">#</a></h2><p><code>TopoDS_Edge</code> 是 1 维拓扑对象，通常对应一条受限曲线。它可能是某个 Face 的边界，也可能是一条独立的 floating edge。</p><p>Edge 的几何表示比 Vertex 复杂得多。一条 Edge 可能同时包含多种几何表达：</p><pre><code class="hljs language-text">1. 3D 空间曲线：Geom_Curve
+2. Face 参数空间中的 2D 曲线：Geom2d_Curve，也叫 p-curve
+3. 3D 折线离散表示：Poly_Polygon3D
+4. Face 三角网格上的索引折线：Poly_PolygonOnTriangulation
+</code></pre><p>其中最重要的是前两种。</p><hr><h2 id="7. Edge 的 3D Curve：空间曲线 C(t)">7. Edge 的 3D Curve：空间曲线 C(t) <a href="#7. Edge 的 3D Curve：空间曲线 C(t)">#</a></h2><p>Edge 的主几何表示是一条 3D 曲线：</p><pre><code class="hljs language-cpp">Standard_Real first, last;
+<span class="hljs-built_in">Handle</span>(Geom_Curve) c3d = BRep_Tool::<span class="hljs-built_in">Curve</span>(edge, first, last);
+</code></pre><p>它表示：</p><pre><code class="hljs language-text">C(t) = (x, y, z)
+</code></pre><p>其中：</p><pre><code class="hljs language-text">t ∈ [first, last]
+</code></pre><p>例如：</p><pre><code class="hljs language-text">直线边   -&gt; Geom_Line
+圆弧边   -&gt; Geom_Circle
+样条边   -&gt; Geom_BSplineCurve
+</code></pre><p>通过参数可以取点：</p><pre><code class="hljs language-cpp">gp_Pnt p0 = c3d-&gt;<span class="hljs-built_in">Value</span>(first);
+gp_Pnt p1 = c3d-&gt;<span class="hljs-built_in">Value</span>(last);
+</code></pre><p>这里的 <code>first</code> 和 <code>last</code> 不是数组下标，而是曲线参数范围。</p><hr><h2 id="8. Edge 的 p-curve：Face 参数空间中的 UV 曲线">8. Edge 的 p-curve：Face 参数空间中的 UV 曲线 <a href="#8. Edge 的 p-curve：Face 参数空间中的 UV 曲线">#</a></h2><p>当一条 Edge 属于某个 Face 时，它不仅需要有 3D curve，还通常需要有该 Face 上的 2D 参数曲线，也就是 p-curve：</p><pre><code class="hljs language-cpp">Standard_Real pFirst, pLast;
+<span class="hljs-built_in">Handle</span>(Geom2d_Curve) pc =
+    BRep_Tool::<span class="hljs-built_in">CurveOnSurface</span>(edge, face, pFirst, pLast);
+</code></pre><p>p-curve 表示：</p><pre><code class="hljs language-text">P(t) = (u, v)
+</code></pre><p>它不是 3D 空间中的曲线，而是在 Face 底层 Surface 的参数空间中。</p><p>如果 Face 的底层 Surface 是：</p><pre><code class="hljs language-text">S(u, v) = (x, y, z)
+</code></pre><p>那么理论上 Edge 的 3D curve 和 p-curve 应该满足：</p><pre><code class="hljs language-text">C(t) ≈ S(P(t))
+</code></pre><p>展开就是：</p><pre><code class="hljs language-text">C(t) ≈ S(u(t), v(t))
+</code></pre><p>这就是 p-curve 的核心意义。</p><h3 id="为什么需要 p-curve？">为什么需要 p-curve？ <a href="#为什么需要 p-curve？">#</a></h3><p>因为 Face 的边界不仅要在 3D 空间中闭合，也要在 Surface 的 UV 参数空间中闭合。</p><p>例如一个圆柱侧面，在 3D 中是闭合曲面，但在 UV 参数空间中可以展开成一个矩形：</p><pre><code class="hljs language-text">v=H    +----------------------+
+       |                      |
+       |                      |
+       |                      |
+v=0    +----------------------+
+       u=0                  u=2π
+</code></pre><p>在 3D 中：</p><pre><code class="hljs language-text">u = 0 和 u = 2π 是同一条空间线
+</code></pre><p>但在 UV 空间中它们是矩形的左右两条边界。</p><p>所以同一个 seam edge 在同一个 Face 的 wire 中可能出现两次，并拥有两条不同的 p-curve：</p><pre><code class="hljs language-text">一条 p-curve 在 u = 0
+另一条 p-curve 在 u = 2π
+</code></pre><p>这就是为什么 OCCT 的 Edge 不只是 3D curve，还必须能描述它在 Face 参数空间中的位置。</p><hr><h2 id="9. Edge 的 SameRange 和 SameParameter">9. Edge 的 SameRange 和 SameParameter <a href="#9. Edge 的 SameRange 和 SameParameter">#</a></h2><p>因为 Edge 可能有多种几何表示，所以 OCCT 需要保证这些表示之间是一致的。</p><p>Edge 有两个重要 flag：</p><pre><code class="hljs language-cpp">BRep_Tool::<span class="hljs-built_in">SameRange</span>(edge)
+BRep_Tool::<span class="hljs-built_in">SameParameter</span>(edge)
+</code></pre><h3 id="SameRange">SameRange <a href="#SameRange">#</a></h3><p><code>SameRange = true</code> 表示 Edge 的各种几何表示使用相同的参数范围。</p><p>例如：</p><pre><code class="hljs language-text">3D curve:
+[first, last] = [0, 10]
+
+p-curve:
+[pFirst, pLast] = [0, 10]
+</code></pre><p>这就是 SameRange。</p><p>如果 3D curve 是 <code>[0, 10]</code>，p-curve 是 <code>[0, 1]</code>，那么它们参数范围不一致。</p><h3 id="SameParameter">SameParameter <a href="#SameParameter">#</a></h3><p><code>SameParameter = true</code> 更重要。它表示对于同一个参数 <code>t</code>：</p><pre><code class="hljs language-text">C(t) ≈ S(P(t))
+</code></pre><p>也就是说，同一个参数在 3D curve 和 p-curve + surface 上表示 Edge 的同一个位置。</p><p>很多 OCCT 建模算法默认 Edge 满足这两个条件。如果自己底层构建 Edge，或者导入外部 CAD 模型后，通常需要检查或修复：</p><pre><code class="hljs language-cpp">BRepLib::<span class="hljs-built_in">SameParameter</span>(shape, <span class="hljs-number">1.0e-7</span>);
+</code></pre><p>正确做法不是简单地把 flag 强行设为 true，而是让 3D curve、p-curve、surface、vertex parameter 真的一致，再设置对应标识。</p><hr><h2 id="10. Edge Orientation：拓扑方向和曲线方向的关系">10. Edge Orientation：拓扑方向和曲线方向的关系 <a href="#10. Edge Orientation：拓扑方向和曲线方向的关系">#</a></h2><p>Edge 的 Orientation 描述的是：</p><pre><code class="hljs language-text">Edge 的逻辑方向是否和底层曲线参数方向一致
+</code></pre><p>如果底层曲线是：</p><pre><code class="hljs language-text">C(first) -&gt; C(last)
+</code></pre><p>那么：</p><pre><code class="hljs language-text">TopAbs_FORWARD:
+    Edge 的逻辑方向 = C(first) -&gt; C(last)
+
+TopAbs_REVERSED:
+    Edge 的逻辑方向 = C(last) -&gt; C(first)
+</code></pre><p>需要注意的是：</p><pre><code class="hljs language-text">Edge Orientation 不会改变底层 Geom_Curve；
+它只改变这条 Edge 在当前拓扑上下文中的使用方向。
+</code></pre><p>这对 Wire 和 Face 很重要。因为同一条 Edge 被不同 Face 共享时，在一个 Face 中可能是 FORWARD，在另一个 Face 中可能是 REVERSED。</p><p>对于 seam edge，更特殊：它在同一个 Face 的 wire 中可能出现两次，一次 FORWARD，一次 REVERSED。</p><hr><h2 id="11. Face：拓扑面，不等于 Geom_Surface">11. Face：拓扑面，不等于 Geom_Surface <a href="#11. Face：拓扑面，不等于 Geom_Surface">#</a></h2><p><code>TopoDS_Face</code> 是 2 维拓扑对象，它表示 3D body 的一个边界单元。</p><p>Face 的结构可以理解为：</p><pre><code class="hljs language-text">TopoDS_Face
+├── Geom_Surface
+├── Outer Wire
+│   ├── Edge
+│   ├── Edge
+│   └── Edge
+├── Inner Wires, optional
+│   └── holes
+├── Poly_Triangulation, optional
+└── tolerance
+</code></pre><p>最重要的一句话：</p><pre><code class="hljs language-text">Face = Surface + Wires
+</code></pre><p><code>Geom_Surface</code> 只是底层数学曲面，它可能是无限的，或者比实际 Face 大得多。</p><p>例如盒子的一个矩形面：</p><pre><code class="hljs language-text">底层 surface: Geom_Plane
+</code></pre><p>但 <code>Geom_Plane</code> 是无限平面。真正的矩形区域是通过 wire 裁剪出来的：</p><pre><code class="hljs language-text">无限平面 + 四条边组成的 closed wire = 矩形 Face
+</code></pre><p>再例如圆柱：</p><pre><code class="hljs language-text">圆柱 solid
+├── bottom face: Geom_Plane + circular wire
+├── top face:    Geom_Plane + circular wire
+└── side face:   Geom_CylindricalSurface + wire
+</code></pre><p>圆柱侧面的 <code>Geom_CylindricalSurface</code> 在 V 方向可以是无限的，实际 Face 通过上下边界和 seam edge 裁剪出来。</p><hr><h2 id="12. Surface：参数曲面 S(u, v)">12. Surface：参数曲面 S(u, v) <a href="#12. Surface：参数曲面 S(u, v)">#</a></h2><p>Face 的底层几何是 <code>Geom_Surface</code>：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">Handle</span>(Geom_Surface) surf = BRep_Tool::<span class="hljs-built_in">Surface</span>(face);
+</code></pre><p>Surface 是一个参数映射：</p><pre><code class="hljs language-text">S(u, v) = (x, y, z)
+</code></pre><p>通过：</p><pre><code class="hljs language-cpp">gp_Pnt p = surf-&gt;<span class="hljs-built_in">Value</span>(u, v);
+</code></pre><p>可以从 UV 参数点得到 3D 空间点。</p><p>不同 Surface 的参数空间不同：</p><pre><code class="hljs language-text">Geom_Plane:
+    U/V 通常都是无界的
+
+Geom_CylindricalSurface:
+    U 是角度方向，通常周期为 2π
+    V 是轴向方向
+
+Geom_SphericalSurface:
+    U 是经度方向
+    V 是纬度方向
+
+Geom_BSplineSurface:
+    U/V 有自己的 knot range
+</code></pre><p>这也是为什么 p-curve 是 Edge 在某个 Face 上的局部表达：同一条 3D Edge，在不同 Face 的 Surface 参数空间中，可能有不同的 UV 曲线。</p><hr><h2 id="13. Face 的 Wire：3D 闭合 + 2D 闭合">13. Face 的 Wire：3D 闭合 + 2D 闭合 <a href="#13. Face 的 Wire：3D 闭合 + 2D 闭合">#</a></h2><p>OCCT 对 Face 边界有一个很重要的要求：</p><pre><code class="hljs language-text">Face 的 boundary wire 应该在 3D 空间中闭合；
+同时也应该在 Face 的 2D UV 参数空间中闭合。
+</code></pre><p>这正是 p-curve 的意义。</p><p>一条 Edge 在 3D 中可以通过 <code>Geom_Curve</code> 表示：</p><pre><code class="hljs language-text">C(t)
+</code></pre><p>但在 Face 上，它还需要通过 p-curve 表示：</p><pre><code class="hljs language-text">P(t) = (u, v)
+</code></pre><p>这样 Face 才能在参数空间中知道自己的边界在哪里。</p><p>可以把 Face 看成：</p><pre><code class="hljs language-text">Surface S(u, v)
++
+UV 平面上的一个或多个 closed contour
+</code></pre><p>然后通过 Surface 映射成 3D 中的一块面。</p><hr><h2 id="14. Face Orientation：Face normal 和 Surface normal">14. Face Orientation：Face normal 和 Surface normal <a href="#14. Face Orientation：Face normal 和 Surface normal">#</a></h2><p>Face 也有 Orientation。</p><p>Face 的 Orientation 表示：</p><pre><code class="hljs language-text">Face normal 和底层 Surface normal 是否一致
+</code></pre><p>如果：</p><pre><code class="hljs language-cpp">face.<span class="hljs-built_in">Orientation</span>() == TopAbs_FORWARD
+</code></pre><p>那么：</p><pre><code class="hljs language-text">Face normal = Surface normal
+</code></pre><p>如果：</p><pre><code class="hljs language-cpp">face.<span class="hljs-built_in">Orientation</span>() == TopAbs_REVERSED
+</code></pre><p>那么：</p><pre><code class="hljs language-text">Face normal = -Surface normal
+</code></pre><p>对于一个正确的 Solid，通常要求所有 Face 的法向朝外。</p><p>但是 OCCT 中还有一个更通用的说法：Face normal 指向 material 的反方向。换句话说，实体材料在 Face normal 的背后。</p><hr><h2 id="15. Orientation 与 Default Region">15. Orientation 与 Default Region <a href="#15. Orientation 与 Default Region">#</a></h2><p>官方 Modeling Data User Guide 对 Orientation 的解释非常关键。</p><p>它不是简单的“方向”，而是用于定义边界两侧哪一侧是 interior / material。</p><p>OCCT 对不同维度的边界定义了 default region：</p><h3 id="Vertex 限制 Curve">Vertex 限制 Curve <a href="#Vertex 限制 Curve">#</a></h3><p>对于一条曲线上的 Vertex：</p><pre><code class="hljs language-text">default region 是沿曲线自然方向、参数大于该 vertex 的那一侧。
+</code></pre><p>也就是：</p><pre><code class="hljs language-text">curve parameter &gt; vertex parameter
+</code></pre><p>如果 Vertex 是 FORWARD，则 interior 是 default region。 如果 Vertex 是 REVERSED，则 interior 是 default region 的补集。</p><h3 id="Edge 限制 Surface">Edge 限制 Surface <a href="#Edge 限制 Surface">#</a></h3><p>对于 Surface 上的一条 Edge：</p><pre><code class="hljs language-text">default region 是沿 Edge 自然方向前进时的左侧。
+</code></pre><p>更精确地说，它由：</p><pre><code class="hljs language-text">surface normal × edge tangent
+</code></pre><p>决定。</p><p>在 UV 参数空间中更容易理解：</p><pre><code class="hljs language-text">Edge FORWARD:
+    material / interior 在左侧
+
+Edge REVERSED:
+    material / interior 在右侧
+</code></pre><p>这解释了为什么 Face 的 wire 中 Edge 的顺序和 Orientation 非常重要。它们共同决定了 Face 的内部区域在哪里。</p><h3 id="Face 限制 Space">Face 限制 Space <a href="#Face 限制 Space">#</a></h3><p>对于三维空间中的 Face：</p><pre><code class="hljs language-text">default region 是 surface normal 的负侧。
+</code></pre><p>如果 Face 是 FORWARD：</p><pre><code class="hljs language-text">interior = default region
+</code></pre><p>如果 Face 是 REVERSED：</p><pre><code class="hljs language-text">interior = default region 的补集
+</code></pre><p>这就是为什么 Face Orientation 和实体材料方向相关。</p><hr><h2 id="16. 四种 Orientation：FORWARD / REVERSED / INTERNAL / EXTERNAL">16. 四种 Orientation：FORWARD / REVERSED / INTERNAL / EXTERNAL <a href="#16. 四种 Orientation：FORWARD / REVERSED / INTERNAL / EXTERNAL">#</a></h2><p><code>TopAbs_Orientation</code> 不只有 FORWARD 和 REVERSED，还有：</p><pre><code class="hljs language-cpp">TopAbs_FORWARD
+TopAbs_REVERSED
+TopAbs_INTERNAL
+TopAbs_EXTERNAL
+</code></pre><p>含义可以理解为：</p><pre><code class="hljs language-text">FORWARD:
+    interior 是 default region
+
+REVERSED:
+    interior 是 default region 的补集
+
+INTERNAL:
+    两侧都属于 interior，边界在材料内部
+
+EXTERNAL:
+    两侧都不属于 interior，边界在材料外部
+</code></pre><p>在普通 solid 建模里，最常见的是 FORWARD 和 REVERSED。 但在更复杂的拓扑关系、内部边界、wire-frame 模型中，INTERNAL 和 EXTERNAL 也会出现。</p><hr><h2 id="17. Location：几何定义坐标系与使用坐标系">17. Location：几何定义坐标系与使用坐标系 <a href="#17. Location：几何定义坐标系与使用坐标系">#</a></h2><p><code>TopLoc_Location</code> 表示 Shape 的局部坐标变换。</p><p>这也是 <code>TopoDS_Shape</code> 的三个核心字段之一：</p><pre><code class="hljs language-text">TopoDS_Shape = TShape + Location + Orientation
+</code></pre><p>Location 的意义是：</p><pre><code class="hljs language-text">同一个底层 TShape，可以在不同位置被复用。
+</code></pre><p>例如一个模型中有多个相同的孔、螺栓、阵列特征，它们可以共享同一个底层几何定义，只是 Location 不同。</p><p>简化理解：</p><pre><code class="hljs language-text">TShape:
+    在定义坐标系中的原始形状
+
+Location:
+    把原始形状变换到当前使用位置
+
+Orientation:
+    当前上下文中该 shape 的方向 / interior 选择
+</code></pre><p>所以访问底层几何时要注意 Location。</p><p>例如：</p><pre><code class="hljs language-cpp">TopLoc_Location loc;
+<span class="hljs-built_in">Handle</span>(Geom_Surface) surf = BRep_Tool::<span class="hljs-built_in">Surface</span>(face, loc);
+
+gp_Pnt pLocal = surf-&gt;<span class="hljs-built_in">Value</span>(u, v);
+gp_Pnt pWorld = pLocal.<span class="hljs-built_in">Transformed</span>(loc.<span class="hljs-built_in">Transformation</span>());
+</code></pre><p>如果忽略 Location，就可能得到局部坐标系中的点，而不是模型全局坐标中的点。</p><hr><h2 id="18. Vertex / Edge / Face 的关系总图">18. Vertex / Edge / Face 的关系总图 <a href="#18. Vertex / Edge / Face 的关系总图">#</a></h2><p>可以把 OCCT 中最核心的 BRep 关系总结成这张图：</p><pre><code class="hljs language-text">TopoDS_Face
+│
+├── Orientation
+├── Location
+│
+├── BRep_TFace
+│   ├── Geom_Surface
+│   │   └── S(u, v) -&gt; gp_Pnt(x, y, z)
+│   │
+│   ├── Wires
+│   │   └── TopoDS_Wire
+│   │       └── TopoDS_Edge
+│   │           │
+│   │           ├── Orientation
+│   │           ├── Location
+│   │           │
+│   │           ├── BRep_TEdge
+│   │           │   ├── 3D Curve: Geom_Curve
+│   │           │   │   └── C(t) -&gt; gp_Pnt(x, y, z)
+│   │           │   │
+│   │           │   ├── p-curve: Geom2d_Curve on Face
+│   │           │   │   └── P(t) -&gt; gp_Pnt2d(u, v)
+│   │           │   │
+│   │           │   ├── SameRange
+│   │           │   ├── SameParameter
+│   │           │   └── tolerance
+│   │           │
+│   │           └── Vertices
+│   │               └── TopoDS_Vertex
+│   │                   └── BRep_TVertex
+│   │                       ├── gp_Pnt
+│   │                       └── tolerance
+│   │
+│   └── Poly_Triangulation, optional
+</code></pre><p>其中最核心的几何一致性关系是：</p><pre><code class="hljs language-text">Edge 3D curve:
+    C(t)
+
+Edge p-curve on Face:
+    P(t) = (u(t), v(t))
+
+Face surface:
+    S(u, v)
+
+要求：
+    C(t) ≈ S(P(t))
+</code></pre><p>这就是 <code>SameParameter</code> 背后的数学含义。</p><hr><h2 id="19. 常用 API：从 Topology 取 Geometry">19. 常用 API：从 Topology 取 Geometry <a href="#19. 常用 API：从 Topology 取 Geometry">#</a></h2><p>学习和调试 OCCT 模型时，最常用的是 <code>BRep_Tool</code>。</p><h3 id="取 Vertex 的点">取 Vertex 的点 <a href="#取 Vertex 的点">#</a></h3><pre><code class="hljs language-cpp">gp_Pnt p = BRep_Tool::<span class="hljs-built_in">Pnt</span>(vertex);
+Standard_Real tol = BRep_Tool::<span class="hljs-built_in">Tolerance</span>(vertex);
+</code></pre><h3 id="取 Edge 的 3D 曲线">取 Edge 的 3D 曲线 <a href="#取 Edge 的 3D 曲线">#</a></h3><pre><code class="hljs language-cpp">Standard_Real first, last;
+<span class="hljs-built_in">Handle</span>(Geom_Curve) c3d = BRep_Tool::<span class="hljs-built_in">Curve</span>(edge, first, last);
+</code></pre><h3 id="取 Edge 在 Face 上的 p-curve">取 Edge 在 Face 上的 p-curve <a href="#取 Edge 在 Face 上的 p-curve">#</a></h3><pre><code class="hljs language-cpp">Standard_Real first, last;
+<span class="hljs-built_in">Handle</span>(Geom2d_Curve) pc =
+    BRep_Tool::<span class="hljs-built_in">CurveOnSurface</span>(edge, face, first, last);
+</code></pre><h3 id="取 Face 的 Surface">取 Face 的 Surface <a href="#取 Face 的 Surface">#</a></h3><pre><code class="hljs language-cpp"><span class="hljs-built_in">Handle</span>(Geom_Surface) surf = BRep_Tool::<span class="hljs-built_in">Surface</span>(face);
+</code></pre><h3 id="检查 Edge 几何一致性">检查 Edge 几何一致性 <a href="#检查 Edge 几何一致性">#</a></h3><pre><code class="hljs language-cpp"><span class="hljs-type">bool</span> sameRange = BRep_Tool::<span class="hljs-built_in">SameRange</span>(edge);
+<span class="hljs-type">bool</span> sameParam = BRep_Tool::<span class="hljs-built_in">SameParameter</span>(edge);
+<span class="hljs-type">bool</span> degenerated = BRep_Tool::<span class="hljs-built_in">Degenerated</span>(edge);
+</code></pre><h3 id="修复 SameParameter">修复 SameParameter <a href="#修复 SameParameter">#</a></h3><pre><code class="hljs language-cpp">BRepLib::<span class="hljs-built_in">SameParameter</span>(shape, <span class="hljs-number">1.0e-7</span>);
+</code></pre><hr><h2 id="20. 一个调试工具的思路：Geometry Inspector">20. 一个调试工具的思路：Geometry Inspector <a href="#20. 一个调试工具的思路：Geometry Inspector">#</a></h2><p>为了真正理解 Geometry 和 Topology，建议写一个小工具，遍历 Shape 并打印：</p><pre><code class="hljs language-text">Face #i
+  Orientation
+  Location
+  Surface type
+  Tolerance
+
+  Wire #j
+    Edge #k
+      Orientation
+      3D curve type
+      3D range
+      p-curve type
+      p-curve range
+      SameRange
+      SameParameter
+      Degenerated
+
+      Vertex #m
+        Orientation
+        Point
+        Tolerance
+</code></pre><p>示例代码片段：</p><pre><code class="hljs language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">PrintEdgeInfo</span><span class="hljs-params">(<span class="hljs-type">const</span> TopoDS_Edge&amp; edge, <span class="hljs-type">const</span> TopoDS_Face&amp; face)</span>
+</span>{
+    std::cout &lt;&lt; <span class="hljs-string">"Edge orientation: "</span> &lt;&lt; edge.<span class="hljs-built_in">Orientation</span>() &lt;&lt; std::endl;
+
+    Standard_Real f3d, l3d;
+    <span class="hljs-built_in">Handle</span>(Geom_Curve) c3d = BRep_Tool::<span class="hljs-built_in">Curve</span>(edge, f3d, l3d);
+
+    <span class="hljs-keyword">if</span> (!c3d.<span class="hljs-built_in">IsNull</span>()) {
+        std::cout &lt;&lt; <span class="hljs-string">"3D Curve: "</span>
+                  &lt;&lt; c3d-&gt;<span class="hljs-built_in">DynamicType</span>()-&gt;<span class="hljs-built_in">Name</span>()
+                  &lt;&lt; <span class="hljs-string">" range ["</span> &lt;&lt; f3d &lt;&lt; <span class="hljs-string">", "</span> &lt;&lt; l3d &lt;&lt; <span class="hljs-string">"]"</span>
+                  &lt;&lt; std::endl;
+    }
+
+    Standard_Real f2d, l2d;
+    <span class="hljs-built_in">Handle</span>(Geom2d_Curve) pc =
+        BRep_Tool::<span class="hljs-built_in">CurveOnSurface</span>(edge, face, f2d, l2d);
+
+    <span class="hljs-keyword">if</span> (!pc.<span class="hljs-built_in">IsNull</span>()) {
+        std::cout &lt;&lt; <span class="hljs-string">"PCurve: "</span>
+                  &lt;&lt; pc-&gt;<span class="hljs-built_in">DynamicType</span>()-&gt;<span class="hljs-built_in">Name</span>()
+                  &lt;&lt; <span class="hljs-string">" range ["</span> &lt;&lt; f2d &lt;&lt; <span class="hljs-string">", "</span> &lt;&lt; l2d &lt;&lt; <span class="hljs-string">"]"</span>
+                  &lt;&lt; std::endl;
+    }
+
+    std::cout &lt;&lt; <span class="hljs-string">"SameRange: "</span>
+              &lt;&lt; BRep_Tool::<span class="hljs-built_in">SameRange</span>(edge)
+              &lt;&lt; std::endl;
+
+    std::cout &lt;&lt; <span class="hljs-string">"SameParameter: "</span>
+              &lt;&lt; BRep_Tool::<span class="hljs-built_in">SameParameter</span>(edge)
+              &lt;&lt; std::endl;
+}
+</code></pre><p>通过 Box、Cylinder、Sphere 三个模型观察，会非常直观：</p><pre><code class="hljs language-text">Box:
+    Face -&gt; Geom_Plane
+    Edge -&gt; Geom_Line
+
+Cylinder:
+    side Face -&gt; Geom_CylindricalSurface
+    top/bottom Face -&gt; Geom_Plane
+    circular Edge -&gt; Geom_Circle
+    seam Edge -&gt; same edge appears twice on lateral face
+
+Sphere:
+    Face -&gt; Geom_SphericalSurface
+    seam edge
+    degenerated edge at poles
+</code></pre><hr><h2 id="21. 最终总结">21. 最终总结 <a href="#21. 最终总结">#</a></h2><p>OCCT 的 BRep 模型可以理解为：</p><pre><code class="hljs language-text">Topology 组织 Geometry
+Geometry 提供数学形状
+Location 复用几何定义并放置到空间中
+Orientation 决定边界哪一侧是 interior/material
+Tolerance 描述局部几何误差
+</code></pre><p>最重要的几组关系是：</p><pre><code class="hljs language-text">Vertex:
+    TopoDS_Vertex -&gt; BRep_TVertex -&gt; gp_Pnt
+
+Edge:
+    TopoDS_Edge -&gt; BRep_TEdge -&gt; Geom_Curve
+                              -&gt; Geom2d_Curve on Face
+
+Face:
+    TopoDS_Face -&gt; BRep_TFace -&gt; Geom_Surface
+                              -&gt; Wires
+</code></pre><p>而整个 OCCT BRep 的核心公式可以写成：</p><pre><code class="hljs language-text">C(t) ≈ S(P(t))
+</code></pre><p>其中：</p><pre><code class="hljs language-text">C(t):
+    Edge 的 3D 空间曲线
+
+P(t):
+    Edge 在 Face 参数空间中的 p-curve
+
+S(u, v):
+    Face 的底层曲面
+</code></pre><p>理解了这件事，就能理解为什么 OCCT 中 Edge 必须同时关注 3D curve 和 p-curve，也能理解为什么 SameParameter、SameRange、Location、Orientation、Tolerance 会成为建模算法稳定性的关键。</p><p>如果只记一句话：</p><pre><code class="hljs language-text">TopoDS_* 是拓扑引用；
+Geom_* 是数学几何；
+BRep_* 把拓扑和几何绑定在一起。
+</code></pre><p>这就是 OpenCASCADE 中 Geometry 与 Topology 的核心。</p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/computer-graphics/bspline-surface">上一篇：b 样条曲面</a></span><span class="next-article"><a href="/blogs/react/rn-expo-1">下一篇：React Native 和 Expo 初体验（一）</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#OpenCASCADE 中的 Geometry 与 Topology：从 Vertex、Edge、Face 到 Location / Orientation" style="padding-left:15px">OpenCASCADE 中的 Geometry 与 Topology：从 Vertex、Edge、Face 到 Location / Orientation</a></div><div class="toc-item"><a class="toc-item-link" href="#1. 一句话区分 Geometry 和 Topology" style="padding-left:30px">1. 一句话区分 Geometry 和 Topology</a></div><div class="toc-item"><a class="toc-item-link" href="#2. OCCT 的 Topology 是一个有向的一路图" style="padding-left:30px">2. OCCT 的 Topology 是一个有向的一路图</a></div><div class="toc-item"><a class="toc-item-link" href="#3.%20%3Ccode%3ETopoDS_Shape%3C/code%3E%20%E7%9A%84%E6%BA%90%E7%A0%81%E7%BB%93%E6%9E%84%EF%BC%9ATShape%20+%20Location%20+%20Orientation" style="padding-left:30px">3. TopoDS_Shape 的源码结构：TShape + Location + Orientation</a></div><div class="toc-item"><a class="toc-item-link" href="#4. 只有 Vertex、Edge、Face 直接绑定 Geometry" style="padding-left:30px">4. 只有 Vertex、Edge、Face 直接绑定 Geometry</a></div><div class="toc-item"><a class="toc-item-link" href="#5. Vertex：拓扑点，不只是 gp_Pnt" style="padding-left:30px">5. Vertex：拓扑点，不只是 gp_Pnt</a></div><div class="toc-item"><a class="toc-item-link" href="#Vertex Orientation" style="padding-left:45px">Vertex Orientation</a></div><div class="toc-item"><a class="toc-item-link" href="#6. Edge：拓扑边，不等于 Geom_Curve" style="padding-left:30px">6. Edge：拓扑边，不等于 Geom_Curve</a></div><div class="toc-item"><a class="toc-item-link" href="#7. Edge 的 3D Curve：空间曲线 C(t)" style="padding-left:30px">7. Edge 的 3D Curve：空间曲线 C(t)</a></div><div class="toc-item"><a class="toc-item-link" href="#8. Edge 的 p-curve：Face 参数空间中的 UV 曲线" style="padding-left:30px">8. Edge 的 p-curve：Face 参数空间中的 UV 曲线</a></div><div class="toc-item"><a class="toc-item-link" href="#为什么需要 p-curve？" style="padding-left:45px">为什么需要 p-curve？</a></div><div class="toc-item"><a class="toc-item-link" href="#9. Edge 的 SameRange 和 SameParameter" style="padding-left:30px">9. Edge 的 SameRange 和 SameParameter</a></div><div class="toc-item"><a class="toc-item-link" href="#SameRange" style="padding-left:45px">SameRange</a></div><div class="toc-item"><a class="toc-item-link" href="#SameParameter" style="padding-left:45px">SameParameter</a></div><div class="toc-item"><a class="toc-item-link" href="#10. Edge Orientation：拓扑方向和曲线方向的关系" style="padding-left:30px">10. Edge Orientation：拓扑方向和曲线方向的关系</a></div><div class="toc-item"><a class="toc-item-link" href="#11. Face：拓扑面，不等于 Geom_Surface" style="padding-left:30px">11. Face：拓扑面，不等于 Geom_Surface</a></div><div class="toc-item"><a class="toc-item-link" href="#12. Surface：参数曲面 S(u, v)" style="padding-left:30px">12. Surface：参数曲面 S(u, v)</a></div><div class="toc-item"><a class="toc-item-link" href="#13. Face 的 Wire：3D 闭合 + 2D 闭合" style="padding-left:30px">13. Face 的 Wire：3D 闭合 + 2D 闭合</a></div><div class="toc-item"><a class="toc-item-link" href="#14. Face Orientation：Face normal 和 Surface normal" style="padding-left:30px">14. Face Orientation：Face normal 和 Surface normal</a></div><div class="toc-item"><a class="toc-item-link" href="#15. Orientation 与 Default Region" style="padding-left:30px">15. Orientation 与 Default Region</a></div><div class="toc-item"><a class="toc-item-link" href="#Vertex 限制 Curve" style="padding-left:45px">Vertex 限制 Curve</a></div><div class="toc-item"><a class="toc-item-link" href="#Edge 限制 Surface" style="padding-left:45px">Edge 限制 Surface</a></div><div class="toc-item"><a class="toc-item-link" href="#Face 限制 Space" style="padding-left:45px">Face 限制 Space</a></div><div class="toc-item"><a class="toc-item-link" href="#16. 四种 Orientation：FORWARD / REVERSED / INTERNAL / EXTERNAL" style="padding-left:30px">16. 四种 Orientation：FORWARD / REVERSED / INTERNAL / EXTERNAL</a></div><div class="toc-item"><a class="toc-item-link" href="#17. Location：几何定义坐标系与使用坐标系" style="padding-left:30px">17. Location：几何定义坐标系与使用坐标系</a></div><div class="toc-item"><a class="toc-item-link" href="#18. Vertex / Edge / Face 的关系总图" style="padding-left:30px">18. Vertex / Edge / Face 的关系总图</a></div><div class="toc-item"><a class="toc-item-link" href="#19. 常用 API：从 Topology 取 Geometry" style="padding-left:30px">19. 常用 API：从 Topology 取 Geometry</a></div><div class="toc-item"><a class="toc-item-link" href="#取 Vertex 的点" style="padding-left:45px">取 Vertex 的点</a></div><div class="toc-item"><a class="toc-item-link" href="#取 Edge 的 3D 曲线" style="padding-left:45px">取 Edge 的 3D 曲线</a></div><div class="toc-item"><a class="toc-item-link" href="#取 Edge 在 Face 上的 p-curve" style="padding-left:45px">取 Edge 在 Face 上的 p-curve</a></div><div class="toc-item"><a class="toc-item-link" href="#取 Face 的 Surface" style="padding-left:45px">取 Face 的 Surface</a></div><div class="toc-item"><a class="toc-item-link" href="#检查 Edge 几何一致性" style="padding-left:45px">检查 Edge 几何一致性</a></div><div class="toc-item"><a class="toc-item-link" href="#修复 SameParameter" style="padding-left:45px">修复 SameParameter</a></div><div class="toc-item"><a class="toc-item-link" href="#20. 一个调试工具的思路：Geometry Inspector" style="padding-left:30px">20. 一个调试工具的思路：Geometry Inspector</a></div><div class="toc-item"><a class="toc-item-link" href="#21. 最终总结" style="padding-left:30px">21. 最终总结</a></div></div></div></div></body></html>

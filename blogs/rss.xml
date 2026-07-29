@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Tue, 07 Jul 2026 09:21:42 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 29 Jul 2026 07:40:09 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Tue, 07 Jul 2026 09:21:19 GMT</pubDate>
+        <pubDate>Wed, 29 Jul 2026 07:39:45 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[NURBS 曲线]]></title>
@@ -68,6 +68,13 @@
             <link>https://pengfeixc.com/blogs/react/rn-expo-1.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/react/rn-expo-1.html</guid>
             <pubDate>Mon, 16 Mar 2026 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[OCCT 中的 Geometry 和 Topology]]></title>
+            <description><![CDATA[geometry and topology in occt]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/occt_geometry_topology.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/occt_geometry_topology.html</guid>
+            <pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[b 样条曲面]]></title>
