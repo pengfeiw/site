@@ -9,17 +9,10 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sat, 01 Aug 2026 05:10:24 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 01 Aug 2026 05:19:09 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sat, 01 Aug 2026 05:09:59 GMT</pubDate>
+        <pubDate>Sat, 01 Aug 2026 05:18:47 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
-        <item>
-            <title><![CDATA[opengl part 1]]></title>
-            <description><![CDATA[opengl 笔记]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/opengl-part-1.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/opengl-part-1.html</guid>
-            <pubDate>Fri, 31 Jul 2026 00:00:00 GMT</pubDate>
-        </item>
         <item>
             <title><![CDATA[NURBS 曲线]]></title>
             <description><![CDATA[从普通b样条曲线过渡到Nurbs曲线]]></description>
@@ -182,11 +175,18 @@
             <pubDate>Tue, 14 Oct 2025 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[opengl shader 和 buffer]]></title>
+            <title><![CDATA[opengl part 2：shader 和 buffer]]></title>
             <description><![CDATA[对 opengl 渲染管线中的一些重要概念的解释，包括 shader、vao、vbo、ebo 等。]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/opengl-shader-and-buffer.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/opengl-shader-and-buffer.html</guid>
+            <link>https://pengfeixc.com/blogs/computer-graphics/opengl-part2-shader-and-buffer.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/opengl-part2-shader-and-buffer.html</guid>
             <pubDate>Wed, 18 Jun 2025 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[opengl part 1：渲染管线]]></title>
+            <description><![CDATA[opengl(webgl) 渲染管线介绍]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/opengl-part1-redering-pipeline.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/opengl-part1-redering-pipeline.html</guid>
+            <pubDate>Tue, 17 Jun 2025 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[visual studio 配置 qt 开发环境]]></title>
