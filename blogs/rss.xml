@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Thu, 06 Aug 2026 04:56:19 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 06 Aug 2026 05:32:57 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Thu, 06 Aug 2026 04:55:57 GMT</pubDate>
+        <pubDate>Thu, 06 Aug 2026 05:32:31 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[回看 LookAt 矩阵]]></title>
+            <description><![CDATA[回看 lookAt 矩阵，它是怎么计算得到的]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/lookAt-matrix-review.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/lookAt-matrix-review.html</guid>
+            <pubDate>Thu, 06 Aug 2026 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[NURBS 曲线]]></title>
             <description><![CDATA[从普通b样条曲线过渡到Nurbs曲线]]></description>
