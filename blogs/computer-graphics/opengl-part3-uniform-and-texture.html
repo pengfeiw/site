@@ -1,0 +1,384 @@
+<html lang="zh_cn"><head><title>opengl part 3：glsl、uniform 和 texture | WANG_PF.OS.BLOGS</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="opengl,webgl,glsl,着色器,uniform,texture,纹理"><meta name="description" content="uniform 是什么"><link rel="stylesheet" href="/blogs/assests/style/code_github.css"><link rel="stylesheet" href="/blogs/assests/style/markdown.css"><link rel="stylesheet" href="/blogs/assests/style/article.css"><link rel="stylesheet" href="/blogs/assests/style/navigator.css"><link rel="stylesheet" href="/blogs/assests/style/global.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous"><link rel="icon" href="/blogs/assests/images/icon.jpg"><meta property="author" content="王鹏飞"><script type="text/javascript">const THEME_KEY="site-theme",THEME_DARK="opencode-dark",THEME_LIGHT="opencode-light";function applyTheme(e){var t,e=e===THEME_LIGHT?THEME_LIGHT:THEME_DARK,o=(document.documentElement.setAttribute("data-theme",e),document.getElementById("theme-toggle"));o&&(t=e===THEME_DARK,o.setAttribute("aria-label",t?"Switch to light theme":"Switch to dark theme"),o.setAttribute("title",t?"Switch to light theme":"Switch to dark theme"),o.setAttribute("aria-pressed",String(!t)),o.setAttribute("data-current-theme",e))}applyTheme(localStorage.getItem(THEME_KEY)||THEME_LIGHT),window.addEventListener("DOMContentLoaded",function(){applyTheme(localStorage.getItem(THEME_KEY)||THEME_DARK);const t=document.getElementById("search-input");var e=document.getElementById("theme-toggle");t.addEventListener("keydown",function(e){"Enter"===e.key&&t.value&&window.open(`https://bing.com/search?q=${t.value}%20site%3A+pengfeixc.com`,"_blank")}),e&&e.addEventListener("click",function(){var e=(document.documentElement.getAttribute("data-theme")===THEME_LIGHT?THEME_LIGHT:THEME_DARK)===THEME_DARK?THEME_LIGHT:THEME_DARK;applyTheme(e),localStorage.setItem(THEME_KEY,e)});document.querySelectorAll(".markdown-body pre").forEach(function(t){var e=document.createElement("div");e.className="code-block-wrapper",t.parentNode.insertBefore(e,t),e.appendChild(t);const o=document.createElement("button");o.className="code-copy-btn",e.appendChild(o),o.addEventListener("click",async function(){var e=t.querySelector("code");if(e)try{await navigator.clipboard.writeText(e.textContent),o.classList.add("copied"),setTimeout(function(){o.classList.remove("copied")},2e3)}catch(e){console.error("Failed to copy:",e)}})});e=document.querySelectorAll(".markdown-body img");let o=0,n=[];e.forEach(function(e,t){e.classList.contains("emoji")||(e.style.cursor="zoom-in",e.addEventListener("click",function(){var e;e=t,o=e,u(),c.classList.add("active"),document.body.style.overflow="hidden"}),n.push(e))});const c=document.createElement("div");c.className="image-lightbox",c.innerHTML=`
+        <div class="lightbox-overlay"></div>
+        <div class="lightbox-container">
+            <img class="lightbox-image" src="" alt="">
+            <div class="lightbox-counter"></div>
+        </div>
+        <button class="lightbox-close" title="关闭 (ESC)"></button>
+        <button class="lightbox-prev" title="上一张 (←)"></button>
+        <button class="lightbox-next" title="下一张 (→)"></button>
+    `,document.body.appendChild(c);e=c.querySelector(".lightbox-overlay");const i=c.querySelector(".lightbox-image"),l=c.querySelector(".lightbox-counter");var a=c.querySelector(".lightbox-close");const r=c.querySelector(".lightbox-prev"),s=c.querySelector(".lightbox-next");function d(){c.classList.remove("active"),document.body.style.overflow=""}function u(){var e=n[o];i.src=e.src,i.alt=e.alt||"",1<n.length?(l.textContent=o+1+" / "+n.length,l.style.display="block"):l.style.display="none",r.style.display=1<n.length?"flex":"none",s.style.display=1<n.length?"flex":"none"}function E(){n.length<=1||(o=(o-1+n.length)%n.length,u())}function m(){n.length<=1||(o=(o+1)%n.length,u())}e.addEventListener("click",d),a.addEventListener("click",d),r.addEventListener("click",function(e){e.stopPropagation(),E()}),s.addEventListener("click",function(e){e.stopPropagation(),m()}),document.addEventListener("keydown",function(e){if(c.classList.contains("active"))switch(e.key){case"Escape":d();break;case"ArrowLeft":E();break;case"ArrowRight":m()}})})</script></head><body><div class="header"><div class="navigator"><div class="nav-sections"><div class="home"><a href="/blogs">Home</a></div><div class="email"><a href="mailto:pengfeixc@sina.com">Email</a></div><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div class="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="rss"><a href="/blogs/rss.xml">RSS</a></div><div class="theme-toggle-wrapper"><button class="theme-toggle-btn" id="theme-toggle" type="button" aria-label="Switch to light theme" aria-pressed="false"></button></div><div class="search-wrapper"><input id="search-input" type="search" placeholder="search"></div></div></div></div><div class="body"><div class="markdown"><div class="markdown-header"><span class="date">日期：2025年6月18日</span><span class="category"><a href="/blogs/computer-graphics">标签：Computer Graphics</a></span></div><div class="markdown-body"><h1 id="opengl part 3: glsl、uniform 和 texture">opengl part 3: glsl、uniform 和 texture <a href="#opengl part 3: glsl、uniform 和 texture">#</a></h1><p>现代 opengl 要求我们必须对顶点着色器和片段着色器进行编程，而写着色器代码使用的语言是一种类 C 的着色器语言（GLSL, OpenGL Shading Language）。</p><h2 id="GLSL">GLSL <a href="#GLSL">#</a></h2><p>着色器的开头总是要声明版本，接着是输入和输出变量、uniform 和 main 函数，每个着色器入口点都是 main 函数。下面是一个典型的</p><pre><code class="hljs language-glsl"><span class="hljs-meta">#version version_number</span>
+<span class="hljs-keyword">in</span> type in_variable_name;
+<span class="hljs-keyword">in</span> type in_variable_name;
+
+<span class="hljs-keyword">out</span> type out_variable_name;
+
+<span class="hljs-keyword">uniform</span> type uniform_name;
+
+<span class="hljs-type">void</span> main()
+{
+  <span class="hljs-comment">// 处理输入并进行一些图形操作</span>
+  ...
+  <span class="hljs-comment">// 输出处理过的结果到输出变量</span>
+  out_variable_name = weird_stuff_we_processed;
+}
+</code></pre><h3 id="输入和输出">输入和输出 <a href="#输入和输出">#</a></h3><p>GLSL 定义了 <code>in</code> 和 <code>out</code> 关键字专门来实现这个目的。<strong>每个着色器使用这两个关键字设定输入和输出，只要一个输出变量与下一个着色器阶段的输入匹配，它就会传递下去</strong>。顶点着色器和片段着色器有点不同。</p><p>顶点着色器由于是渲染管线中的第一个着色器，所以顶点着色器的输入变量来自于 cpu，也就是在前一篇文章中提到的<strong>顶点属性</strong>（vertex attribute）。我们在 vbo 上定义数据，配置 vao 告诉 gpu 如何解析顶点数据。另外顶点着色器必须输出 <code>gl_Position</code> 变量，<code>gl_Position</code> 是 GLSL 内置变量，名称固定。</p><p>片段着色器需要一个 <code>vec4</code> 颜色输出变量，因为片段着色器需要生成一个最终输出的颜色。如果你在片段着色器没有定义输出颜色，OpenGL会把你的物体渲染为黑色（或白色）。这个输出颜色变量名称可以自己指定任意合法的名称，例如定义 <code>out vec4 FragColor;</code>。</p><p>所以如果我们打算从一个着色器向另一个着色器发送数据，我们必须在发送方着色器中声明一个输出，在接收方着色器中声明一个类似的输入。当类型和名字都一样的时候，OpenGL就会把两个变量链接到一起，它们之间就能发送数据了</p><h2 id="uniform">uniform <a href="#uniform">#</a></h2><p>从 cpu 上传递数据到 gpu 上除了使用顶点属性（vertex attribute）外，还可以使用 uniform 变量。uniform 和顶点属性不同的是 uniform 是全局的（Global），全局意味着 uniform 变量必须在每个着色器程序对象中都是独一无二的，而且它可以被着色器程序的任意着色器在任意阶段访问。而顶点属性只能被顶点着色器访问。此外，无论你把 uniform 值设置成什么，uniform 会一直保存它们的数据，直到它们被重置或更新。</p><p>glsl 中通过 <code>uniform</code> 关键字声明 uniform。</p><pre><code>#version 330 core
+out vec4 FragColor;
+
+uniform vec4 ourColor; // 在OpenGL程序代码中设定这个变量
+
+void main()
+{
+    FragColor = ourColor;
+}
+</code></pre><blockquote><p>uniform是全局变量，我们可以在任何着色器中定义它们，而无需通过顶点着色器作为中介。</p></blockquote><p>在 OpenGl 程序中设置 Uniform，需要先找到着色器中 uniform 属性的索引/位置。得到 uniform 的索引/位置值后，就可以更新它的值了。比如：</p><pre><code>float timeValue = glfwGetTime();
+float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");   // 获取 ourColor 的位置
+glUseProgram(shaderProgram); // 设置值之前必须先执行 glUseProgram，因为他是在当前激活的着色器程序中设置 uniform 的
+glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f); // 设置 ourColor 的值
+</code></pre><h2 id="纹理 Texture">纹理 Texture <a href="#纹理 Texture">#</a></h2><h3 id="1. 纹理是什么">1. 纹理是什么 <a href="#1. 纹理是什么">#</a></h3><p>纹理可以理解为存储在 GPU 中的一块图像或数据。</p><p>最常见的用途是把一张二维图片贴到几何体表面：</p><pre><code class="hljs language-text">顶点纹理坐标
+      ↓
+在纹理中找到对应位置
+      ↓
+读取纹素颜色
+      ↓
+片段着色器输出颜色
+</code></pre><p>GLSL 中通过 <code>sampler2D</code> 访问二维纹理：</p><pre><code class="hljs language-glsl"><span class="hljs-keyword">uniform</span> <span class="hljs-type">sampler2D</span> ourTexture;
+
+<span class="hljs-type">void</span> main()
+{
+    FragColor = <span class="hljs-built_in">texture</span>(ourTexture, TexCoord);
+}
+</code></pre><p>其中：</p><ul><li><code>ourTexture</code>：纹理采样器；</li><li><code>TexCoord</code>：纹理坐标；</li><li><code>texture()</code>：根据纹理坐标读取纹理颜色。</li></ul><hr><h3 id="2. 纹理坐标">2. 纹理坐标 <a href="#2. 纹理坐标">#</a></h3><p>纹理坐标用于描述几何体上的点对应纹理图片的哪个位置。</p><p>二维纹理坐标通常写成：</p><pre><code class="hljs language-text">(s, t)
+</code></pre><p>也经常写成：</p><pre><code class="hljs language-text">(u, v)
+</code></pre><p>标准范围一般为：</p><pre><code class="hljs language-text">s ∈ [0, 1]
+t ∈ [0, 1]
+</code></pre><p>对应关系：</p><pre><code class="hljs language-text">(0,1) ───────── (1,1)
+  │                │
+  │     纹理       │
+  │                │
+(0,0) ───────── (1,0)
+</code></pre><p>例如给矩形设置纹理坐标：</p><pre><code class="hljs language-cpp"><span class="hljs-type">float</span> vertices[] = {
+    <span class="hljs-comment">// 位置             // 纹理坐标</span>
+     <span class="hljs-number">0.5f</span>,  <span class="hljs-number">0.5f</span>, <span class="hljs-number">0.0f</span>, <span class="hljs-number">1.0f</span>, <span class="hljs-number">1.0f</span>,
+     <span class="hljs-number">0.5f</span>, <span class="hljs-number">-0.5f</span>, <span class="hljs-number">0.0f</span>, <span class="hljs-number">1.0f</span>, <span class="hljs-number">0.0f</span>,
+    <span class="hljs-number">-0.5f</span>, <span class="hljs-number">-0.5f</span>, <span class="hljs-number">0.0f</span>, <span class="hljs-number">0.0f</span>, <span class="hljs-number">0.0f</span>,
+    <span class="hljs-number">-0.5f</span>,  <span class="hljs-number">0.5f</span>, <span class="hljs-number">0.0f</span>, <span class="hljs-number">0.0f</span>, <span class="hljs-number">1.0f</span>
+};
+</code></pre><p>顶点着色器将纹理坐标传递给片段着色器：</p><pre><code class="hljs language-glsl"><span class="hljs-meta">#version 330 core</span>
+
+<span class="hljs-keyword">layout</span>(<span class="hljs-keyword">location</span> = <span class="hljs-number">0</span>) <span class="hljs-keyword">in</span> <span class="hljs-type">vec3</span> aPos;
+<span class="hljs-keyword">layout</span>(<span class="hljs-keyword">location</span> = <span class="hljs-number">1</span>) <span class="hljs-keyword">in</span> <span class="hljs-type">vec2</span> aTexCoord;
+
+<span class="hljs-keyword">out</span> <span class="hljs-type">vec2</span> TexCoord;
+
+<span class="hljs-type">void</span> main()
+{
+    <span class="hljs-built_in">gl_Position</span> = <span class="hljs-type">vec4</span>(aPos, <span class="hljs-number">1.0</span>);
+    TexCoord = aTexCoord;
+}
+</code></pre><p>片段着色器接收插值后的纹理坐标：</p><pre><code class="hljs language-glsl"><span class="hljs-keyword">in</span> <span class="hljs-type">vec2</span> TexCoord;
+
+<span class="hljs-keyword">uniform</span> <span class="hljs-type">sampler2D</span> ourTexture;
+
+<span class="hljs-type">void</span> main()
+{
+    FragColor = <span class="hljs-built_in">texture</span>(ourTexture, TexCoord);
+}
+</code></pre><p>三角形内部每个片段的纹理坐标由顶点纹理坐标自动插值得到。</p><hr><h3 id="3. 纹理环绕">3. 纹理环绕 <a href="#3. 纹理环绕">#</a></h3><p>当纹理坐标超出 <code>[0,1]</code> 时，OpenGL 需要决定如何读取纹理，这就是纹理环绕方式。</p><p>例如：</p><pre><code class="hljs language-text">TexCoord = (1.5, 0.5)
+</code></pre><p>横坐标已经超出了纹理范围。</p><p>常见环绕方式如下。</p><h4 id="%3Ccode%3EGL_REPEAT%3C/code%3E"><code>GL_REPEAT</code> <a href="#%3Ccode%3EGL_REPEAT%3C/code%3E">#</a></h4><p>重复纹理：</p><pre><code class="hljs language-text">0～1：第一张
+1～2：第二张
+2～3：第三张
+</code></pre><pre><code class="hljs language-cpp"><span class="hljs-built_in">glTexParameteri</span>(
+    GL_TEXTURE_2D,
+    GL_TEXTURE_WRAP_S,
+    GL_REPEAT
+);
+
+<span class="hljs-built_in">glTexParameteri</span>(
+    GL_TEXTURE_2D,
+    GL_TEXTURE_WRAP_T,
+    GL_REPEAT
+);
+</code></pre><h4 id="%3Ccode%3EGL_MIRRORED_REPEAT%3C/code%3E"><code>GL_MIRRORED_REPEAT</code> <a href="#%3Ccode%3EGL_MIRRORED_REPEAT%3C/code%3E">#</a></h4><p>重复纹理，但相邻纹理镜像翻转：</p><pre><code class="hljs language-text">正向 | 镜像 | 正向 | 镜像
+</code></pre><h4 id="%3Ccode%3EGL_CLAMP_TO_EDGE%3C/code%3E"><code>GL_CLAMP_TO_EDGE</code> <a href="#%3Ccode%3EGL_CLAMP_TO_EDGE%3C/code%3E">#</a></h4><p>超出范围后，使用纹理边缘的颜色。</p><p>常用于避免纹理边缘出现接缝。</p><h4 id="%3Ccode%3EGL_CLAMP_TO_BORDER%3C/code%3E"><code>GL_CLAMP_TO_BORDER</code> <a href="#%3Ccode%3EGL_CLAMP_TO_BORDER%3C/code%3E">#</a></h4><p>超出纹理范围后，使用指定的边框颜色：</p><pre><code class="hljs language-cpp"><span class="hljs-type">float</span> borderColor[] = {
+    <span class="hljs-number">1.0f</span>, <span class="hljs-number">1.0f</span>, <span class="hljs-number">1.0f</span>, <span class="hljs-number">1.0f</span>
+};
+
+<span class="hljs-built_in">glTexParameterfv</span>(
+    GL_TEXTURE_2D,
+    GL_TEXTURE_BORDER_COLOR,
+    borderColor
+);
+</code></pre><h4 id="S 和 T 方向">S 和 T 方向 <a href="#S 和 T 方向">#</a></h4><p>二维纹理有两个方向：</p><pre><code class="hljs language-text">S：水平方向
+T：垂直方向
+</code></pre><p>因此一般需要分别设置：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glTexParameteri</span>(
+    GL_TEXTURE_2D,
+    GL_TEXTURE_WRAP_S,
+    GL_REPEAT
+);
+
+<span class="hljs-built_in">glTexParameteri</span>(
+    GL_TEXTURE_2D,
+    GL_TEXTURE_WRAP_T,
+    GL_REPEAT
+);
+</code></pre><hr><h3 id="4. 纹理过滤">4. 纹理过滤 <a href="#4. 纹理过滤">#</a></h3><p>纹理过滤用于解决：</p><blockquote><p>屏幕像素与纹理像素不能一一对应时，应该如何计算颜色。</p></blockquote><p>纹理中的一个像素称为：</p><pre><code class="hljs language-text">Texel，纹素
+</code></pre><p>OpenGL 中主要有两种基础过滤方式。</p><h4 id="%3Ccode%3EGL_NEAREST%3C/code%3E"><code>GL_NEAREST</code> <a href="#%3Ccode%3EGL_NEAREST%3C/code%3E">#</a></h4><p>选择距离纹理坐标最近的一个纹素：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glTexParameteri</span>(
+    GL_TEXTURE_2D,
+    GL_TEXTURE_MAG_FILTER,
+    GL_NEAREST
+);
+</code></pre><p>特点：</p><ul><li>速度快；</li><li>边缘清晰；</li><li>放大后有明显像素块；</li><li>适合像素画。</li></ul><h4 id="%3Ccode%3EGL_LINEAR%3C/code%3E"><code>GL_LINEAR</code> <a href="#%3Ccode%3EGL_LINEAR%3C/code%3E">#</a></h4><p>读取附近多个纹素并进行线性插值：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glTexParameteri</span>(
+    GL_TEXTURE_2D,
+    GL_TEXTURE_MAG_FILTER,
+    GL_LINEAR
+);
+</code></pre><p>特点：</p><ul><li>过渡平滑；</li><li>放大时比较模糊；</li><li>普通图片通常使用这种方式。</li></ul><hr><h4 id="放大过滤与缩小过滤">放大过滤与缩小过滤 <a href="#放大过滤与缩小过滤">#</a></h4><p>OpenGL 将过滤分为两种情况。</p><p><strong>放大过滤</strong>：纹理比较小，但显示在较大的屏幕区域：</p><pre><code class="hljs language-text">64 × 64 纹理
+    ↓
+显示为 500 × 500
+</code></pre><p>通过下面的参数设置：</p><pre><code class="hljs language-cpp">GL_TEXTURE_MAG_FILTER
+</code></pre><p>可选值主要是：</p><pre><code class="hljs language-cpp">GL_NEAREST
+GL_LINEAR
+</code></pre><p><strong>缩小过滤</strong>：纹理比较大，但显示在较小的屏幕区域：</p><pre><code class="hljs language-text">1024 × 1024 纹理
+      ↓
+显示为 20 × 20
+</code></pre><p>通过下面的参数设置：</p><pre><code class="hljs language-cpp">GL_TEXTURE_MIN_FILTER
+</code></pre><p>缩小时可以使用普通过滤，也可以配合 Mipmap。</p><hr><h3 id="5. Mipmap">5. Mipmap <a href="#5. Mipmap">#</a></h3><p>Mipmap 是同一张纹理的一系列不同分辨率版本。</p><p>例如原始纹理为：</p><pre><code class="hljs language-text">Level 0：1024 × 1024
+Level 1： 512 × 512
+Level 2： 256 × 256
+Level 3： 128 × 128
+...
+最终：       1 × 1
+</code></pre><p>当物体靠近摄像机时，使用较高分辨率纹理；当物体远离摄像机时，使用较低分辨率纹理。</p><p>作用：</p><ul><li>减少远处纹理闪烁；</li><li>减少锯齿和摩尔纹；</li><li>提高纹理采样效率；</li><li>避免远处物体仍然从超高分辨率纹理中采样。</li></ul><p>上传原始纹理后，可以自动生成 Mipmap：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glGenerateMipmap</span>(GL_TEXTURE_2D);
+</code></pre><p>常见的 Mipmap 缩小过滤方式：</p><pre><code class="hljs language-cpp">GL_NEAREST_MIPMAP_NEAREST
+GL_LINEAR_MIPMAP_NEAREST
+GL_NEAREST_MIPMAP_LINEAR
+GL_LINEAR_MIPMAP_LINEAR
+</code></pre><p>最常用的是：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glTexParameteri</span>(
+    GL_TEXTURE_2D,
+    GL_TEXTURE_MIN_FILTER,
+    GL_LINEAR_MIPMAP_LINEAR
+);
+</code></pre><p>它会：</p><ol><li>在相邻纹素之间进行线性插值；</li><li>在相邻两个 Mipmap 层级之间进行线性插值。</li></ol><p>这种方式通常称为三线性过滤。</p><p>Mipmap 主要用于纹理缩小，因此不能用于：</p><pre><code class="hljs language-cpp">GL_TEXTURE_MAG_FILTER
+</code></pre><p>下面这种设置是无效的：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glTexParameteri</span>(
+    GL_TEXTURE_2D,
+    GL_TEXTURE_MAG_FILTER,
+    GL_LINEAR_MIPMAP_LINEAR
+);
+</code></pre><p>放大过滤只能使用：</p><pre><code class="hljs language-cpp">GL_NEAREST
+GL_LINEAR
+</code></pre><hr><h3 id="6. 纹理对象">6. 纹理对象 <a href="#6. 纹理对象">#</a></h3><p>纹理对象用于保存：</p><ul><li>纹理图片数据；</li><li>宽度和高度；</li><li>像素格式；</li><li>环绕方式；</li><li>过滤方式；</li><li>Mipmap 数据。</li></ul><p>创建纹理对象：</p><pre><code class="hljs language-cpp"><span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> texture = <span class="hljs-number">0</span>;
+<span class="hljs-built_in">glGenTextures</span>(<span class="hljs-number">1</span>, &amp;texture);
+</code></pre><p>绑定纹理对象：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glBindTexture</span>(GL_TEXTURE_2D, texture);
+</code></pre><p>绑定以后，后续的纹理设置都会作用于当前绑定的纹理对象：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glTexParameteri</span>(...);
+<span class="hljs-built_in">glTexImage2D</span>(...);
+<span class="hljs-built_in">glGenerateMipmap</span>(...);
+</code></pre><hr><h3 id="7. 纹理单元">7. 纹理单元 <a href="#7. 纹理单元">#</a></h3><p>着色器可能同时使用多张纹理，因此 OpenGL 提供了多个纹理单元：</p><pre><code class="hljs language-text">GL_TEXTURE0
+GL_TEXTURE1
+GL_TEXTURE2
+...
+</code></pre><p>可以把纹理单元理解为 GPU 中的一组纹理插槽。</p><p>关系如下：</p><pre><code class="hljs language-text">sampler2D
+    ↓
+纹理单元
+    ↓
+纹理对象
+    ↓
+纹理数据
+</code></pre><p>例如：</p><pre><code class="hljs language-text">diffuseMap → 纹理单元 0 → 漫反射纹理
+normalMap  → 纹理单元 1 → 法线纹理
+</code></pre><p>选择纹理单元：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glActiveTexture</span>(GL_TEXTURE0);
+</code></pre><p>给当前纹理单元绑定纹理对象：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glBindTexture</span>(GL_TEXTURE_2D, diffuseTexture);
+</code></pre><p>告诉着色器中的采样器读取哪个纹理单元：</p><pre><code class="hljs language-cpp">shader.<span class="hljs-built_in">setInt</span>(<span class="hljs-string">"diffuseMap"</span>, <span class="hljs-number">0</span>);
+</code></pre><p>注意：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glActiveTexture</span>(GL_TEXTURE0);
+</code></pre><p>使用的是枚举值 <code>GL_TEXTURE0</code>。</p><p>而：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glUniform1i</span>(location, <span class="hljs-number">0</span>);
+</code></pre><p>传入的是纹理单元编号 <code>0</code>。</p><p>不要写成：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glUniform1i</span>(location, GL_TEXTURE0); <span class="hljs-comment">// 错误</span>
+</code></pre><p>也不要把纹理对象 ID 传给 sampler：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glUniform1i</span>(location, textureID); <span class="hljs-comment">// 错误理解</span>
+</code></pre><hr><h3 id="8. 多纹理示例">8. 多纹理示例 <a href="#8. 多纹理示例">#</a></h3><p>片段着色器：</p><pre><code class="hljs language-glsl"><span class="hljs-meta">#version 330 core</span>
+
+<span class="hljs-keyword">out</span> <span class="hljs-type">vec4</span> FragColor;
+
+<span class="hljs-keyword">in</span> <span class="hljs-type">vec2</span> TexCoord;
+
+<span class="hljs-keyword">uniform</span> <span class="hljs-type">sampler2D</span> texture1;
+<span class="hljs-keyword">uniform</span> <span class="hljs-type">sampler2D</span> texture2;
+
+<span class="hljs-type">void</span> main()
+{
+    <span class="hljs-type">vec4</span> color1 = <span class="hljs-built_in">texture</span>(texture1, TexCoord);
+    <span class="hljs-type">vec4</span> color2 = <span class="hljs-built_in">texture</span>(texture2, TexCoord);
+
+    FragColor = <span class="hljs-built_in">mix</span>(color1, color2, <span class="hljs-number">0.2</span>);
+}
+</code></pre><p>CPU 设置采样器：</p><pre><code class="hljs language-cpp">shader.<span class="hljs-built_in">use</span>();
+
+shader.<span class="hljs-built_in">setInt</span>(<span class="hljs-string">"texture1"</span>, <span class="hljs-number">0</span>);
+shader.<span class="hljs-built_in">setInt</span>(<span class="hljs-string">"texture2"</span>, <span class="hljs-number">1</span>);
+</code></pre><p>绘制前绑定纹理：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glActiveTexture</span>(GL_TEXTURE0);
+<span class="hljs-built_in">glBindTexture</span>(GL_TEXTURE_2D, firstTexture);
+
+<span class="hljs-built_in">glActiveTexture</span>(GL_TEXTURE1);
+<span class="hljs-built_in">glBindTexture</span>(GL_TEXTURE_2D, secondTexture);
+
+shader.<span class="hljs-built_in">use</span>();
+<span class="hljs-built_in">glBindVertexArray</span>(VAO);
+<span class="hljs-built_in">glDrawElements</span>(
+    GL_TRIANGLES,
+    <span class="hljs-number">6</span>,
+    GL_UNSIGNED_INT,
+    <span class="hljs-literal">nullptr</span>
+);
+</code></pre><p>对应关系：</p><pre><code class="hljs language-text">texture1 → 纹理单元 0 → firstTexture
+texture2 → 纹理单元 1 → secondTexture
+</code></pre><hr><h3 id="9. 完整的纹理创建流程">9. 完整的纹理创建流程 <a href="#9. 完整的纹理创建流程">#</a></h3><p>下面以 <code>stb_image</code> 加载二维图片为例。</p><pre><code class="hljs language-cpp"><span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> texture = <span class="hljs-number">0</span>;
+<span class="hljs-built_in">glGenTextures</span>(<span class="hljs-number">1</span>, &amp;texture);
+
+<span class="hljs-comment">// 绑定纹理对象</span>
+<span class="hljs-built_in">glBindTexture</span>(GL_TEXTURE_2D, texture);
+
+<span class="hljs-comment">// 设置纹理环绕</span>
+<span class="hljs-built_in">glTexParameteri</span>(
+    GL_TEXTURE_2D,
+    GL_TEXTURE_WRAP_S,
+    GL_REPEAT
+);
+
+<span class="hljs-built_in">glTexParameteri</span>(
+    GL_TEXTURE_2D,
+    GL_TEXTURE_WRAP_T,
+    GL_REPEAT
+);
+
+<span class="hljs-comment">// 设置纹理过滤</span>
+<span class="hljs-built_in">glTexParameteri</span>(
+    GL_TEXTURE_2D,
+    GL_TEXTURE_MIN_FILTER,
+    GL_LINEAR_MIPMAP_LINEAR
+);
+
+<span class="hljs-built_in">glTexParameteri</span>(
+    GL_TEXTURE_2D,
+    GL_TEXTURE_MAG_FILTER,
+    GL_LINEAR
+);
+
+<span class="hljs-comment">// 加载图片</span>
+<span class="hljs-type">int</span> width = <span class="hljs-number">0</span>;
+<span class="hljs-type">int</span> height = <span class="hljs-number">0</span>;
+<span class="hljs-type">int</span> channels = <span class="hljs-number">0</span>;
+
+<span class="hljs-built_in">stbi_set_flip_vertically_on_load</span>(<span class="hljs-literal">true</span>);
+
+<span class="hljs-type">unsigned</span> <span class="hljs-type">char</span>* data = <span class="hljs-built_in">stbi_load</span>(
+    <span class="hljs-string">"container.jpg"</span>,
+    &amp;width,
+    &amp;height,
+    &amp;channels,
+    <span class="hljs-number">0</span>
+);
+
+<span class="hljs-keyword">if</span> (data != <span class="hljs-literal">nullptr</span>)
+{
+    GLenum format = GL_RGB;
+
+    <span class="hljs-keyword">if</span> (channels == <span class="hljs-number">1</span>)
+    {
+        format = GL_RED;
+    }
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (channels == <span class="hljs-number">3</span>)
+    {
+        format = GL_RGB;
+    }
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (channels == <span class="hljs-number">4</span>)
+    {
+        format = GL_RGBA;
+    }
+
+    <span class="hljs-comment">// 上传图片数据到纹理对象</span>
+    <span class="hljs-built_in">glTexImage2D</span>(
+        GL_TEXTURE_2D,
+        <span class="hljs-number">0</span>,
+        format,
+        width,
+        height,
+        <span class="hljs-number">0</span>,
+        format,
+        GL_UNSIGNED_BYTE,
+        data
+    );
+
+    <span class="hljs-comment">// 生成 Mipmap</span>
+    <span class="hljs-built_in">glGenerateMipmap</span>(GL_TEXTURE_2D);
+}
+<span class="hljs-keyword">else</span>
+{
+    std::cerr &lt;&lt; <span class="hljs-string">"Failed to load texture\n"</span>;
+}
+
+<span class="hljs-built_in">stbi_image_free</span>(data);
+</code></pre><hr><h3 id="10. 绘制时使用纹理">10. 绘制时使用纹理 <a href="#10. 绘制时使用纹理">#</a></h3><p>初始化阶段设置 sampler：</p><pre><code class="hljs language-cpp">shader.<span class="hljs-built_in">use</span>();
+shader.<span class="hljs-built_in">setInt</span>(<span class="hljs-string">"ourTexture"</span>, <span class="hljs-number">0</span>);
+</code></pre><p>渲染循环中绑定纹理：</p><pre><code class="hljs language-cpp"><span class="hljs-keyword">while</span> (!<span class="hljs-built_in">glfwWindowShouldClose</span>(window))
+{
+    <span class="hljs-built_in">glClear</span>(GL_COLOR_BUFFER_BIT);
+
+    shader.<span class="hljs-built_in">use</span>();
+
+    <span class="hljs-built_in">glActiveTexture</span>(GL_TEXTURE0);
+    <span class="hljs-built_in">glBindTexture</span>(GL_TEXTURE_2D, texture);
+
+    <span class="hljs-built_in">glBindVertexArray</span>(VAO);
+
+    <span class="hljs-built_in">glDrawElements</span>(
+        GL_TRIANGLES,
+        <span class="hljs-number">6</span>,
+        GL_UNSIGNED_INT,
+        <span class="hljs-literal">nullptr</span>
+    );
+
+    <span class="hljs-built_in">glfwSwapBuffers</span>(window);
+    <span class="hljs-built_in">glfwPollEvents</span>();
+}
+</code></pre><hr><h3 id="11. 整体流程总结">11. 整体流程总结 <a href="#11. 整体流程总结">#</a></h3><pre><code class="hljs language-text">1. glGenTextures
+   创建纹理对象
+
+2. glBindTexture
+   绑定纹理对象
+
+3. glTexParameteri
+   设置环绕方式和过滤方式
+
+4. 读取图片
+   获取像素数据
+
+5. glTexImage2D
+   将像素数据上传到 GPU
+
+6. glGenerateMipmap
+   生成多级渐远纹理
+
+7. glActiveTexture
+   选择纹理单元
+
+8. glBindTexture
+   将纹理对象绑定到纹理单元
+
+9. glUniform1i
+   让 sampler 指向纹理单元
+
+10. texture()
+    在片段着色器中采样纹理
+</code></pre><p>最核心的对应关系可以记成：</p><pre><code class="hljs language-text">纹理坐标：决定从纹理的哪里读取
+
+纹理环绕：决定坐标超出 [0,1] 后如何读取
+
+纹理过滤：决定多个纹素如何计算成最终颜色
+
+Mipmap：为远处物体选择合适分辨率的纹理
+
+纹理对象：保存实际纹理数据和参数
+
+纹理单元：连接 sampler 和纹理对象
+
+sampler2D：着色器中用于访问二维纹理的变量
+</code></pre><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/computer-graphics/opengl-part1-redering-pipeline">上一篇：opengl part 1：渲染管线</a></span><span class="next-article"><a href="/blogs/computer-graphics/opengl-part2-shader-and-buffer">下一篇：opengl part 2：shader 和 buffer</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#opengl part 3: glsl、uniform 和 texture" style="padding-left:15px">opengl part 3: glsl、uniform 和 texture</a></div><div class="toc-item"><a class="toc-item-link" href="#GLSL" style="padding-left:30px">GLSL</a></div><div class="toc-item"><a class="toc-item-link" href="#输入和输出" style="padding-left:45px">输入和输出</a></div><div class="toc-item"><a class="toc-item-link" href="#uniform" style="padding-left:30px">uniform</a></div><div class="toc-item"><a class="toc-item-link" href="#纹理 Texture" style="padding-left:30px">纹理 Texture</a></div><div class="toc-item"><a class="toc-item-link" href="#1. 纹理是什么" style="padding-left:45px">1. 纹理是什么</a></div><div class="toc-item"><a class="toc-item-link" href="#2. 纹理坐标" style="padding-left:45px">2. 纹理坐标</a></div><div class="toc-item"><a class="toc-item-link" href="#3. 纹理环绕" style="padding-left:45px">3. 纹理环绕</a></div><div class="toc-item"><a class="toc-item-link" href="#%3Ccode%3EGL_REPEAT%3C/code%3E" style="padding-left:60px">GL_REPEAT</a></div><div class="toc-item"><a class="toc-item-link" href="#%3Ccode%3EGL_MIRRORED_REPEAT%3C/code%3E" style="padding-left:60px">GL_MIRRORED_REPEAT</a></div><div class="toc-item"><a class="toc-item-link" href="#%3Ccode%3EGL_CLAMP_TO_EDGE%3C/code%3E" style="padding-left:60px">GL_CLAMP_TO_EDGE</a></div><div class="toc-item"><a class="toc-item-link" href="#%3Ccode%3EGL_CLAMP_TO_BORDER%3C/code%3E" style="padding-left:60px">GL_CLAMP_TO_BORDER</a></div><div class="toc-item"><a class="toc-item-link" href="#S 和 T 方向" style="padding-left:60px">S 和 T 方向</a></div><div class="toc-item"><a class="toc-item-link" href="#4. 纹理过滤" style="padding-left:45px">4. 纹理过滤</a></div><div class="toc-item"><a class="toc-item-link" href="#%3Ccode%3EGL_NEAREST%3C/code%3E" style="padding-left:60px">GL_NEAREST</a></div><div class="toc-item"><a class="toc-item-link" href="#%3Ccode%3EGL_LINEAR%3C/code%3E" style="padding-left:60px">GL_LINEAR</a></div><div class="toc-item"><a class="toc-item-link" href="#放大过滤与缩小过滤" style="padding-left:60px">放大过滤与缩小过滤</a></div><div class="toc-item"><a class="toc-item-link" href="#5. Mipmap" style="padding-left:45px">5. Mipmap</a></div><div class="toc-item"><a class="toc-item-link" href="#6. 纹理对象" style="padding-left:45px">6. 纹理对象</a></div><div class="toc-item"><a class="toc-item-link" href="#7. 纹理单元" style="padding-left:45px">7. 纹理单元</a></div><div class="toc-item"><a class="toc-item-link" href="#8. 多纹理示例" style="padding-left:45px">8. 多纹理示例</a></div><div class="toc-item"><a class="toc-item-link" href="#9. 完整的纹理创建流程" style="padding-left:45px">9. 完整的纹理创建流程</a></div><div class="toc-item"><a class="toc-item-link" href="#10. 绘制时使用纹理" style="padding-left:45px">10. 绘制时使用纹理</a></div><div class="toc-item"><a class="toc-item-link" href="#11. 整体流程总结" style="padding-left:45px">11. 整体流程总结</a></div></div></div></div></body></html>
