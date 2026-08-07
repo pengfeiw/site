@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Thu, 06 Aug 2026 13:36:44 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 07 Aug 2026 00:41:37 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Thu, 06 Aug 2026 13:36:24 GMT</pubDate>
+        <pubDate>Fri, 07 Aug 2026 00:41:18 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[回看 LookAt 矩阵]]></title>
@@ -182,17 +182,17 @@
             <pubDate>Tue, 14 Oct 2025 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[opengl part 2：shader 和 buffer]]></title>
-            <description><![CDATA[对 opengl 渲染管线中的一些重要概念的解释，包括 shader、vao、vbo、ebo 等。]]></description>
-            <link>https://pengfeixc.com/blogs/computer-graphics/opengl-part2-shader-and-buffer.html</link>
-            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/opengl-part2-shader-and-buffer.html</guid>
-            <pubDate>Wed, 18 Jun 2025 00:00:00 GMT</pubDate>
-        </item>
-        <item>
             <title><![CDATA[opengl part 3：glsl、uniform 和 texture]]></title>
             <description><![CDATA[uniform 是什么]]></description>
             <link>https://pengfeixc.com/blogs/computer-graphics/opengl-part3-uniform-and-texture.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/opengl-part3-uniform-and-texture.html</guid>
+            <pubDate>Thu, 19 Jun 2025 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[opengl part 2：shader 和 buffer]]></title>
+            <description><![CDATA[对 opengl 渲染管线中的一些重要概念的解释，包括 shader、vao、vbo、ebo 等。]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/opengl-part2-shader-and-buffer.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/opengl-part2-shader-and-buffer.html</guid>
             <pubDate>Wed, 18 Jun 2025 00:00:00 GMT</pubDate>
         </item>
         <item>
