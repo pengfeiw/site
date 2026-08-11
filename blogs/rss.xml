@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Tue, 11 Aug 2026 03:22:47 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 11 Aug 2026 07:33:42 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Tue, 11 Aug 2026 03:22:24 GMT</pubDate>
+        <pubDate>Tue, 11 Aug 2026 07:33:18 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[回看 LookAt 矩阵]]></title>
@@ -858,6 +858,13 @@
             <link>https://pengfeixc.com/blogs/javascript/babel-tutorial.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/babel-tutorial.html</guid>
             <pubDate>Sat, 21 Aug 2021 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[设计模式原则]]></title>
+            <description><![CDATA[设计模式的原则，面向对象编程原则]]></description>
+            <link>https://pengfeixc.com/blogs/developer-handbook/design-pattern.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/developer-handbook/design-pattern.html</guid>
+            <pubDate>Wed, 18 Aug 2021 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[设计模式]]></title>
