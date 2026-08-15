@@ -129,7 +129,7 @@ Near                         Far
 </code></pre><p>每次迭代需要清除模板缓冲：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glClear</span>(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 </code></pre><p>和深度测试的 <code>glDepthMask</code> 函数一样，模板缓冲也有一个类似的函数。<code>glStencilMask</code> 允许我们设置一个位掩码(Bitmask)，它会与将要写入缓冲的模板值进行与(<code>AND</code>)运算。默认情况下设置的位掩码所有位都为1，不影响输出，但如果我们将它设置为 <code>0x00</code>，写入缓冲的所有模板值最后都会变成 <code>0</code>.这与深度测试中的 <code>glDepthMask(GL_FALSE)</code> 是等价的。</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glStencilMask</span>(<span class="hljs-number">0xFF</span>); <span class="hljs-comment">// 每一位写入模板缓冲时都保持原样</span>
 <span class="hljs-built_in">glStencilMask</span>(<span class="hljs-number">0x00</span>); <span class="hljs-comment">// 每一位在写入模板缓冲时都会变成0（禁用写入）</span>
-</code></pre><p>大部分情况下你都只会使用0x00或者0xFF作为模板掩码(Stencil Mask)，但是知道有选项可以设置自定义的位掩码总是好的。</p><h2 id="2.模板函数">2.模板函数 <a href="#2.模板函数">#</a></h2><p>首先介绍下两个相关 api 的职责：</p><ul><li>glStencilFunc：决定模板测试通过还是失败。</li><li>glStencilOp：决定测试之后，模板缓冲里的值要怎么修改。</li></ul><h3 id="glStencilFunc: 决定当前 Fragment 能不能通过测试">glStencilFunc: 决定当前 Fragment 能不能通过测试 <a href="#glStencilFunc: 决定当前 Fragment 能不能通过测试">#</a></h3><pre><code class="hljs language-cpp"><span class="hljs-built_in">glStencilFunc</span>(GLenum func, GLint ref, GLuint mask);
+</code></pre><p>大部分情况下你都只会使用0x00或者0xFF作为模板掩码(Stencil Mask)，但是知道有选项可以设置自定义的位掩码总是好的。</p><h3 id="2.模板函数">2.模板函数 <a href="#2.模板函数">#</a></h3><p>首先介绍下两个相关 api 的职责：</p><ul><li>glStencilFunc：决定模板测试通过还是失败。</li><li>glStencilOp：决定测试之后，模板缓冲里的值要怎么修改。</li></ul><h3 id="glStencilFunc: 决定当前 Fragment 能不能通过测试">glStencilFunc: 决定当前 Fragment 能不能通过测试 <a href="#glStencilFunc: 决定当前 Fragment 能不能通过测试">#</a></h3><pre><code class="hljs language-cpp"><span class="hljs-built_in">glStencilFunc</span>(GLenum func, GLint ref, GLuint mask);
 </code></pre><p>三个参数分别是：</p><pre><code>func  → 怎么比较
 ref   → 拿什么值和模板缓冲比较
 mask  → 比较之前，对两边哪些 bit 参与比较
@@ -190,4 +190,71 @@ model = glm::<span class="hljs-built_in">scale</span>(
 <span class="hljs-built_in">glStencilMask</span>(<span class="hljs-number">0x00</span>);
 </code></pre><p>另外第二遍绘制时，需要使用单色 Shader 作为高亮颜色。</p><p>最后需要恢复 OpenGL 状态，避免影响下一帧或者之后其他物体的绘制。</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glStencilMask</span>(<span class="hljs-number">0xFF</span>);
 <span class="hljs-built_in">glEnable</span>(GL_DEPTH_TEST);
-</code></pre><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/computer-graphics/opengl-part3-uniform-and-texture">上一篇：opengl part 3：glsl、uniform 和 texture</a></span><span class="next-article"><a href="/blogs/computer-graphics/occt-interference">下一篇：occt 的几何干扰 interference 和容差</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#opengl part 4：深度测试和模板测试" style="padding-left:15px">opengl part 4：深度测试和模板测试</a></div><div class="toc-item"><a class="toc-item-link" href="#深度测试 Depth Test" style="padding-left:30px">深度测试 Depth Test</a></div><div class="toc-item"><a class="toc-item-link" href="#1. 深度测试与深度缓冲" style="padding-left:45px">1. 深度测试与深度缓冲</a></div><div class="toc-item"><a class="toc-item-link" href="#深度缓冲" style="padding-left:60px">深度缓冲</a></div><div class="toc-item"><a class="toc-item-link" href="#2. 开启深度测试" style="padding-left:45px">2. 开启深度测试</a></div><div class="toc-item"><a class="toc-item-link" href="#3. 深度值如何比较" style="padding-left:45px">3. 深度值如何比较</a></div><div class="toc-item"><a class="toc-item-link" href="#4. Depth Buffer 的精度" style="padding-left:45px">4. Depth Buffer 的精度</a></div><div class="toc-item"><a class="toc-item-link" href="#5. 深度精度：线性与非线性深度" style="padding-left:45px">5. 深度精度：线性与非线性深度</a></div><div class="toc-item"><a class="toc-item-link" href="#线性深度" style="padding-left:60px">线性深度</a></div><div class="toc-item"><a class="toc-item-link" href="#非线性深度" style="padding-left:60px">非线性深度</a></div><div class="toc-item"><a class="toc-item-link" href="#为什么非线性深度精度更合理" style="padding-left:60px">为什么非线性深度精度更合理</a></div><div class="toc-item"><a class="toc-item-link" href="#核心理解" style="padding-left:60px">核心理解</a></div><div class="toc-item"><a class="toc-item-link" href="#模板测试 Stencil Test" style="padding-left:30px">模板测试 Stencil Test</a></div><div class="toc-item"><a class="toc-item-link" href="#1. 模板缓冲" style="padding-left:45px">1. 模板缓冲</a></div><div class="toc-item"><a class="toc-item-link" href="#2.模板函数" style="padding-left:30px">2.模板函数</a></div><div class="toc-item"><a class="toc-item-link" href="#glStencilFunc: 决定当前 Fragment 能不能通过测试" style="padding-left:45px">glStencilFunc: 决定当前 Fragment 能不能通过测试</a></div><div class="toc-item"><a class="toc-item-link" href="#glStencilOp：决定 Stencil Buffer 怎么修改" style="padding-left:45px">glStencilOp：决定 Stencil Buffer 怎么修改</a></div><div class="toc-item"><a class="toc-item-link" href="#绘制物体轮廓" style="padding-left:45px">绘制物体轮廓</a></div></div></div></div></body></html>
+</code></pre><h3 id="3. 应用场景">3. 应用场景 <a href="#3. 应用场景">#</a></h3><p>模板测试的核心用途可以概括成一句话：</p><blockquote><p><strong>先在 Stencil Buffer 中标记某些屏幕区域，再让后续绘制只发生在指定区域内或区域外。</strong></p></blockquote><p>所以它特别适合做各种“屏幕空间 Mask”。</p><p>常见应用有这些：</p><ol><li><p><strong>物体轮廓 / 选中高亮</strong> 就是 LearnOpenGL 当前这个例子。第一遍绘制物体时，把物体区域标记成 <code>Stencil = 1</code>；第二遍绘制放大的物体，只允许 <code>Stencil != 1</code> 的区域通过，于是只剩外围轮廓。</p><pre><code class="hljs language-text">原物体区域 → Stencil = 1
+
+放大物体：
+Stencil == 1  → 不画
+Stencil != 1  → 画
+
+最终得到轮廓
+</code></pre></li><li><p><strong>限定绘制区域 / Mask</strong> 例如先画一个圆，并只写 Stencil：</p><pre><code class="hljs language-text">    0000000
+   001111100
+   011111110
+   001111100
+    0000000
+</code></pre><p>然后设置：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glStencilFunc</span>(GL_EQUAL, <span class="hljs-number">1</span>, <span class="hljs-number">0xFF</span>);
+</code></pre><p>后续场景只会显示在这个圆形区域中。它的本质就是：</p><blockquote><p>“只允许在某个形状内部绘制。”</p></blockquote></li><li><p><strong>镜子 / 传送门 / 窗口效果</strong> 这是 Stencil Buffer 很经典的应用。</p><p>例如场景中有一面镜子：</p><pre><code class="hljs language-text">+-----------------------+
+|                       |
+|      +---------+      |
+|      |  镜子   |      |
+|      +---------+      |
+|                       |
++-----------------------+
+</code></pre><p>可以先把镜子的屏幕区域写成：</p><pre><code class="hljs language-text">Stencil = 1
+</code></pre><p>然后绘制镜像场景时：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glStencilFunc</span>(GL_EQUAL, <span class="hljs-number">1</span>, <span class="hljs-number">0xFF</span>);
+</code></pre><p>这样镜像场景只会出现在镜子区域里，而不会绘制到整个屏幕。</p><p>传送门也是类似：</p><pre><code class="hljs language-text">Portal 区域
+    ↓
+Stencil = 1
+    ↓
+另一个场景只允许在 Stencil == 1 中绘制
+</code></pre></li><li><p><strong>平面阴影（Planar Shadow）</strong> 一些传统实时渲染方法会把物体投影到地面生成阴影。Stencil Buffer 可以用来限制阴影：</p><pre><code class="hljs language-text">只允许阴影绘制在地板区域
+</code></pre><p>或防止同一片区域被阴影重复混合多次。</p></li><li><p><strong>防止重复绘制某个区域</strong> Stencil 不一定只是 <code>0/1</code>，也可以做计数。</p><p>例如第一次绘制：</p><pre><code class="hljs language-text">Stencil = 1
+</code></pre><p>后续设置：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glStencilFunc</span>(GL_EQUAL, <span class="hljs-number">0</span>, <span class="hljs-number">0xFF</span>);
+</code></pre><p>就可以实现：</p><blockquote><p>已经处理过的像素不再处理。</p></blockquote><p>因此它可以用于一些多 Pass 渲染算法中的区域控制。</p></li><li><p><strong>光照体积 / Deferred Rendering</strong> 在延迟渲染中，如果点光源只影响一个球形范围：</p><pre><code class="hljs language-text">          光源
+            *
+        /       \
+      /  sphere   \
+     \             /
+      \           /
+</code></pre><p>可以通过 Stencil Buffer 标记光照体积对应的像素，只对这些区域进行后续光照计算，避免整个屏幕都计算这个光源。</p><p>这是比物体轮廓更高级的一种 Stencil 用法。</p></li><li><p><strong>复杂裁剪区域</strong> <code>glScissor</code> 只能简单裁剪一个矩形：</p><pre><code class="hljs language-text">+----------+
+| 可绘制区 |
++----------+
+</code></pre><p>而 Stencil 可以使用任意几何形状：</p><pre><code class="hljs language-text">     ****
+   **    **
+  *        *
+   **    **
+     ****
+</code></pre><p>所以如果需要：</p><blockquote><p>“只在一个任意形状区域内绘制”</p></blockquote><p>Stencil Buffer 会比 Scissor Test 灵活很多。</p></li></ol><hr><p>可以把这些应用统一理解成一种模式：</p><pre><code class="hljs language-text">Pass 1：
+
+绘制某些几何体
+       ↓
+不一定关心颜色
+       ↓
+在 Stencil Buffer 中生成 Mask
+
+
+Pass 2：
+
+绘制真正内容
+       ↓
+读取 Stencil Buffer
+       ↓
+Stencil == ? / != ?
+       ↓
+只允许指定区域的 Fragment 通过
+</code></pre><p>所以模板缓冲最重要的能力其实不是“模板测试”这个名字，而是：</p><blockquote><p><strong>它提供了一张与屏幕像素对应的、可由几何体生成的整数 Mask。</strong></p></blockquote><p>这也是它和 Depth Buffer 的明显区别：</p><pre><code class="hljs language-text">Depth Buffer
+→ 主要回答：谁在前、谁在后？
+
+Stencil Buffer
+→ 主要回答：这个像素属于哪个区域？允许不允许画？
+</code></pre><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/computer-graphics/opengl-part3-uniform-and-texture">上一篇：opengl part 3：glsl、uniform 和 texture</a></span><span class="next-article"><a href="/blogs/computer-graphics/occt-interference">下一篇：occt 的几何干扰 interference 和容差</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#opengl part 4：深度测试和模板测试" style="padding-left:15px">opengl part 4：深度测试和模板测试</a></div><div class="toc-item"><a class="toc-item-link" href="#深度测试 Depth Test" style="padding-left:30px">深度测试 Depth Test</a></div><div class="toc-item"><a class="toc-item-link" href="#1. 深度测试与深度缓冲" style="padding-left:45px">1. 深度测试与深度缓冲</a></div><div class="toc-item"><a class="toc-item-link" href="#深度缓冲" style="padding-left:60px">深度缓冲</a></div><div class="toc-item"><a class="toc-item-link" href="#2. 开启深度测试" style="padding-left:45px">2. 开启深度测试</a></div><div class="toc-item"><a class="toc-item-link" href="#3. 深度值如何比较" style="padding-left:45px">3. 深度值如何比较</a></div><div class="toc-item"><a class="toc-item-link" href="#4. Depth Buffer 的精度" style="padding-left:45px">4. Depth Buffer 的精度</a></div><div class="toc-item"><a class="toc-item-link" href="#5. 深度精度：线性与非线性深度" style="padding-left:45px">5. 深度精度：线性与非线性深度</a></div><div class="toc-item"><a class="toc-item-link" href="#线性深度" style="padding-left:60px">线性深度</a></div><div class="toc-item"><a class="toc-item-link" href="#非线性深度" style="padding-left:60px">非线性深度</a></div><div class="toc-item"><a class="toc-item-link" href="#为什么非线性深度精度更合理" style="padding-left:60px">为什么非线性深度精度更合理</a></div><div class="toc-item"><a class="toc-item-link" href="#核心理解" style="padding-left:60px">核心理解</a></div><div class="toc-item"><a class="toc-item-link" href="#模板测试 Stencil Test" style="padding-left:30px">模板测试 Stencil Test</a></div><div class="toc-item"><a class="toc-item-link" href="#1. 模板缓冲" style="padding-left:45px">1. 模板缓冲</a></div><div class="toc-item"><a class="toc-item-link" href="#2.模板函数" style="padding-left:45px">2.模板函数</a></div><div class="toc-item"><a class="toc-item-link" href="#glStencilFunc: 决定当前 Fragment 能不能通过测试" style="padding-left:45px">glStencilFunc: 决定当前 Fragment 能不能通过测试</a></div><div class="toc-item"><a class="toc-item-link" href="#glStencilOp：决定 Stencil Buffer 怎么修改" style="padding-left:45px">glStencilOp：决定 Stencil Buffer 怎么修改</a></div><div class="toc-item"><a class="toc-item-link" href="#绘制物体轮廓" style="padding-left:45px">绘制物体轮廓</a></div><div class="toc-item"><a class="toc-item-link" href="#3. 应用场景" style="padding-left:45px">3. 应用场景</a></div></div></div></div></body></html>
