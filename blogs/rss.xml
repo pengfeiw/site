@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sat, 15 Aug 2026 09:20:38 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 15 Aug 2026 11:38:32 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sat, 15 Aug 2026 09:20:14 GMT</pubDate>
+        <pubDate>Sat, 15 Aug 2026 11:38:07 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[回看 LookAt 矩阵]]></title>
@@ -182,7 +182,7 @@
             <pubDate>Tue, 14 Oct 2025 00:00:00 GMT</pubDate>
         </item>
         <item>
-            <title><![CDATA[opengl part4：深度测试和模板测试]]></title>
+            <title><![CDATA[opengl part 4：深度测试和模板测试]]></title>
             <description><![CDATA[opengl 的深度测试和模板测试]]></description>
             <link>https://pengfeixc.com/blogs/computer-graphics/opengl-part4-test.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/opengl-part4-test.html</guid>
