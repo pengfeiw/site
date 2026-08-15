@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Tue, 11 Aug 2026 07:33:42 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 15 Aug 2026 09:18:12 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Tue, 11 Aug 2026 07:33:18 GMT</pubDate>
+        <pubDate>Sat, 15 Aug 2026 09:17:54 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[回看 LookAt 矩阵]]></title>
@@ -180,6 +180,13 @@
             <link>https://pengfeixc.com/blogs/computer-graphics/occt-interference.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/occt-interference.html</guid>
             <pubDate>Tue, 14 Oct 2025 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[opengl part4：深度测试和模板测试]]></title>
+            <description><![CDATA[opengl 的深度测试和模板测试]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/opengl-part4-test.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/opengl-part4-test.html</guid>
+            <pubDate>Fri, 20 Jun 2025 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[opengl part 3：glsl、uniform 和 texture]]></title>
