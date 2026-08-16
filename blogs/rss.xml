@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sat, 15 Aug 2026 11:40:58 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 16 Aug 2026 08:34:42 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sat, 15 Aug 2026 11:40:33 GMT</pubDate>
+        <pubDate>Sun, 16 Aug 2026 08:34:22 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[回看 LookAt 矩阵]]></title>
@@ -207,6 +207,13 @@
             <description><![CDATA[opengl(webgl) 渲染管线介绍]]></description>
             <link>https://pengfeixc.com/blogs/computer-graphics/opengl-part1-redering-pipeline.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/opengl-part1-redering-pipeline.html</guid>
+            <pubDate>Tue, 17 Jun 2025 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[复杂 CAD 系统中 Picking 与高亮实现]]></title>
+            <description><![CDATA[大型 CAD、BIM 或装配模型中，如何实现模型的 picking 和高亮]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/cad-picking-and-highlight.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/cad-picking-and-highlight.html</guid>
             <pubDate>Tue, 17 Jun 2025 00:00:00 GMT</pubDate>
         </item>
         <item>

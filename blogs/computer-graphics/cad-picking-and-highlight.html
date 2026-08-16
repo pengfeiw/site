@@ -1,0 +1,735 @@
+<html lang="zh_cn"><head><title>复杂 CAD 系统中 Picking 与高亮实现 | WANG_PF.OS.BLOGS</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="opengl,webgl,cad,picking,highlight,cad大场景,渲染"><meta name="description" content="大型 CAD、BIM 或装配模型中，如何实现模型的 picking 和高亮"><link rel="stylesheet" href="/blogs/assests/style/code_github.css"><link rel="stylesheet" href="/blogs/assests/style/markdown.css"><link rel="stylesheet" href="/blogs/assests/style/article.css"><link rel="stylesheet" href="/blogs/assests/style/navigator.css"><link rel="stylesheet" href="/blogs/assests/style/global.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous"><link rel="icon" href="/blogs/assests/images/icon.jpg"><meta property="author" content="王鹏飞"><script type="text/javascript">const THEME_KEY="site-theme",THEME_DARK="opencode-dark",THEME_LIGHT="opencode-light";function applyTheme(e){var t,e=e===THEME_LIGHT?THEME_LIGHT:THEME_DARK,o=(document.documentElement.setAttribute("data-theme",e),document.getElementById("theme-toggle"));o&&(t=e===THEME_DARK,o.setAttribute("aria-label",t?"Switch to light theme":"Switch to dark theme"),o.setAttribute("title",t?"Switch to light theme":"Switch to dark theme"),o.setAttribute("aria-pressed",String(!t)),o.setAttribute("data-current-theme",e))}applyTheme(localStorage.getItem(THEME_KEY)||THEME_LIGHT),window.addEventListener("DOMContentLoaded",function(){applyTheme(localStorage.getItem(THEME_KEY)||THEME_DARK);const t=document.getElementById("search-input");var e=document.getElementById("theme-toggle");t.addEventListener("keydown",function(e){"Enter"===e.key&&t.value&&window.open(`https://bing.com/search?q=${t.value}%20site%3A+pengfeixc.com`,"_blank")}),e&&e.addEventListener("click",function(){var e=(document.documentElement.getAttribute("data-theme")===THEME_LIGHT?THEME_LIGHT:THEME_DARK)===THEME_DARK?THEME_LIGHT:THEME_DARK;applyTheme(e),localStorage.setItem(THEME_KEY,e)});document.querySelectorAll(".markdown-body pre").forEach(function(t){var e=document.createElement("div");e.className="code-block-wrapper",t.parentNode.insertBefore(e,t),e.appendChild(t);const o=document.createElement("button");o.className="code-copy-btn",e.appendChild(o),o.addEventListener("click",async function(){var e=t.querySelector("code");if(e)try{await navigator.clipboard.writeText(e.textContent),o.classList.add("copied"),setTimeout(function(){o.classList.remove("copied")},2e3)}catch(e){console.error("Failed to copy:",e)}})});e=document.querySelectorAll(".markdown-body img");let o=0,n=[];e.forEach(function(e,t){e.classList.contains("emoji")||(e.style.cursor="zoom-in",e.addEventListener("click",function(){var e;e=t,o=e,u(),c.classList.add("active"),document.body.style.overflow="hidden"}),n.push(e))});const c=document.createElement("div");c.className="image-lightbox",c.innerHTML=`
+        <div class="lightbox-overlay"></div>
+        <div class="lightbox-container">
+            <img class="lightbox-image" src="" alt="">
+            <div class="lightbox-counter"></div>
+        </div>
+        <button class="lightbox-close" title="关闭 (ESC)"></button>
+        <button class="lightbox-prev" title="上一张 (←)"></button>
+        <button class="lightbox-next" title="下一张 (→)"></button>
+    `,document.body.appendChild(c);e=c.querySelector(".lightbox-overlay");const i=c.querySelector(".lightbox-image"),l=c.querySelector(".lightbox-counter");var a=c.querySelector(".lightbox-close");const r=c.querySelector(".lightbox-prev"),s=c.querySelector(".lightbox-next");function d(){c.classList.remove("active"),document.body.style.overflow=""}function u(){var e=n[o];i.src=e.src,i.alt=e.alt||"",1<n.length?(l.textContent=o+1+" / "+n.length,l.style.display="block"):l.style.display="none",r.style.display=1<n.length?"flex":"none",s.style.display=1<n.length?"flex":"none"}function E(){n.length<=1||(o=(o-1+n.length)%n.length,u())}function m(){n.length<=1||(o=(o+1)%n.length,u())}e.addEventListener("click",d),a.addEventListener("click",d),r.addEventListener("click",function(e){e.stopPropagation(),E()}),s.addEventListener("click",function(e){e.stopPropagation(),m()}),document.addEventListener("keydown",function(e){if(c.classList.contains("active"))switch(e.key){case"Escape":d();break;case"ArrowLeft":E();break;case"ArrowRight":m()}})})</script></head><body><div class="header"><div class="navigator"><div class="nav-sections"><div class="home"><a href="/blogs">Home</a></div><div class="email"><a href="mailto:pengfeixc@sina.com">Email</a></div><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div class="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="rss"><a href="/blogs/rss.xml">RSS</a></div><div class="theme-toggle-wrapper"><button class="theme-toggle-btn" id="theme-toggle" type="button" aria-label="Switch to light theme" aria-pressed="false"></button></div><div class="search-wrapper"><input id="search-input" type="search" placeholder="search"></div></div></div></div><div class="body"><div class="markdown"><div class="markdown-header"><span class="date">日期：2025年6月17日</span><span class="category"><a href="/blogs/computer-graphics">标签：Computer Graphics</a></span></div><div class="markdown-body"><h1 id="复杂 CAD 零件系统中的 Picking 与高亮实现">复杂 CAD 零件系统中的 Picking 与高亮实现 <a href="#复杂 CAD 零件系统中的 Picking 与高亮实现">#</a></h1><p>在大型 CAD、BIM 或装配模型中，一个常见需求是：</p><blockquote><p>用户点击模型中的某个零件，系统需要准确识别对应的 CAD Entity，并对该零件执行高亮、隐藏、变色等操作。</p></blockquote><p>如果每个零件都对应一个独立 <code>Mesh</code>，这个问题比较简单：</p><pre><code class="hljs language-text">Mouse
+  ↓
+Raycaster
+  ↓
+Mesh
+  ↓
+CAD Entity
+</code></pre><p>但大型 CAD 模型通常包含成千上万个零件。如果每个零件都创建独立 <code>Mesh</code>，会带来大量：</p><ul><li>JavaScript 对象；</li><li>Draw Call；</li><li>Matrix 更新；</li><li>Material 状态切换；</li><li>场景树遍历成本。</li></ul><p>因此实际渲染系统通常会采用：</p><pre><code class="hljs language-text">Geometry Merge
+Batching
+Instancing
+</code></pre><p>等方式减少 Draw Call。</p><p>这时问题就变成：</p><blockquote><p>多个 CAD 零件已经合并成一个大的 <code>BufferGeometry</code>，鼠标点击其中一个 Triangle 后，怎么知道它属于哪个零件？又如何只高亮这个零件？</p></blockquote><p>这篇文章完整梳理这一过程。</p><hr><h2 id="一、问题背景">一、问题背景 <a href="#一、问题背景">#</a></h2><p>假设 CAD 模型包含：</p><pre><code class="hljs language-text">Part A
+Part B
+Part C
+...
+Part N
+</code></pre><p>每个零件都有自己的 CAD Entity ID：</p><pre><code class="hljs language-text">Part A → EntityId = 1001
+Part B → EntityId = 1002
+Part C → EntityId = 1003
+</code></pre><p>最简单的渲染结构是：</p><pre><code class="hljs language-text">Scene
+├── Mesh A
+├── Mesh B
+├── Mesh C
+└── ...
+</code></pre><p>此时 Picking 非常容易。</p><p>例如 Three.js：</p><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> intersects = raycaster.<span class="hljs-title function_">intersectObjects</span>(scene.<span class="hljs-property">children</span>, <span class="hljs-literal">true</span>);
+
+<span class="hljs-keyword">const</span> hit = intersects[<span class="hljs-number">0</span>];
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(hit.<span class="hljs-property">object</span>);
+</code></pre><p>因为：</p><pre><code class="hljs language-text">hit.object === Mesh B
+</code></pre><p>所以可以直接得到：</p><pre><code class="hljs language-text">Mesh B
+ ↓
+EntityId = 1002
+</code></pre><p>但是当模型达到：</p><pre><code class="hljs language-text">10,000 Parts
+100,000 Parts
+</code></pre><p>以后，这种结构可能产生大量 Draw Call。</p><p>于是往往需要合并 Geometry。</p><hr><h2 id="二、为什么需要 Geometry Merge">二、为什么需要 Geometry Merge <a href="#二、为什么需要 Geometry Merge">#</a></h2><p>假设：</p><pre><code class="hljs language-text">Part A → 3000 triangles
+Part B → 5000 triangles
+Part C → 2000 triangles
+</code></pre><p>原始情况下：</p><pre><code class="hljs language-text">Mesh A → DrawCall 1
+Mesh B → DrawCall 2
+Mesh C → DrawCall 3
+</code></pre><p>如果材质等渲染状态相同，可以把它们合并：</p><pre><code class="hljs language-text">                 Big BufferGeometry
+
+Vertex Buffer
+┌─────────┬──────────────┬──────────┐
+│ Part A  │    Part B    │ Part C   │
+└─────────┴──────────────┴──────────┘
+
+Index Buffer
+┌─────────┬──────────────┬──────────┐
+│ Part A  │    Part B    │ Part C   │
+└─────────┴──────────────┴──────────┘
+</code></pre><p>最终：</p><pre><code class="hljs language-text">Mesh A
+Mesh B
+Mesh C
+   ↓
+Big Mesh
+   ↓
+1 Draw Call
+</code></pre><p>性能明显改善。</p><p>但是与此同时，我们失去了一个非常重要的信息：</p><pre><code class="hljs language-text">Triangle → Part
+</code></pre><p>因为 Raycaster 命中后：</p><pre><code class="hljs language-text">hit.object
+</code></pre><p>只会得到：</p><pre><code class="hljs language-text">BigMesh
+</code></pre><p>而不是：</p><pre><code class="hljs language-text">Part B
+</code></pre><p>因此：</p><blockquote><p>Geometry 可以 Merge，但 CAD Entity 的语义不能丢失。</p></blockquote><p>这是整个系统设计的核心。</p><hr><h2 id="三、渲染层必须保留 EntityId 映射">三、渲染层必须保留 EntityId 映射 <a href="#三、渲染层必须保留 EntityId 映射">#</a></h2><p>一个比较典型的数据结构是：</p><pre><code class="hljs language-ts"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">RenderPart</span> {
+  <span class="hljs-attr">entityId</span>: <span class="hljs-built_in">number</span>;
+
+  <span class="hljs-attr">indexStart</span>: <span class="hljs-built_in">number</span>;
+  <span class="hljs-attr">indexCount</span>: <span class="hljs-built_in">number</span>;
+}
+</code></pre><p>例如：</p><pre><code class="hljs language-ts"><span class="hljs-keyword">const</span> parts = [
+  {
+    <span class="hljs-attr">entityId</span>: <span class="hljs-number">1001</span>,
+    <span class="hljs-attr">indexStart</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">indexCount</span>: <span class="hljs-number">3000</span>,
+  },
+  {
+    <span class="hljs-attr">entityId</span>: <span class="hljs-number">1002</span>,
+    <span class="hljs-attr">indexStart</span>: <span class="hljs-number">3000</span>,
+    <span class="hljs-attr">indexCount</span>: <span class="hljs-number">6000</span>,
+  },
+  {
+    <span class="hljs-attr">entityId</span>: <span class="hljs-number">1003</span>,
+    <span class="hljs-attr">indexStart</span>: <span class="hljs-number">9000</span>,
+    <span class="hljs-attr">indexCount</span>: <span class="hljs-number">4000</span>,
+  },
+];
+</code></pre><p>对应：</p><pre><code class="hljs language-text">Index Buffer
+
+0                                       13000
+│                                         │
+├──── Part A ────┼──── Part B ─────┼ Part C ──┤
+0              3000               9000       13000
+</code></pre><p>这样即使所有 Geometry 被 Merge：</p><pre><code class="hljs language-text">BigMesh
+</code></pre><p>我们仍然可以根据 Triangle 所处的 Index Range 反推出：</p><pre><code class="hljs language-text">Triangle
+   ↓
+Index Range
+   ↓
+EntityId
+</code></pre><hr><h2 id="四、Picking 的第一步：从鼠标生成 Ray">四、Picking 的第一步：从鼠标生成 Ray <a href="#四、Picking 的第一步：从鼠标生成 Ray">#</a></h2><p>假设用户点击：</p><pre><code class="hljs language-text">screenX = 500
+screenY = 300
+</code></pre><p>首先将屏幕坐标转换成 NDC。</p><p>WebGL 中：</p><pre><code class="hljs language-text">NDC.x ∈ [-1, 1]
+NDC.y ∈ [-1, 1]
+</code></pre><p>转换大致为：</p><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> x = (mouseX / width) * <span class="hljs-number">2</span> - <span class="hljs-number">1</span>;
+<span class="hljs-keyword">const</span> y = -(mouseY / height) * <span class="hljs-number">2</span> + <span class="hljs-number">1</span>;
+</code></pre><p>例如：</p><pre><code class="hljs language-text">Screen
+(500, 300)
+
+   ↓
+
+NDC
+(0.2, -0.1)
+</code></pre><p>然后根据 Camera 构造 Ray。</p><p>概念上可以取 NDC 中近裁剪面和远裁剪面上的两个点：</p><pre><code class="hljs language-text">Pnear = (x, y, -1)
+Pfar  = (x, y,  1)
+</code></pre><p>再通过逆矩阵：</p><pre><code class="hljs language-text">NDC
+ ↓ inverse Projection
+View Space
+ ↓ inverse View
+World Space
+</code></pre><p>得到：</p><pre><code class="hljs language-text">PnearWorld
+PfarWorld
+</code></pre><p>Ray 方向：</p><p>[ D = \frac{P_{far}-P_{near}} {|P_{far}-P_{near}|} ]</p><p>于是得到：</p><pre><code class="hljs language-text">Ray {
+    origin,
+    direction
+}
+</code></pre><p>Three.js 中已经封装：</p><pre><code class="hljs language-js">raycaster.<span class="hljs-title function_">setFromCamera</span>(mouse, camera);
+</code></pre><hr><h2 id="五、为什么不能遍历所有 Triangle">五、为什么不能遍历所有 Triangle <a href="#五、为什么不能遍历所有 Triangle">#</a></h2><p>假设一个大型 CAD 模型包含：</p><pre><code class="hljs language-text">50,000,000 triangles
+</code></pre><p>如果每次鼠标点击都执行：</p><pre><code class="hljs language-text">for each triangle:
+    RayTriangleIntersect(ray, triangle)
+</code></pre><p>计算量显然过大。</p><p>因此通常需要一个空间加速结构： <code>BVH</code>，即 Bounding Volume Hierarchy。</p><hr><h2 id="六、利用 BVH 加速 Picking">六、利用 BVH 加速 Picking <a href="#六、利用 BVH 加速 Picking">#</a></h2><p>BVH 可以理解为：</p><pre><code class="hljs language-text">                    Root BBox
+                   /         \
+                  /           \
+             BBox A           BBox B
+             /   \            /   \
+           ...   ...        ...   ...
+                    ↓
+                 Triangle
+</code></pre><p>每个节点保存一组 Triangle 的包围盒。</p><p>Picking 时：</p><pre><code class="hljs language-text">Ray
+ ↓
+Root BBox
+</code></pre><p>如果：</p><pre><code class="hljs language-text">Ray ∩ RootBBox = ∅
+</code></pre><p>那么整个模型都不需要继续检查。</p><p>如果相交，则继续检查子节点：</p><pre><code class="hljs language-text">             Root
+             /  \
+            /    \
+           A      B
+          /        \
+    intersect      no intersect
+       ↓
+   continue
+</code></pre><p>这样能够快速排除大量 Triangle。</p><p>最终流程是：</p><pre><code class="hljs language-text">Ray
+ ↓
+Ray / BBox Test
+ ↓
+BVH traversal
+ ↓
+少量 Candidate Triangle
+ ↓
+Ray / Triangle 精确求交
+</code></pre><p>这就是典型的：</p><pre><code class="hljs language-text">Broad Phase
+    ↓
+Narrow Phase
+</code></pre><hr><h2 id="七、Ray / Triangle 求交">七、Ray / Triangle 求交 <a href="#七、Ray / Triangle 求交">#</a></h2><p>最终 BVH 会定位到少量 Triangle。</p><p>然后真正执行：</p><pre><code class="hljs language-text">Ray vs Triangle
+</code></pre><p>常见算法包括：</p><pre><code class="hljs language-text">Möller–Trumbore
+</code></pre><p>一个 Triangle：</p><pre><code class="hljs language-text">       V1
+       /\
+      /  \
+     /    \
+   V0------V2
+</code></pre><p>Ray：</p><pre><code class="hljs language-text">O + tD
+</code></pre><p>如果相交，可以得到：</p><pre><code class="hljs language-text">intersection point
+distance
+triangle index
+barycentric coordinate
+</code></pre><p>Three.js 的 <code>Raycaster</code> 通常会返回类似：</p><pre><code class="hljs language-js">{
+  distance,
+  point,
+  face,
+  faceIndex,
+  object
+}
+</code></pre><p>对于 Merge 后的模型：</p><pre><code class="hljs language-text">object
+</code></pre><p>只能告诉我们：</p><pre><code class="hljs language-text">BigMesh
+</code></pre><p>真正重要的是：</p><pre><code class="hljs language-text">faceIndex
+</code></pre><p>或者 Triangle Index。</p><hr><h2 id="八、从 Triangle 找到 Part">八、从 Triangle 找到 Part <a href="#八、从 Triangle 找到 Part">#</a></h2><p>假设 Ray 命中了：</p><pre><code class="hljs language-text">Triangle #1578
+</code></pre><p>我们保存的 Part Range 是：</p><pre><code class="hljs language-text">Part A:
+triangle 0 ~ 999
+
+Part B:
+triangle 1000 ~ 2999
+
+Part C:
+triangle 3000 ~ 3999
+</code></pre><p>那么：</p><pre><code class="hljs language-text">1000 &lt;= 1578 &lt; 3000
+</code></pre><p>所以：</p><pre><code class="hljs language-text">Triangle #1578
+       ↓
+Part B
+       ↓
+EntityId = 1002
+</code></pre><p>最终完成：</p><pre><code class="hljs language-text">Screen Point
+      ↓
+Ray
+      ↓
+Triangle
+      ↓
+Render Part
+      ↓
+EntityId
+      ↓
+CAD Entity
+</code></pre><hr><h2 id="九、映射结构应该怎么设计">九、映射结构应该怎么设计 <a href="#九、映射结构应该怎么设计">#</a></h2><p>最简单的方法是 Range Mapping：</p><pre><code class="hljs language-ts"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">PartRange</span> {
+  <span class="hljs-attr">entityId</span>: <span class="hljs-built_in">number</span>;
+  <span class="hljs-attr">triangleStart</span>: <span class="hljs-built_in">number</span>;
+  <span class="hljs-attr">triangleCount</span>: <span class="hljs-built_in">number</span>;
+}
+</code></pre><p>例如：</p><pre><code class="hljs language-ts"><span class="hljs-keyword">const</span> <span class="hljs-attr">ranges</span>: <span class="hljs-title class_">PartRange</span>[] = [
+  {
+    <span class="hljs-attr">entityId</span>: <span class="hljs-number">1001</span>,
+    <span class="hljs-attr">triangleStart</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">triangleCount</span>: <span class="hljs-number">1000</span>,
+  },
+  {
+    <span class="hljs-attr">entityId</span>: <span class="hljs-number">1002</span>,
+    <span class="hljs-attr">triangleStart</span>: <span class="hljs-number">1000</span>,
+    <span class="hljs-attr">triangleCount</span>: <span class="hljs-number">2000</span>,
+  },
+];
+</code></pre><p>查找：</p><pre><code class="hljs language-ts"><span class="hljs-keyword">function</span> <span class="hljs-title function_">findEntity</span>(<span class="hljs-params">triangleIndex: <span class="hljs-built_in">number</span></span>): <span class="hljs-built_in">number</span> | <span class="hljs-literal">null</span> {
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> range <span class="hljs-keyword">of</span> ranges) {
+    <span class="hljs-keyword">if</span> (
+      triangleIndex &gt;= range.<span class="hljs-property">triangleStart</span> &amp;&amp;
+      triangleIndex &lt; range.<span class="hljs-property">triangleStart</span> + range.<span class="hljs-property">triangleCount</span>
+    ) {
+      <span class="hljs-keyword">return</span> range.<span class="hljs-property">entityId</span>;
+    }
+  }
+
+  <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+}
+</code></pre><p>当然，大量 Part 时不应该线性遍历。</p><p>因为 Range 已经排序，可以：</p><pre><code class="hljs language-text">Binary Search
+</code></pre><p>把复杂度降低到：</p><p>[ O(\log N) ]</p><hr><h2 id="十、另一种方式：把 PartId 直接存进 Geometry">十、另一种方式：把 PartId 直接存进 Geometry <a href="#十、另一种方式：把 PartId 直接存进 Geometry">#</a></h2><p>还可以给 Vertex 增加一个自定义 Attribute：</p><pre><code class="hljs language-text">position
+normal
+uv
+partId
+</code></pre><p>例如：</p><pre><code class="hljs language-text">Vertex       PartId
+
+V0              1
+V1              1
+V2              1
+
+V3              2
+V4              2
+V5              2
+</code></pre><p>Three.js 可以使用：</p><pre><code class="hljs language-js">geometry.<span class="hljs-title function_">setAttribute</span>(
+  <span class="hljs-string">"partId"</span>,
+  <span class="hljs-keyword">new</span> <span class="hljs-variable constant_">THREE</span>.<span class="hljs-title class_">BufferAttribute</span>(partIds, <span class="hljs-number">1</span>)
+);
+</code></pre><p>于是每个 Triangle 的 Vertex 都知道：</p><pre><code class="hljs language-text">自己属于哪个 Part
+</code></pre><p>这个信息除了可以辅助 Picking，更重要的是：</p><blockquote><p>可以直接用于 Shader 高亮。</p></blockquote><hr><h2 id="十一、Picking 之后如何高亮 Part">十一、Picking 之后如何高亮 Part <a href="#十一、Picking 之后如何高亮 Part">#</a></h2><p>假设 Picking 已经得到：</p><pre><code class="hljs language-text">EntityId = 1002
+</code></pre><p>也就是：</p><pre><code class="hljs language-text">Part B
+</code></pre><p>接下来希望：</p><pre><code class="hljs language-text">Part B → 黄色
+其他 Part → 原来的颜色
+</code></pre><p>这里有多种实现方式。</p><hr><h2 id="十二、方案一：Shader 根据 PartId 高亮">十二、方案一：Shader 根据 PartId 高亮 <a href="#十二、方案一：Shader 根据 PartId 高亮">#</a></h2><p>假设 Geometry 中有：</p><pre><code class="hljs language-text">partId
+</code></pre><p>Vertex Shader：</p><pre><code class="hljs language-glsl"><span class="hljs-keyword">in</span> <span class="hljs-type">float</span> partId;
+
+<span class="hljs-keyword">flat</span> <span class="hljs-keyword">out</span> <span class="hljs-type">float</span> vPartId;
+
+<span class="hljs-type">void</span> main() {
+    vPartId = partId;
+
+    <span class="hljs-built_in">gl_Position</span> =
+        projectionMatrix *
+        modelViewMatrix *
+        <span class="hljs-type">vec4</span>(position, <span class="hljs-number">1.0</span>);
+}
+</code></pre><p>Fragment Shader：</p><pre><code class="hljs language-glsl"><span class="hljs-keyword">flat</span> <span class="hljs-keyword">in</span> <span class="hljs-type">float</span> vPartId;
+
+<span class="hljs-keyword">uniform</span> <span class="hljs-type">float</span> selectedPartId;
+
+<span class="hljs-type">void</span> main() {
+    <span class="hljs-type">vec3</span> color = baseColor;
+
+    <span class="hljs-keyword">if</span> (vPartId == selectedPartId) {
+        color = <span class="hljs-type">vec3</span>(<span class="hljs-number">1.0</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">0.0</span>);
+    }
+
+    <span class="hljs-built_in">gl_FragColor</span> = <span class="hljs-type">vec4</span>(color, <span class="hljs-number">1.0</span>);
+}
+</code></pre><p>CPU 侧只需要：</p><pre><code class="hljs language-js">material.<span class="hljs-property">uniforms</span>.<span class="hljs-property">selectedPartId</span>.<span class="hljs-property">value</span> = <span class="hljs-number">1002</span>;
+</code></pre><p>于是：</p><pre><code class="hljs language-text">Picking
+   ↓
+EntityId = 1002
+   ↓
+selectedPartId = 1002
+   ↓
+Shader
+   ↓
+partId == selectedPartId ?
+   ↓
+YES
+   ↓
+高亮
+</code></pre><p>最重要的是：</p><blockquote><p>这里不需要修改 Geometry 本身。</p></blockquote><hr><h2 id="十三、为什么 PartId 应该使用 flat">十三、为什么 PartId 应该使用 flat <a href="#十三、为什么 PartId 应该使用 flat">#</a></h2><p>普通 Vertex Attribute 传递到 Fragment Shader 时，会进行插值。</p><p>例如：</p><pre><code class="hljs language-text">Triangle
+
+V0 id = 1
+V1 id = 2
+V2 id = 3
+</code></pre><p>普通 varying 在 Triangle 内部可能产生：</p><pre><code class="hljs language-text">1.2
+1.8
+2.4
+</code></pre><p>但 ID 是一个离散值：</p><pre><code class="hljs language-text">Part 1
+Part 2
+Part 3
+</code></pre><p>显然不能插值。</p><p>因此在支持的 GLSL/WebGL2 场景中，应当使用：</p><pre><code class="hljs language-glsl"><span class="hljs-keyword">flat</span>
+</code></pre><p>例如：</p><pre><code class="hljs language-glsl"><span class="hljs-keyword">flat</span> <span class="hljs-keyword">out</span> <span class="hljs-type">uint</span> vPartId;
+</code></pre><p>Fragment Shader：</p><pre><code class="hljs language-glsl"><span class="hljs-keyword">flat</span> <span class="hljs-keyword">in</span> <span class="hljs-type">uint</span> vPartId;
+</code></pre><p>这样整个 Primitive 使用一致的 ID。</p><hr><h2 id="十四、如果同时选中很多 Part 怎么办">十四、如果同时选中很多 Part 怎么办 <a href="#十四、如果同时选中很多 Part 怎么办">#</a></h2><p>单个选中时：</p><pre><code class="hljs language-glsl"><span class="hljs-keyword">uniform</span> <span class="hljs-type">float</span> selectedPartId;
+</code></pre><p>足够使用。</p><p>但如果用户框选：</p><pre><code class="hljs language-text">10,000 个 Part
+</code></pre><p>就不能简单写：</p><pre><code class="hljs language-glsl"><span class="hljs-keyword">if</span> (
+    id == selected[<span class="hljs-number">0</span>] ||
+    id == selected[<span class="hljs-number">1</span>] ||
+    ...
+)
+</code></pre><p>更合理的方式是建立：</p><pre><code class="hljs language-text">Part State Table
+</code></pre><p>例如：</p><pre><code class="hljs language-text">PartId       State
+
+0            Normal
+1            Hidden
+2            Selected
+3            Normal
+4            Selected
+</code></pre><p>然后把这个表上传 GPU。</p><p>可以使用：</p><pre><code class="hljs language-text">Texture
+Buffer
+Data Texture
+</code></pre><p>概念上：</p><pre><code class="hljs language-text">partId
+  ↓
+PartStateTexture
+  ↓
+state
+  ↓
+Normal / Selected / Hidden
+</code></pre><p>Shader：</p><pre><code class="hljs language-glsl"><span class="hljs-type">int</span> state = getPartState(partId);
+
+<span class="hljs-keyword">if</span> (state == STATE_SELECTED) {
+    color = highlightColor;
+}
+</code></pre><p>这样 CPU 不需要修改大量 Vertex。</p><p>只需要修改：</p><pre><code class="hljs language-text">PartState[1002] = Selected
+</code></pre><p>然后把变化同步到 GPU。</p><hr><h2 id="十五、方案二：Overlay Mesh 高亮">十五、方案二：Overlay Mesh 高亮 <a href="#十五、方案二：Overlay Mesh 高亮">#</a></h2><p>另一种非常实用的方案是：</p><blockquote><p>选中哪个 Part，就额外绘制一次这个 Part。</p></blockquote><p>例如：</p><pre><code class="hljs language-text">Original Big Mesh
+        +
+Selection Overlay Mesh
+</code></pre><p>Picking 得到：</p><pre><code class="hljs language-text">Part B
+</code></pre><p>我们已经知道：</p><pre><code class="hljs language-text">Part B
+indexStart = 3000
+indexCount = 6000
+</code></pre><p>那么可以让一个 Selection Pass 只绘制这一段 Index。</p><p>使用：</p><pre><code class="hljs language-text">黄色
+描边
+透明
+X-Ray
+</code></pre><p>等特殊 Material。</p><p>整体效果：</p><pre><code class="hljs language-text">Normal Mesh
+     ↓
+正常模型
+
+Selection Mesh
+     ↓
+黄色高亮
+
+两者叠加
+</code></pre><p>优点：</p><ul><li>实现简单；</li><li>不需要修改主材质；</li><li>很适合描边；</li><li>很容易做独立 Selection Pass。</li></ul><p>缺点：</p><ul><li>增加 Draw Call；</li><li>大量选中对象时成本上升。</li></ul><hr><h2 id="十六、方案三：Selection Mask / ID Buffer">十六、方案三：Selection Mask / ID Buffer <a href="#十六、方案三：Selection Mask / ID Buffer">#</a></h2><p>大型 CAD 系统还可以使用屏幕空间方案。</p><p>例如额外渲染一张：</p><pre><code class="hljs language-text">Object ID Buffer
+</code></pre><p>其中：</p><pre><code class="hljs language-text">Part A → 1
+Part B → 2
+Part C → 3
+</code></pre><p>对应不同颜色编码：</p><pre><code class="hljs language-text">Part A → RGB(0,0,1)
+Part B → RGB(0,0,2)
+Part C → RGB(0,0,3)
+</code></pre><p>用户点击：</p><pre><code class="hljs language-text">(x, y)
+</code></pre><p>读取对应 Pixel：</p><pre><code class="hljs language-text">readPixels(x, y)
+</code></pre><p>得到：</p><pre><code class="hljs language-text">RGB(0,0,2)
+</code></pre><p>解码：</p><pre><code class="hljs language-text">PartId = 2
+</code></pre><p>整个流程：</p><pre><code class="hljs language-text">Scene
+ ↓
+Offscreen Framebuffer
+ ↓
+Render EntityId
+ ↓
+ID Buffer
+
+Mouse
+ ↓
+readPixel
+ ↓
+EntityId
+</code></pre><p>这就是：</p><blockquote><p>GPU Picking / Color Picking / ID Picking。</p></blockquote><hr><h2 id="十七、CPU Ray Picking 和 GPU Picking 如何选择">十七、CPU Ray Picking 和 GPU Picking 如何选择 <a href="#十七、CPU Ray Picking 和 GPU Picking 如何选择">#</a></h2><p>两种方法各有特点。</p><h3 id="CPU Ray + BVH">CPU Ray + BVH <a href="#CPU Ray + BVH">#</a></h3><pre><code class="hljs language-text">Mouse
+ ↓
+Ray
+ ↓
+BVH
+ ↓
+Triangle
+ ↓
+EntityId
+</code></pre><p>优点：</p><ul><li>可以得到真实 3D Position；</li><li>可以得到 Triangle；</li><li>可以得到法向；</li><li>可以继续做 Snap；</li><li>非常适合 CAD。</li></ul><p>例如：</p><pre><code class="hljs language-text">点击 Face
+捕捉 Edge
+捕捉 Vertex
+测量
+绘制辅助线
+</code></pre><p>通常都需要几何信息。</p><hr><h3 id="GPU ID Picking">GPU ID Picking <a href="#GPU ID Picking">#</a></h3><pre><code class="hljs language-text">Mouse
+ ↓
+Framebuffer Pixel
+ ↓
+EntityId
+</code></pre><p>优点：</p><ul><li>不需要 Ray/Triangle 大规模计算；</li><li>适合纯 Object Selection；</li><li>与最终屏幕视觉结果一致。</li></ul><p>缺点是：</p><blockquote><p>它通常只告诉你“屏幕这个像素属于哪个对象”。</p></blockquote><p>如果接下来还要：</p><pre><code class="hljs language-text">最近 Edge
+最近 Vertex
+Surface UV
+3D Snap Point
+</code></pre><p>还是需要进一步几何查询。</p><p>因此 CAD 系统往往不会只依赖一种方式。</p><hr><h2 id="十八、CAD Picking 通常是分层的">十八、CAD Picking 通常是分层的 <a href="#十八、CAD Picking 通常是分层的">#</a></h2><p>实际 CAD Picking 很适合设计成：</p><pre><code class="hljs language-text">Object Picking
+     ↓
+Part / Body
+     ↓
+Face
+     ↓
+Edge
+     ↓
+Vertex
+</code></pre><p>例如第一阶段：</p><pre><code class="hljs language-text">Ray
+ ↓
+Part BVH
+ ↓
+Part 1002
+</code></pre><p>第二阶段：</p><pre><code class="hljs language-text">Part 1002
+ ↓
+Triangle BVH
+ ↓
+Triangle
+ ↓
+FaceId
+</code></pre><p>如果需要 Edge Snap：</p><pre><code class="hljs language-text">Face
+ ↓
+Candidate Edges
+ ↓
+Ray / Screen Distance
+ ↓
+Edge
+</code></pre><p>如果需要 Vertex Snap：</p><pre><code class="hljs language-text">Edge
+ ↓
+Vertex
+</code></pre><p>而不是：</p><pre><code class="hljs language-text">一次性遍历整个模型的所有 Vertex / Edge / Triangle
+</code></pre><p>这与几何算法中的 Broad Phase / Narrow Phase 是同一个思想。</p><hr><h2 id="十九、渲染 Triangle 如何映射回 BRep Face">十九、渲染 Triangle 如何映射回 BRep Face <a href="#十九、渲染 Triangle 如何映射回 BRep Face">#</a></h2><p>对于真正的 CAD 系统，仅有：</p><pre><code class="hljs language-text">Triangle → PartId
+</code></pre><p>往往还不够。</p><p>因为用户可能需要：</p><pre><code class="hljs language-text">选中 Face
+删除 Face
+倒圆 Edge
+测量 Edge
+修改 Hole
+</code></pre><p>所以 Tessellation 时最好保存：</p><pre><code class="hljs language-text">Triangle → FaceId
+</code></pre><p>例如：</p><pre><code class="hljs language-ts"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">TriangleMetadata</span> {
+  <span class="hljs-attr">entityId</span>: <span class="hljs-built_in">number</span>;
+  <span class="hljs-attr">faceId</span>: <span class="hljs-built_in">number</span>;
+}
+</code></pre><p>于是：</p><pre><code class="hljs language-text">Ray
+ ↓
+Triangle #13451
+ ↓
+EntityId = 1002
+FaceId   = 37
+ ↓
+CAD Kernel
+ ↓
+TopoDS_Face / Internal Face Object
+</code></pre><p>这样渲染系统与 BRep Kernel 就建立起桥梁：</p><pre><code class="hljs language-text">BRep
+ │
+ │ Tessellation
+ ▼
+Triangle Mesh
+ │
+ │ metadata
+ ▼
+EntityId / FaceId
+</code></pre><p>这对云 CAD 来说非常重要。</p><hr><h2 id="二十、Edge 和 Vertex Picking 怎么办">二十、Edge 和 Vertex Picking 怎么办 <a href="#二十、Edge 和 Vertex Picking 怎么办">#</a></h2><p>Triangle Mesh 主要用于显示 Face。</p><p>但 CAD 用户经常需要：</p><pre><code class="hljs language-text">选 Edge
+选 Vertex
+</code></pre><p>可以有两类实现。</p><p>一种是单独生成：</p><pre><code class="hljs language-text">Face Mesh
+Edge Line Geometry
+Vertex Point Geometry
+</code></pre><p>对应：</p><pre><code class="hljs language-text">Triangle BVH
+Line BVH
+Point Spatial Index
+</code></pre><p>另一种是先通过 Triangle 找 Face：</p><pre><code class="hljs language-text">Ray
+ ↓
+Triangle
+ ↓
+FaceId
+</code></pre><p>然后从 CAD Topology 找候选：</p><pre><code class="hljs language-text">Face
+├── Edge1
+├── Edge2
+├── Edge3
+└── ...
+</code></pre><p>再计算：</p><pre><code class="hljs language-text">Mouse / Ray
+</code></pre><p>距离哪个 Edge 最近。</p><p>这样可以把搜索范围从：</p><pre><code class="hljs language-text">整个 Model
+</code></pre><p>缩小到：</p><pre><code class="hljs language-text">一个 Face 周围
+</code></pre><hr><h2 id="二十一、Geometry Merge 并不是越大越好">二十一、Geometry Merge 并不是越大越好 <a href="#二十一、Geometry Merge 并不是越大越好">#</a></h2><p>假设：</p><pre><code class="hljs language-text">10,000 Parts
+</code></pre><p>全部 Merge 成：</p><pre><code class="hljs language-text">1 Big Mesh
+</code></pre><p>确实可以把 Draw Call 大幅降低。</p><p>但同时带来：</p><pre><code class="hljs language-text">Frustum Culling 粒度下降
+Picking 复杂
+隐藏 Part 复杂
+修改 Part 复杂
+局部更新复杂
+LOD 复杂
+</code></pre><p>例如原来：</p><pre><code class="hljs language-text">Part A BBox
+Part B BBox
+Part C BBox
+</code></pre><p>Camera 只能看到 Part A：</p><pre><code class="hljs language-text">只画 A
+</code></pre><p>如果全部 Merge：</p><pre><code class="hljs language-text">BigMesh BBox
+</code></pre><p>只要 BigMesh BBox 和 Frustum 有交集：</p><pre><code class="hljs language-text">整个 BigMesh 都会进入绘制
+</code></pre><p>所以实际系统通常采用：</p><pre><code class="hljs language-text">Batch
+</code></pre><p>而不是：</p><pre><code class="hljs language-text">Whole Scene Merge
+</code></pre><p>例如：</p><pre><code class="hljs language-text">Scene
+├── Batch 1
+│   ├── Part A
+│   ├── Part B
+│   └── Part C
+│
+├── Batch 2
+│   ├── Part D
+│   ├── Part E
+│   └── Part F
+│
+└── ...
+</code></pre><p>Batch 可以根据：</p><pre><code class="hljs language-text">空间位置
+Material
+LOD
+模型层级
+更新频率
+</code></pre><p>进行划分。</p><p>目标是在：</p><pre><code class="hljs language-text">Draw Call
+      ↕
+Culling 粒度
+      ↕
+Picking
+      ↕
+编辑能力
+</code></pre><p>之间取得平衡。</p><hr><h2 id="二十二、Instancing 又是另一种情况">二十二、Instancing 又是另一种情况 <a href="#二十二、Instancing 又是另一种情况">#</a></h2><p>如果很多零件 Geometry 完全一样：</p><pre><code class="hljs language-text">Chair × 1000
+Bolt × 5000
+Window × 3000
+</code></pre><p>更适合：</p><pre><code class="hljs language-text">Instancing
+</code></pre><p>数据结构：</p><pre><code class="hljs language-text">Geometry × 1
+
+Instance
+├── matrix 0
+├── matrix 1
+├── matrix 2
+└── ...
+</code></pre><p>Three.js：</p><pre><code class="hljs language-js"><span class="hljs-variable constant_">THREE</span>.<span class="hljs-property">InstancedMesh</span>
+</code></pre><p>此时 Picking 后通常可以得到：</p><pre><code class="hljs language-text">instanceId
+</code></pre><p>然后建立：</p><pre><code class="hljs language-text">instanceId
+    ↓
+EntityId
+</code></pre><p>映射。</p><p>例如：</p><pre><code class="hljs language-text">instance 0 → Entity 1001
+instance 1 → Entity 1037
+instance 2 → Entity 5921
+</code></pre><p>因此：</p><pre><code class="hljs language-text">Geometry Merge:
+triangleIndex → EntityId
+</code></pre><p>而：</p><pre><code class="hljs language-text">Instancing:
+instanceId → EntityId
+</code></pre><p>两者的 Picking 映射方式不同。</p><hr><h2 id="二十三、一个比较完整的 CAD Render Model">二十三、一个比较完整的 CAD Render Model <a href="#二十三、一个比较完整的 CAD Render Model">#</a></h2><p>一个大型 CAD 渲染系统可以采用：</p><pre><code class="hljs language-text">CAD Model
+│
+├── Entity
+│   ├── Solid
+│   ├── Face
+│   ├── Edge
+│   └── Vertex
+│
+▼
+Tessellation
+│
+├── Triangle
+│   └── FaceId
+│
+▼
+Render Model
+│
+├── Batch
+│   ├── Geometry Buffer
+│   ├── Entity Range
+│   ├── Face Range
+│   └── BVH
+│
+▼
+GPU
+</code></pre><p>Picking：</p><pre><code class="hljs language-text">Mouse
+  ↓
+Ray
+  ↓
+Batch BVH
+  ↓
+Triangle BVH
+  ↓
+Triangle
+  ↓
+FaceId
+  ↓
+EntityId
+  ↓
+CAD Model
+</code></pre><p>高亮：</p><pre><code class="hljs language-text">EntityId
+  ↓
+Render State
+  ↓
+GPU State Texture / Uniform
+  ↓
+Shader
+  ↓
+Highlight
+</code></pre><hr><h2 id="二十四、完整流程">二十四、完整流程 <a href="#二十四、完整流程">#</a></h2><p>最终把 Picking + Highlight 串起来：</p><pre><code class="hljs language-text">                       Mouse
+                         │
+                         ▼
+                Screen Coordinate
+                         │
+                         ▼
+                        NDC
+                         │
+                 inverse ViewProjection
+                         │
+                         ▼
+                        Ray
+                         │
+                         ▼
+                    Scene BVH
+                         │
+                         ▼
+                    Batch / Part
+                         │
+                         ▼
+                  Triangle BVH
+                         │
+                         ▼
+                Ray-Triangle Test
+                         │
+                         ▼
+                  Triangle Index
+                         │
+             ┌───────────┴────────────┐
+             ▼                        ▼
+          FaceId                  EntityId
+             │                        │
+             ▼                        ▼
+       BRep Face                  CAD Entity
+                                      │
+                                      ▼
+                              Selection State
+                                      │
+                                      ▼
+                                  GPU State
+                                      │
+                                      ▼
+                                   Shader
+                                      │
+                                      ▼
+                                  Highlight
+</code></pre><hr><h2 id="二十五、几个关键设计原则">二十五、几个关键设计原则 <a href="#二十五、几个关键设计原则">#</a></h2><p>对于大型 CAD 系统，这个功能背后的核心并不是某个具体 Three.js API，而是几个设计原则。</p><p>第一：</p><blockquote><p><strong>Render Geometry 和 CAD Entity 必须解耦，但必须存在稳定映射。</strong></p></blockquote><p>即：</p><pre><code class="hljs language-text">Render Triangle
+       ↕
+FaceId / EntityId
+       ↕
+CAD Model
+</code></pre><p>第二：</p><blockquote><p><strong>优化 Draw Call 时不能破坏业务对象身份。</strong></p></blockquote><p>所以：</p><pre><code class="hljs language-text">Geometry Merge ≠ Entity Merge
+</code></pre><p>几何可以合并：</p><pre><code class="hljs language-text">Part A + Part B + Part C
+        ↓
+    Big Geometry
+</code></pre><p>但逻辑上仍然必须保留：</p><pre><code class="hljs language-text">A
+B
+C
+</code></pre><p>第三：</p><blockquote><p><strong>Picking 应当使用空间加速结构，而不是遍历所有 Triangle。</strong></p></blockquote><p>典型流程：</p><pre><code class="hljs language-text">Ray
+ ↓
+BVH
+ ↓
+Candidate
+ ↓
+Exact Intersection
+</code></pre><p>第四：</p><blockquote><p><strong>高亮状态尽量与 Geometry 数据分离。</strong></p></blockquote><p>不要为了一个 Part 高亮，就重新构建整个 Vertex Buffer。</p><p>更合理的是：</p><pre><code class="hljs language-text">EntityId
+ ↓
+Render State
+ ↓
+Shader
+</code></pre><p>第五：</p><blockquote><p><strong>不要把整个世界无脑 Merge 成一个 Mesh。</strong></p></blockquote><p>实际应根据：</p><pre><code class="hljs language-text">空间
+材质
+LOD
+更新频率
+可编辑粒度
+</code></pre><p>设计合理的 Batch。</p><hr><h2 id="总结">总结 <a href="#总结">#</a></h2><p>大型 CAD 系统中的 Picking，本质上解决两个问题：</p><pre><code class="hljs language-text">Screen
+  ↓
+Geometry
+</code></pre><p>以及：</p><pre><code class="hljs language-text">Geometry
+  ↓
+CAD Semantic Entity
+</code></pre><p>完整链路可以概括为：</p><pre><code class="hljs language-text">Mouse
+ ↓
+Ray
+ ↓
+BVH
+ ↓
+Triangle
+ ↓
+FaceId / EntityId
+ ↓
+CAD Entity
+</code></pre><p>而高亮则是：</p><pre><code class="hljs language-text">CAD Entity
+ ↓
+Selection State
+ ↓
+GPU Render State
+ ↓
+Shader
+ ↓
+Highlight
+</code></pre><p>因此，一个比较合理的复杂 CAD Picking 架构应该同时具备：</p><pre><code class="hljs language-text">空间索引
++
+Triangle / Entity 映射
++
+稳定的 EntityId
++
+GPU Selection State
++
+合理的 Geometry Batching
+</code></pre><p>最终目标是在下面几项之间取得平衡：</p><pre><code class="hljs language-text">Draw Call 数量
+     ↕
+GPU / CPU 性能
+     ↕
+Frustum Culling 粒度
+     ↕
+Picking 效率
+     ↕
+零件独立编辑能力
+</code></pre><p>这也是大型 CAD 渲染系统和普通 Three.js 场景渲染之间一个非常重要的区别：</p><blockquote><p>CAD 不仅要“把模型画出来”，还必须始终保持 Render Geometry 与底层几何拓扑、业务 Entity 之间的可追溯关系。</p></blockquote><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/clang/visual-studio-with-qt">上一篇：visual studio 配置 qt 开发环境</a></span><span class="next-article"><a href="/blogs/computer-graphics/opengl-part1-redering-pipeline">下一篇：opengl part 1：渲染管线</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#复杂 CAD 零件系统中的 Picking 与高亮实现" style="padding-left:15px">复杂 CAD 零件系统中的 Picking 与高亮实现</a></div><div class="toc-item"><a class="toc-item-link" href="#一、问题背景" style="padding-left:30px">一、问题背景</a></div><div class="toc-item"><a class="toc-item-link" href="#二、为什么需要 Geometry Merge" style="padding-left:30px">二、为什么需要 Geometry Merge</a></div><div class="toc-item"><a class="toc-item-link" href="#三、渲染层必须保留 EntityId 映射" style="padding-left:30px">三、渲染层必须保留 EntityId 映射</a></div><div class="toc-item"><a class="toc-item-link" href="#四、Picking 的第一步：从鼠标生成 Ray" style="padding-left:30px">四、Picking 的第一步：从鼠标生成 Ray</a></div><div class="toc-item"><a class="toc-item-link" href="#五、为什么不能遍历所有 Triangle" style="padding-left:30px">五、为什么不能遍历所有 Triangle</a></div><div class="toc-item"><a class="toc-item-link" href="#六、利用 BVH 加速 Picking" style="padding-left:30px">六、利用 BVH 加速 Picking</a></div><div class="toc-item"><a class="toc-item-link" href="#七、Ray / Triangle 求交" style="padding-left:30px">七、Ray / Triangle 求交</a></div><div class="toc-item"><a class="toc-item-link" href="#八、从 Triangle 找到 Part" style="padding-left:30px">八、从 Triangle 找到 Part</a></div><div class="toc-item"><a class="toc-item-link" href="#九、映射结构应该怎么设计" style="padding-left:30px">九、映射结构应该怎么设计</a></div><div class="toc-item"><a class="toc-item-link" href="#十、另一种方式：把 PartId 直接存进 Geometry" style="padding-left:30px">十、另一种方式：把 PartId 直接存进 Geometry</a></div><div class="toc-item"><a class="toc-item-link" href="#十一、Picking 之后如何高亮 Part" style="padding-left:30px">十一、Picking 之后如何高亮 Part</a></div><div class="toc-item"><a class="toc-item-link" href="#十二、方案一：Shader 根据 PartId 高亮" style="padding-left:30px">十二、方案一：Shader 根据 PartId 高亮</a></div><div class="toc-item"><a class="toc-item-link" href="#十三、为什么 PartId 应该使用 flat" style="padding-left:30px">十三、为什么 PartId 应该使用 flat</a></div><div class="toc-item"><a class="toc-item-link" href="#十四、如果同时选中很多 Part 怎么办" style="padding-left:30px">十四、如果同时选中很多 Part 怎么办</a></div><div class="toc-item"><a class="toc-item-link" href="#十五、方案二：Overlay Mesh 高亮" style="padding-left:30px">十五、方案二：Overlay Mesh 高亮</a></div><div class="toc-item"><a class="toc-item-link" href="#十六、方案三：Selection Mask / ID Buffer" style="padding-left:30px">十六、方案三：Selection Mask / ID Buffer</a></div><div class="toc-item"><a class="toc-item-link" href="#十七、CPU Ray Picking 和 GPU Picking 如何选择" style="padding-left:30px">十七、CPU Ray Picking 和 GPU Picking 如何选择</a></div><div class="toc-item"><a class="toc-item-link" href="#CPU Ray + BVH" style="padding-left:45px">CPU Ray + BVH</a></div><div class="toc-item"><a class="toc-item-link" href="#GPU ID Picking" style="padding-left:45px">GPU ID Picking</a></div><div class="toc-item"><a class="toc-item-link" href="#十八、CAD Picking 通常是分层的" style="padding-left:30px">十八、CAD Picking 通常是分层的</a></div><div class="toc-item"><a class="toc-item-link" href="#十九、渲染 Triangle 如何映射回 BRep Face" style="padding-left:30px">十九、渲染 Triangle 如何映射回 BRep Face</a></div><div class="toc-item"><a class="toc-item-link" href="#二十、Edge 和 Vertex Picking 怎么办" style="padding-left:30px">二十、Edge 和 Vertex Picking 怎么办</a></div><div class="toc-item"><a class="toc-item-link" href="#二十一、Geometry Merge 并不是越大越好" style="padding-left:30px">二十一、Geometry Merge 并不是越大越好</a></div><div class="toc-item"><a class="toc-item-link" href="#二十二、Instancing 又是另一种情况" style="padding-left:30px">二十二、Instancing 又是另一种情况</a></div><div class="toc-item"><a class="toc-item-link" href="#二十三、一个比较完整的 CAD Render Model" style="padding-left:30px">二十三、一个比较完整的 CAD Render Model</a></div><div class="toc-item"><a class="toc-item-link" href="#二十四、完整流程" style="padding-left:30px">二十四、完整流程</a></div><div class="toc-item"><a class="toc-item-link" href="#二十五、几个关键设计原则" style="padding-left:30px">二十五、几个关键设计原则</a></div><div class="toc-item"><a class="toc-item-link" href="#总结" style="padding-left:30px">总结</a></div></div></div></div></body></html>
