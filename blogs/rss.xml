@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sun, 16 Aug 2026 08:34:42 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 17 Aug 2026 05:46:13 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sun, 16 Aug 2026 08:34:22 GMT</pubDate>
+        <pubDate>Mon, 17 Aug 2026 05:45:47 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[回看 LookAt 矩阵]]></title>
@@ -231,6 +231,13 @@
             <pubDate>Sat, 26 Apr 2025 00:00:00 GMT</pubDate>
         </item>
         <item>
+            <title><![CDATA[Tessellation：从 BRep 曲面到 Triangle Mesh]]></title>
+            <description><![CDATA[cad 曲面离散化，三角网格化]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/brep-tessellation.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/brep-tessellation.html</guid>
+            <pubDate>Sun, 13 Apr 2025 00:00:00 GMT</pubDate>
+        </item>
+        <item>
             <title><![CDATA[UML]]></title>
             <description><![CDATA[UML 统一建模语言]]></description>
             <link>https://pengfeixc.com/blogs/developer-handbook/uml,%E7%BB%93%E6%9E%84%E5%9B%BE,%E8%A1%8C%E4%B8%BA%E5%9B%BE,%E7%94%A8%E4%BE%8B%E5%9B%BE,%E6%B4%BB%E5%8A%A8%E5%9B%BE,%E6%97%B6%E5%BA%8F%E5%9B%BE,%E7%B1%BB%E5%9B%BE,%E5%8C%85%E5%9B%BE,%E5%AF%B9%E8%B1%A1%E5%9B%BE,%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1,%E5%AF%B9%E8%B1%A1%E5%BB%BA%E6%A8%A1,%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1.html</link>
@@ -285,6 +292,13 @@
             <link>https://pengfeixc.com/blogs/computer-graphics/euler-angles.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/euler-angles.html</guid>
             <pubDate>Tue, 14 May 2024 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[CAD 几何建模中的导数和积分]]></title>
+            <description><![CDATA[如何利用导数和积分计算曲线长度、曲面面积与实体体积]]></description>
+            <link>https://pengfeixc.com/blogs/computer-graphics/derivatives-and-calculus-in-cad.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/derivatives-and-calculus-in-cad.html</guid>
+            <pubDate>Sat, 11 May 2024 00:00:00 GMT</pubDate>
         </item>
         <item>
             <title><![CDATA[线性系统]]></title>

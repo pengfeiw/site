@@ -1,0 +1,516 @@
+<html lang="zh_cn"><head><title>Tessellation：从 BRep 曲面到 Triangle Mesh | WANG_PF.OS.BLOGS</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="tessellation,triangle mesh,三角网格化,曲面离散,细分"><meta name="description" content="cad 曲面离散化，三角网格化"><link rel="stylesheet" href="/blogs/assests/style/code_github.css"><link rel="stylesheet" href="/blogs/assests/style/markdown.css"><link rel="stylesheet" href="/blogs/assests/style/article.css"><link rel="stylesheet" href="/blogs/assests/style/navigator.css"><link rel="stylesheet" href="/blogs/assests/style/global.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous"><link rel="icon" href="/blogs/assests/images/icon.jpg"><meta property="author" content="王鹏飞"><script type="text/javascript">const THEME_KEY="site-theme",THEME_DARK="opencode-dark",THEME_LIGHT="opencode-light";function applyTheme(e){var t,e=e===THEME_LIGHT?THEME_LIGHT:THEME_DARK,o=(document.documentElement.setAttribute("data-theme",e),document.getElementById("theme-toggle"));o&&(t=e===THEME_DARK,o.setAttribute("aria-label",t?"Switch to light theme":"Switch to dark theme"),o.setAttribute("title",t?"Switch to light theme":"Switch to dark theme"),o.setAttribute("aria-pressed",String(!t)),o.setAttribute("data-current-theme",e))}applyTheme(localStorage.getItem(THEME_KEY)||THEME_LIGHT),window.addEventListener("DOMContentLoaded",function(){applyTheme(localStorage.getItem(THEME_KEY)||THEME_DARK);const t=document.getElementById("search-input");var e=document.getElementById("theme-toggle");t.addEventListener("keydown",function(e){"Enter"===e.key&&t.value&&window.open(`https://bing.com/search?q=${t.value}%20site%3A+pengfeixc.com`,"_blank")}),e&&e.addEventListener("click",function(){var e=(document.documentElement.getAttribute("data-theme")===THEME_LIGHT?THEME_LIGHT:THEME_DARK)===THEME_DARK?THEME_LIGHT:THEME_DARK;applyTheme(e),localStorage.setItem(THEME_KEY,e)});document.querySelectorAll(".markdown-body pre").forEach(function(t){var e=document.createElement("div");e.className="code-block-wrapper",t.parentNode.insertBefore(e,t),e.appendChild(t);const o=document.createElement("button");o.className="code-copy-btn",e.appendChild(o),o.addEventListener("click",async function(){var e=t.querySelector("code");if(e)try{await navigator.clipboard.writeText(e.textContent),o.classList.add("copied"),setTimeout(function(){o.classList.remove("copied")},2e3)}catch(e){console.error("Failed to copy:",e)}})});e=document.querySelectorAll(".markdown-body img");let o=0,n=[];e.forEach(function(e,t){e.classList.contains("emoji")||(e.style.cursor="zoom-in",e.addEventListener("click",function(){var e;e=t,o=e,u(),c.classList.add("active"),document.body.style.overflow="hidden"}),n.push(e))});const c=document.createElement("div");c.className="image-lightbox",c.innerHTML=`
+        <div class="lightbox-overlay"></div>
+        <div class="lightbox-container">
+            <img class="lightbox-image" src="" alt="">
+            <div class="lightbox-counter"></div>
+        </div>
+        <button class="lightbox-close" title="关闭 (ESC)"></button>
+        <button class="lightbox-prev" title="上一张 (←)"></button>
+        <button class="lightbox-next" title="下一张 (→)"></button>
+    `,document.body.appendChild(c);e=c.querySelector(".lightbox-overlay");const i=c.querySelector(".lightbox-image"),l=c.querySelector(".lightbox-counter");var a=c.querySelector(".lightbox-close");const r=c.querySelector(".lightbox-prev"),s=c.querySelector(".lightbox-next");function d(){c.classList.remove("active"),document.body.style.overflow=""}function u(){var e=n[o];i.src=e.src,i.alt=e.alt||"",1<n.length?(l.textContent=o+1+" / "+n.length,l.style.display="block"):l.style.display="none",r.style.display=1<n.length?"flex":"none",s.style.display=1<n.length?"flex":"none"}function E(){n.length<=1||(o=(o-1+n.length)%n.length,u())}function m(){n.length<=1||(o=(o+1)%n.length,u())}e.addEventListener("click",d),a.addEventListener("click",d),r.addEventListener("click",function(e){e.stopPropagation(),E()}),s.addEventListener("click",function(e){e.stopPropagation(),m()}),document.addEventListener("keydown",function(e){if(c.classList.contains("active"))switch(e.key){case"Escape":d();break;case"ArrowLeft":E();break;case"ArrowRight":m()}})})</script></head><body><div class="header"><div class="navigator"><div class="nav-sections"><div class="home"><a href="/blogs">Home</a></div><div class="email"><a href="mailto:pengfeixc@sina.com">Email</a></div><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div class="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="rss"><a href="/blogs/rss.xml">RSS</a></div><div class="theme-toggle-wrapper"><button class="theme-toggle-btn" id="theme-toggle" type="button" aria-label="Switch to light theme" aria-pressed="false"></button></div><div class="search-wrapper"><input id="search-input" type="search" placeholder="search"></div></div></div></div><div class="body"><div class="markdown"><div class="markdown-header"><span class="date">日期：2025年4月13日</span><span class="category"><a href="/blogs/computer-graphics">标签：Computer Graphics</a></span></div><div class="markdown-body"><h1 id="CAD 中的 Tessellation：从 BRep 曲面到 Triangle Mesh">CAD 中的 Tessellation：从 BRep 曲面到 Triangle Mesh <a href="#CAD 中的 Tessellation：从 BRep 曲面到 Triangle Mesh">#</a></h1><h2 id="1. 什么是 Tessellation">1. 什么是 Tessellation <a href="#1. 什么是 Tessellation">#</a></h2><p>在 CAD 和计算机图形学中，<strong>Tessellation</strong> 通常可以翻译为：</p><ul><li>细分；</li><li>镶嵌；</li><li>曲面离散化；</li><li>三角网格化。</li></ul><p>在 CAD 渲染场景中，更容易理解的说法是：</p><blockquote><p><strong>Tessellation 是将 CAD 中的精确几何表示离散成 Triangle Mesh 的过程。</strong></p></blockquote><p>例如 CAD Kernel 中可能存在一个精确的圆柱面：</p><pre><code class="hljs language-text">BRep Face
+   ↓
+Cylinder Surface
+</code></pre><p>但是 WebGL/GPU 并不能直接绘制 <code>Cylinder Surface</code>、<code>NURBS Surface</code> 或 <code>B-Spline Surface</code>。</p><p>GPU 最终绘制的通常是：</p><pre><code class="hljs language-text">position buffer
+normal buffer
+index buffer
+      ↓
+Triangle Mesh
+      ↓
+WebGL
+</code></pre><p>因此 CAD 模型真正进入渲染系统之前，一般需要经过：</p><pre><code class="hljs language-text">BRep
+ ↓
+Tessellation
+ ↓
+Triangle Mesh
+ ↓
+WebGL / GPU
+</code></pre><p>这里需要特别注意：</p><blockquote><p><strong>BRep 是精确几何模型，而 Triangle Mesh 通常只是 BRep 的近似渲染表示。</strong></p></blockquote><p>例如 Boolean、Fillet、Offset 等几何运算通常还是针对 BRep 执行，而不是针对渲染 Mesh 执行。</p><hr><h2 id="2. Tessellation 和 Triangulation 的区别">2. Tessellation 和 Triangulation 的区别 <a href="#2. Tessellation 和 Triangulation 的区别">#</a></h2><p>Tessellation 经常和 <strong>Triangulation（三角化 / 三角剖分）</strong> 混在一起使用。</p><p>在 CAD 场景下可以简单理解为：</p><pre><code class="hljs language-text">Tessellation
+    ↓
+决定在哪里采样
+    ↓
+得到离散点和边界
+    ↓
+Triangulation
+    ↓
+连接成 Triangle
+</code></pre><p>Triangulation 更关注：</p><blockquote><p>已经有了一组二维点和边界以后，怎么把这个区域划分成三角形。</p></blockquote><p>而 Tessellation 还需要解决：</p><blockquote><p>为了用 Mesh 足够准确地逼近原来的精确曲面，应该在哪里生成采样点？生成多少采样点？</p></blockquote><p>因此：</p><blockquote><p><strong>Triangulation 可以看作 Tessellation 过程中的一个核心步骤。</strong></p></blockquote><p>对于 CAD Face，可以把整个过程理解为：</p><pre><code class="hljs language-text">精确 BRep Face
+      ↓
+确定边界
+      ↓
+几何采样
+      ↓
+Triangulation
+      ↓
+Triangle Mesh
+</code></pre><hr><h2 id="3. 为什么 Tessellation 的对象是 Face，而不是整个无限 Surface">3. 为什么 Tessellation 的对象是 Face，而不是整个无限 Surface <a href="#3. 为什么 Tessellation 的对象是 Face，而不是整个无限 Surface">#</a></h2><p>BRep 中一个重要概念是：</p><blockquote><p><strong>Face 不等于 Surface。</strong></p></blockquote><p>例如一个 Plane Surface 理论上可以是无限大的：</p><pre><code class="hljs language-text">────────────────────────
+────────────────────────
+────────────────────────
+────────────────────────
+</code></pre><p>但一个 BRep Face 可能只使用其中一小块：</p><pre><code class="hljs language-text">       ┌──────────────┐
+       │              │
+       │     Face     │
+       │              │
+       └──────────────┘
+</code></pre><p>因此不能简单地：</p><pre><code class="hljs language-text">Surface
+   ↓
+全部三角化
+</code></pre><p>而应该根据 Face 的拓扑边界决定有效区域：</p><pre><code class="hljs language-text">Face
+├── Surface
+├── Outer Wire
+└── Inner Wires
+</code></pre><p>Tessellation 最终只应该覆盖：</p><blockquote><p>Outer Wire 内部，并且排除所有 Inner Wire 表示的孔洞区域。</p></blockquote><hr><h2 id="4. Face 有孔时应该如何三角化">4. Face 有孔时应该如何三角化 <a href="#4. Face 有孔时应该如何三角化">#</a></h2><p>例如下面这个 Face：</p><pre><code class="hljs language-text">┌─────────────────────────┐
+│                         │
+│       ┌─────────┐       │
+│       │  Hole   │       │
+│       └─────────┘       │
+│                         │
+└─────────────────────────┘
+</code></pre><p>其中：</p><pre><code class="hljs language-text">外矩形 → Outer Wire
+内矩形 → Inner Wire
+</code></pre><p>如果只是随意在 Face 上采样一些点，再执行普通三角化：</p><pre><code class="hljs language-text">采样点
+  ↓
+Triangulation
+</code></pre><p>三角形可能跨过 Hole。</p><p>因此 CAD Face 的三角化通常需要把：</p><pre><code class="hljs language-text">Outer Wire
+Inner Wire
+</code></pre><p>作为<strong>约束边界</strong>。</p><p>也就是说：</p><blockquote><p>三角形不能跨越 BRep Edge，Inner Wire 内部也不能产生三角形。</p></blockquote><p>这类问题属于 <strong>Constrained Triangulation（约束三角剖分）</strong>。</p><hr><h2 id="5. 为什么经常在 Surface 的 UV 空间中进行三角化">5. 为什么经常在 Surface 的 UV 空间中进行三角化 <a href="#5. 为什么经常在 Surface 的 UV 空间中进行三角化">#</a></h2><p>参数曲面可以写成：</p><p>[ P=S(u,v) ]</p><p>其中：</p><pre><code class="hljs language-text">u、v
+</code></pre><p>是 Surface 参数。</p><p>例如一个圆柱在三维空间中看起来是：</p><pre><code class="hljs language-text">       _______
+     /       \
+    /         \
+   |           |
+   |           |
+   |           |
+    \         /
+</code></pre><p>但它具有二维 UV 参数空间：</p><pre><code class="hljs language-text">v
+↑
+│
+│   ┌──────────────────┐
+│   │                  │
+│   │                  │
+│   │                  │
+│   └──────────────────┘
+│
+└────────────────────────→ u
+</code></pre><p>BRep Face 的 Edge 又通常可以拥有对应 Surface 上的 <strong>P-Curve</strong>。</p><p>因此可以形成这样一个过程：</p><pre><code class="hljs language-text">BRep Face
+   │
+   ├── Surface
+   │
+   └── Wire / Edge
+           ↓
+        P-Curve
+           ↓
+      UV 参数空间
+           ↓
+Outer / Inner Boundary
+           ↓
+二维约束三角化
+           ↓
+      UV Triangles
+           ↓
+         S(u,v)
+           ↓
+      3D Triangles
+</code></pre><p>例如二维三角形的三个顶点：</p><pre><code class="hljs language-text">(u1, v1)
+(u2, v2)
+(u3, v3)
+</code></pre><p>通过 Surface 求值得到：</p><p>[ P_1=S(u_1,v_1) ]</p><p>[ P_2=S(u_2,v_2) ]</p><p>[ P_3=S(u_3,v_3) ]</p><p>最终得到 GPU 可以绘制的三维 Triangle。</p><hr><h2 id="6. 为什么不能对曲面均匀采样">6. 为什么不能对曲面均匀采样 <a href="#6. 为什么不能对曲面均匀采样">#</a></h2><p>对于平坦区域：</p><pre><code class="hljs language-text">────────────────────────
+</code></pre><p>使用比较大的 Triangle 就已经能很好地逼近真实 Surface。</p><p>但如果曲率很大：</p><pre><code class="hljs language-text">          ____
+       __/    \__
+    __/          \__
+</code></pre><p>如果 Triangle 仍然很大：</p><pre><code class="hljs language-text">●────────────────●
+ \              /
+   \            /
+      ●────────
+</code></pre><p>Mesh 和真实曲面之间就可能出现明显偏差。</p><p>因此实际 Tessellation 往往采用：</p><blockquote><p><strong>Adaptive Tessellation，自适应细分。</strong></p></blockquote><p>基本原则是：</p><pre><code class="hljs language-text">平坦区域
+↓
+少量采样
+↓
+较大 Triangle
+
+
+高曲率区域
+↓
+增加采样
+↓
+较小 Triangle
+</code></pre><p>从而在：</p><pre><code class="hljs language-text">几何精度
+   ↕
+Triangle 数量
+   ↕
+GPU 性能
+</code></pre><p>之间取得平衡。</p><hr><h2 id="7. Chordal Deviation：弦偏差">7. Chordal Deviation：弦偏差 <a href="#7. Chordal Deviation：弦偏差">#</a></h2><p><strong>Chordal Deviation</strong> 可以翻译为：</p><blockquote><p><strong>弦偏差、弦高误差</strong></p></blockquote><p>在一些 CAD Kernel 中也经常看到类似：</p><blockquote><p>Linear Deflection，线性偏差。</p></blockquote><p>它主要用于控制：</p><blockquote><p><strong>离散 Mesh 与真实几何之间的位置误差。</strong></p></blockquote><p>以曲线为例：</p><pre><code class="hljs language-text">            真实曲线
+          *********
+       ***    ↑    ***
+     ●────────│────────●
+              d
+             弦
+</code></pre><p>两个采样点之间最终使用线段近似。</p><p>真实曲线和线段之间的最大距离 <code>d</code> 就可以理解为弦偏差。</p><p>假设 Tessellation 参数要求：</p><pre><code class="hljs language-text">Chordal Deviation &lt;= 0.1 mm
+</code></pre><p>如果：</p><pre><code class="hljs language-text">当前误差 = 0.5 mm
+</code></pre><p>那么说明当前离散结果太粗：</p><pre><code class="hljs language-text">继续增加采样点
+      ↓
+进一步细分
+</code></pre><p>直到满足误差要求。</p><p>因此：</p><pre><code class="hljs language-text">Chordal Deviation 越小
+        ↓
+要求越严格
+        ↓
+采样越密
+        ↓
+Triangle 越多
+        ↓
+Mesh 越接近真实 Surface
+</code></pre><p>反之：</p><pre><code class="hljs language-text">Chordal Deviation 越大
+        ↓
+允许误差越大
+        ↓
+Triangle 越少
+        ↓
+渲染性能越高
+</code></pre><hr><h2 id="8. Angular Deviation：角偏差">8. Angular Deviation：角偏差 <a href="#8. Angular Deviation：角偏差">#</a></h2><p><strong>Angular Deviation</strong> 通常翻译为：</p><blockquote><p><strong>角偏差。</strong></p></blockquote><p>它主要用于控制：</p><blockquote><p><strong>Surface 方向或者法向变化是否被 Mesh 足够准确地表达。</strong></p></blockquote><p>例如曲面不同位置的法向：</p><pre><code class="hljs language-text">N1 ↑
+
+        ↗ N2
+
+                 → N3
+</code></pre><p>如果一个 Triangle 覆盖整个区域：</p><pre><code class="hljs language-text">●────────────●
+ \          /
+   \       /
+      ●
+</code></pre><p>虽然位置误差可能没有超过 Chordal Deviation，但真实 Surface 的方向变化可能已经非常明显。</p><p>因此还可以检查：</p><p>[ \theta = \angle(N_1,N_2) ]</p><p>如果：</p><pre><code class="hljs language-text">θ &gt; AngularDeviation
+</code></pre><p>就继续进行细分。</p><p>可以简单记：</p><pre><code class="hljs language-text">Chordal Deviation
+        ↓
+控制位置误差
+        ↓
+Mesh 离真实几何有多远
+
+
+Angular Deviation
+        ↓
+控制方向误差
+        ↓
+曲面的弯曲变化是否表达充分
+</code></pre><p>Chordal Deviation 和 Angular Deviation 都可以作为：</p><blockquote><p><strong>决定 Tessellation 采样密度和是否继续细分的误差判据。</strong></p></blockquote><hr><h2 id="9. 为什么相邻 Face 不能完全独立 Tessellation">9. 为什么相邻 Face 不能完全独立 Tessellation <a href="#9. 为什么相邻 Face 不能完全独立 Tessellation">#</a></h2><p>假设两个 BRep Face：</p><pre><code class="hljs language-text">Face A
+   │
+   │ Shared Edge E
+   │
+Face B
+</code></pre><p>它们共享同一条拓扑 Edge。</p><p>如果 Face A 自己对 Edge 采样：</p><pre><code class="hljs language-text">●────●────●────●
+</code></pre><p>而 Face B 自己重新采样：</p><pre><code class="hljs language-text">●──●──────●──●─●
+</code></pre><p>那么最终两个 Face 的 Mesh 边界：</p><pre><code class="hljs language-text">Face A
+
+────●────●────●────
+
+
+Face B
+
+──●──────●──●──────
+</code></pre><p>顶点无法对应。</p><p>这样可能出现：</p><blockquote><p>Crack / Seam，即 Mesh 裂缝。</p></blockquote><hr><h2 id="10. 公共 Edge 应该统一离散">10. 公共 Edge 应该统一离散 <a href="#10. 公共 Edge 应该统一离散">#</a></h2><p>比较合理的设计是：</p><pre><code class="hljs language-text">BRep Shared Edge
+        ↓
+统一进行 Curve Tessellation
+        ↓
+P0 P1 P2 P3 P4
+        │
+    ┌───┴───┐
+    ↓       ↓
+ Face A   Face B
+</code></pre><p>两个 Face 的 Triangle Mesh 都必须使用：</p><pre><code class="hljs language-text">P0
+P1
+P2
+P3
+P4
+</code></pre><p>作为公共边界。</p><p>即：</p><pre><code class="hljs language-text">Face A
+────●────●────●────
+
+Face B
+────●────●────●────
+</code></pre><p>这体现了一个非常重要的 CAD 思想：</p><blockquote><p><strong>Tessellation 不能完全脱离 BRep Topology 单独处理 Surface。</strong></p></blockquote><p>Topology 已经告诉我们：</p><pre><code class="hljs language-text">Face A
+Face B
+</code></pre><p>共享：</p><pre><code class="hljs language-text">Edge E
+</code></pre><p>那么 Mesh 层也应该保持这层共享关系，从而保证模型 watertight，避免视觉裂缝。</p><hr><h2 id="11. Tessellation 最终产生什么数据">11. Tessellation 最终产生什么数据 <a href="#11. Tessellation 最终产生什么数据">#</a></h2><p>经过 Tessellation 后，一个 Face 最终可能得到：</p><pre><code class="hljs language-cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">FaceMesh</span> {
+    std::vector&lt;Vec3&gt; positions;
+    std::vector&lt;Vec3&gt; normals;
+
+    std::vector&lt;Vec2&gt; uvs;
+
+    std::vector&lt;<span class="hljs-type">uint32_t</span>&gt; indices;
+
+    FaceId faceId;
+};
+</code></pre><p>然后上传到 WebGL：</p><pre><code class="hljs language-text">positions
+normals
+uv
+indices
+   ↓
+BufferGeometry
+   ↓
+GPU
+</code></pre><p>对于 CAD 系统，还应该尽量保留：</p><pre><code class="hljs language-text">Triangle
+   ↓
+FaceId
+</code></pre><p>这样的对应关系。</p><p>因为 Picking 后：</p><pre><code class="hljs language-text">Mouse
+ ↓
+Ray
+ ↓
+Triangle
+ ↓
+FaceId
+ ↓
+BRep Face
+</code></pre><p>才能从渲染 Mesh 找回真正的 CAD 拓扑对象。</p><hr><h2 id="12. Tessellation 与 Picking 的关系">12. Tessellation 与 Picking 的关系 <a href="#12. Tessellation 与 Picking 的关系">#</a></h2><p>CAD 的 Triangle Mesh 虽然主要用于渲染，但也经常参与 Picking。</p><p>例如：</p><pre><code class="hljs language-text">BRep Face
+    ↓
+Tessellation
+    ↓
+Triangles
+    ↓
+BVH
+</code></pre><p>用户点击模型：</p><pre><code class="hljs language-text">Mouse
+ ↓
+Ray
+ ↓
+BVH
+ ↓
+Triangle
+ ↓
+FaceId
+ ↓
+BRep Face
+</code></pre><p>因此 Tessellation 不仅需要生成 Triangle，还最好保留：</p><pre><code class="hljs language-text">Triangle → Face
+Face → Entity
+</code></pre><p>映射。</p><p>这也是 CAD Render Model 和普通 Three.js 场景之间一个很重要的区别。</p><hr><h2 id="13. 什么是 LOD">13. 什么是 LOD <a href="#13. 什么是 LOD">#</a></h2><p>LOD 是：</p><blockquote><p><strong>Level of Detail，细节层次。</strong></p></blockquote><p>核心思想是：</p><blockquote><p>同一个 CAD 几何准备多个不同精细程度的 Mesh，根据当前观察距离或者屏幕尺寸选择不同版本。</p></blockquote><p>例如：</p><pre><code class="hljs language-text">BRep
+ │
+ ├── LOD 0
+ │    100,000 triangles
+ │
+ ├── LOD 1
+ │     20,000 triangles
+ │
+ └── LOD 2
+       2,000 triangles
+</code></pre><p>近距离观察：</p><pre><code class="hljs language-text">Camera
+  ↓
+
+████████████
+模型占据大量屏幕像素
+
+→ LOD 0
+</code></pre><p>远距离观察：</p><pre><code class="hljs language-text">Camera
+   ↓
+
+
+                 ▪
+                Model
+
+→ LOD 2
+</code></pre><p>因为模型在屏幕上可能只剩几十个像素，即使继续使用几十万个 Triangle，用户也无法看到区别。</p><hr><h2 id="14. LOD 和 Tessellation 的关系">14. LOD 和 Tessellation 的关系 <a href="#14. LOD 和 Tessellation 的关系">#</a></h2><p>LOD 本身不是 Tessellation 算法。</p><p>可以理解成：</p><blockquote><p><strong>LOD 是对多个不同 Tessellation 精度结果进行管理和选择的渲染策略。</strong></p></blockquote><p>例如：</p><pre><code class="hljs language-text">                    BRep
+                     │
+       ┌─────────────┼─────────────┐
+       ▼             ▼             ▼
+精细 Tessellation  中等 Tessellation  粗 Tessellation
+       │             │             │
+       ▼             ▼             ▼
+     LOD0          LOD1          LOD2
+</code></pre><p>可以使用不同的 Chordal Deviation：</p><pre><code class="hljs language-text">LOD0
+Chordal Deviation = 0.01 mm
+
+LOD1
+Chordal Deviation = 0.1 mm
+
+LOD2
+Chordal Deviation = 1 mm
+</code></pre><p>允许的几何误差越大：</p><pre><code class="hljs language-text">Triangle 越少
+</code></pre><hr><h2 id="15. Zoom 时是否应该重新 Tessellate">15. Zoom 时是否应该重新 Tessellate <a href="#15. Zoom 时是否应该重新 Tessellate">#</a></h2><p>如果用户只是：</p><pre><code class="hljs language-text">Zoom In
+Zoom Out
+Rotate Camera
+</code></pre><p>BRep 几何本身并没有改变。</p><p>因此通常不希望：</p><pre><code class="hljs language-text">每次 Camera 改变
+      ↓
+重新 Tessellate BRep
+      ↓
+重新生成 Mesh
+      ↓
+重新上传 GPU
+</code></pre><p>因为这一过程成本比较高。</p><p>一种更常见的设计是：</p><pre><code class="hljs language-text">提前或者按需生成：
+
+LOD0
+LOD1
+LOD2
+
+      ↓
+
+缓存
+</code></pre><p>运行时：</p><pre><code class="hljs language-text">Camera
+ ↓
+计算物体屏幕尺寸
+ ↓
+选择合适 LOD
+ ↓
+直接渲染已有 Mesh
+</code></pre><p>这样 Camera 运动时只进行 Mesh 切换，而不是不断重新执行几何算法。</p><hr><h2 id="16. 为什么根据屏幕尺寸选择 LOD 比单纯根据距离更合理">16. 为什么根据屏幕尺寸选择 LOD 比单纯根据距离更合理 <a href="#16. 为什么根据屏幕尺寸选择 LOD 比单纯根据距离更合理">#</a></h2><p>例如两个零件：</p><pre><code class="hljs language-text">Part A：10000 mm
+
+Part B：10 mm
+</code></pre><p>虽然它们离 Camera 的距离相同，但最终屏幕尺寸完全不同。</p><p>真正影响用户能否看到几何误差的是：</p><blockquote><p><strong>Mesh 的误差最终投影到屏幕后占多少像素。</strong></p></blockquote><p>因此大型 CAD 系统可以考虑：</p><pre><code class="hljs language-text">Tessellation 几何误差
+       ↓
+Camera Projection
+       ↓
+Screen Space Error
+       ↓
+选择 LOD
+</code></pre><p>例如：</p><pre><code class="hljs language-text">当前误差投影到屏幕 &lt; 0.5 px
+
+→ 当前 LOD 已经足够
+</code></pre><p>这样比简单判断：</p><pre><code class="hljs language-text">distance &lt; 100
+</code></pre><p>更加合理。</p><hr><h2 id="17. Tessellation 应该属于哪个模块">17. Tessellation 应该属于哪个模块 <a href="#17. Tessellation 应该属于哪个模块">#</a></h2><p>从职责上看，Tessellation 更适合属于：</p><blockquote><p><strong>Geometry Kernel / Geometry Processing 层。</strong></p></blockquote><p>因为 Tessellation 需要理解：</p><pre><code class="hljs language-text">BRep
+Face
+Edge
+P-Curve
+Surface
+UV
+Tolerance
+Topology
+</code></pre><p>这些都是 Geometry Kernel 的核心数据。</p><p>因此比较自然的架构是：</p><pre><code class="hljs language-text">Geometry Kernel
+      │
+      │ BRep
+      ↓
+Tessellation
+      │
+      │ Triangle Mesh
+      ↓
+Render Engine
+      │
+      ↓
+WebGL
+</code></pre><p>Render Engine 不需要真正理解：</p><pre><code class="hljs language-text">NURBS
+B-Spline
+TopoDS_Face
+P-Curve
+</code></pre><p>它主要消费：</p><pre><code class="hljs language-text">Position
+Normal
+UV
+Index
+EntityId
+FaceId
+</code></pre><p>等渲染数据。</p><hr><h2 id="18. 云 CAD 中 Tessellation 可以放在哪里">18. 云 CAD 中 Tessellation 可以放在哪里 <a href="#18. 云 CAD 中 Tessellation 可以放在哪里">#</a></h2><p>云 CAD 中 Geometry Kernel 不一定只存在于某一个地方。</p><h3 id="服务端 Tessellation">服务端 Tessellation <a href="#服务端 Tessellation">#</a></h3><p>架构：</p><pre><code class="hljs language-text">Server
+
+BRep
+ ↓
+Geometry Kernel
+ ↓
+Tessellation
+ ↓
+Triangle Mesh
+ ↓
+Network
+ ↓
+Browser
+ ↓
+WebGL
+</code></pre><p>优点：</p><ul><li>浏览器 CPU 压力较小；</li><li>Kernel 统一；</li><li>客户端不需要携带完整几何算法。</li></ul><p>缺点：</p><ul><li>Mesh 数据量可能比较大；</li><li>编辑以后需要服务器往返；</li><li>网络延迟会影响交互。</li></ul><hr><h3 id="浏览器 WASM Tessellation">浏览器 WASM Tessellation <a href="#浏览器 WASM Tessellation">#</a></h3><p>例如把 C++ Geometry Kernel 编译成 WASM：</p><pre><code class="hljs language-text">Browser
+
+BRep
+ ↓
+WASM Geometry Kernel
+ ↓
+Tessellation
+ ↓
+Triangle Mesh
+ ↓
+WebGL
+</code></pre><p>优点：</p><ul><li>局部几何修改后可以直接重新 Tessellate；</li><li>减少服务器往返；</li><li>交互响应速度更好。</li></ul><p>缺点：</p><ul><li>浏览器 CPU 和内存压力增加；</li><li>Kernel/WASM 包可能较大；</li><li>大型几何算法在浏览器端成本较高。</li></ul><hr><h3 id="服务端 + 浏览器混合">服务端 + 浏览器混合 <a href="#服务端 + 浏览器混合">#</a></h3><p>实际云 CAD 可以采用混合方案：</p><pre><code class="hljs language-text">首次打开大型模型
+      ↓
+Server 直接提供已有 Mesh
+      ↓
+快速首屏
+
+
+用户修改当前零件
+      ↓
+Browser WASM
+      ↓
+局部 Tessellation
+
+
+复杂 Boolean / 几何计算
+      ↓
+Server Kernel
+</code></pre><p>最终根据：</p><pre><code class="hljs language-text">几何计算成本
+网络传输量
+首屏速度
+交互延迟
+客户端性能
+缓存策略
+</code></pre><p>决定任务放在哪里执行。</p><hr><h2 id="19. 一个完整的 CAD Tessellation 流程">19. 一个完整的 CAD Tessellation 流程 <a href="#19. 一个完整的 CAD Tessellation 流程">#</a></h2><p>最终可以把整个过程总结成：</p><pre><code class="hljs language-text">                   BRep Face
+                      │
+          ┌───────────┴───────────┐
+          ↓                       ↓
+       Surface                 Topology
+                                  │
+                          Outer / Inner Wire
+                                  │
+                               Edge
+                                  │
+                              P-Curve
+          │                       │
+          └───────────┬───────────┘
+                      ↓
+                 UV 参数空间
+                      │
+                      ↓
+              建立约束边界
+                      │
+                      ↓
+          根据几何误差进行采样
+                      │
+         ┌────────────┴────────────┐
+         ↓                         ↓
+ Chordal Deviation          Angular Deviation
+   控制位置误差               控制方向误差
+         │                         │
+         └────────────┬────────────┘
+                      ↓
+             Adaptive Tessellation
+                      │
+                      ↓
+          Constrained Triangulation
+                      │
+                      ↓
+               UV Triangles
+                      │
+                    S(u,v)
+                      │
+                      ↓
+               3D Triangles
+                      │
+            ┌─────────┴─────────┐
+            ↓                   ↓
+        Position             Normal
+            │                   │
+            └─────────┬─────────┘
+                      ↓
+                 Index Buffer
+                      │
+                      ↓
+                Triangle Mesh
+                      │
+                      ↓
+                WebGL / GPU
+</code></pre><hr><h2 id="20. 总结">20. 总结 <a href="#20. 总结">#</a></h2><p>CAD 中的 Tessellation 可以概括为：</p><blockquote><p><strong>将精确的 BRep 几何按照一定误差要求离散成 Triangle Mesh，使其能够被 GPU 实时绘制。</strong></p></blockquote><p>其中几个最重要的概念是：</p><h3 id="BRep 边界">BRep 边界 <a href="#BRep 边界">#</a></h3><p>不能只对无限 Surface 三角化，而需要根据：</p><pre><code class="hljs language-text">Outer Wire
+Inner Wire
+</code></pre><p>确定 Face 的真正有效区域。</p><h3 id="UV 参数空间">UV 参数空间 <a href="#UV 参数空间">#</a></h3><p>可以利用：</p><pre><code class="hljs language-text">Surface + P-Curve
+</code></pre><p>把复杂三维曲面的边界转化到二维 UV 空间，在二维空间完成约束三角剖分，再映射回三维。</p><h3 id="自适应 Tessellation">自适应 Tessellation <a href="#自适应 Tessellation">#</a></h3><p>不是所有区域采用同样密度：</p><pre><code class="hljs language-text">平坦区域 → 少量 Triangle
+高曲率区域 → 更多 Triangle
+</code></pre><h3 id="Chordal Deviation">Chordal Deviation <a href="#Chordal Deviation">#</a></h3><p>控制：</p><blockquote><p>Mesh 与真实几何之间的位置误差。</p></blockquote><h3 id="Angular Deviation">Angular Deviation <a href="#Angular Deviation">#</a></h3><p>控制：</p><blockquote><p>Mesh 对真实 Surface 方向变化的表达误差。</p></blockquote><p>两者都是决定采样密度和是否继续细分的重要标准。</p><h3 id="共享 Edge 一致性">共享 Edge 一致性 <a href="#共享 Edge 一致性">#</a></h3><p>两个相邻 BRep Face 的公共 Edge 应该统一离散，并共享相同边界采样点，从而避免：</p><pre><code class="hljs language-text">Crack / Seam
+</code></pre><h3 id="LOD">LOD <a href="#LOD">#</a></h3><p>同一个 BRep 可以拥有多个不同 Tessellation 精度的 Mesh：</p><pre><code class="hljs language-text">LOD0
+LOD1
+LOD2
+</code></pre><p>根据屏幕尺寸或 Screen Space Error 选择适当版本，而不是用户每次 Zoom 都重新 Tessellate。</p><p>最终需要建立一个非常重要的认识：</p><pre><code class="hljs language-text">BRep
+↓
+精确几何模型
+
+Tessellation
+↓
+几何离散化
+
+Triangle Mesh
+↓
+近似渲染表示
+
+WebGL
+↓
+GPU 实时显示
+</code></pre><p>对于同时涉及<strong>几何建模和 WebGL 渲染</strong>的 CAD 系统而言，Tessellation 正是连接 Geometry Kernel 和 Render Engine 的关键桥梁。</p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/developer-handbook/uml,结构图,行为图,用例图,活动图,时序图,类图,包图,对象图,架构设计,对象建模,面向对象">上一篇：UML</a></span><span class="next-article"><a href="/blogs/clang/freecad-compile">下一篇：FreeCAD 编译</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#CAD 中的 Tessellation：从 BRep 曲面到 Triangle Mesh" style="padding-left:15px">CAD 中的 Tessellation：从 BRep 曲面到 Triangle Mesh</a></div><div class="toc-item"><a class="toc-item-link" href="#1. 什么是 Tessellation" style="padding-left:30px">1. 什么是 Tessellation</a></div><div class="toc-item"><a class="toc-item-link" href="#2. Tessellation 和 Triangulation 的区别" style="padding-left:30px">2. Tessellation 和 Triangulation 的区别</a></div><div class="toc-item"><a class="toc-item-link" href="#3. 为什么 Tessellation 的对象是 Face，而不是整个无限 Surface" style="padding-left:30px">3. 为什么 Tessellation 的对象是 Face，而不是整个无限 Surface</a></div><div class="toc-item"><a class="toc-item-link" href="#4. Face 有孔时应该如何三角化" style="padding-left:30px">4. Face 有孔时应该如何三角化</a></div><div class="toc-item"><a class="toc-item-link" href="#5. 为什么经常在 Surface 的 UV 空间中进行三角化" style="padding-left:30px">5. 为什么经常在 Surface 的 UV 空间中进行三角化</a></div><div class="toc-item"><a class="toc-item-link" href="#6. 为什么不能对曲面均匀采样" style="padding-left:30px">6. 为什么不能对曲面均匀采样</a></div><div class="toc-item"><a class="toc-item-link" href="#7. Chordal Deviation：弦偏差" style="padding-left:30px">7. Chordal Deviation：弦偏差</a></div><div class="toc-item"><a class="toc-item-link" href="#8. Angular Deviation：角偏差" style="padding-left:30px">8. Angular Deviation：角偏差</a></div><div class="toc-item"><a class="toc-item-link" href="#9. 为什么相邻 Face 不能完全独立 Tessellation" style="padding-left:30px">9. 为什么相邻 Face 不能完全独立 Tessellation</a></div><div class="toc-item"><a class="toc-item-link" href="#10. 公共 Edge 应该统一离散" style="padding-left:30px">10. 公共 Edge 应该统一离散</a></div><div class="toc-item"><a class="toc-item-link" href="#11. Tessellation 最终产生什么数据" style="padding-left:30px">11. Tessellation 最终产生什么数据</a></div><div class="toc-item"><a class="toc-item-link" href="#12. Tessellation 与 Picking 的关系" style="padding-left:30px">12. Tessellation 与 Picking 的关系</a></div><div class="toc-item"><a class="toc-item-link" href="#13. 什么是 LOD" style="padding-left:30px">13. 什么是 LOD</a></div><div class="toc-item"><a class="toc-item-link" href="#14. LOD 和 Tessellation 的关系" style="padding-left:30px">14. LOD 和 Tessellation 的关系</a></div><div class="toc-item"><a class="toc-item-link" href="#15. Zoom 时是否应该重新 Tessellate" style="padding-left:30px">15. Zoom 时是否应该重新 Tessellate</a></div><div class="toc-item"><a class="toc-item-link" href="#16. 为什么根据屏幕尺寸选择 LOD 比单纯根据距离更合理" style="padding-left:30px">16. 为什么根据屏幕尺寸选择 LOD 比单纯根据距离更合理</a></div><div class="toc-item"><a class="toc-item-link" href="#17. Tessellation 应该属于哪个模块" style="padding-left:30px">17. Tessellation 应该属于哪个模块</a></div><div class="toc-item"><a class="toc-item-link" href="#18. 云 CAD 中 Tessellation 可以放在哪里" style="padding-left:30px">18. 云 CAD 中 Tessellation 可以放在哪里</a></div><div class="toc-item"><a class="toc-item-link" href="#服务端 Tessellation" style="padding-left:45px">服务端 Tessellation</a></div><div class="toc-item"><a class="toc-item-link" href="#浏览器 WASM Tessellation" style="padding-left:45px">浏览器 WASM Tessellation</a></div><div class="toc-item"><a class="toc-item-link" href="#服务端 + 浏览器混合" style="padding-left:45px">服务端 + 浏览器混合</a></div><div class="toc-item"><a class="toc-item-link" href="#19. 一个完整的 CAD Tessellation 流程" style="padding-left:30px">19. 一个完整的 CAD Tessellation 流程</a></div><div class="toc-item"><a class="toc-item-link" href="#20. 总结" style="padding-left:30px">20. 总结</a></div><div class="toc-item"><a class="toc-item-link" href="#BRep 边界" style="padding-left:45px">BRep 边界</a></div><div class="toc-item"><a class="toc-item-link" href="#UV 参数空间" style="padding-left:45px">UV 参数空间</a></div><div class="toc-item"><a class="toc-item-link" href="#自适应 Tessellation" style="padding-left:45px">自适应 Tessellation</a></div><div class="toc-item"><a class="toc-item-link" href="#Chordal Deviation" style="padding-left:45px">Chordal Deviation</a></div><div class="toc-item"><a class="toc-item-link" href="#Angular Deviation" style="padding-left:45px">Angular Deviation</a></div><div class="toc-item"><a class="toc-item-link" href="#共享 Edge 一致性" style="padding-left:45px">共享 Edge 一致性</a></div><div class="toc-item"><a class="toc-item-link" href="#LOD" style="padding-left:45px">LOD</a></div></div></div></div></body></html>
