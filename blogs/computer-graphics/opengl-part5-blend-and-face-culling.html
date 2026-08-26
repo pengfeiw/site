@@ -1,0 +1,587 @@
+<html lang="zh_cn"><head><title>opengl part 5：混合和面剔除 | WANG_PF.OS.BLOGS</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="keywords" content="opengl,webgl,计算机图形学,Graphic,computer graphic,blend,face culling"><meta name="description" content="opengl(webgl) 渲染管线介绍"><link rel="stylesheet" href="/blogs/assests/style/code_github.css"><link rel="stylesheet" href="/blogs/assests/style/markdown.css"><link rel="stylesheet" href="/blogs/assests/style/article.css"><link rel="stylesheet" href="/blogs/assests/style/navigator.css"><link rel="stylesheet" href="/blogs/assests/style/global.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous"><link rel="icon" href="/blogs/assests/images/icon.jpg"><meta property="author" content="王鹏飞"><script type="text/javascript">const THEME_KEY="site-theme",THEME_DARK="opencode-dark",THEME_LIGHT="opencode-light";function applyTheme(e){var t,e=e===THEME_LIGHT?THEME_LIGHT:THEME_DARK,o=(document.documentElement.setAttribute("data-theme",e),document.getElementById("theme-toggle"));o&&(t=e===THEME_DARK,o.setAttribute("aria-label",t?"Switch to light theme":"Switch to dark theme"),o.setAttribute("title",t?"Switch to light theme":"Switch to dark theme"),o.setAttribute("aria-pressed",String(!t)),o.setAttribute("data-current-theme",e))}applyTheme(localStorage.getItem(THEME_KEY)||THEME_LIGHT),window.addEventListener("DOMContentLoaded",function(){applyTheme(localStorage.getItem(THEME_KEY)||THEME_DARK);const t=document.getElementById("search-input");var e=document.getElementById("theme-toggle");t.addEventListener("keydown",function(e){"Enter"===e.key&&t.value&&window.open(`https://bing.com/search?q=${t.value}%20site%3A+pengfeixc.com`,"_blank")}),e&&e.addEventListener("click",function(){var e=(document.documentElement.getAttribute("data-theme")===THEME_LIGHT?THEME_LIGHT:THEME_DARK)===THEME_DARK?THEME_LIGHT:THEME_DARK;applyTheme(e),localStorage.setItem(THEME_KEY,e)});document.querySelectorAll(".markdown-body pre").forEach(function(t){var e=document.createElement("div");e.className="code-block-wrapper",t.parentNode.insertBefore(e,t),e.appendChild(t);const o=document.createElement("button");o.className="code-copy-btn",e.appendChild(o),o.addEventListener("click",async function(){var e=t.querySelector("code");if(e)try{await navigator.clipboard.writeText(e.textContent),o.classList.add("copied"),setTimeout(function(){o.classList.remove("copied")},2e3)}catch(e){console.error("Failed to copy:",e)}})});e=document.querySelectorAll(".markdown-body img");let o=0,n=[];e.forEach(function(e,t){e.classList.contains("emoji")||(e.style.cursor="zoom-in",e.addEventListener("click",function(){var e;e=t,o=e,u(),c.classList.add("active"),document.body.style.overflow="hidden"}),n.push(e))});const c=document.createElement("div");c.className="image-lightbox",c.innerHTML=`
+        <div class="lightbox-overlay"></div>
+        <div class="lightbox-container">
+            <img class="lightbox-image" src="" alt="">
+            <div class="lightbox-counter"></div>
+        </div>
+        <button class="lightbox-close" title="关闭 (ESC)"></button>
+        <button class="lightbox-prev" title="上一张 (←)"></button>
+        <button class="lightbox-next" title="下一张 (→)"></button>
+    `,document.body.appendChild(c);e=c.querySelector(".lightbox-overlay");const i=c.querySelector(".lightbox-image"),l=c.querySelector(".lightbox-counter");var a=c.querySelector(".lightbox-close");const r=c.querySelector(".lightbox-prev"),s=c.querySelector(".lightbox-next");function d(){c.classList.remove("active"),document.body.style.overflow=""}function u(){var e=n[o];i.src=e.src,i.alt=e.alt||"",1<n.length?(l.textContent=o+1+" / "+n.length,l.style.display="block"):l.style.display="none",r.style.display=1<n.length?"flex":"none",s.style.display=1<n.length?"flex":"none"}function E(){n.length<=1||(o=(o-1+n.length)%n.length,u())}function m(){n.length<=1||(o=(o+1)%n.length,u())}e.addEventListener("click",d),a.addEventListener("click",d),r.addEventListener("click",function(e){e.stopPropagation(),E()}),s.addEventListener("click",function(e){e.stopPropagation(),m()}),document.addEventListener("keydown",function(e){if(c.classList.contains("active"))switch(e.key){case"Escape":d();break;case"ArrowLeft":E();break;case"ArrowRight":m()}})})</script></head><body><div class="header"><div class="navigator"><div class="nav-sections"><div class="home"><a href="/blogs">Home</a></div><div class="email"><a href="mailto:pengfeixc@sina.com">Email</a></div><div class="github"><a target="_blank" href="https://github.com/pengfeiw">GitHub</a></div><div class="minicode"><a target="_blank" href="https://pengfeiw.github.io/minicode">MiniCode</a></div><div class="rss"><a href="/blogs/rss.xml">RSS</a></div><div class="theme-toggle-wrapper"><button class="theme-toggle-btn" id="theme-toggle" type="button" aria-label="Switch to light theme" aria-pressed="false"></button></div><div class="search-wrapper"><input id="search-input" type="search" placeholder="search"></div></div></div></div><div class="body"><div class="markdown"><div class="markdown-header"><span class="date">日期：2025年7月3日</span><span class="category"><a href="/blogs/computer-graphics">标签：Computer Graphics</a></span></div><div class="markdown-body"><h1 id="OpenGL：混合与面剔除">OpenGL：混合与面剔除 <a href="#OpenGL：混合与面剔除">#</a></h1><p>本文整理 LearnOpenGL Advanced OpenGL 中的 <strong>Blending（混合）</strong> 和 <strong>Face Culling（面剔除）</strong> 两节内容，并补充一些便于理解和记忆的说明。(<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/03%20Blending/" title="混合 - LearnOpenGL CN">LearnOpenGL CN</a>)</p><h2 id="一、混合 Blending">一、混合 Blending <a href="#一、混合 Blending">#</a></h2><h3 id="1. 什么是混合">1. 什么是混合 <a href="#1. 什么是混合">#</a></h3><p>OpenGL 中，<strong>混合（Blending）主要用于实现透明、半透明效果</strong>。</p><p>一个半透明物体最终显示的颜色，并不完全来自物体本身，而是：</p><ul><li>一部分来自当前物体；</li><li>一部分来自物体后面的背景；</li><li>两种颜色按照一定比例进行混合。</li></ul><p>例如一块半透明玻璃：</p><pre><code class="hljs language-text">摄像机
+   ↓
+┌─────────┐
+│ 半透明玻璃 │   ← Source
+└─────────┘
+   ↓
+┌─────────┐
+│ 后面的墙体 │   ← Destination
+└─────────┘
+</code></pre><p>通常通过颜色的第四个分量 <strong>Alpha</strong> 表示透明程度：</p><pre><code class="hljs language-glsl"><span class="hljs-type">vec4</span> color = <span class="hljs-type">vec4</span>(r, g, b, alpha);
+</code></pre><p>例如：</p><pre><code class="hljs language-text">alpha = 1.0   完全不透明
+alpha = 0.5   半透明
+alpha = 0.0   完全透明
+</code></pre><p>需要注意：</p><blockquote><p>Alpha 本身更准确地说表示当前颜色的“不透明程度”，而不是“透明度”。</p></blockquote><p>例如 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mi>l</mi><mi>p</mi><mi>h</mi><mi>a</mi><mo>=</mo><mn>0.8</mn></mrow><annotation encoding="application/x-tex">alpha = 0.8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.8889em;vertical-align:-.1944em"></span><span class="mord mathnormal">a</span><span class="mord mathnormal">lp</span><span class="mord mathnormal">ha</span><span class="mspace" style="margin-right:.2778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:.2778em"></span></span><span class="base"><span class="strut" style="height:.6444em"></span><span class="mord">0.8</span></span></span></span> ，可以理解为当前物体颜色贡献约 80%。</p><hr><h3 id="2. 两种透明处理方式">2. 两种透明处理方式 <a href="#2. 两种透明处理方式">#</a></h3><p>透明纹理通常有两类情况：</p><pre><code class="hljs language-text">透明纹理
+│
+├── 只有完全透明 / 完全不透明
+│      ↓
+│    discard
+│
+└── 存在半透明
+       ↓
+     Blending
+</code></pre><p>例如：</p><ul><li>草、树叶：可以使用 <code>discard</code>；</li><li>玻璃、烟雾、半透明 UI：通常需要 Blending。(<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/03%20Blending/" title="混合 - LearnOpenGL CN">LearnOpenGL CN</a>)</li></ul><hr><h3 id="3. RGBA 纹理">3. RGBA 纹理 <a href="#3. RGBA 纹理">#</a></h3><p>如果纹理包含 Alpha 通道，那么纹理数据需要使用 <code>GL_RGBA</code>：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glTexImage2D</span>(
+    GL_TEXTURE_2D,
+    <span class="hljs-number">0</span>,
+    GL_RGBA,
+    width,
+    height,
+    <span class="hljs-number">0</span>,
+    GL_RGBA,
+    GL_UNSIGNED_BYTE,
+    data
+);
+</code></pre><p>片段着色器也需要保留 Alpha：</p><pre><code class="hljs language-glsl"><span class="hljs-meta">#version 330 core</span>
+
+<span class="hljs-keyword">out</span> <span class="hljs-type">vec4</span> FragColor;
+
+<span class="hljs-keyword">in</span> <span class="hljs-type">vec2</span> TexCoords;
+
+<span class="hljs-keyword">uniform</span> <span class="hljs-type">sampler2D</span> texture1;
+
+<span class="hljs-type">void</span> main()
+{
+    FragColor = <span class="hljs-built_in">texture</span>(texture1, TexCoords);
+}
+</code></pre><p>这里 <code>texture()</code> 返回：</p><pre><code class="hljs language-text">vec4(R, G, B, A)
+</code></pre><p>而不是只使用 RGB。</p><hr><h3 id="4. 完全透明：discard">4. 完全透明：discard <a href="#4. 完全透明：discard">#</a></h3><p>如果纹理只有：</p><pre><code class="hljs language-text">alpha = 0
+</code></pre><p>和：</p><pre><code class="hljs language-text">alpha = 1
+</code></pre><p>两种状态，例如草、树叶等，可以直接在片段着色器中丢弃透明片段：</p><pre><code class="hljs language-glsl"><span class="hljs-type">void</span> main()
+{
+    <span class="hljs-type">vec4</span> texColor = <span class="hljs-built_in">texture</span>(texture1, TexCoords);
+
+    <span class="hljs-keyword">if</span> (texColor.a &lt; <span class="hljs-number">0.1</span>)
+        <span class="hljs-keyword">discard</span>;
+
+    FragColor = texColor;
+}
+</code></pre><p><code>discard</code> 的作用是：</p><blockquote><p>立即终止当前 Fragment 的处理，这个 Fragment 不会写入颜色缓冲。</p></blockquote><p>可以把它理解成：</p><pre><code class="hljs language-text">Fragment Shader
+      │
+      ├── alpha &gt;= 0.1
+      │       ↓
+      │    正常输出
+      │
+      └── alpha &lt; 0.1
+              ↓
+           discard
+              ↓
+           不产生像素
+</code></pre><p>它不是把颜色设置为透明：</p><pre><code class="hljs language-glsl">FragColor = <span class="hljs-type">vec4</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
+</code></pre><p>而是<strong>这个 Fragment 直接不存在了</strong>。(<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/03%20Blending/" title="混合 - LearnOpenGL CN">LearnOpenGL CN</a>)</p><hr><h3 id="5. Alpha 纹理边缘问题">5. Alpha 纹理边缘问题 <a href="#5. Alpha 纹理边缘问题">#</a></h3><p>透明纹理使用：</p><pre><code class="hljs language-cpp">GL_REPEAT
+</code></pre><p>时，边缘可能出现一圈奇怪的半透明颜色。</p><p>原因是纹理过滤会对边缘 Texel 进行插值，而 <code>GL_REPEAT</code> 会让纹理一侧和另一侧的数据参与插值。</p><p>因此对于草、树叶等 Alpha 纹理，通常设置：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glTexParameteri</span>(
+    GL_TEXTURE_2D,
+    GL_TEXTURE_WRAP_S,
+    GL_CLAMP_TO_EDGE
+);
+
+<span class="hljs-built_in">glTexParameteri</span>(
+    GL_TEXTURE_2D,
+    GL_TEXTURE_WRAP_T,
+    GL_CLAMP_TO_EDGE
+);
+</code></pre><p>这样纹理边界不会和另一侧重复区域进行插值。(<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/03%20Blending/" title="混合 - LearnOpenGL CN">LearnOpenGL CN</a>)</p><hr><h3 id="6. 开启混合">6. 开启混合 <a href="#6. 开启混合">#</a></h3><p>对于真正的半透明，例如：</p><pre><code class="hljs language-text">alpha = 0.2
+alpha = 0.5
+alpha = 0.8
+</code></pre><p>不能简单使用 <code>discard</code>。</p><p>需要开启 OpenGL 的混合：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glEnable</span>(GL_BLEND);
+</code></pre><p>然后设置混合方式：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glBlendFunc</span>(
+    GL_SRC_ALPHA,
+    GL_ONE_MINUS_SRC_ALPHA
+);
+</code></pre><p>这是最常见的 Alpha Blending 配置。(<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/03%20Blending/" title="混合 - LearnOpenGL CN">LearnOpenGL CN</a>)</p><hr><h3 id="7. 混合发生在哪里">7. 混合发生在哪里 <a href="#7. 混合发生在哪里">#</a></h3><p>可以把简化后的 Fragment 处理过程理解成：</p><pre><code class="hljs language-text">Fragment Shader
+      │
+      ↓
+输出 Fragment Color
+      │
+      ↓
+Stencil Test
+      │
+      ↓
+Depth Test
+      │
+      ↓
+Blending
+      │
+      ↓
+Color Buffer
+</code></pre><p>Fragment Shader 产生的是一个新的颜色。</p><p>而当前 Framebuffer 对应像素位置通常已经有一个颜色。</p><p>所以出现两个颜色：</p><pre><code class="hljs language-text">Fragment Shader 输出
+        ↓
+   Source Color
+        │
+        ├─────┐
+        │     │
+        │   Blending
+        │     │
+        └─────┤
+              ↓
+       Result Color
+              ↑
+              │
+        Destination Color
+              ↑
+        Color Buffer
+</code></pre><hr><h3 id="8. Source 与 Destination">8. Source 与 Destination <a href="#8. Source 与 Destination">#</a></h3><p>理解 OpenGL Blending 最重要的两个概念：</p><h4 id="Source">Source <a href="#Source">#</a></h4><p>Source 是：</p><blockquote><p><strong>当前正在绘制的 Fragment 的颜色。</strong></p></blockquote><p>通常就是 Fragment Shader：</p><pre><code class="hljs language-glsl">FragColor
+</code></pre><p>的输出。</p><p>表示为：</p><p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mi>s</mi><mi>o</mi><mi>u</mi><mi>r</mi><mi>c</mi><mi>e</mi></mrow></msub></mrow><annotation encoding="application/x-tex">C_{source}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.07153em">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.1514em"><span style="top:-2.55em;margin-left:-.0715em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">so</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">rce</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span></span></span></span></p><h4 id="Destination">Destination <a href="#Destination">#</a></h4><p>Destination 是：</p><blockquote><p><strong>当前 Color Buffer 对应像素位置已经存在的颜色。</strong></p></blockquote><p>表示为：</p><p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mi>d</mi><mi>e</mi><mi>s</mi><mi>t</mi><mi>i</mi><mi>n</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">C_{destination}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.07153em">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.3361em"><span style="top:-2.55em;margin-left:-.0715em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">es</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">ina</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span></span></span></span></p><p>所以：</p><pre><code class="hljs language-text">Source
+    ↓
+当前正在画的 Fragment
+
+Destination
+    ↓
+之前已经画进 Framebuffer 的颜色
+</code></pre><hr><h3 id="9. 混合公式">9. 混合公式 <a href="#9. 混合公式">#</a></h3><p>OpenGL 的基本混合公式可以写成：</p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>C</mi><mrow><mi>r</mi><mi>e</mi><mi>s</mi><mi>u</mi><mi>l</mi><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>C</mi><mrow><mi>s</mi><mi>o</mi><mi>u</mi><mi>r</mi><mi>c</mi><mi>e</mi></mrow></msub><mo>⋅</mo><msub><mi>F</mi><mrow><mi>s</mi><mi>o</mi><mi>u</mi><mi>r</mi><mi>c</mi><mi>e</mi></mrow></msub><mo>+</mo><msub><mi>C</mi><mrow><mi>d</mi><mi>e</mi><mi>s</mi><mi>t</mi><mi>i</mi><mi>n</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow></msub><mo>⋅</mo><msub><mi>F</mi><mrow><mi>d</mi><mi>e</mi><mi>s</mi><mi>t</mi><mi>i</mi><mi>n</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">C_{result} = C_{source} \cdot F_{source} + C_{destination} \cdot F_{destination}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.07153em">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.3361em"><span style="top:-2.55em;margin-left:-.0715em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">res</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">lt</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:.2778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:.2778em"></span></span><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.07153em">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.1514em"><span style="top:-2.55em;margin-left:-.0715em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">so</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">rce</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.13889em">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.1514em"><span style="top:-2.55em;margin-left:-.1389em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">so</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">rce</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.07153em">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.3361em"><span style="top:-2.55em;margin-left:-.0715em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">es</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">ina</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.13889em">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.3361em"><span style="top:-2.55em;margin-left:-.1389em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">es</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">ina</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span></span></span></span></span><p>其中：</p><ul><li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mi>s</mi><mi>o</mi><mi>u</mi><mi>r</mi><mi>c</mi><mi>e</mi></mrow></msub></mrow><annotation encoding="application/x-tex">C_{source}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.07153em">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.1514em"><span style="top:-2.55em;margin-left:-.0715em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">so</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">rce</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span></span></span></span> ：当前 Fragment 的颜色；</li><li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mi>d</mi><mi>e</mi><mi>s</mi><mi>t</mi><mi>i</mi><mi>n</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">C_{destination}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.07153em">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.3361em"><span style="top:-2.55em;margin-left:-.0715em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">es</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">ina</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span></span></span></span> ：Color Buffer 中已有颜色；</li><li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mrow><mi>s</mi><mi>o</mi><mi>u</mi><mi>r</mi><mi>c</mi><mi>e</mi></mrow></msub></mrow><annotation encoding="application/x-tex">F_{source}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.13889em">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.1514em"><span style="top:-2.55em;margin-left:-.1389em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">so</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">rce</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span></span></span></span> ：Source 的混合因子；</li><li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mrow><mi>d</mi><mi>e</mi><mi>s</mi><mi>t</mi><mi>i</mi><mi>n</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">F_{destination}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.13889em">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.3361em"><span style="top:-2.55em;margin-left:-.1389em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">es</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">ina</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span></span></span></span> ：Destination 的混合因子。</li></ul><p>最终：</p><pre><code class="hljs language-text">Result
+=
+Source × SourceFactor
++
+Destination × DestinationFactor
+</code></pre><p>结果重新写入 Color Buffer。(<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/03%20Blending/" title="混合 - LearnOpenGL CN">LearnOpenGL CN</a>)</p><hr><h3 id="10. 最常用的 Alpha Blending">10. 最常用的 Alpha Blending <a href="#10. 最常用的 Alpha Blending">#</a></h3><p>最常见的配置：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glBlendFunc</span>(
+    GL_SRC_ALPHA,
+    GL_ONE_MINUS_SRC_ALPHA
+);
+</code></pre><p>因此：</p><p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mrow><mi>s</mi><mi>o</mi><mi>u</mi><mi>r</mi><mi>c</mi><mi>e</mi></mrow></msub><mo>=</mo><mi>a</mi><mi>l</mi><mi>p</mi><mi>h</mi><msub><mi>a</mi><mrow><mi>s</mi><mi>o</mi><mi>u</mi><mi>r</mi><mi>c</mi><mi>e</mi></mrow></msub></mrow><annotation encoding="application/x-tex">F_{source} = alpha_{source}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.13889em">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.1514em"><span style="top:-2.55em;margin-left:-.1389em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">so</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">rce</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:.2778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:.2778em"></span></span><span class="base"><span class="strut" style="height:.8889em;vertical-align:-.1944em"></span><span class="mord mathnormal">a</span><span class="mord mathnormal">lp</span><span class="mord mathnormal">h</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.1514em"><span style="top:-2.55em;margin-left:0;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">so</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">rce</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span></span></span></span></p><p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mrow><mi>d</mi><mi>e</mi><mi>s</mi><mi>t</mi><mi>i</mi><mi>n</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow></msub><mo>=</mo><mn>1</mn><mo>−</mo><mi>a</mi><mi>l</mi><mi>p</mi><mi>h</mi><msub><mi>a</mi><mrow><mi>s</mi><mi>o</mi><mi>u</mi><mi>r</mi><mi>c</mi><mi>e</mi></mrow></msub></mrow><annotation encoding="application/x-tex">F_{destination} = 1 - alpha_{source}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.13889em">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.3361em"><span style="top:-2.55em;margin-left:-.1389em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">es</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">ina</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:.2778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:.2778em"></span></span><span class="base"><span class="strut" style="height:.7278em;vertical-align:-.0833em"></span><span class="mord">1</span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">−</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:.8889em;vertical-align:-.1944em"></span><span class="mord mathnormal">a</span><span class="mord mathnormal">lp</span><span class="mord mathnormal">h</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.1514em"><span style="top:-2.55em;margin-left:0;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">so</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">rce</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span></span></span></span></p><p>混合公式变成：</p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>C</mi><mrow><mi>r</mi><mi>e</mi><mi>s</mi><mi>u</mi><mi>l</mi><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>C</mi><mrow><mi>s</mi><mi>o</mi><mi>u</mi><mi>r</mi><mi>c</mi><mi>e</mi></mrow></msub><mo>⋅</mo><msub><mi>α</mi><mrow><mi>s</mi><mi>o</mi><mi>u</mi><mi>r</mi><mi>c</mi><mi>e</mi></mrow></msub><mo>+</mo><msub><mi>C</mi><mrow><mi>d</mi><mi>e</mi><mi>s</mi><mi>t</mi><mi>i</mi><mi>n</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow></msub><mo>⋅</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><msub><mi>α</mi><mrow><mi>s</mi><mi>o</mi><mi>u</mi><mi>r</mi><mi>c</mi><mi>e</mi></mrow></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">C_{result} = C_{source} \cdot \alpha_{source} + C_{destination} \cdot (1-\alpha_{source})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.07153em">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.3361em"><span style="top:-2.55em;margin-left:-.0715em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">res</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">lt</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:.2778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:.2778em"></span></span><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.07153em">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.1514em"><span style="top:-2.55em;margin-left:-.0715em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">so</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">rce</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:.7333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.0037em">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.1514em"><span style="top:-2.55em;margin-left:-.0037em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">so</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">rce</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.07153em">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.3361em"><span style="top:-2.55em;margin-left:-.0715em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">es</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">ina</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-.25em"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">−</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-.25em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.0037em">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.1514em"><span style="top:-2.55em;margin-left:-.0037em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">so</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">rce</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span><p>例如当前 Fragment 是绿色：</p><pre><code class="hljs language-text">Source = Green
+alpha  = 0.6
+</code></pre><p>背景是红色：</p><pre><code class="hljs language-text">Destination = Red
+</code></pre><p>最终颜色：</p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>C</mi><mrow><mi>r</mi><mi>e</mi><mi>s</mi><mi>u</mi><mi>l</mi><mi>t</mi></mrow></msub><mo>=</mo><mi>G</mi><mi>r</mi><mi>e</mi><mi>e</mi><mi>n</mi><mo>⋅</mo><mn>0.6</mn><mo>+</mo><mi>R</mi><mi>e</mi><mi>d</mi><mo>⋅</mo><mn>0.4</mn></mrow><annotation encoding="application/x-tex">C_{result} = Green \cdot 0.6 + Red \cdot 0.4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.07153em">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.3361em"><span style="top:-2.55em;margin-left:-.0715em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">res</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">lt</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:.2778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:.2778em"></span></span><span class="base"><span class="strut" style="height:.6833em"></span><span class="mord mathnormal">G</span><span class="mord mathnormal">ree</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:.7278em;vertical-align:-.0833em"></span><span class="mord">0.6</span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:.6944em"></span><span class="mord mathnormal" style="margin-right:.00773em">R</span><span class="mord mathnormal">e</span><span class="mord mathnormal">d</span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:.6444em"></span><span class="mord">0.4</span></span></span></span></span><p>也就是：</p><pre><code class="hljs language-text">60% 绿色
++
+40% 红色
+</code></pre><hr><h3 id="11. glBlendFunc">11. glBlendFunc <a href="#11. glBlendFunc">#</a></h3><p>函数定义：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glBlendFunc</span>(
+    GLenum sfactor,
+    GLenum dfactor
+);
+</code></pre><p>其中：</p><pre><code class="hljs language-text">sfactor
+    ↓
+Source Factor
+
+dfactor
+    ↓
+Destination Factor
+</code></pre><p>常见参数：</p><table><thead><tr><th>参数</th><th>含义</th></tr></thead><tbody><tr><td><code>GL_ZERO</code></td><td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn></mrow><annotation encoding="application/x-tex">0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.6444em"></span><span class="mord">0</span></span></span></span></td></tr><tr><td><code>GL_ONE</code></td><td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.6444em"></span><span class="mord">1</span></span></span></span></td></tr><tr><td><code>GL_SRC_COLOR</code></td><td>Source RGB</td></tr><tr><td><code>GL_ONE_MINUS_SRC_COLOR</code></td><td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>S</mi><mi>o</mi><mi>u</mi><mi>r</mi><mi>c</mi><mi>e</mi><mi>R</mi><mi>G</mi><mi>B</mi></mrow><annotation encoding="application/x-tex">1-SourceRGB</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.7278em;vertical-align:-.0833em"></span><span class="mord">1</span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">−</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:.6833em"></span><span class="mord mathnormal" style="margin-right:.05764em">S</span><span class="mord mathnormal">o</span><span class="mord mathnormal">u</span><span class="mord mathnormal">rce</span><span class="mord mathnormal" style="margin-right:.05017em">RGB</span></span></span></span></td></tr><tr><td><code>GL_DST_COLOR</code></td><td>Destination RGB</td></tr><tr><td><code>GL_ONE_MINUS_DST_COLOR</code></td><td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>D</mi><mi>e</mi><mi>s</mi><mi>t</mi><mi>i</mi><mi>n</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi><mi>R</mi><mi>G</mi><mi>B</mi></mrow><annotation encoding="application/x-tex">1-DestinationRGB</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.7278em;vertical-align:-.0833em"></span><span class="mord">1</span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">−</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:.6833em"></span><span class="mord mathnormal">Des</span><span class="mord mathnormal">t</span><span class="mord mathnormal">ina</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal" style="margin-right:.05017em">RGB</span></span></span></span></td></tr><tr><td><code>GL_SRC_ALPHA</code></td><td>Source Alpha</td></tr><tr><td><code>GL_ONE_MINUS_SRC_ALPHA</code></td><td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>S</mi><mi>o</mi><mi>u</mi><mi>r</mi><mi>c</mi><mi>e</mi><mi>A</mi><mi>l</mi><mi>p</mi><mi>h</mi><mi>a</mi></mrow><annotation encoding="application/x-tex">1-SourceAlpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.7278em;vertical-align:-.0833em"></span><span class="mord">1</span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">−</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:.8889em;vertical-align:-.1944em"></span><span class="mord mathnormal" style="margin-right:.05764em">S</span><span class="mord mathnormal">o</span><span class="mord mathnormal">u</span><span class="mord mathnormal">rce</span><span class="mord mathnormal">A</span><span class="mord mathnormal">lp</span><span class="mord mathnormal">ha</span></span></span></span></td></tr><tr><td><code>GL_DST_ALPHA</code></td><td>Destination Alpha</td></tr><tr><td><code>GL_ONE_MINUS_DST_ALPHA</code></td><td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>D</mi><mi>e</mi><mi>s</mi><mi>t</mi><mi>i</mi><mi>n</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi><mi>A</mi><mi>l</mi><mi>p</mi><mi>h</mi><mi>a</mi></mrow><annotation encoding="application/x-tex">1-DestinationAlpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.7278em;vertical-align:-.0833em"></span><span class="mord">1</span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">−</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:.8889em;vertical-align:-.1944em"></span><span class="mord mathnormal">Des</span><span class="mord mathnormal">t</span><span class="mord mathnormal">ina</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal">A</span><span class="mord mathnormal">lp</span><span class="mord mathnormal">ha</span></span></span></span></td></tr></tbody></table><p>日常最重要的就是：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glBlendFunc</span>(
+    GL_SRC_ALPHA,
+    GL_ONE_MINUS_SRC_ALPHA
+);
+</code></pre><hr><h3 id="12. glBlendFuncSeparate">12. glBlendFuncSeparate <a href="#12. glBlendFuncSeparate">#</a></h3><p>通常 RGB 和 Alpha 使用相同的混合策略。</p><p>如果希望分别设置，可以使用：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glBlendFuncSeparate</span>(
+    srcRGB,
+    dstRGB,
+    srcAlpha,
+    dstAlpha
+);
+</code></pre><p>例如：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glBlendFuncSeparate</span>(
+    GL_SRC_ALPHA,
+    GL_ONE_MINUS_SRC_ALPHA,
+    GL_ONE,
+    GL_ZERO
+);
+</code></pre><p>前两个参数控制：</p><pre><code class="hljs language-text">RGB
+</code></pre><p>后两个参数控制：</p><pre><code class="hljs language-text">Alpha
+</code></pre><hr><h3 id="13. glBlendEquation">13. glBlendEquation <a href="#13. glBlendEquation">#</a></h3><p>前面的公式默认执行的是：</p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>S</mi><mi>o</mi><mi>u</mi><mi>r</mi><mi>c</mi><mi>e</mi><mo>+</mo><mi>D</mi><mi>e</mi><mi>s</mi><mi>t</mi><mi>i</mi><mi>n</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">Source + Destination</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.7667em;vertical-align:-.0833em"></span><span class="mord mathnormal" style="margin-right:.05764em">S</span><span class="mord mathnormal">o</span><span class="mord mathnormal">u</span><span class="mord mathnormal">rce</span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:.6833em"></span><span class="mord mathnormal">Des</span><span class="mord mathnormal">t</span><span class="mord mathnormal">ina</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span></span></span></span></span><p>实际上 OpenGL 可以修改两部分之间的运算方式：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glBlendEquation</span>(GL_FUNC_ADD);
+</code></pre><p>常见模式：</p><table><thead><tr><th>模式</th><th>计算</th></tr></thead><tbody><tr><td><code>GL_FUNC_ADD</code></td><td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>r</mi><mi>c</mi><mo>+</mo><mi>D</mi><mi>s</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">Src + Dst</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.7667em;vertical-align:-.0833em"></span><span class="mord mathnormal" style="margin-right:.05764em">S</span><span class="mord mathnormal">rc</span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:.6833em"></span><span class="mord mathnormal">Ds</span><span class="mord mathnormal">t</span></span></span></span></td></tr><tr><td><code>GL_FUNC_SUBTRACT</code></td><td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>r</mi><mi>c</mi><mo>−</mo><mi>D</mi><mi>s</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">Src-Dst</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.7667em;vertical-align:-.0833em"></span><span class="mord mathnormal" style="margin-right:.05764em">S</span><span class="mord mathnormal">rc</span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">−</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:.6833em"></span><span class="mord mathnormal">Ds</span><span class="mord mathnormal">t</span></span></span></span></td></tr><tr><td><code>GL_FUNC_REVERSE_SUBTRACT</code></td><td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mi>s</mi><mi>t</mi><mo>−</mo><mi>S</mi><mi>r</mi><mi>c</mi></mrow><annotation encoding="application/x-tex">Dst-Src</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.7667em;vertical-align:-.0833em"></span><span class="mord mathnormal">Ds</span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">−</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:.6833em"></span><span class="mord mathnormal" style="margin-right:.05764em">S</span><span class="mord mathnormal">rc</span></span></span></span></td></tr><tr><td><code>GL_MIN</code></td><td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>i</mi><mi>n</mi><mo stretchy="false">(</mo><mi>S</mi><mi>r</mi><mi>c</mi><mo separator="true">,</mo><mi>D</mi><mi>s</mi><mi>t</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">min(Src,Dst)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-.25em"></span><span class="mord mathnormal">min</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:.05764em">S</span><span class="mord mathnormal">rc</span><span class="mpunct">,</span><span class="mspace" style="margin-right:.1667em"></span><span class="mord mathnormal">Ds</span><span class="mord mathnormal">t</span><span class="mclose">)</span></span></span></span></td></tr><tr><td><code>GL_MAX</code></td><td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>a</mi><mi>x</mi><mo stretchy="false">(</mo><mi>S</mi><mi>r</mi><mi>c</mi><mo separator="true">,</mo><mi>D</mi><mi>s</mi><mi>t</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">max(Src,Dst)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-.25em"></span><span class="mord mathnormal">ma</span><span class="mord mathnormal">x</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:.05764em">S</span><span class="mord mathnormal">rc</span><span class="mpunct">,</span><span class="mspace" style="margin-right:.1667em"></span><span class="mord mathnormal">Ds</span><span class="mord mathnormal">t</span><span class="mclose">)</span></span></span></span></td></tr></tbody></table><p>默认：</p><pre><code class="hljs language-cpp">GL_FUNC_ADD
+</code></pre><p>所以一般情况下不需要手动调用：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glBlendEquation</span>(...)
+</code></pre><hr><h3 id="14. 为什么透明物体存在渲染顺序问题">14. 为什么透明物体存在渲染顺序问题 <a href="#14. 为什么透明物体存在渲染顺序问题">#</a></h3><p>混合和深度测试结合时，会产生一个非常重要的问题。</p><p>假设有两个半透明窗口：</p><pre><code class="hljs language-text">Camera
+  │
+  ↓
+Window A       近
+  │
+  ↓
+Window B       远
+</code></pre><p>如果先画 A：</p><pre><code class="hljs language-text">Depth Buffer
+    ↓
+记录 A 的深度
+</code></pre><p>之后再画 B：</p><pre><code class="hljs language-text">B 比 A 更远
+    ↓
+Depth Test Failed
+    ↓
+B 被丢弃
+</code></pre><p>但是：</p><pre><code class="hljs language-text">A 是半透明的
+</code></pre><p>理论上应该能够通过 A 看到 B。</p><p>问题在于：</p><blockquote><p><strong>Depth Buffer 只记录深度，并不知道一个 Fragment 是不是半透明。</strong></p></blockquote><p>即使：</p><pre><code class="hljs language-text">alpha = 0.1
+</code></pre><p>只要这个 Fragment 通过了深度测试，它仍然可能写入深度缓冲。</p><p>因此不能完全依赖 Depth Test 处理透明物体。(<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/03%20Blending/" title="混合 - LearnOpenGL CN">LearnOpenGL CN</a>)</p><hr><h3 id="15. 透明物体正确绘制顺序">15. 透明物体正确绘制顺序 <a href="#15. 透明物体正确绘制顺序">#</a></h3><p>通常采用：</p><pre><code class="hljs language-text">1. 绘制所有不透明物体
+
+2. 将透明物体按照摄像机距离排序
+
+3. 从远到近绘制透明物体
+</code></pre><p>即：</p><pre><code class="hljs language-text">Opaque
+  ↓
+Transparent Far
+  ↓
+Transparent
+  ↓
+Transparent Near
+</code></pre><p>不透明物体仍然可以正常依靠 Depth Test。</p><p>透明物体则需要：</p><blockquote><p><strong>Back-to-Front，从远到近绘制。</strong> (<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/03%20Blending/" title="混合 - LearnOpenGL CN">LearnOpenGL CN</a>)</p></blockquote><hr><h3 id="16. 透明物体排序示例">16. 透明物体排序示例 <a href="#16. 透明物体排序示例">#</a></h3><p>可以计算摄像机和透明物体之间的距离：</p><pre><code class="hljs language-cpp"><span class="hljs-type">float</span> distance =
+    glm::<span class="hljs-built_in">length</span>(camera.Position - windows[i]);
+</code></pre><p>然后排序。</p><p>例如：</p><pre><code class="hljs language-cpp">std::map&lt;<span class="hljs-type">float</span>, glm::vec3&gt; sorted;
+
+<span class="hljs-keyword">for</span> (<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; windows.<span class="hljs-built_in">size</span>(); i++)
+{
+    <span class="hljs-type">float</span> distance =
+        glm::<span class="hljs-built_in">length</span>(camera.Position - windows[i]);
+
+    sorted[distance] = windows[i];
+}
+</code></pre><p>绘制时反向遍历：</p><pre><code class="hljs language-cpp"><span class="hljs-keyword">for</span> (
+    <span class="hljs-keyword">auto</span> it = sorted.<span class="hljs-built_in">rbegin</span>();
+    it != sorted.<span class="hljs-built_in">rend</span>();
+    ++it
+)
+{
+    model = glm::<span class="hljs-built_in">mat4</span>(<span class="hljs-number">1.0f</span>);
+    model = glm::<span class="hljs-built_in">translate</span>(model, it-&gt;second);
+
+    shader.<span class="hljs-built_in">setMat4</span>(<span class="hljs-string">"model"</span>, model);
+
+    <span class="hljs-built_in">glDrawArrays</span>(GL_TRIANGLES, <span class="hljs-number">0</span>, <span class="hljs-number">6</span>);
+}
+</code></pre><p>即：</p><pre><code class="hljs language-text">distance 大
+    ↓
+先画
+
+distance 小
+    ↓
+后画
+</code></pre><p>不过这种按照“物体位置”排序只是一个简单方案，对于很大的物体、互相穿插的透明几何体等情况并不能完全解决问题。更复杂的场景可以使用 OIT（Order Independent Transparency，顺序无关透明度）。(<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/03%20Blending/" title="混合 - LearnOpenGL CN">LearnOpenGL CN</a>)</p><hr><h3 id="17. discard 与 Blending 的区别">17. discard 与 Blending 的区别 <a href="#17. discard 与 Blending 的区别">#</a></h3><p>两者都可以用于透明纹理，但原理完全不同。</p><table><thead><tr><th></th><th>discard</th><th>Blending</th></tr></thead><tbody><tr><td>适用情况</td><td>完全透明 / 不透明</td><td>半透明</td></tr><tr><td>Alpha</td><td>通常 0 或 1</td><td>可以是 0～1</td></tr><tr><td>Fragment 是否存在</td><td>直接丢弃</td><td>仍然存在</td></tr><tr><td>是否参与混合</td><td>否</td><td>是</td></tr><tr><td>是否需要透明排序</td><td>通常不需要</td><td>通常需要</td></tr><tr><td>常见场景</td><td>草、树叶、栅栏</td><td>玻璃、烟雾、透明 UI</td></tr></tbody></table><p>例如草：</p><pre><code class="hljs language-glsl"><span class="hljs-keyword">if</span> (texColor.a &lt; <span class="hljs-number">0.1</span>)
+    <span class="hljs-keyword">discard</span>;
+</code></pre><p>玻璃：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glEnable</span>(GL_BLEND);
+
+<span class="hljs-built_in">glBlendFunc</span>(
+    GL_SRC_ALPHA,
+    GL_ONE_MINUS_SRC_ALPHA
+);
+</code></pre><hr><h3 id="18. 混合总结">18. 混合总结 <a href="#18. 混合总结">#</a></h3><p>最需要记住的是：</p><pre><code class="hljs language-text">Blending
+│
+├── Source
+│     当前 Fragment Shader 输出颜色
+│
+├── Destination
+│     Color Buffer 已有颜色
+│
+└── Result
+      Source × SrcFactor
+      +
+      Destination × DstFactor
+</code></pre><p>普通 Alpha Blending：</p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>C</mi><mrow><mi>r</mi><mi>e</mi><mi>s</mi><mi>u</mi><mi>l</mi><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>C</mi><mrow><mi>s</mi><mi>o</mi><mi>u</mi><mi>r</mi><mi>c</mi><mi>e</mi></mrow></msub><mi>α</mi><mo>+</mo><msub><mi>C</mi><mrow><mi>d</mi><mi>e</mi><mi>s</mi><mi>t</mi><mi>i</mi><mi>n</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow></msub><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>α</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">C_{result} = C_{source}\alpha + C_{destination}(1-\alpha)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.07153em">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.3361em"><span style="top:-2.55em;margin-left:-.0715em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">res</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">lt</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:.2778em"></span><span class="mrel">=</span><span class="mspace" style="margin-right:.2778em"></span></span><span class="base"><span class="strut" style="height:.8333em;vertical-align:-.15em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.07153em">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.1514em"><span style="top:-2.55em;margin-left:-.0715em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">so</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">rce</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:.0037em">α</span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">+</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-.25em"></span><span class="mord"><span class="mord mathnormal" style="margin-right:.07153em">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:.3361em"><span style="top:-2.55em;margin-left:-.0715em;margin-right:.05em"><span class="pstrut" style="height:2.7em"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">es</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">ina</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:.15em"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:.2222em"></span><span class="mbin">−</span><span class="mspace" style="margin-right:.2222em"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-.25em"></span><span class="mord mathnormal" style="margin-right:.0037em">α</span><span class="mclose">)</span></span></span></span></span><p>对应：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glEnable</span>(GL_BLEND);
+
+<span class="hljs-built_in">glBlendFunc</span>(
+    GL_SRC_ALPHA,
+    GL_ONE_MINUS_SRC_ALPHA
+);
+</code></pre><p>透明物体绘制原则：</p><pre><code class="hljs language-text">先不透明
+   ↓
+透明物体排序
+   ↓
+透明物体从远到近
+</code></pre><hr><h2 id="二、面剔除 Face Culling">二、面剔除 Face Culling <a href="#二、面剔除 Face Culling">#</a></h2><h3 id="1. 为什么需要面剔除">1. 为什么需要面剔除 <a href="#1. 为什么需要面剔除">#</a></h3><p>一个封闭的 3D 物体通常有大量从当前观察方向完全看不到的面。</p><p>以立方体为例：</p><pre><code class="hljs language-text">一个立方体
+    ↓
+6 个面
+
+从外部观察
+    ↓
+最多只能看到 3 个面
+</code></pre><p>背面的面最终不会出现在屏幕上。</p><p>如果仍然对它们进行完整的光栅化和 Fragment Shader 计算，就会浪费 GPU 资源。</p><p>因此可以：</p><blockquote><p>在光栅化阶段直接丢弃背向摄像机的三角形。</p></blockquote><p>这就是：</p><pre><code class="hljs language-text">Face Culling
+</code></pre><p>面剔除。(<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/04%20Face%20culling/" title="面剔除 - LearnOpenGL CN">LearnOpenGL CN</a>)</p><hr><h3 id="2. Front Face 与 Back Face">2. Front Face 与 Back Face <a href="#2. Front Face 与 Back Face">#</a></h3><p>一个三角形存在两个观察方向：</p><pre><code class="hljs language-text">          Front
+            ↑
+            │
+      ┌──────────┐
+      │ Triangle │
+      └──────────┘
+            │
+            ↓
+           Back
+</code></pre><p>对于封闭模型：</p><pre><code class="hljs language-text">模型外侧
+   ↓
+Front Face
+
+模型内部
+   ↓
+Back Face
+</code></pre><p>通常我们只需要绘制：</p><pre><code class="hljs language-text">Front Face
+</code></pre><p>而：</p><pre><code class="hljs language-text">Back Face
+</code></pre><p>可以直接剔除。</p><hr><h3 id="3. OpenGL 怎么判断正面和背面">3. OpenGL 怎么判断正面和背面 <a href="#3. OpenGL 怎么判断正面和背面">#</a></h3><p>OpenGL 并不是简单根据法向量判断正反面。</p><p>它主要根据三角形顶点在屏幕上的：</p><blockquote><p><strong>Winding Order（环绕顺序）</strong></p></blockquote><p>判断 Front Face 和 Back Face。</p><p>三角形：</p><pre><code class="hljs language-text">v0
+│\
+│ \
+│  \
+│   \
+v1───v2
+</code></pre><p>顶点可以按照两种方向排列：</p><pre><code class="hljs language-text">Counter-Clockwise
+逆时针
+
+v0 → v1 → v2
+</code></pre><p>或者：</p><pre><code class="hljs language-text">Clockwise
+顺时针
+
+v0 → v2 → v1
+</code></pre><hr><h3 id="4. OpenGL 默认的正面">4. OpenGL 默认的正面 <a href="#4. OpenGL 默认的正面">#</a></h3><p>OpenGL 默认：</p><pre><code class="hljs language-text">Counter-Clockwise
+       ↓
+   Front Face
+</code></pre><p>也就是：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glFrontFace</span>(GL_CCW);
+</code></pre><p>其中：</p><pre><code class="hljs language-text">CCW = Counter Clockwise
+      逆时针
+
+CW  = Clockwise
+      顺时针
+</code></pre><p>因此模型顶点一般约定：</p><blockquote><p><strong>从模型外部观察时，三角形顶点按照逆时针排列。</strong> (<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/04%20Face%20culling/" title="面剔除 - LearnOpenGL CN">LearnOpenGL CN</a>)</p></blockquote><hr><h3 id="5. 为什么同一个三角形会变成顺时针">5. 为什么同一个三角形会变成顺时针 <a href="#5. 为什么同一个三角形会变成顺时针">#</a></h3><p>这里是理解 Face Culling 最重要的地方。</p><p>假设定义一个三角形时，从它的正面观察：</p><pre><code class="hljs language-text">1 → 2 → 3
+</code></pre><p>是逆时针：</p><pre><code class="hljs language-text">      1
+     / \
+    /   \
+   3 ←── 2
+</code></pre><p>那么：</p><pre><code class="hljs language-text">从正面观察
+    ↓
+1 → 2 → 3
+    ↓
+CCW
+    ↓
+Front Face
+</code></pre><p>但是如果摄像机跑到它的背面：</p><pre><code class="hljs language-text">从背面观察
+    ↓
+1 → 2 → 3
+    ↓
+CW
+    ↓
+Back Face
+</code></pre><p>也就是说：</p><blockquote><p><strong>顶点 Buffer 中存储的顺序没有发生变化，发生变化的是从摄像机视角看到的屏幕空间环绕方向。</strong></p></blockquote><p>因此 OpenGL 能够根据最终投影后的三角形环绕顺序判断它到底面向还是背向摄像机。(<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/04%20Face%20culling/" title="面剔除 - LearnOpenGL CN">LearnOpenGL CN</a>)</p><hr><h3 id="6. 环绕顺序什么时候判断">6. 环绕顺序什么时候判断 <a href="#6. 环绕顺序什么时候判断">#</a></h3><p>一个很重要的点是：</p><blockquote><p>Front Face / Back Face 的判断是在顶点着色器处理之后、光栅化阶段根据投影后的顶点方向进行判断。</p></blockquote><p>可以理解成：</p><pre><code class="hljs language-text">Vertex Data
+    ↓
+Vertex Shader
+    ↓
+Clip Space
+    ↓
+Perspective Divide
+    ↓
+Screen / Window Orientation
+    ↓
+判断 CW / CCW
+    ↓
+Face Culling
+    ↓
+Rasterization
+</code></pre><p>因此并不是单纯检查模型空间中：</p><pre><code class="hljs language-cpp">vertices[<span class="hljs-number">0</span>]
+vertices[<span class="hljs-number">1</span>]
+vertices[<span class="hljs-number">2</span>]
+</code></pre><p>的坐标顺序。</p><p>而是要看：</p><blockquote><p>从当前 Camera 的观察方向来看，这三个顶点最终呈现出来是 CW 还是 CCW。(<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/04%20Face%20culling/" title="面剔除 - LearnOpenGL CN">LearnOpenGL CN</a>)</p></blockquote><hr><h3 id="7. 开启面剔除">7. 开启面剔除 <a href="#7. 开启面剔除">#</a></h3><p>OpenGL 默认关闭面剔除。</p><p>开启：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glEnable</span>(GL_CULL_FACE);
+</code></pre><p>默认情况下会：</p><pre><code class="hljs language-text">剔除 Back Face
+</code></pre><p>等价于：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glEnable</span>(GL_CULL_FACE);
+
+<span class="hljs-built_in">glCullFace</span>(GL_BACK);
+
+<span class="hljs-built_in">glFrontFace</span>(GL_CCW);
+</code></pre><p>这是最常见的配置。(<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/04%20Face%20culling/" title="面剔除 - LearnOpenGL CN">LearnOpenGL CN</a>)</p><hr><h3 id="8. glCullFace">8. glCullFace <a href="#8. glCullFace">#</a></h3><p>通过：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glCullFace</span>(...);
+</code></pre><p>指定剔除哪一种面。</p><h4 id="剔除背面">剔除背面 <a href="#剔除背面">#</a></h4><pre><code class="hljs language-cpp"><span class="hljs-built_in">glCullFace</span>(GL_BACK);
+</code></pre><p>最常用。</p><p>表示：</p><pre><code class="hljs language-text">Front → 保留
+Back  → 丢弃
+</code></pre><h4 id="剔除正面">剔除正面 <a href="#剔除正面">#</a></h4><pre><code class="hljs language-cpp"><span class="hljs-built_in">glCullFace</span>(GL_FRONT);
+</code></pre><p>表示：</p><pre><code class="hljs language-text">Front → 丢弃
+Back  → 保留
+</code></pre><h4 id="正反面全部剔除">正反面全部剔除 <a href="#正反面全部剔除">#</a></h4><pre><code class="hljs language-cpp"><span class="hljs-built_in">glCullFace</span>(GL_FRONT_AND_BACK);
+</code></pre><p>此时三角形正反面都会被剔除。</p><hr><h3 id="9. glFrontFace">9. glFrontFace <a href="#9. glFrontFace">#</a></h3><p>可以通过：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glFrontFace</span>(...)
+</code></pre><p>指定哪一种环绕顺序代表 Front Face。</p><p>OpenGL 默认：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glFrontFace</span>(GL_CCW);
+</code></pre><p>即：</p><pre><code class="hljs language-text">CCW → Front
+CW  → Back
+</code></pre><p>也可以改为：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glFrontFace</span>(GL_CW);
+</code></pre><p>此时：</p><pre><code class="hljs language-text">CW  → Front
+CCW → Back
+</code></pre><hr><h3 id="10. glFrontFace 与 glCullFace 的区别">10. glFrontFace 与 glCullFace 的区别 <a href="#10. glFrontFace 与 glCullFace 的区别">#</a></h3><p>这两个 API 很容易混淆。</p><p><code>glFrontFace</code>：</p><blockquote><p><strong>定义什么叫 Front Face。</strong></p></blockquote><p>例如：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glFrontFace</span>(GL_CCW);
+</code></pre><p>表示：</p><pre><code class="hljs language-text">CCW = Front
+CW  = Back
+</code></pre><p>而：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glCullFace</span>(GL_BACK);
+</code></pre><p>表示：</p><blockquote><p><strong>确定了 Front / Back 之后，要丢弃哪一种。</strong></p></blockquote><p>所以完整逻辑是：</p><pre><code class="hljs language-text">三角形
+   ↓
+判断 CW / CCW
+   ↓
+glFrontFace()
+   ↓
+确定 Front / Back
+   ↓
+glCullFace()
+   ↓
+决定是否丢弃
+</code></pre><p>例如：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glFrontFace</span>(GL_CCW);
+<span class="hljs-built_in">glCullFace</span>(GL_BACK);
+</code></pre><p>就是：</p><pre><code class="hljs language-text">CCW
+ ↓
+Front
+ ↓
+保留
+
+
+CW
+ ↓
+Back
+ ↓
+剔除
+</code></pre><hr><h3 id="11. 常见配置">11. 常见配置 <a href="#11. 常见配置">#</a></h3><p>标准封闭模型一般：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glEnable</span>(GL_CULL_FACE);
+
+<span class="hljs-built_in">glFrontFace</span>(GL_CCW);
+
+<span class="hljs-built_in">glCullFace</span>(GL_BACK);
+</code></pre><p>也就是：</p><pre><code class="hljs language-text">逆时针 = 正面
+
+背面 = 剔除
+</code></pre><p>由于：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glFrontFace</span>(GL_CCW);
+<span class="hljs-built_in">glCullFace</span>(GL_BACK);
+</code></pre><p>本身就是默认状态，所以通常只需要：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glEnable</span>(GL_CULL_FACE);
+</code></pre><hr><h3 id="12. 哪些物体不适合面剔除">12. 哪些物体不适合面剔除 <a href="#12. 哪些物体不适合面剔除">#</a></h3><p>面剔除特别适合：</p><pre><code class="hljs language-text">封闭实体
+</code></pre><p>例如：</p><ul><li>Cube；</li><li>Sphere；</li><li>CAD Solid；</li><li>人物模型；</li><li>建筑模型。</li></ul><p>因为：</p><pre><code class="hljs language-text">外表面需要显示
+内表面通常不需要显示
+</code></pre><p>但是一些模型必须同时看到正反面。</p><p>例如草：</p><pre><code class="hljs language-text">     Camera
+       ↓
+
+     ┌───┐
+     │草 │
+     └───┘
+       ↑
+     一个 Quad
+</code></pre><p>如果从 Quad 背面看它，而启用了：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glCullFace</span>(GL_BACK);
+</code></pre><p>整棵草可能直接消失。</p><p>因此：</p><pre><code class="hljs language-text">Grass
+Leaf
+Paper
+Cloth
+Billboard
+某些透明 Quad
+</code></pre><p>往往需要：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glDisable</span>(GL_CULL_FACE);
+</code></pre><p>或者进行双面渲染。(<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/04%20Face%20culling/" title="面剔除 - LearnOpenGL CN">LearnOpenGL CN</a>)</p><hr><h3 id="13. Face Culling 与 Depth Test 的区别">13. Face Culling 与 Depth Test 的区别 <a href="#13. Face Culling 与 Depth Test 的区别">#</a></h3><p>两者都可以减少不可见 Fragment，但原理完全不同。</p><h4 id="Face Culling">Face Culling <a href="#Face Culling">#</a></h4><p>根据：</p><pre><code class="hljs language-text">Triangle Orientation
+</code></pre><p>决定整个三角形是否需要渲染。</p><pre><code class="hljs language-text">Back Face
+    ↓
+整个 Triangle 丢弃
+    ↓
+甚至不需要生成 Fragment
+</code></pre><h4 id="Depth Test">Depth Test <a href="#Depth Test">#</a></h4><p>三角形已经经过光栅化产生 Fragment：</p><pre><code class="hljs language-text">Triangle
+    ↓
+Rasterization
+    ↓
+Fragments
+    ↓
+Depth Test
+    ↓
+判断是否被其它物体遮挡
+</code></pre><p>所以：</p><pre><code class="hljs language-text">Face Culling
+</code></pre><p>发生得更早，可以避免背面三角形产生大量无用 Fragment。</p><hr><h3 id="14. Face Culling 不等于视锥剔除">14. Face Culling 不等于视锥剔除 <a href="#14. Face Culling 不等于视锥剔除">#</a></h3><p>需要区分两个容易混淆的概念：</p><pre><code class="hljs language-text">Face Culling
+</code></pre><p>和：</p><pre><code class="hljs language-text">Frustum Culling
+</code></pre><p>Face Culling 的对象是：</p><pre><code class="hljs language-text">Triangle Face
+</code></pre><p>解决：</p><pre><code class="hljs language-text">这个三角形正面对着 Camera，
+还是背面对着 Camera？
+</code></pre><p>Frustum Culling 的对象通常是：</p><pre><code class="hljs language-text">Object / Mesh / Bounding Box
+</code></pre><p>解决：</p><pre><code class="hljs language-text">整个物体是否在摄像机视锥体之外？
+</code></pre><p>例如：</p><pre><code class="hljs language-text">                Camera Frustum
+
+                   /\
+                  /  \
+                 / A  \
+                /      \
+               /________\
+
+        B
+</code></pre><p>其中：</p><pre><code class="hljs language-text">A
+↓
+进入渲染流程
+↓
+其中的 Triangle 再进行 Face Culling
+
+
+B
+↓
+整个对象 Frustum Cull
+↓
+连 Draw Call 都可以省掉
+</code></pre><p>因此两者通常可以同时使用。</p><hr><h3 id="15. Face Culling 的完整流程">15. Face Culling 的完整流程 <a href="#15. Face Culling 的完整流程">#</a></h3><p>可以将整个过程理解为：</p><pre><code class="hljs language-text">Vertex Data
+     ↓
+Vertex Shader
+     ↓
+Primitive Assembly
+     ↓
+Triangle
+     ↓
+判断屏幕空间 Winding Order
+     ↓
+┌───────────────┐
+│ CW 还是 CCW？ │
+└───────────────┘
+     ↓
+glFrontFace()
+     ↓
+┌────────────────┐
+│ Front / Back？ │
+└────────────────┘
+     ↓
+glCullFace()
+     ↓
+是否 Cull
+     │
+ ┌───┴─────┐
+ │         │
+Cull     Keep
+ │         │
+结束    Rasterization
+           ↓
+        Fragment
+           ↓
+       Depth Test
+           ↓
+        Rendering
+</code></pre><hr><h3 id="16. 面剔除总结">16. 面剔除总结 <a href="#16. 面剔除总结">#</a></h3><p>最常见配置：</p><pre><code class="hljs language-cpp"><span class="hljs-built_in">glEnable</span>(GL_CULL_FACE);
+
+<span class="hljs-built_in">glFrontFace</span>(GL_CCW);
+
+<span class="hljs-built_in">glCullFace</span>(GL_BACK);
+</code></pre><p>记忆：</p><pre><code class="hljs language-text">glFrontFace
+    ↓
+谁是正面？
+
+glCullFace
+    ↓
+丢弃谁？
+</code></pre><p>默认：</p><pre><code class="hljs language-text">CCW = Front
+CW  = Back
+
+Cull Back
+</code></pre><p>最终：</p><pre><code class="hljs language-text">逆时针三角形
+    ↓
+Front
+    ↓
+保留
+
+
+顺时针三角形
+    ↓
+Back
+    ↓
+剔除
+</code></pre><hr><h2 id="三、混合、深度测试与面剔除之间的关系">三、混合、深度测试与面剔除之间的关系 <a href="#三、混合、深度测试与面剔除之间的关系">#</a></h2><p>这三个功能可以放在一起理解：</p><pre><code class="hljs language-text">Triangle
+    │
+    ↓
+Face Culling
+    │
+    │ 整个三角形是否应该存在？
+    ↓
+Rasterization
+    │
+    ↓
+Fragments
+    │
+    ↓
+Fragment Shader
+    │
+    ↓
+Stencil / Depth Test
+    │
+    │ 当前 Fragment 是否被遮挡？
+    ↓
+Blending
+    │
+    │ 当前颜色怎样和 Color Buffer 混合？
+    ↓
+Color Buffer
+</code></pre><p>它们分别解决不同问题：</p><table><thead><tr><th>功能</th><th>解决的问题</th></tr></thead><tbody><tr><td>Face Culling</td><td>三角形背面对着摄像机，要不要画？</td></tr><tr><td>Depth Test</td><td>Fragment 是否被前面的物体遮挡？</td></tr><tr><td>Blending</td><td>Fragment 与已有颜色如何组合？</td></tr></tbody></table><p>可以简单记成：</p><pre><code class="hljs language-text">Face Culling
+    ↓
+这个面要不要画？
+
+Depth Test
+    ↓
+这个像素能不能看到？
+
+Blending
+    ↓
+这个像素最终是什么颜色？
+</code></pre><p>这三个问题分别对应 <strong>几何可见性、深度可见性和颜色合成</strong>。</p><p>（完）</p></div><div class="markdown-footer"><span class="pre-article"><a href="/blogs/computer-graphics/opengl-part4-test">上一篇：opengl part 4：深度测试和模板测试</a></span><span class="next-article"><a href="/blogs/computer-graphics/occt-interference">下一篇：occt 的几何干扰 interference 和容差</a></span></div></div><div class="toc"><div class="toc-header">目录</div><div class="toc-body"><div class="toc-item"><a class="toc-item-link" href="#OpenGL：混合与面剔除" style="padding-left:15px">OpenGL：混合与面剔除</a></div><div class="toc-item"><a class="toc-item-link" href="#一、混合 Blending" style="padding-left:30px">一、混合 Blending</a></div><div class="toc-item"><a class="toc-item-link" href="#1. 什么是混合" style="padding-left:45px">1. 什么是混合</a></div><div class="toc-item"><a class="toc-item-link" href="#2. 两种透明处理方式" style="padding-left:45px">2. 两种透明处理方式</a></div><div class="toc-item"><a class="toc-item-link" href="#3. RGBA 纹理" style="padding-left:45px">3. RGBA 纹理</a></div><div class="toc-item"><a class="toc-item-link" href="#4. 完全透明：discard" style="padding-left:45px">4. 完全透明：discard</a></div><div class="toc-item"><a class="toc-item-link" href="#5. Alpha 纹理边缘问题" style="padding-left:45px">5. Alpha 纹理边缘问题</a></div><div class="toc-item"><a class="toc-item-link" href="#6. 开启混合" style="padding-left:45px">6. 开启混合</a></div><div class="toc-item"><a class="toc-item-link" href="#7. 混合发生在哪里" style="padding-left:45px">7. 混合发生在哪里</a></div><div class="toc-item"><a class="toc-item-link" href="#8. Source 与 Destination" style="padding-left:45px">8. Source 与 Destination</a></div><div class="toc-item"><a class="toc-item-link" href="#Source" style="padding-left:60px">Source</a></div><div class="toc-item"><a class="toc-item-link" href="#Destination" style="padding-left:60px">Destination</a></div><div class="toc-item"><a class="toc-item-link" href="#9. 混合公式" style="padding-left:45px">9. 混合公式</a></div><div class="toc-item"><a class="toc-item-link" href="#10. 最常用的 Alpha Blending" style="padding-left:45px">10. 最常用的 Alpha Blending</a></div><div class="toc-item"><a class="toc-item-link" href="#11. glBlendFunc" style="padding-left:45px">11. glBlendFunc</a></div><div class="toc-item"><a class="toc-item-link" href="#12. glBlendFuncSeparate" style="padding-left:45px">12. glBlendFuncSeparate</a></div><div class="toc-item"><a class="toc-item-link" href="#13. glBlendEquation" style="padding-left:45px">13. glBlendEquation</a></div><div class="toc-item"><a class="toc-item-link" href="#14. 为什么透明物体存在渲染顺序问题" style="padding-left:45px">14. 为什么透明物体存在渲染顺序问题</a></div><div class="toc-item"><a class="toc-item-link" href="#15. 透明物体正确绘制顺序" style="padding-left:45px">15. 透明物体正确绘制顺序</a></div><div class="toc-item"><a class="toc-item-link" href="#16. 透明物体排序示例" style="padding-left:45px">16. 透明物体排序示例</a></div><div class="toc-item"><a class="toc-item-link" href="#17. discard 与 Blending 的区别" style="padding-left:45px">17. discard 与 Blending 的区别</a></div><div class="toc-item"><a class="toc-item-link" href="#18. 混合总结" style="padding-left:45px">18. 混合总结</a></div><div class="toc-item"><a class="toc-item-link" href="#二、面剔除 Face Culling" style="padding-left:30px">二、面剔除 Face Culling</a></div><div class="toc-item"><a class="toc-item-link" href="#1. 为什么需要面剔除" style="padding-left:45px">1. 为什么需要面剔除</a></div><div class="toc-item"><a class="toc-item-link" href="#2. Front Face 与 Back Face" style="padding-left:45px">2. Front Face 与 Back Face</a></div><div class="toc-item"><a class="toc-item-link" href="#3. OpenGL 怎么判断正面和背面" style="padding-left:45px">3. OpenGL 怎么判断正面和背面</a></div><div class="toc-item"><a class="toc-item-link" href="#4. OpenGL 默认的正面" style="padding-left:45px">4. OpenGL 默认的正面</a></div><div class="toc-item"><a class="toc-item-link" href="#5. 为什么同一个三角形会变成顺时针" style="padding-left:45px">5. 为什么同一个三角形会变成顺时针</a></div><div class="toc-item"><a class="toc-item-link" href="#6. 环绕顺序什么时候判断" style="padding-left:45px">6. 环绕顺序什么时候判断</a></div><div class="toc-item"><a class="toc-item-link" href="#7. 开启面剔除" style="padding-left:45px">7. 开启面剔除</a></div><div class="toc-item"><a class="toc-item-link" href="#8. glCullFace" style="padding-left:45px">8. glCullFace</a></div><div class="toc-item"><a class="toc-item-link" href="#剔除背面" style="padding-left:60px">剔除背面</a></div><div class="toc-item"><a class="toc-item-link" href="#剔除正面" style="padding-left:60px">剔除正面</a></div><div class="toc-item"><a class="toc-item-link" href="#正反面全部剔除" style="padding-left:60px">正反面全部剔除</a></div><div class="toc-item"><a class="toc-item-link" href="#9. glFrontFace" style="padding-left:45px">9. glFrontFace</a></div><div class="toc-item"><a class="toc-item-link" href="#10. glFrontFace 与 glCullFace 的区别" style="padding-left:45px">10. glFrontFace 与 glCullFace 的区别</a></div><div class="toc-item"><a class="toc-item-link" href="#11. 常见配置" style="padding-left:45px">11. 常见配置</a></div><div class="toc-item"><a class="toc-item-link" href="#12. 哪些物体不适合面剔除" style="padding-left:45px">12. 哪些物体不适合面剔除</a></div><div class="toc-item"><a class="toc-item-link" href="#13. Face Culling 与 Depth Test 的区别" style="padding-left:45px">13. Face Culling 与 Depth Test 的区别</a></div><div class="toc-item"><a class="toc-item-link" href="#Face Culling" style="padding-left:60px">Face Culling</a></div><div class="toc-item"><a class="toc-item-link" href="#Depth Test" style="padding-left:60px">Depth Test</a></div><div class="toc-item"><a class="toc-item-link" href="#14. Face Culling 不等于视锥剔除" style="padding-left:45px">14. Face Culling 不等于视锥剔除</a></div><div class="toc-item"><a class="toc-item-link" href="#15. Face Culling 的完整流程" style="padding-left:45px">15. Face Culling 的完整流程</a></div><div class="toc-item"><a class="toc-item-link" href="#16. 面剔除总结" style="padding-left:45px">16. 面剔除总结</a></div><div class="toc-item"><a class="toc-item-link" href="#三、混合、深度测试与面剔除之间的关系" style="padding-left:30px">三、混合、深度测试与面剔除之间的关系</a></div></div></div></div></body></html>
