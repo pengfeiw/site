@@ -9,9 +9,9 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Wed, 26 Aug 2026 05:23:23 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 26 Aug 2026 05:23:50 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Wed, 26 Aug 2026 05:22:57 GMT</pubDate>
+        <pubDate>Wed, 26 Aug 2026 05:23:31 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
         <item>
             <title><![CDATA[回看 LookAt 矩阵]]></title>
@@ -183,7 +183,7 @@
         </item>
         <item>
             <title><![CDATA[opengl part 5：混合和面剔除]]></title>
-            <description><![CDATA[opengl(webgl) 渲染管线介绍]]></description>
+            <description><![CDATA[opengl(webgl) 混合和面剔除介绍]]></description>
             <link>https://pengfeixc.com/blogs/computer-graphics/opengl-part5-blend-and-face-culling.html</link>
             <guid isPermaLink="false">https://pengfeixc.com/blogs/computer-graphics/opengl-part5-blend-and-face-culling.html</guid>
             <pubDate>Thu, 03 Jul 2025 00:00:00 GMT</pubDate>
