@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sat, 29 Aug 2026 02:12:13 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 29 Aug 2026 03:01:15 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sat, 29 Aug 2026 02:11:47 GMT</pubDate>
+        <pubDate>Sat, 29 Aug 2026 03:00:50 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[Regen]]></title>
+            <description><![CDATA[数据联动更新机制]]></description>
+            <link>https://pengfeixc.com/blogs/private/regen.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/private/regen.html</guid>
+            <pubDate>Sat, 29 Aug 2026 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[回看 LookAt 矩阵]]></title>
             <description><![CDATA[回看 lookAt 矩阵，它是怎么计算得到的]]></description>
