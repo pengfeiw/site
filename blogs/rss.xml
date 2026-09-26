@@ -9,10 +9,17 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sat, 29 Aug 2026 05:52:10 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 26 Sep 2026 02:00:02 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sat, 29 Aug 2026 05:51:44 GMT</pubDate>
+        <pubDate>Sat, 26 Sep 2026 01:59:36 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[vue3 cheatsheet for reacter]]></title>
+            <description><![CDATA[从 react 的角度学习 vue3 的内容]]></description>
+            <link>https://pengfeixc.com/blogs/javascript/vue3-cheatsheet-for-reacter.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/javascript/vue3-cheatsheet-for-reacter.html</guid>
+            <pubDate>Sat, 26 Sep 2026 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[回看 LookAt 矩阵]]></title>
             <description><![CDATA[回看 lookAt 矩阵，它是怎么计算得到的]]></description>
