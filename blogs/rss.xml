@@ -9,10 +9,24 @@
             <link>https://pengfeixc.com</link>
         </image>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Sat, 26 Sep 2026 02:00:02 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 08 Nov 2026 04:40:08 GMT</lastBuildDate>
         <atom:link href="https://pengfeixc.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Sat, 26 Sep 2026 01:59:36 GMT</pubDate>
+        <pubDate>Sun, 08 Nov 2026 04:39:48 GMT</pubDate>
         <copyright><![CDATA[All rights reserved 2026, Ibas]]></copyright>
+        <item>
+            <title><![CDATA[Harness Engineering，Minions - Part 1]]></title>
+            <description><![CDATA[harness-engineering]]></description>
+            <link>https://pengfeixc.com/blogs/ai/harness-engineering-minions-part1.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/ai/harness-engineering-minions-part1.html</guid>
+            <pubDate>Sun, 08 Nov 2026 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Harness Engineering，Minions - Part 2]]></title>
+            <description><![CDATA[harness-engineering]]></description>
+            <link>https://pengfeixc.com/blogs/ai/harness-engineering-minions-part2.html</link>
+            <guid isPermaLink="false">https://pengfeixc.com/blogs/ai/harness-engineering-minions-part2.html</guid>
+            <pubDate>Sun, 08 Nov 2026 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[vue3 cheatsheet for reacter]]></title>
             <description><![CDATA[从 react 的角度学习 vue3 的内容]]></description>
