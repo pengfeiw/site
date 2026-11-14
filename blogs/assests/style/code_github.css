@@ -1,8 +1,4 @@
-/*!
-    Theme: Nier: Automata (Light)
-    Description: Nier: Automata inspired theme for code highlighting - Light version for better readability
-*/
-@import url('./theme/theme.css');
+/* 代码高亮随便笺主题切换。 */
 
 .hljs {
     color: var(--color-text);

@@ -1,5 +1,5 @@
-/* Nier: Automata Theme - Global Styles */
-@import url('./theme/theme.css');
+@import url("./theme/theme.css");
+@import url("navigator-common.css");
 
 *, *::before, *::after {
     box-sizing: border-box;
@@ -7,102 +7,163 @@
 
 html {
     font-size: var(--font-size-base);
+    scrollbar-color: var(--color-border) var(--color-bg);
 }
 
 body {
+    margin: 0;
+    padding: 36px 28px 28px;
+    min-height: 100vh;
     font-family: var(--font-primary);
     font-weight: var(--font-weight-normal);
+    line-height: 1.7;
     color: var(--color-text);
     background-color: var(--color-bg);
+    background-image: var(--rainbow);
+    overflow-wrap: anywhere;
+}
+
+body.article-page {
+    padding-top: 28px;
     background-image: none;
-    line-height: var(--line-height-normal);
-    margin: 0;
-    padding: 16px 14px;
-    min-height: 100vh;
+    border-top: 8px solid transparent;
+    border-image: var(--rainbow) 1;
 }
 
-a,
-a:hover,
-a:focus,
-a:active,
-a:visited {
-    text-decoration: none;
-    transition: none !important;
+a {
+    color: var(--color-primary);
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
 }
 
-/* Responsive Typography */
-@media (max-width: 767px) {
-    html {
-        font-size: var(--font-size-sm);
-    }
-    
-    body {
-        padding: 12px 10px;
-    }
+a:hover {
+    color: var(--color-primary-hover);
 }
 
-/* Utility Classes */
-.terminal-text {
-    font-family: var(--font-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+button, input {
+    font: inherit;
 }
 
-/* Text Selection - Theme-controlled high contrast */
-*::selection {
-    background: var(--color-selection-bg, #e4e3e3);
-    color: var(--color-selection-text, #0a0a0a);
-    text-shadow: none;
+button, summary {
+    cursor: pointer;
 }
 
-*::-moz-selection {
-    background: var(--color-selection-bg, #e4e3e3);
-    color: var(--color-selection-text, #0a0a0a);
-    text-shadow: none;
+button, input, a {
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* CRT Overlay Effect - Optional */
-.crt-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
+:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 4px;
+}
+
+::selection {
+    color: var(--color-selection-text);
+    background: var(--color-selection-bg);
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.body, .header, .site-footer {
     width: 100%;
-    height: 100%;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.02) 50%);
-    background-size: 100% 2px;
-    pointer-events: none;
-    z-index: var(--z-overlay);
-    opacity: 0.3;
+    max-width: 1120px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-/* ============================================
-   Global Scrollbar - Terminal Style
-   ============================================ */
-
-/* Webkit Browsers (Chrome, Safari, Edge) */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
 }
 
-::-webkit-scrollbar-track {
-    background: var(--color-bg-secondary);
+.skip-link {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    z-index: 10;
+    padding: 8px 16px;
+    background: var(--color-bg-reading);
+    transform: translateY(-200%);
+}
+
+.skip-link:focus {
+    transform: translateY(0);
+}
+
+.category-label {
+    width: fit-content;
+    padding: 3px 10px;
     border: 1px solid var(--color-border);
+    border-radius: 0 7px 7px 7px;
+    color: var(--color-text);
+    background: var(--color-nav-purple);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-decoration: none;
 }
 
-::-webkit-scrollbar-thumb {
-    background: var(--color-border);
-    border-radius: var(--radius-none);
-    border: 1px solid var(--color-border);
+.category-label[data-category="javascript"],
+.category-label[data-category="algorithm-math"] {
+    background: var(--color-rainbow-yellow);
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
+.category-label[data-category="computer-graphics"],
+.category-label[data-category="css"] {
+    background: var(--color-nav-blue);
 }
 
-/* Firefox */
-html {
-    scrollbar-width: thin;
-    scrollbar-color: var(--color-border) var(--color-bg-secondary);
+.category-label[data-category="react"],
+.category-label[data-category="minicode"] {
+    background: var(--color-nav-green);
+}
+
+.category-label[data-category="clang"],
+.category-label[data-category="csharp"],
+.category-label[data-category="developer-handbook"] {
+    background: var(--color-nav-orange);
+}
+
+.category-label:hover {
+    text-decoration: underline;
+}
+
+.site-footer {
+    padding: 40px 0 12px;
+    color: var(--color-text-secondary);
+    text-align: center;
+    font-size: 0.75rem;
+}
+
+.site-footer p {
+    margin: 0 0 8px;
+}
+
+@media (max-width: 600px) {
+    body, body.article-page {
+        padding: 22px 16px 20px;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+@media print {
+    body, body.article-page {
+        padding: 0;
+        color: #000000;
+        background: #ffffff;
+        border: 0;
+    }
+    .header-tools, .toc, .back-link, .code-toolbar, .site-footer, .skip-link {
+        display: none;
+    }
 }

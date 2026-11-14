@@ -1,254 +1,144 @@
-@import url('./theme/theme.css');
-
-.body {
-    max-width: 1200px;
-    min-width: 200px;
-    margin: 0 auto;
-    margin-bottom: var(--spacing-xl);
+.category-panel, .article-item {
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-paper);
+    background: var(--color-bg-secondary);
+    box-shadow: var(--shadow-paper);
 }
 
-/* Category List - Simplified */
+.category-panel {
+    padding: 22px 26px;
+    margin-bottom: 28px;
+}
+
+.section-heading {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px 16px;
+    margin-bottom: 16px;
+}
+
+.section-heading h1 {
+    margin: 0;
+    font-size: 1.16rem;
+    line-height: 1.5;
+}
+
+.article-count {
+    color: var(--color-text-muted);
+    font-size: 0.72rem;
+}
+
 .category-list {
     display: flex;
     flex-wrap: wrap;
-    column-gap: var(--spacing-sm);
-    row-gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-lg);
-    padding: var(--spacing-md);
-    border: 1px solid var(--color-border);
-    background: var(--color-bg-secondary);
+    gap: 10px;
 }
 
-/* Category Items - Simple Style with Tech Arrow */
-.category-list .category-item,
-.category-list .active-category-item {
-    font-family: var(--font-secondary);
-    text-decoration: none;
+.category-item {
+    padding: 6px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-control);
     color: var(--color-text);
-    border: 1px solid var(--color-border);
-    padding: 6px 30px;
-    font-size: 0.85rem;
-    transition: var(--transition-fast);
     background: var(--color-bg-tertiary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    min-width: 80px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+    font-size: 0.75rem;
+    text-decoration: none;
 }
 
-.category-list .category-item::before,
-.category-list .active-category-item::before {
-    content: ">";
-    position: absolute;
-    left: 15px;
-    font-family: var(--font-secondary);
-    font-size: 0.9rem;
-    opacity: 0;
-    transition: opacity var(--transition-fast);
-}
-
-.category-list .category-item:hover::before,
-.category-list .active-category-item:hover::before {
-    opacity: 1;
-}
-
-.category-list .category-item:hover {
-    background-color: var(--color-text);
-    color: var(--color-bg);
-}
-
-.category-list .active-category-item {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
-    color: var(--color-bg);
-}
-
-/* Category List - Inline Style (inside article-list) */
-.category-list.category-list-inline {
-    border: none;
-    background: transparent;
-    margin-bottom: 0;
-    padding: var(--spacing-sm) 0;
-    justify-content: flex-start;
-}
-
-.category-list-inline .category-item,
-.category-list-inline .active-category-item {
-    border: none;
-    background: transparent;
-    padding: 4px 12px;
-    font-size: 0.8rem;
-    min-width: auto;
-}
-
-.category-list-inline .category-item::before,
-.category-list-inline .active-category-item::before {
-    content: none;
-}
-
-.category-list-inline .category-item:hover {
-    background: transparent;
+.category-item:hover {
     color: var(--color-primary);
-    text-shadow: none;
+    text-decoration: underline;
 }
 
-.category-list-inline .active-category-item {
+.active-category-item, .active-category-item:hover {
+    color: var(--color-text-inverse);
     background: var(--color-primary);
-    color: var(--color-bg);
+    box-shadow: 2px 2px 0 var(--color-shadow);
 }
 
-.category-list-inline .active-category-item:hover {
-    background: var(--color-primary);
-    color: var(--color-bg);
-    text-shadow: none;
-}
-
-/* Article List Divider */
-.article-list-divider {
-    height: 1px;
-    background: var(--color-border-light);
-    margin: var(--spacing-sm) 0;
-}
-
-/* Article List Container - Terminal Style */
 .article-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 26px;
+}
+
+.article-item {
     display: flex;
     flex-direction: column;
-    border: 1px solid var(--color-border);
-    background: var(--color-bg-secondary);
-    padding: 14px var(--spacing-md) var(--spacing-md);
-    position: relative;
+    min-width: 0;
+    padding: 26px;
 }
 
-/* List Header */
-.article-list::before {
-    content: "articles";
-    position: absolute;
-    top: 8px;
-    left: 12px;
-    font-family: var(--font-secondary);
-    font-size: 0.7rem;
-    color: var(--color-text-muted);
-    text-transform: lowercase;
-    letter-spacing: 0.5px;
-}
-
-/* Top right marker */
-.article-list::after {
-    content: "•";
-    position: absolute;
-    top: 8px;
-    right: 12px;
-    font-family: var(--font-secondary);
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-}
-
-/* Article Items - Terminal Style */
-.article-list>.article-item {
-    position: relative;
-}
-
-.article-list>.article-item>a {
-    font-family: var(--font-secondary);
-    text-decoration: none;
-    color: var(--color-text);
-    padding: 12px var(--spacing-sm);
-    font-size: 0.85rem;
-    line-height: 1.6;
-    letter-spacing: 0.015em;
-    transition: var(--transition-normal);
+.article-meta {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
     align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 18px;
 }
 
-/* :: Line Header Marker */
-.article-list>.article-item>a::before {
-    content: "::";
+.article-item-date {
     color: var(--color-text-muted);
-    margin-right: 12px;
-    transition: var(--transition-normal);
-    flex-shrink: 0;
-}
-
-/* Hover Effects */
-.article-list>.article-item:hover {
-    background: var(--color-primary-subtle);
-}
-
-.article-list>.article-item:hover>a {
-    color: var(--color-primary);
-    text-shadow: none;
-}
-
-.article-list>.article-item:hover>a::before {
-    color: var(--color-primary);
-    text-shadow: none;
-}
-
-.article-list>.article-item>a>.article-item-title {
-    flex: 1;
-}
-
-/* Terminal Date Format */
-.article-list>.article-item>a>.article-item-date {
-    font-family: var(--font-secondary);
-    font-size: 0.8rem;
-    color: var(--color-text-muted);
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
     white-space: nowrap;
-    margin-left: var(--spacing-sm);
-    letter-spacing: 0.04em;
 }
 
-.article-list>.article-item:hover>a>.article-item-date {
-    color: var(--color-primary);
+.article-item-title {
+    margin: 0 0 14px;
+    font-size: 1.3rem;
+    line-height: 1.6;
+    text-wrap: pretty;
 }
 
-/* Empty State - Terminal Style */
-.article-list>.article-item>a:empty::after {
-    content: "[NO_DATA]";
-    font-family: var(--font-secondary);
-    color: var(--color-text-muted);
+.article-item-title a {
+    text-decoration-thickness: 1.5px;
 }
 
-/* Terminal Status Bar at Bottom */
-.article-list-footer {
-    margin-top: var(--spacing-md);
-    padding-top: var(--spacing-sm);
-    border-top: 1px solid var(--color-border-light);
-    font-family: var(--font-secondary);
-    font-size: 0.65rem;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    text-align: right;
+.article-description {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    margin: 0 0 26px;
+    color: var(--color-text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.9;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 767px) {
-    .article-list>.article-item>a {
-        flex-direction: row;
-        align-items: center;
-        gap: 0;
+.read-more {
+    align-self: flex-end;
+    margin-top: auto;
+    padding-top: 8px;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 600px) {
+    .category-panel {
+        padding: 20px;
+        margin-bottom: 24px;
     }
-    
-    .article-list>.article-item>a>.article-item-title {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        max-width: calc(100% - 100px);
-    }
-    
-    .article-list>.article-item>a>.article-item-date {
-        margin-left: var(--spacing-sm);
-        font-size: 0.75rem;
-    }
-    
     .category-list {
-        justify-content: center;
+        gap: 9px;
+    }
+    .article-list {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 24px;
+    }
+    .article-item {
+        padding: 22px;
+    }
+    .article-item-title {
+        font-size: 1.2rem;
+    }
+}
+
+@media (pointer: coarse) {
+    .category-item, .category-label, .read-more {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
     }
 }
