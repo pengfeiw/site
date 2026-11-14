@@ -4,7 +4,7 @@
 
 .back-link {
     display: inline-block;
-    margin-left: max(0px, calc((100% - 840px) / 2));
+    margin-left: max(0px, calc((100% - 1120px) / 2));
     margin-bottom: 22px;
     font-size: 0.82rem;
 }
@@ -12,18 +12,19 @@
 .article-layout {
     display: grid;
     grid-template-columns: minmax(0, 840px);
-    justify-content: center;
+    justify-content: start;
     align-items: start;
     gap: 28px;
+    margin-left: max(0px, calc((100% - 1120px) / 2));
 }
 
 .article-layout.has-toc {
-    /* 左右留出等宽空间，目录宽度不再影响正文的居中位置。 */
-    grid-template-columns: minmax(0, 1fr) minmax(0, 840px) minmax(0, 1fr);
+    /* 正文对齐顶部栏左侧，目录利用右侧剩余空间自适应展开。 */
+    grid-template-columns: minmax(0, 840px) minmax(0, 1fr);
 }
 
 .article-layout.has-toc .markdown {
-    grid-column: 2;
+    grid-column: 1;
     grid-row: 1;
 }
 
@@ -51,7 +52,7 @@
 }
 
 .toc {
-    grid-column: 3;
+    grid-column: 2;
     grid-row: 1;
     position: sticky;
     top: 24px;
